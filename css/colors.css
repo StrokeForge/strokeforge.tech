@@ -1,0 +1,18 @@
+:root {
+  /* Industrial color scheme */
+  --primary-orange: #ff6b35;
+  --orange-dark: #d97706;
+  --steel-gray: #4a5568;
+  --dark-bg: #1a1a1a;
+  --darker-bg: #0a0a0a;
+  --card-bg: rgba(26, 26, 26, 0.5);
+  --light-gray: #e5e7eb;
+  --text-gray: #9ca3af;
+  --border-gray: #4a5568;
+  
+  /* Category colors */
+  --category-3dprint: #3b82f6;
+  --category-electronics: #10b981;
+  --category-mechanical: #f59e0b;
+  --category-other: #8b5cf6;
+}
