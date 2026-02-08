@@ -164,65 +164,47 @@
         
         .model-content {
             padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
-        
+
         .model-title {
             font-size: 1.2rem;
             color: var(--light-gray);
-            margin-bottom: 0.75rem;
+            margin-bottom: 0;
             font-weight: 600;
         }
-        
-        .model-stats {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.85rem;
-            color: var(--text-gray);
-        }
-        
-        .model-stats span {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        
+
         .model-description {
             color: var(--text-gray);
             font-size: 0.9rem;
             line-height: 1.6;
-            margin-bottom: 1rem;
+            flex-grow: 1;
         }
-        
+
         .model-tags {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
-            margin-top: 1rem;
+            margin: 0;
         }
-        
-        .tag {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid #3b82f6;
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            color: #3b82f6;
-        }
-        
+
         .download-btn {
             width: 100%;
             background: var(--primary-orange);
             color: white;
             border: none;
-            padding: 0.75rem;
+            padding: 0.5rem;  /* Zmenšeno z 0.75rem */
             border-radius: 6px;
             font-weight: 600;
+            font-size: 0.85rem;  /* Zmenšeno */
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
             display: block;
             text-align: center;
+            margin-top: auto;  /* Tlačí se dolů */
         }
         
         .download-btn:hover {
