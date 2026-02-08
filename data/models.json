@@ -1,5 +1,4 @@
 {
-  "total_models": 15,
   "last_updated": "2025-02-08",
   "printables_profile": "https://www.printables.com/@TechMaster",
   "models": [
@@ -8,7 +7,6 @@
       "title": "Box",
       "category": "Storage",
       "printables_url": "https://www.printables.com/model/1119948-box",
-      "stats": {"likes": 51, "downloads": 354, "makes": 0},
       "description": "Universal storage box for organizing small parts and components",
       "tags": ["Storage", "Organization", "Box"]
     },
@@ -17,7 +15,6 @@
       "title": "Desk Organizer",
       "category": "Organization",
       "printables_url": "https://www.printables.com/model/1520046-desk-organizer",
-      "stats": {"likes": 9, "downloads": 24, "makes": 0},
       "description": "Modular desk organizer with compartments for office supplies",
       "tags": ["Desk", "Organization", "Office"]
     },
@@ -26,7 +23,6 @@
       "title": "Drybox",
       "category": "Filament Storage",
       "printables_url": "https://www.printables.com/model/1013206-drybox",
-      "stats": {"likes": 9, "downloads": 51, "makes": 0},
       "description": "Filament drybox to keep your 3D printing materials moisture-free",
       "tags": ["Filament", "Storage", "3D Printing"]
     },
@@ -35,7 +31,6 @@
       "title": "Hooks",
       "category": "Organization",
       "printables_url": "https://www.printables.com/model/1520189-hooks",
-      "stats": {"likes": 3, "downloads": 14, "makes": 0},
       "description": "Wall-mounted hooks for hanging tools and accessories",
       "tags": ["Hooks", "Wall Mount", "Organization"]
     },
@@ -44,7 +39,6 @@
       "title": "Modular Drawer Organizer",
       "category": "Organization",
       "printables_url": "https://www.printables.com/model/1563217-modular-drawer-organizer",
-      "stats": {"likes": 4, "downloads": 11, "makes": 0},
       "description": "Customizable drawer organizer system with modular compartments",
       "tags": ["Drawer", "Modular", "Organization"]
     },
@@ -53,7 +47,6 @@
       "title": "Drybox V2 - Passive",
       "category": "Filament Storage",
       "printables_url": "https://www.printables.com/model/1119918-drybox-v2-pasive",
-      "stats": {"likes": 3, "downloads": 14, "makes": 0},
       "description": "Passive filament drybox version 2 with improved design",
       "tags": ["Filament", "Storage", "Passive"]
     },
@@ -62,7 +55,6 @@
       "title": "Label",
       "category": "Organization",
       "printables_url": "https://www.printables.com/model/1119933-label",
-      "stats": {"likes": 3, "downloads": 18, "makes": 0},
       "description": "Customizable labels for organizing drawers and containers",
       "tags": ["Label", "Organization", "Customizable"]
     },
@@ -71,7 +63,6 @@
       "title": "Hexa Shelf",
       "category": "Furniture",
       "printables_url": "https://www.printables.com/model/1527186-hexa-shelf",
-      "stats": {"likes": 2, "downloads": 8, "makes": 0},
       "description": "Hexagonal modular shelf system for wall mounting",
       "tags": ["Shelf", "Hexagon", "Modular"]
     },
@@ -80,7 +71,6 @@
       "title": "BOX-big",
       "category": "Storage",
       "printables_url": "https://www.printables.com/model/1527276-box-big",
-      "stats": {"likes": 0, "downloads": 0, "makes": 0},
       "description": "Large storage box for bigger components and tools",
       "tags": ["Storage", "Box", "Large"]
     },
@@ -89,7 +79,6 @@
       "title": "Accessory Box",
       "category": "Storage",
       "printables_url": "https://www.printables.com/model/1527218-accessory-box",
-      "stats": {"likes": 0, "downloads": 0, "makes": 0},
       "description": "Small accessory box for organizing tiny parts",
       "tags": ["Accessories", "Storage", "Small Parts"]
     },
@@ -98,7 +87,6 @@
       "title": "Chess Game",
       "category": "Games",
       "printables_url": "https://www.printables.com/model/1520232-chesse-game",
-      "stats": {"likes": 0, "downloads": 0, "makes": 0},
       "description": "3D printable chess set with board",
       "tags": ["Chess", "Game", "Board Game"]
     },
@@ -107,7 +95,6 @@
       "title": "Tic-Tac-Toe",
       "category": "Games",
       "printables_url": "https://www.printables.com/model/1520144-tic-tac-toe",
-      "stats": {"likes": 0, "downloads": 0, "makes": 0},
       "description": "Portable tic-tac-toe game with pieces",
       "tags": ["Game", "Tic-Tac-Toe", "Portable"]
     },
@@ -116,7 +103,6 @@
       "title": "Coaster",
       "category": "Home",
       "printables_url": "https://www.printables.com/model/1520022-coaster",
-      "stats": {"likes": 0, "downloads": 0, "makes": 0},
       "description": "Decorative coaster for cups and glasses",
       "tags": ["Coaster", "Home", "Decorative"]
     },
@@ -125,7 +111,6 @@
       "title": "Mini Spool",
       "category": "Filament Storage",
       "printables_url": "https://www.printables.com/model/1258601-mini-spool",
-      "stats": {"likes": 0, "downloads": 0, "makes": 0},
       "description": "Mini spool for leftover filament storage",
       "tags": ["Spool", "Filament", "Storage"]
     },
@@ -134,7 +119,6 @@
       "title": "Camera Cover ESO32-CAM",
       "category": "Electronics",
       "printables_url": "https://www.printables.com/model/1017173-cover-on-camera-eso32-cam",
-      "stats": {"likes": 0, "downloads": 0, "makes": 0},
       "description": "Protective cover for ESO32-CAM camera module",
       "tags": ["Camera", "Cover", "Electronics"]
     }

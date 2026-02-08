@@ -12,7 +12,7 @@ async function loadModels() {
         allModels = data.models;
         
         // Update stats
-        updateStats(data, allModels);
+        updateStats(allModels);
         
         // Display models
         displayModels(allModels);
@@ -23,23 +23,9 @@ async function loadModels() {
     }
 }
 
-function updateStats(data, models) {
-    // Total models
-    document.getElementById('total-models').textContent = data.total_models || models.length;
-    
-    // Calculate total likes and downloads
-    let totalLikes = 0;
-    let totalDownloads = 0;
-    
-    models.forEach(model => {
-        if (model.stats) {
-            totalLikes += model.stats.likes || 0;
-            totalDownloads += model.stats.downloads || 0;
-        }
-    });
-    
-    document.getElementById('total-likes').textContent = totalLikes;
-    document.getElementById('total-downloads').textContent = totalDownloads;
+function updateStats(models) {
+    // Total models - counted automatically
+    document.getElementById('total-models').textContent = models.length;
 }
 
 function displayModels(models) {
@@ -74,11 +60,6 @@ function createModelCard(model) {
         model.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('') : 
         '';
     
-    // Stats
-    const likes = model.stats?.likes || 0;
-    const downloads = model.stats?.downloads || 0;
-    const makes = model.stats?.makes || 0;
-    
     card.innerHTML = `
         <div class="model-image">
             ${imageContent}
@@ -86,11 +67,6 @@ function createModelCard(model) {
         </div>
         <div class="model-content">
             <h3 class="model-title">${model.title}</h3>
-            <div class="model-stats">
-                <span>❤️ ${likes}</span>
-                <span>⬇️ ${downloads}</span>
-                ${makes > 0 ? `<span>🔧 ${makes}</span>` : ''}
-            </div>
             ${model.description ? `<p class="model-description">${model.description}</p>` : ''}
             ${tagsHTML ? `<div class="model-tags">${tagsHTML}</div>` : ''}
             <a href="${model.printables_url}" target="_blank" class="download-btn">
