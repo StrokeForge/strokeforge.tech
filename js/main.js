@@ -1,6 +1,7 @@
 // Load projects data and update homepage
 document.addEventListener('DOMContentLoaded', function() {
     loadProjectsData();
+    loadModelsData();
 });
 
 async function loadProjectsData() {
@@ -9,7 +10,7 @@ async function loadProjectsData() {
         const response = await fetch('data/projects-index.json');
         const data = await response.json();
         
-        // Update category counts
+        // Update category counts (excluding 3d-print)
         updateCategoryCounts(data.projects);
         
         // Update recent projects
@@ -20,10 +21,23 @@ async function loadProjectsData() {
     }
 }
 
+async function loadModelsData() {
+    try {
+        // Load models data
+        const response = await fetch('data/models.json');
+        const data = await response.json();
+        
+        // Update 3D Models count
+        document.getElementById('count-3dprint').textContent = data.models.length;
+        
+    } catch (error) {
+        console.error('Error loading models:', error);
+    }
+}
+
 function updateCategoryCounts(projects) {
-    // Count projects by category
+    // Count projects by category (excluding 3d-print)
     const counts = {
-        '3d-print': 0,
         'electronics': 0,
         'mechanical': 0,
         'other': 0
@@ -37,7 +51,6 @@ function updateCategoryCounts(projects) {
     });
     
     // Update DOM
-    document.getElementById('count-3dprint').textContent = counts['3d-print'];
     document.getElementById('count-electronics').textContent = counts['electronics'];
     document.getElementById('count-mechanical').textContent = counts['mechanical'];
     document.getElementById('count-other').textContent = counts['other'];
