@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Name | StrokeForge</title>
+    <link rel="stylesheet" href="../css/colors.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Project Detail Styles */
+        .navbar {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-gray);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-orange);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-orange);
+        }
+        
+        .project-header {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+        
+        .project-title {
+            font-size: 3rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+        }
+        
+        .project-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .difficulty-beginner { color: #48bb78; }
+        .difficulty-intermediate { color: #f59e0b; }
+        .difficulty-advanced { color: #ef4444; }
+        
+        .main-image {
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+            padding: 0 2rem;
+        }
+        
+        .main-image img {
+            width: 100%;
+            max-height: 600px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid var(--border-gray);
+        }
+        
+        .content-section {
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+            padding: 0 2rem;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary-orange);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-gray);
+            padding-bottom: 0.5rem;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--light-gray);
+            margin-bottom: 1rem;
+        }
+        
+        /* BOM Table */
+        .bom-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .bom-table th {
+            background: var(--darker-bg);
+            color: var(--primary-orange);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .bom-table td {
+            padding: 1rem;
+            border-top: 1px solid var(--border-gray);
+            color: var(--light-gray);
+        }
+        
+        .bom-table tr:hover {
+            background: rgba(255, 107, 53, 0.05);
+        }
+        
+        .bom-table a {
+            color: var(--primary-orange);
+            text-decoration: none;
+        }
+        
+        .bom-table a:hover {
+            text-decoration: underline;
+        }
+        
+        .total-cost {
+            text-align: right;
+            font-size: 1.2rem;
+            color: var(--primary-orange);
+            font-weight: 700;
+            margin-top: 1rem;
+        }
+        
+        /* Build Steps */
+        .build-steps {
+            counter-reset: step-counter;
+        }
+        
+        .build-step {
+            background: var(--card-bg);
+            border-left: 4px solid var(--primary-orange);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            counter-increment: step-counter;
+            position: relative;
+        }
+        
+        .build-step::before {
+            content: "STEP " counter(step-counter);
+            position: absolute;
+            top: -12px;
+            left: 1rem;
+            background: var(--primary-orange);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        
+        .step-title {
+            font-size: 1.3rem;
+            color: var(--light-gray);
+            margin-bottom: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .step-content {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+        
+        .step-image {
+            margin-top: 1rem;
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        
+        /* Photo Gallery */
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .gallery-item {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--border-gray);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .gallery-item:hover {
+            border-color: var(--primary-orange);
+            transform: scale(1.02);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        /* Lessons & Problems */
+        .lesson-item, .problem-item {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-orange);
+        }
+        
+        .problem-item {
+            border-left-color: #ef4444;
+        }
+        
+        .lesson-title, .problem-title {
+            font-size: 1.2rem;
+            color: var(--primary-orange);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .problem-title {
+            color: #ef4444;
+        }
+        
+        .solution-title {
+            font-size: 1.1rem;
+            color: #48bb78;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        /* Downloads */
+        .downloads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .download-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .download-card:hover {
+            border-color: var(--primary-orange);
+            transform: translateY(-5px);
+        }
+        
+        .download-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .download-title {
+            font-size: 1.2rem;
+            color: var(--light-gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .download-description {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+        
+        /* Back Button */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--card-bg);
+            color: var(--light-gray);
+            border: 2px solid var(--border-gray);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s;
+            margin-bottom: 2rem;
+        }
+        
+        .back-button:hover {
+            border-color: var(--primary-orange);
+            color: var(--primary-orange);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .project-title {
+                font-size: 2rem;
+            }
+            
+            .project-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .photo-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../index.html">Home</a>
+                <a href="../3d-printing.html">3D Printing</a>
+                <a href="../electronics.html">Electronics</a>
+                <a href="../mechanical.html">Mechanical</a>
+                <a href="../other.html">Other</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Project Header -->
+    <section class="project-header">
+        <a href="../3d-printing.html" class="back-button">
+            ← Back to 3D Printing Projects
+        </a>
+        
+        <!-- ============================================ -->
+        <!-- EDIT: Project Title -->
+        <!-- ============================================ -->
+        <h1 class="project-title">Universal Storage Box</h1>
+        
+        <!-- ============================================ -->
+        <!-- EDIT: Category and Difficulty -->
+        <!-- Options: difficulty-beginner, difficulty-intermediate, difficulty-advanced -->
+        <!-- ============================================ -->
+        <div class="project-meta">
+            <span class="meta-item">📁 3D Printing</span>
+            <span class="meta-item difficulty-beginner">⭐ Beginner</span>
+        </div>
+    </section>
+
+    <!-- Main Image -->
+    <section class="main-image">
+        <!-- ============================================ -->
+        <!-- EDIT: Main project image -->
+        <!-- Path: 3d-printing/001/main.jpg -->
+        <!-- ============================================ -->
+        <img src="001/main.jpg" alt="Universal Storage Box">
+    </section>
+
+    <!-- Description -->
+    <section class="content-section">
+        <h2 class="section-title">Project Description</h2>
+        
+        <!-- ============================================ -->
+        <!-- EDIT: Project description (2-3 paragraphs) -->
+        <!-- ============================================ -->
+        <p class="description">
+            This universal storage box is designed to organize small parts, components, and tools in workshops, garages, or hobby spaces. The modular design allows for easy stacking and efficient use of shelf space.
+        </p>
+        <p class="description">
+            The box features reinforced corners for durability and a snap-fit lid that keeps contents secure while remaining easy to open. Multiple sizes can be printed to accommodate different storage needs.
+        </p>
+    </section>
+
+    <!-- Materials / BOM -->
+    <section class="content-section">
+        <h2 class="section-title">Materials & Components</h2>
+        
+        <!-- ============================================ -->
+        <!-- EDIT: Bill of Materials -->
+        <!-- Add/remove rows as needed -->
+        <!-- ============================================ -->
+        <table class="bom-table">
+            <thead>
+                <tr>
+                    <th>Material / Component</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>PLA Filament (1kg)</td>
+                    <td>~200g</td>
+                    <td>100 Kč</td>
+                    <td><a href="#" target="_blank">Prusa Store</a></td>
+                </tr>
+                <tr>
+                    <td>M3 x 10mm screws (optional)</td>
+                    <td>4 pcs</td>
+                    <td>10 Kč</td>
+                    <td><a href="#" target="_blank">Local hardware store</a></td>
+                </tr>
+                <!-- Add more rows here -->
+            </tbody>
+        </table>
+        
+        <!-- ============================================ -->
+        <!-- EDIT: Total cost -->
+        <!-- ============================================ -->
+        <div class="total-cost">
+            Total Cost: ~110 Kč
+        </div>
+    </section>
+
+    <!-- Build Process -->
+    <section class="content-section">
+        <h2 class="section-title">Build Process</h2>
+        
+        <div class="build-steps">
+            <!-- ============================================ -->
+            <!-- EDIT: Build steps -->
+            <!-- Copy-paste .build-step divs to add more steps -->
+            <!-- ============================================ -->
+            
+            <div class="build-step">
+                <h3 class="step-title">Prepare 3D Model</h3>
+                <p class="step-content">
+                    Download the STL files from Printables and import them into your slicer software (PrusaSlicer, Cura, etc.). Orient the parts for optimal printing with minimal supports.
+                </p>
+                <!-- Optional: Add image to step -->
+                <!-- <img src="001/step1.jpg" alt="Step 1" class="step-image"> -->
+            </div>
+            
+            <div class="build-step">
+                <h3 class="step-title">Slice and Print</h3>
+                <p class="step-content">
+                    Set layer height to 0.2mm, infill to 20%, and use supports only where necessary. Print time: approximately 6 hours for the base and 2 hours for the lid.
+                </p>
+            </div>
+            
+            <div class="build-step">
+                <h3 class="step-title">Post-Processing</h3>
+                <p class="step-content">
+                    Remove supports carefully, clean up any stringing with a hobby knife, and test the lid fit. Sand edges if needed for a smoother finish.
+                </p>
+            </div>
+            
+            <!-- Add more steps as needed -->
+        </div>
+    </section>
+
+    <!-- Photo Gallery -->
+    <section class="content-section">
+        <h2 class="section-title">Photo Gallery</h2>
+        
+        <!-- ============================================ -->
+        <!-- EDIT: Photo gallery -->
+        <!-- Add/remove gallery-item divs as needed -->
+        <!-- Images should be in project folder: 3d-printing/001/photo1.jpg -->
+        <!-- ============================================ -->
+        <div class="photo-gallery">
+            <div class="gallery-item">
+                <img src="001/photo1.jpg" alt="Project photo 1">
+            </div>
+            <div class="gallery-item">
+                <img src="001/photo2.jpg" alt="Project photo 2">
+            </div>
+            <div class="gallery-item">
+                <img src="001/photo3.jpg" alt="Project photo 3">
+            </div>
+            <div class="gallery-item">
+                <img src="001/photo4.jpg" alt="Project photo 4">
+            </div>
+            <!-- Add more photos as needed -->
+        </div>
+    </section>
+
+    <!-- Learned Lessons -->
+    <section class="content-section">
+        <h2 class="section-title">Learned Lessons</h2>
+        
+        <!-- ============================================ -->
+        <!-- EDIT: Lessons learned -->
+        <!-- Copy-paste .lesson-item divs to add more lessons -->
+        <!-- ============================================ -->
+        
+        <div class="lesson-item">
+            <h3 class="lesson-title">💡 Optimize Print Orientation</h3>
+            <p>
+                Printing the box upright resulted in better layer adhesion and smoother walls. The lid should be printed upside down to avoid supports on the inner surface.
+            </p>
+        </div>
+        
+        <div class="lesson-item">
+            <h3 class="lesson-title">💡 Infill Strategy</h3>
+            <p>
+                20% infill provided sufficient strength while keeping print time reasonable. Gyroid infill pattern distributed stress better than grid pattern.
+            </p>
+        </div>
+        
+        <!-- Add more lessons as needed -->
+    </section>
+
+    <!-- Problems & Solutions -->
+    <section class="content-section">
+        <h2 class="section-title">Problems & Solutions</h2>
+        
+        <!-- ============================================ -->
+        <!-- EDIT: Problems encountered and solutions -->
+        <!-- Copy-paste .problem-item divs to add more -->
+        <!-- ============================================ -->
+        
+        <div class="problem-item">
+            <h3 class="problem-title">⚠️ Lid Too Tight</h3>
+            <p>
+                The initial design resulted in a lid that was extremely difficult to remove, requiring excessive force that risked breaking the box.
+            </p>
+            <h4 class="solution-title">✅ Solution</h4>
+            <p>
+                Scaled the lid to 100.5% in XY axes (horizontal plane only) in the slicer. This provided just enough clearance for smooth operation while maintaining a secure fit.
+            </p>
+        </div>
+        
+        <div class="problem-item">
+            <h3 class="problem-title">⚠️ Warping Corners</h3>
+            <p>
+                Corners of the base lifted during printing, causing dimensional inaccuracy and poor bed adhesion.
+            </p>
+            <h4 class="solution-title">✅ Solution</h4>
+            <p>
+                Enabled brim (5mm width) and increased bed temperature to 65°C for PLA. Also cleaned the print bed thoroughly with isopropyl alcohol before each print.
+            </p>
+        </div>
+        
+        <!-- Add more problems as needed -->
+    </section>
+
+    <!-- Files & Downloads -->
+    <section class="content-section">
+        <h2 class="section-title">Files & Downloads</h2>
+        
+        <!-- ============================================ -->
+        <!-- EDIT: Download links -->
+        <!-- Add/remove .download-card divs as needed -->
+        <!-- ============================================ -->
+        <div class="downloads-grid">
+            <a href="https://www.printables.com/model/1119948-box" target="_blank" class="download-card">
+                <div class="download-icon">🖨️</div>
+                <h3 class="download-title">STL Files</h3>
+                <p class="download-description">Download from Printables</p>
+            </a>
+            
+            <a href="001/bom.csv" download class="download-card">
+                <div class="download-icon">📋</div>
+                <h3 class="download-title">Bill of Materials</h3>
+                <p class="download-description">CSV file</p>
+            </a>
+            
+            <!-- Example: Arduino code (if applicable) -->
+            <!-- <a href="001/code.ino" download class="download-card">
+                <div class="download-icon">💾</div>
+                <h3 class="download-title">Arduino Code</h3>
+                <p class="download-description">.ino file</p>
+            </a> -->
+            
+            <!-- Example: Wiring diagram (if applicable) -->
+            <!-- <a href="001/wiring.pdf" download class="download-card">
+                <div class="download-icon">📄</div>
+                <h3 class="download-title">Wiring Diagram</h3>
+                <p class="download-description">PDF file</p>
+            </a> -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Designs from concept to reality | 2025</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+            <a href="https://www.printables.com/@TechMaster" target="_blank" style="color: #ff6b35; text-decoration: none;">
+                Printables: @TechMaster
+            </a>
+        </p>
+    </footer>
+</body>
+</html>
