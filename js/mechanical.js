@@ -1,4 +1,4 @@
-// 3D Printing Projects Page JavaScript
+// Mechanical Projects Page JavaScript
 let allProjects = [];
 
 // Load projects on page load
@@ -9,14 +9,14 @@ document.addEventListener('DOMContentLoaded', function() {
 async function loadProjects() {
     try {
         // Load project list
-        const response = await fetch('data/3d-printing-projects.json');
+        const response = await fetch('data/mechanical-projects.json');
         const data = await response.json();
         const projectIds = data.projects;
         
         // Load metadata for each project
         const projectPromises = projectIds.map(async (id) => {
             try {
-                const metaResponse = await fetch(`3d-printing/${id}/metadata.json`);
+                const metaResponse = await fetch(`mechanical/${id}/metadata.json`);
                 const metadata = await metaResponse.json();
                 return {
                     id: id,
@@ -53,7 +53,7 @@ function displayProjects(projects) {
         grid.innerHTML = `
             <div class="empty-state">
                 <h2>No projects yet</h2>
-                <p>Check back soon for new 3D printing projects!</p>
+                <p>Check back soon for new mechanical projects!</p>
             </div>
         `;
         return;
@@ -68,7 +68,7 @@ function displayProjects(projects) {
 
 function createProjectCard(project) {
     const card = document.createElement('a');
-    card.href = `3d-printing/${project.id}/`;
+    card.href = `mechanical/${project.id}/`;
     card.className = 'project-card';
     
     // Difficulty class
@@ -82,8 +82,8 @@ function createProjectCard(project) {
     card.innerHTML = `
         <div class="project-image">
             ${project.thumbnail ? 
-                `<img src="3d-printing/${project.id}/${project.thumbnail}" alt="${project.title}">` :
-                '🖨️'
+                `<img src="mechanical/${project.id}/${project.thumbnail}" alt="${project.title}">` :
+                '🔧'
             }
         </div>
         <div class="project-content">
