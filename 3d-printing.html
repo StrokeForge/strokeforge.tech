@@ -152,6 +152,7 @@
             text-align: center;
             padding: 4rem 2rem;
             color: var(--text-gray);
+            grid-column: 1 / -1;
         }
         
         .empty-state h2 {
@@ -164,6 +165,7 @@
         @media (max-width: 768px) {
             .nav-links {
                 gap: 1rem;
+                font-size: 0.9rem;
             }
             
             .projects-grid {
@@ -183,7 +185,6 @@
                 <a href="electronics.html">Electronics</a>
                 <a href="mechanical.html">Mechanical</a>
                 <a href="other.html">Other</a>
-                <a href="models.html">3D Models</a>
             </div>
         </div>
     </nav>
@@ -196,335 +197,7 @@
 
     <!-- Projects Grid -->
     <section class="projects-grid">
-        
-        <!-- ============================================ -->
-        <!-- PROJECT CARDS -->
-        <!-- Edit project info for each card -->
-        <!-- ============================================ -->
-        
-        <!-- Project 001: Box -->
-        <a href="3d-printing/3d-printing-001/" class="project-card">
-            <div class="project-image">
-                <!-- Replace with: <img src="3d-printing/3d-printing-001/thumb.jpg" alt="Box"> -->
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Universal Storage Box</h3>
-                <div class="project-meta">
-                    <span class="difficulty-beginner">⭐ Beginner</span>
-                    <span>⏱️ 8 hours</span>
-                </div>
-                <p class="project-description">
-                    Modular storage solution for organizing small parts and components. Features snap-fit lid and stackable design.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 002: Modular Drawer Organizer -->
-        <a href="3d-printing/3d-printing-002/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Modular Drawer Organizer</h3>
-                <div class="project-meta">
-                    <span class="difficulty-beginner">⭐ Beginner</span>
-                    <span>⏱️ 10 hours</span>
-                </div>
-                <p class="project-description">
-                    Customizable drawer organizer system with multiple compartment sizes. Perfect for tools and office supplies.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 003: BOX-big -->
-        <a href="3d-printing/3d-printing-003/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">BOX-big</h3>
-                <div class="project-meta">
-                    <span class="difficulty-beginner">⭐ Beginner</span>
-                    <span>⏱️ 12 hours</span>
-                </div>
-                <p class="project-description">
-                    Large capacity storage box for bigger items. Reinforced design for heavy-duty use.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 004: Hexa Shelf -->
-        <a href="3d-printing/3d-printing-004/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Hexa Shelf</h3>
-                <div class="project-meta">
-                    <span class="difficulty-intermediate">⭐ Intermediate</span>
-                    <span>⏱️ 6 hours</span>
-                </div>
-                <p class="project-description">
-                    Hexagonal modular wall shelf system. Create custom configurations by connecting multiple units.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 005: Chess Game -->
-        <a href="3d-printing/3d-printing-005/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Chess Game</h3>
-                <div class="project-meta">
-                    <span class="difficulty-intermediate">⭐ Intermediate</span>
-                    <span>⏱️ 20 hours</span>
-                </div>
-                <p class="project-description">
-                    Complete chess set with board. All pieces designed for easy printing and assembly.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 006: Hooks -->
-        <a href="3d-printing/3d-printing-006/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Hooks</h3>
-                <div class="project-meta">
-                    <span class="difficulty-beginner">⭐ Beginner</span>
-                    <span>⏱️ 2 hours</span>
-                </div>
-                <p class="project-description">
-                    Wall-mounted hooks for tools, coats, and accessories. Strong adhesive or screw mounting.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 007: Tic-Tac-Toe -->
-        <a href="3d-printing/3d-printing-007/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Tic-Tac-Toe</h3>
-                <div class="project-meta">
-                    <span class="difficulty-beginner">⭐ Beginner</span>
-                    <span>⏱️ 3 hours</span>
-                </div>
-                <p class="project-description">
-                    Portable tic-tac-toe game with storage compartment for pieces. Great for travel.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 008: Desk Organizer -->
-        <a href="3d-printing/3d-printing-008/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Desk Organizer</h3>
-                <div class="project-meta">
-                    <span class="difficulty-beginner">⭐ Beginner</span>
-                    <span>⏱️ 6 hours</span>
-                </div>
-                <p class="project-description">
-                    Multi-compartment organizer for pens, cables, and office supplies. Modular design allows custom configurations.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 009: Coaster -->
-        <a href="3d-printing/3d-printing-009/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Coaster</h3>
-                <div class="project-meta">
-                    <span class="difficulty-beginner">⭐ Beginner</span>
-                    <span>⏱️ 1 hour</span>
-                </div>
-                <p class="project-description">
-                    Decorative drink coasters with geometric pattern. Print a set for your desk or coffee table.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 010: Mini Spool -->
-        <a href="3d-printing/3d-printing-010/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Mini Spool</h3>
-                <div class="project-meta">
-                    <span class="difficulty-beginner">⭐ Beginner</span>
-                    <span>⏱️ 4 hours</span>
-                </div>
-                <p class="project-description">
-                    Compact filament spool for small prints and filament samples. Stackable design.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 011: Accessory Box -->
-        <a href="3d-printing/3d-printing-011/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Accessory Box</h3>
-                <div class="project-meta">
-                    <span class="difficulty-beginner">⭐ Beginner</span>
-                    <span>⏱️ 5 hours</span>
-                </div>
-                <p class="project-description">
-                    Compact storage for small accessories and parts. Transparent lid option available.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 012: Drybox V2 -->
-        <a href="3d-printing/3d-printing-012/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Drybox V2 - Passive</h3>
-                <div class="project-meta">
-                    <span class="difficulty-intermediate">⭐ Intermediate</span>
-                    <span>⏱️ 14 hours</span>
-                </div>
-                <p class="project-description">
-                    Improved passive filament drybox with better sealing and desiccant holder. Version 2 with enhanced design.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 013: Label -->
-        <a href="3d-printing/3d-printing-013/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Label</h3>
-                <div class="project-meta">
-                    <span class="difficulty-beginner">⭐ Beginner</span>
-                    <span>⏱️ 1 hour</span>
-                </div>
-                <p class="project-description">
-                    Customizable labels for organizing storage boxes and containers. Easy to modify text.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 014: Camera Cover -->
-        <a href="3d-printing/3d-printing-014/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Camera Cover ESO32-CAM</h3>
-                <div class="project-meta">
-                    <span class="difficulty-beginner">⭐ Beginner</span>
-                    <span>⏱️ 2 hours</span>
-                </div>
-                <p class="project-description">
-                    Protective cover for ESO32-CAM camera module. Snap-fit design for easy installation.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 015: Drybox -->
-        <a href="3d-printing/3d-printing-015/" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Drybox</h3>
-                <div class="project-meta">
-                    <span class="difficulty-intermediate">⭐ Intermediate</span>
-                    <span>⏱️ 12 hours</span>
-                </div>
-                <p class="project-description">
-                    Keep your 3D printing filament moisture-free with this passive drybox design. Fits standard 1kg spools.
-                </p>
-            </div>
-        </a>
-
-    </section>
-        
-        <!-- ============================================ -->
-        <!-- PROJECT CARDS -->
-        <!-- Copy-paste this block to add new projects -->
-        <!-- ============================================ -->
-        
-        <!-- Project 001: Box -->
-        <a href="3d-printing/001.html" class="project-card">
-            <div class="project-image">
-                <!-- Replace with: <img src="3d-printing/001/thumb.jpg" alt="Box"> -->
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Universal Storage Box</h3>
-                <div class="project-meta">
-                    <span class="difficulty-beginner">⭐ Beginner</span>
-                    <span>⏱️ 8 hours</span>
-                </div>
-                <p class="project-description">
-                    Modular storage solution for organizing small parts and components. Features snap-fit lid and stackable design.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 002: Desk Organizer -->
-        <a href="3d-printing/002.html" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Desk Organizer</h3>
-                <div class="project-meta">
-                    <span class="difficulty-beginner">⭐ Beginner</span>
-                    <span>⏱️ 6 hours</span>
-                </div>
-                <p class="project-description">
-                    Multi-compartment organizer for pens, cables, and office supplies. Modular design allows custom configurations.
-                </p>
-            </div>
-        </a>
-
-        <!-- Project 003: Drybox -->
-        <a href="3d-printing/003.html" class="project-card">
-            <div class="project-image">
-                🖨️
-            </div>
-            <div class="project-content">
-                <h3 class="project-title">Filament Drybox</h3>
-                <div class="project-meta">
-                    <span class="difficulty-intermediate">⭐ Intermediate</span>
-                    <span>⏱️ 12 hours</span>
-                </div>
-                <p class="project-description">
-                    Keep your 3D printing filament moisture-free with this passive drybox design. Fits standard 1kg spools.
-                </p>
-            </div>
-        </a>
-
-        <!-- ============================================ -->
-        <!-- ADD MORE PROJECTS HERE -->
-        <!-- Just copy-paste the block above and change: -->
-        <!-- - href (link to project detail) -->
-        <!-- - image source -->
-        <!-- - title, difficulty, time, description -->
-        <!-- ============================================ -->
-
+        <!-- Projects will be loaded dynamically by JavaScript -->
     </section>
 
     <!-- Footer -->
@@ -536,5 +209,8 @@
             </a>
         </p>
     </footer>
+
+    <!-- Load 3D Printing Projects JavaScript -->
+    <script src="js/3d-printing.js"></script>
 </body>
 </html>
