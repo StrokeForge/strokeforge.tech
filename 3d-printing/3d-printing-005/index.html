@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Storage Box | StrokeForge</title>
+    <title>Modular Drawer Organizer | StrokeForge</title>
     <link rel="stylesheet" href="../../css/colors.css">
     <link rel="stylesheet" href="../../css/style.css">
     <style>
@@ -148,14 +148,6 @@
         
         .bom-table a:hover {
             text-decoration: underline;
-        }
-        
-        .total-cost {
-            text-align: right;
-            font-size: 1.2rem;
-            color: var(--primary-orange);
-            font-weight: 700;
-            margin-top: 1rem;
         }
         
         /* Build Steps */
@@ -324,6 +316,39 @@
             color: var(--primary-orange);
         }
         
+        /* Module List */
+        .module-list {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .module-list h4 {
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+        }
+        
+        .module-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .module-list li {
+            padding: 0.5rem 0;
+            color: var(--light-gray);
+            border-bottom: 1px solid var(--border-gray);
+        }
+        
+        .module-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .module-list li::before {
+            content: "📦 ";
+            margin-right: 0.5rem;
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .project-title {
@@ -352,7 +377,6 @@
                 <a href="../../electronics.html">Electronics</a>
                 <a href="../../mechanical.html">Mechanical</a>
                 <a href="../../other.html">Other</a>
-                <a href="../../models.html">3D Models</a>
             </div>
         </div>
     </nav>
@@ -363,15 +387,8 @@
             ← Back to 3D Printing Projects
         </a>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Project Title -->
-        <!-- ============================================ -->
-        <h1 class="project-title">Universal Storage Box</h1>
+        <h1 class="project-title">Modular Drawer Organizer</h1>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Category and Difficulty -->
-        <!-- Options: difficulty-beginner, difficulty-intermediate, difficulty-advanced -->
-        <!-- ============================================ -->
         <div class="project-meta">
             <span class="meta-item">📁 3D Printing</span>
             <span class="meta-item difficulty-beginner">⭐ Beginner</span>
@@ -380,68 +397,67 @@
 
     <!-- Main Image -->
     <section class="main-image">
-        <!-- ============================================ -->
-        <!-- EDIT: Main project image -->
-        <!-- Path: main.jpg (in same folder) -->
-        <!-- ============================================ -->
-        <img src="main.jpg" alt="Universal Storage Box">
+        <img src="main.jpg" alt="Modular Drawer Organizer">
     </section>
 
     <!-- Description -->
     <section class="content-section">
         <h2 class="section-title">Project Description</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Project description (2-3 paragraphs) -->
-        <!-- ============================================ -->
         <p class="description">
-            This universal storage box is designed to organize small parts, components, and tools in workshops, garages, or hobby spaces. The modular design allows for easy stacking and efficient use of shelf space.
+            This project emerged from a friend's request for an organizer that could work equally well on a desk or mounted on a wall. As an electronics enthusiast managing countless components—resistors, capacitors, LEDs, connectors, and microcontrollers—he needed extreme flexibility in how storage was configured. Standard organizers with fixed compartment layouts simply couldn't adapt to the wide range of part sizes and quantities typical in electronics work.
         </p>
         <p class="description">
-            The box features reinforced corners for durability and a snap-fit lid that keeps contents secure while remaining easy to open. Multiple sizes can be printed to accommodate different storage needs.
+            The modular drawer system builds on the successful Desk Organizer design, using the same 100×100mm standardized grid and snap-fit connection mechanism. Six different module types offer configurations from single large drawers to arrays of four smaller compartments, all freely combinable and stackable. Each module includes mounting options for both desktop placement and wall installation, while integrated label spaces (with optional numbered tags from 001-100 or paper inserts) ensure you'll never lose track of what's stored where.
         </p>
+        
+        <div class="module-list">
+            <h4>Available Module Types:</h4>
+            <ul>
+                <li><strong>1-Drawer Module:</strong> Single large compartment for bigger items</li>
+                <li><strong>2-Drawer Horizontal:</strong> Two drawers stacked vertically</li>
+                <li><strong>2-Drawer Vertical:</strong> Two drawers side by side</li>
+                <li><strong>3-Drawer Horizontal:</strong> Three drawers stacked vertically</li>
+                <li><strong>3-Drawer Vertical:</strong> Three drawers side by side</li>
+                <li><strong>4-Drawer Module:</strong> Four compartments in a 2×2 grid</li>
+            </ul>
+        </div>
     </section>
 
     <!-- Materials / BOM -->
     <section class="content-section">
         <h2 class="section-title">Materials & Components</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Bill of Materials -->
-        <!-- Add/remove rows as needed -->
-        <!-- ============================================ -->
         <table class="bom-table">
             <thead>
                 <tr>
                     <th>Material / Component</th>
                     <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Link</th>
+                    <th>Notes</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>PLA Filament (1kg)</td>
-                    <td>~200g</td>
-                    <td>100 Kč</td>
-                    <td><a href="#" target="_blank">Prusa Store</a></td>
+                    <td>PLA Filament (1kg spool)</td>
+                    <td>~265g (~90m) per module</td>
+                    <td>PETG also works well</td>
                 </tr>
                 <tr>
-                    <td>M3 x 10mm screws (optional)</td>
-                    <td>4 pcs</td>
-                    <td>10 Kč</td>
-                    <td><a href="#" target="_blank">Local hardware store</a></td>
+                    <td>Wood Screws 3.5mm (for wall mount only)</td>
+                    <td>2 pcs per module</td>
+                    <td>Only needed for wall-mounted configuration</td>
                 </tr>
-                <!-- Add more rows here -->
+                <tr>
+                    <td>Wall Anchors (for wall mount only)</td>
+                    <td>2 pcs per module</td>
+                    <td>Type depends on wall material</td>
+                </tr>
             </tbody>
         </table>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Total cost -->
-        <!-- ============================================ -->
-        <div class="total-cost">
-            Total Cost: ~110 Kč
-        </div>
+        <p style="color: var(--text-gray); margin-top: 1rem;">
+            <strong>Note:</strong> Print quantities vary depending on desired configuration. A typical setup might include 4-6 modules for comprehensive desk organization.
+        </p>
     </section>
 
     <!-- Build Process -->
@@ -449,35 +465,60 @@
         <h2 class="section-title">Build Process</h2>
         
         <div class="build-steps">
-            <!-- ============================================ -->
-            <!-- EDIT: Build steps -->
-            <!-- Copy-paste .build-step divs to add more steps -->
-            <!-- ============================================ -->
             
             <div class="build-step">
-                <h3 class="step-title">Prepare 3D Model</h3>
+                <h3 class="step-title">Select Your Module Configuration</h3>
                 <p class="step-content">
-                    Download the STL files from Printables and import them into your slicer software (PrusaSlicer, Cura, etc.). Orient the parts for optimal printing with minimal supports.
+                    Review the six available module types and plan your layout based on what you're storing. Electronics components often work well with multiple 4-drawer modules for small parts, combined with 1-drawer or 2-drawer modules for larger items like Arduino boards, cable bundles, or tool sets.
                 </p>
-                <!-- Optional: Add image to step -->
-                <!-- <img src="step1.jpg" alt="Step 1" class="step-image"> -->
-            </div>
-            
-            <div class="build-step">
-                <h3 class="step-title">Slice and Print</h3>
-                <p class="step-content">
-                    Set layer height to 0.2mm, infill to 20%, and use supports only where necessary. Print time: approximately 6 hours for the base and 2 hours for the lid.
+                <p class="step-content" style="margin-top: 1rem;">
+                    Decide whether you want desktop placement or wall mounting. Both versions are available in the STL files—the wall-mount variant includes integrated screw holes, while the desktop version has a clean bottom surface. All modules in your configuration must be either wall-mount or desktop; they're not designed to mix.
                 </p>
             </div>
             
             <div class="build-step">
-                <h3 class="step-title">Post-Processing</h3>
+                <h3 class="step-title">Print Modules and Drawers</h3>
                 <p class="step-content">
-                    Remove supports carefully, clean up any stringing with a hobby knife, and test the lid fit. Sand edges if needed for a smoother finish.
+                    <strong>Print settings:</strong><br><br>
+                    <strong>Material:</strong> PLA (PETG also works)<br>
+                    <strong>Perimeters:</strong> 4 walls<br>
+                    <strong>Infill:</strong> 20%<br>
+                    <strong>Layer height:</strong> 0.2mm<br>
+                    <strong>Supports:</strong> None required<br>
+                    <strong>Print time:</strong> ~9-10 hours per module (varies slightly by type)
+                </p>
+                <p class="step-content" style="margin-top: 1rem;">
+                    Each module type includes both the frame and the appropriate number of drawers. Test fit the first drawer in each module type—drawer tolerances can vary slightly depending on the number of compartments in the module. If drawers are too tight, scale them to 99.8% in XY; if too loose, try 100.2%.
                 </p>
             </div>
             
-            <!-- Add more steps as needed -->
+            <div class="build-step">
+                <h3 class="step-title">Connect Modules Using Snap-Fit Joints</h3>
+                <p class="step-content">
+                    Modules connect using the same proven snap-fit mechanism as the Desk Organizer. Align the connectors on adjacent modules and press firmly until they click into place. The connection is secure enough for daily use but can be disassembled if you need to reconfigure your layout later.
+                </p>
+                <p class="step-content" style="margin-top: 1rem;">
+                    Build your configuration horizontally (side by side) or vertically (stacked), or combine both directions for complex arrangements. The standardized 100×100mm grid ensures everything aligns perfectly regardless of module type.
+                </p>
+            </div>
+            
+            <div class="build-step">
+                <h3 class="step-title">Mount or Position</h3>
+                <p class="step-content">
+                    <strong>For desktop use:</strong> Simply place your connected module array on your work surface. The design is stable and won't tip when opening drawers.
+                </p>
+                <p class="step-content" style="margin-top: 1rem;">
+                    <strong>For wall mounting:</strong> Mark positions for mounting screws using the holes in the back of each module. Use 3.5mm wood screws and appropriate wall anchors for your wall type. Mount each module individually, then connect them using the snap-fit joints—this approach is easier than trying to mount an assembled array.
+                </p>
+            </div>
+            
+            <div class="build-step">
+                <h3 class="step-title">Add Labels</h3>
+                <p class="step-content">
+                    Each drawer includes a dedicated label area. You have three options: print the included numbered labels (001-100) available in the Printables files, insert paper labels cut to size, or leave them blank if you prefer visual identification. For electronics work, a numbering system combined with a spreadsheet inventory often works best.
+                </p>
+            </div>
+            
         </div>
     </section>
 
@@ -485,11 +526,6 @@
     <section class="content-section">
         <h2 class="section-title">Photo Gallery</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Photo gallery -->
-        <!-- Add/remove gallery-item divs as needed -->
-        <!-- Images should be in same folder: photo1.jpg, photo2.jpg -->
-        <!-- ============================================ -->
         <div class="photo-gallery">
             <div class="gallery-item">
                 <img src="photo1.jpg" alt="Project photo 1">
@@ -503,7 +539,6 @@
             <div class="gallery-item">
                 <img src="photo4.jpg" alt="Project photo 4">
             </div>
-            <!-- Add more photos as needed -->
         </div>
     </section>
 
@@ -511,96 +546,56 @@
     <section class="content-section">
         <h2 class="section-title">Learned Lessons</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Lessons learned -->
-        <!-- Copy-paste .lesson-item divs to add more lessons -->
-        <!-- ============================================ -->
-        
         <div class="lesson-item">
-            <h3 class="lesson-title">💡 Optimize Print Orientation</h3>
+            <h3 class="lesson-title">💡 Patience with Tolerance Refinement</h3>
             <p>
-                Printing the box upright resulted in better layer adhesion and smoother walls. The lid should be printed upside down to avoid supports on the inner surface.
+                This project demanded significant patience during development. Each module type required individual drawer tolerance adjustment—what worked perfectly for the single-drawer module didn't translate to the four-drawer configuration. The mechanical behavior of sliding drawers changes with the overall size and internal structure of the module, requiring iterative testing and refinement for each variant.
             </p>
         </div>
         
         <div class="lesson-item">
-            <h3 class="lesson-title">💡 Infill Strategy</h3>
+            <h3 class="lesson-title">💡 Size Affects Tolerance Requirements</h3>
             <p>
-                20% infill provided sufficient strength while keeping print time reasonable. Gyroid infill pattern distributed stress better than grid pattern.
+                A critical discovery: tolerance needs scale with object size. Larger modules (like the 1-drawer type) can accommodate slightly looser fits, while compact modules with multiple small drawers (like the 4-drawer configuration) require tighter tolerances to prevent wobbling. This isn't immediately obvious when designing, but becomes clear during testing. Future modular designs should account for this scaling relationship from the start.
             </p>
         </div>
         
-        <!-- Add more lessons as needed -->
+        <div class="lesson-item">
+            <h3 class="lesson-title">💡 Variability Serves Real Needs</h3>
+            <p>
+                Creating six different module types might seem excessive, but electronics work proves the value of this variety. Small SMD resistors need different storage than bulky connectors or development boards. The ability to mix module types within a single system means users can optimize their layout for their specific inventory rather than forcing everything into uniform compartments.
+            </p>
+        </div>
+        
     </section>
 
     <!-- Problems & Solutions -->
     <section class="content-section">
         <h2 class="section-title">Problems & Solutions</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Problems encountered and solutions -->
-        <!-- Copy-paste .problem-item divs to add more -->
-        <!-- ============================================ -->
-        
         <div class="problem-item">
-            <h3 class="problem-title">⚠️ Lid Too Tight</h3>
+            <h3 class="problem-title">⚠️ Inconsistent Drawer Tolerances Across Module Types</h3>
             <p>
-                The initial design resulted in a lid that was extremely difficult to remove, requiring excessive force that risked breaking the box.
+                Initial prototypes used identical drawer tolerances across all six module types. This resulted in drawers that fit perfectly in the 1-drawer module but were impossibly tight in the 4-drawer module, or drawers that slid smoothly in larger modules but rattled loosely in smaller ones. The tolerances that worked for one configuration consistently failed in others.
             </p>
             <h4 class="solution-title">✅ Solution</h4>
             <p>
-                Scaled the lid to 100.5% in XY axes (horizontal plane only) in the slicer. This provided just enough clearance for smooth operation while maintaining a secure fit.
+                Each module type required its own calibration through iterative testing. Multiple drawer prints were necessary to dial in the correct fit—typically within tenths of a millimeter—for each module configuration. The final tolerances vary subtly between module types, with tighter clearances generally needed for modules with more compartments. This meant accepting that "one size fits all" doesn't work for mechanical fits in varying structural contexts.
             </p>
         </div>
         
-        <div class="problem-item">
-            <h3 class="problem-title">⚠️ Warping Corners</h3>
-            <p>
-                Corners of the base lifted during printing, causing dimensional inaccuracy and poor bed adhesion.
-            </p>
-            <h4 class="solution-title">✅ Solution</h4>
-            <p>
-                Enabled brim (5mm width) and increased bed temperature to 65°C for PLA. Also cleaned the print bed thoroughly with isopropyl alcohol before each print.
-            </p>
-        </div>
-        
-        <!-- Add more problems as needed -->
     </section>
 
     <!-- Files & Downloads -->
     <section class="content-section">
         <h2 class="section-title">Files & Downloads</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Download links -->
-        <!-- Add/remove .download-card divs as needed -->
-        <!-- ============================================ -->
         <div class="downloads-grid">
-            <a href="https://www.printables.com/model/1119948-box" target="_blank" class="download-card">
+            <a href="https://www.printables.com/model/1563217-modular-drawer-organizer" target="_blank" class="download-card">
                 <div class="download-icon">🖨️</div>
                 <h3 class="download-title">STL Files</h3>
                 <p class="download-description">Download from Printables</p>
             </a>
-            
-            <a href="bom.csv" download class="download-card">
-                <div class="download-icon">📋</div>
-                <h3 class="download-title">Bill of Materials</h3>
-                <p class="download-description">CSV file</p>
-            </a>
-            
-            <!-- Example: Arduino code (if applicable) -->
-            <!-- <a href="code.ino" download class="download-card">
-                <div class="download-icon">💾</div>
-                <h3 class="download-title">Arduino Code</h3>
-                <p class="download-description">.ino file</p>
-            </a> -->
-            
-            <!-- Example: Wiring diagram (if applicable) -->
-            <!-- <a href="wiring.pdf" download class="download-card">
-                <div class="download-icon">📄</div>
-                <h3 class="download-title">Wiring Diagram</h3>
-                <p class="download-description">PDF file</p>
-            </a> -->
         </div>
     </section>
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Storage Box | StrokeForge</title>
+    <title>Hooks | StrokeForge</title>
     <link rel="stylesheet" href="../../css/colors.css">
     <link rel="stylesheet" href="../../css/style.css">
     <style>
@@ -148,14 +148,6 @@
         
         .bom-table a:hover {
             text-decoration: underline;
-        }
-        
-        .total-cost {
-            text-align: right;
-            font-size: 1.2rem;
-            color: var(--primary-orange);
-            font-weight: 700;
-            margin-top: 1rem;
         }
         
         /* Build Steps */
@@ -352,7 +344,6 @@
                 <a href="../../electronics.html">Electronics</a>
                 <a href="../../mechanical.html">Mechanical</a>
                 <a href="../../other.html">Other</a>
-                <a href="../../models.html">3D Models</a>
             </div>
         </div>
     </nav>
@@ -363,15 +354,8 @@
             ← Back to 3D Printing Projects
         </a>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Project Title -->
-        <!-- ============================================ -->
-        <h1 class="project-title">Universal Storage Box</h1>
+        <h1 class="project-title">Hooks</h1>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Category and Difficulty -->
-        <!-- Options: difficulty-beginner, difficulty-intermediate, difficulty-advanced -->
-        <!-- ============================================ -->
         <div class="project-meta">
             <span class="meta-item">📁 3D Printing</span>
             <span class="meta-item difficulty-beginner">⭐ Beginner</span>
@@ -380,25 +364,18 @@
 
     <!-- Main Image -->
     <section class="main-image">
-        <!-- ============================================ -->
-        <!-- EDIT: Main project image -->
-        <!-- Path: main.jpg (in same folder) -->
-        <!-- ============================================ -->
-        <img src="main.jpg" alt="Universal Storage Box">
+        <img src="main.jpg" alt="Hooks">
     </section>
 
     <!-- Description -->
     <section class="content-section">
         <h2 class="section-title">Project Description</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Project description (2-3 paragraphs) -->
-        <!-- ============================================ -->
         <p class="description">
-            This universal storage box is designed to organize small parts, components, and tools in workshops, garages, or hobby spaces. The modular design allows for easy stacking and efficient use of shelf space.
+            Garage organization often becomes a challenge when seasonal equipment like skis, roof racks, and sporting gear competes for limited floor space. These heavy-duty wall hooks solve the problem elegantly—they're simple, robust, and versatile enough to handle a wide range of storage needs.
         </p>
         <p class="description">
-            The box features reinforced corners for durability and a snap-fit lid that keeps contents secure while remaining easy to open. Multiple sizes can be printed to accommodate different storage needs.
+            The design features a 150mm load surface that comfortably accommodates skis with cases and poles, roof rack crossbars, and similar items. With reinforced construction using 6 perimeters and 50% infill, these hooks are built to handle real-world loads reliably. The beauty lies in their simplicity: two hooks for a pair of skis, straightforward wall mounting, and they just work.
         </p>
     </section>
 
@@ -406,42 +383,36 @@
     <section class="content-section">
         <h2 class="section-title">Materials & Components</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Bill of Materials -->
-        <!-- Add/remove rows as needed -->
-        <!-- ============================================ -->
         <table class="bom-table">
             <thead>
                 <tr>
                     <th>Material / Component</th>
                     <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Link</th>
+                    <th>Notes</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>PLA Filament (1kg)</td>
-                    <td>~200g</td>
-                    <td>100 Kč</td>
-                    <td><a href="#" target="_blank">Prusa Store</a></td>
+                    <td>PETG Filament (1kg spool)</td>
+                    <td>~279g (~91m) per hook</td>
+                    <td>Mechanically durable material recommended</td>
                 </tr>
                 <tr>
-                    <td>M3 x 10mm screws (optional)</td>
-                    <td>4 pcs</td>
-                    <td>10 Kč</td>
-                    <td><a href="#" target="_blank">Local hardware store</a></td>
+                    <td>M6 Screws or Wood Screws (5.5-6mm)</td>
+                    <td>2 pcs per hook</td>
+                    <td>M6 for masonry/concrete, wood screws for studs</td>
                 </tr>
-                <!-- Add more rows here -->
+                <tr>
+                    <td>Wall Anchors</td>
+                    <td>2 pcs per hook</td>
+                    <td>Type depends on wall material (drywall, concrete, brick)</td>
+                </tr>
             </tbody>
         </table>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Total cost -->
-        <!-- ============================================ -->
-        <div class="total-cost">
-            Total Cost: ~110 Kč
-        </div>
+        <p style="color: var(--text-gray); margin-top: 1rem;">
+            <strong>Note:</strong> For one pair of skis, you'll need 2 hooks (4 screws and 4 anchors total).
+        </p>
     </section>
 
     <!-- Build Process -->
@@ -449,35 +420,50 @@
         <h2 class="section-title">Build Process</h2>
         
         <div class="build-steps">
-            <!-- ============================================ -->
-            <!-- EDIT: Build steps -->
-            <!-- Copy-paste .build-step divs to add more steps -->
-            <!-- ============================================ -->
             
             <div class="build-step">
                 <h3 class="step-title">Prepare 3D Model</h3>
                 <p class="step-content">
-                    Download the STL files from Printables and import them into your slicer software (PrusaSlicer, Cura, etc.). Orient the parts for optimal printing with minimal supports.
-                </p>
-                <!-- Optional: Add image to step -->
-                <!-- <img src="step1.jpg" alt="Step 1" class="step-image"> -->
-            </div>
-            
-            <div class="build-step">
-                <h3 class="step-title">Slice and Print</h3>
-                <p class="step-content">
-                    Set layer height to 0.2mm, infill to 20%, and use supports only where necessary. Print time: approximately 6 hours for the base and 2 hours for the lid.
+                    Download the STL file from Printables (link below). The hook is designed as a single piece that prints without supports. Orient it in your slicer with the flat mounting surface on the build plate for optimal strength and surface finish.
                 </p>
             </div>
             
             <div class="build-step">
-                <h3 class="step-title">Post-Processing</h3>
+                <h3 class="step-title">Print with Reinforced Settings</h3>
                 <p class="step-content">
-                    Remove supports carefully, clean up any stringing with a hobby knife, and test the lid fit. Sand edges if needed for a smoother finish.
+                    <strong>Print settings:</strong><br><br>
+                    <strong>Material:</strong> PETG (or other mechanically durable material like ABS, ASA)<br>
+                    <strong>Perimeters:</strong> 6 walls<br>
+                    <strong>Infill:</strong> 50%<br>
+                    <strong>Layer height:</strong> 0.2mm (0.3mm also works)<br>
+                    <strong>Supports:</strong> None required<br>
+                    <strong>Print time:</strong> ~9 hours per hook
+                </p>
+                <p class="step-content" style="margin-top: 1rem;">
+                    These reinforced settings are critical for load-bearing applications. The combination of 6 perimeter walls and 50% infill provides exceptional strength to handle heavy items like skis with cases and poles without flexing or breaking.
                 </p>
             </div>
             
-            <!-- Add more steps as needed -->
+            <div class="build-step">
+                <h3 class="step-title">Mark and Drill Mounting Holes</h3>
+                <p class="step-content">
+                    Determine the spacing for your hooks based on the length of items you're storing (for skis, typically 40-60cm apart). Mark the wall where each hook will mount, ensuring the positions are level. For pairs of skis, install two hooks at the same height.
+                </p>
+                <p class="step-content" style="margin-top: 1rem;">
+                    Drill pilot holes appropriate for your wall type and anchors. If mounting to studs, locate them with a stud finder and drill directly into solid wood. For masonry or drywall, use appropriate anchors rated for the expected load.
+                </p>
+            </div>
+            
+            <div class="build-step">
+                <h3 class="step-title">Install and Load Test</h3>
+                <p class="step-content">
+                    Insert wall anchors if needed, then secure each hook with two screws. Tighten firmly but avoid overtightening which could crack the printed part. Before loading your skis or other equipment, test each hook with moderate hand pressure to verify secure mounting.
+                </p>
+                <p class="step-content" style="margin-top: 1rem;">
+                    The 150mm load surface accommodates wide items comfortably. The hooks work equally well for roof rack crossbars, hockey sticks, garden tools, or any other garage equipment that needs organized storage off the floor.
+                </p>
+            </div>
+            
         </div>
     </section>
 
@@ -485,11 +471,6 @@
     <section class="content-section">
         <h2 class="section-title">Photo Gallery</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Photo gallery -->
-        <!-- Add/remove gallery-item divs as needed -->
-        <!-- Images should be in same folder: photo1.jpg, photo2.jpg -->
-        <!-- ============================================ -->
         <div class="photo-gallery">
             <div class="gallery-item">
                 <img src="photo1.jpg" alt="Project photo 1">
@@ -503,7 +484,6 @@
             <div class="gallery-item">
                 <img src="photo4.jpg" alt="Project photo 4">
             </div>
-            <!-- Add more photos as needed -->
         </div>
     </section>
 
@@ -511,96 +491,54 @@
     <section class="content-section">
         <h2 class="section-title">Learned Lessons</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Lessons learned -->
-        <!-- Copy-paste .lesson-item divs to add more lessons -->
-        <!-- ============================================ -->
-        
         <div class="lesson-item">
-            <h3 class="lesson-title">💡 Optimize Print Orientation</h3>
+            <h3 class="lesson-title">💡 Mechanical Strength Requires Robust Settings</h3>
             <p>
-                Printing the box upright resulted in better layer adhesion and smoother walls. The lid should be printed upside down to avoid supports on the inner surface.
+                Initial consideration of standard settings (4 perimeters, 30% infill) didn't inspire confidence for load-bearing applications. Testing with reinforced settings—6 perimeters and 50% infill—provided the structural integrity needed for reliable long-term use. When designing functional parts that carry weight, over-engineering the print parameters is worthwhile.
             </p>
         </div>
         
         <div class="lesson-item">
-            <h3 class="lesson-title">💡 Infill Strategy</h3>
+            <h3 class="lesson-title">💡 Simplicity Equals Reliability</h3>
             <p>
-                20% infill provided sufficient strength while keeping print time reasonable. Gyroid infill pattern distributed stress better than grid pattern.
+                Complex designs with moving parts or clever mechanisms can be impressive, but for garage storage, straightforward functionality wins. A simple hook shape that's easy to print, easy to install, and easy to use has proven more valuable than any elaborate alternative. Sometimes the best solution is the obvious one.
             </p>
         </div>
         
-        <!-- Add more lessons as needed -->
+        <div class="lesson-item">
+            <h3 class="lesson-title">💡 Universal Design Adds Value</h3>
+            <p>
+                While originally designed for skis and roof racks, the 150mm load surface handles surprisingly diverse items—from sporting equipment to garden tools to workshop supplies. Designing with versatility in mind increases utility far beyond the initial use case.
+            </p>
+        </div>
+        
     </section>
 
-    <!-- Problems & Solutions -->
+    <!-- Success Story -->
     <section class="content-section">
-        <h2 class="section-title">Problems & Solutions</h2>
+        <h2 class="section-title">Success Story</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Problems encountered and solutions -->
-        <!-- Copy-paste .problem-item divs to add more -->
-        <!-- ============================================ -->
-        
-        <div class="problem-item">
-            <h3 class="problem-title">⚠️ Lid Too Tight</h3>
+        <div class="lesson-item" style="border-left-color: #48bb78;">
+            <h3 class="lesson-title" style="color: #48bb78;">✅ First-Time Success</h3>
             <p>
-                The initial design resulted in a lid that was extremely difficult to remove, requiring excessive force that risked breaking the box.
+                This project represents one of those satisfying moments in engineering: everything worked correctly on the first attempt. No failed prints, no redesigns, no adjustments needed. The combination of proper material selection (PETG), reinforced print settings, and simple geometry resulted in a functional part that has reliably held skis, poles, cases, and roof racks in the garage without issue.
             </p>
-            <h4 class="solution-title">✅ Solution</h4>
-            <p>
-                Scaled the lid to 100.5% in XY axes (horizontal plane only) in the slicer. This provided just enough clearance for smooth operation while maintaining a secure fit.
+            <p style="margin-top: 1rem;">
+                Sometimes careful planning and conservative design choices pay off with immediate success. This project proves that not every solution needs to be revolutionary—just solid, practical, and well-executed.
             </p>
         </div>
-        
-        <div class="problem-item">
-            <h3 class="problem-title">⚠️ Warping Corners</h3>
-            <p>
-                Corners of the base lifted during printing, causing dimensional inaccuracy and poor bed adhesion.
-            </p>
-            <h4 class="solution-title">✅ Solution</h4>
-            <p>
-                Enabled brim (5mm width) and increased bed temperature to 65°C for PLA. Also cleaned the print bed thoroughly with isopropyl alcohol before each print.
-            </p>
-        </div>
-        
-        <!-- Add more problems as needed -->
     </section>
 
     <!-- Files & Downloads -->
     <section class="content-section">
         <h2 class="section-title">Files & Downloads</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Download links -->
-        <!-- Add/remove .download-card divs as needed -->
-        <!-- ============================================ -->
         <div class="downloads-grid">
-            <a href="https://www.printables.com/model/1119948-box" target="_blank" class="download-card">
+            <a href="https://www.printables.com/model/1520189-hooks" target="_blank" class="download-card">
                 <div class="download-icon">🖨️</div>
                 <h3 class="download-title">STL Files</h3>
                 <p class="download-description">Download from Printables</p>
             </a>
-            
-            <a href="bom.csv" download class="download-card">
-                <div class="download-icon">📋</div>
-                <h3 class="download-title">Bill of Materials</h3>
-                <p class="download-description">CSV file</p>
-            </a>
-            
-            <!-- Example: Arduino code (if applicable) -->
-            <!-- <a href="code.ino" download class="download-card">
-                <div class="download-icon">💾</div>
-                <h3 class="download-title">Arduino Code</h3>
-                <p class="download-description">.ino file</p>
-            </a> -->
-            
-            <!-- Example: Wiring diagram (if applicable) -->
-            <!-- <a href="wiring.pdf" download class="download-card">
-                <div class="download-icon">📄</div>
-                <h3 class="download-title">Wiring Diagram</h3>
-                <p class="download-description">PDF file</p>
-            </a> -->
         </div>
     </section>
 
