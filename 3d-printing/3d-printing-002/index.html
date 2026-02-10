@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Storage Box | StrokeForge</title>
+    <title>Desk Organizer | StrokeForge</title>
     <link rel="stylesheet" href="../../css/colors.css">
     <link rel="stylesheet" href="../../css/style.css">
     <style>
@@ -148,14 +148,6 @@
         
         .bom-table a:hover {
             text-decoration: underline;
-        }
-        
-        .total-cost {
-            text-align: right;
-            font-size: 1.2rem;
-            color: var(--primary-orange);
-            font-weight: 700;
-            margin-top: 1rem;
         }
         
         /* Build Steps */
@@ -352,7 +344,6 @@
                 <a href="../../electronics.html">Electronics</a>
                 <a href="../../mechanical.html">Mechanical</a>
                 <a href="../../other.html">Other</a>
-                <a href="../../models.html">3D Models</a>
             </div>
         </div>
     </nav>
@@ -363,15 +354,8 @@
             ← Back to 3D Printing Projects
         </a>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Project Title -->
-        <!-- ============================================ -->
-        <h1 class="project-title">Universal Storage Box</h1>
+        <h1 class="project-title">Desk Organizer</h1>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Category and Difficulty -->
-        <!-- Options: difficulty-beginner, difficulty-intermediate, difficulty-advanced -->
-        <!-- ============================================ -->
         <div class="project-meta">
             <span class="meta-item">📁 3D Printing</span>
             <span class="meta-item difficulty-beginner">⭐ Beginner</span>
@@ -380,25 +364,18 @@
 
     <!-- Main Image -->
     <section class="main-image">
-        <!-- ============================================ -->
-        <!-- EDIT: Main project image -->
-        <!-- Path: main.jpg (in same folder) -->
-        <!-- ============================================ -->
-        <img src="main.jpg" alt="Universal Storage Box">
+        <img src="main.jpg" alt="Desk Organizer">
     </section>
 
     <!-- Description -->
     <section class="content-section">
         <h2 class="section-title">Project Description</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Project description (2-3 paragraphs) -->
-        <!-- ============================================ -->
         <p class="description">
-            This universal storage box is designed to organize small parts, components, and tools in workshops, garages, or hobby spaces. The modular design allows for easy stacking and efficient use of shelf space.
+            This modular desk organizer was born from a simple frustration: existing solutions were too rigid, forcing you to accept someone else's vision of how your desk should be organized. I wanted the freedom to adapt my workspace to my needs, not the other way around.
         </p>
         <p class="description">
-            The box features reinforced corners for durability and a snap-fit lid that keeps contents secure while remaining easy to open. Multiple sizes can be printed to accommodate different storage needs.
+            Built on a standardized 100x100mm grid system, each module connects using printed snap-fit joints—no tools, screws, or additional hardware required. The robust construction is designed to withstand daily use without falling apart after a few days. Mix and match different modules to create the perfect setup for your workflow, and reconfigure as your needs change.
         </p>
     </section>
 
@@ -406,42 +383,22 @@
     <section class="content-section">
         <h2 class="section-title">Materials & Components</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Bill of Materials -->
-        <!-- Add/remove rows as needed -->
-        <!-- ============================================ -->
         <table class="bom-table">
             <thead>
                 <tr>
                     <th>Material / Component</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Link</th>
+                    <th>Quantity per Module</th>
+                    <th>Notes</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>PLA Filament (1kg)</td>
-                    <td>~200g</td>
-                    <td>100 Kč</td>
-                    <td><a href="#" target="_blank">Prusa Store</a></td>
+                    <td>PLA Filament (1kg spool)</td>
+                    <td>~220g (~75m)</td>
+                    <td>PETG and ASA also work well</td>
                 </tr>
-                <tr>
-                    <td>M3 x 10mm screws (optional)</td>
-                    <td>4 pcs</td>
-                    <td>10 Kč</td>
-                    <td><a href="#" target="_blank">Local hardware store</a></td>
-                </tr>
-                <!-- Add more rows here -->
             </tbody>
         </table>
-        
-        <!-- ============================================ -->
-        <!-- EDIT: Total cost -->
-        <!-- ============================================ -->
-        <div class="total-cost">
-            Total Cost: ~110 Kč
-        </div>
     </section>
 
     <!-- Build Process -->
@@ -449,35 +406,37 @@
         <h2 class="section-title">Build Process</h2>
         
         <div class="build-steps">
-            <!-- ============================================ -->
-            <!-- EDIT: Build steps -->
-            <!-- Copy-paste .build-step divs to add more steps -->
-            <!-- ============================================ -->
             
             <div class="build-step">
-                <h3 class="step-title">Prepare 3D Model</h3>
+                <h3 class="step-title">Select Your Modules</h3>
                 <p class="step-content">
-                    Download the STL files from Printables and import them into your slicer software (PrusaSlicer, Cura, etc.). Orient the parts for optimal printing with minimal supports.
+                    Download the STL files from Printables (link below). Choose which modules you need based on what you want to organize—drawers for small items, compartments for pens, trays for tools. Each module follows the same 100x100mm base dimension, so everything connects seamlessly.
                 </p>
-                <!-- Optional: Add image to step -->
-                <!-- <img src="step1.jpg" alt="Step 1" class="step-image"> -->
             </div>
             
             <div class="build-step">
                 <h3 class="step-title">Slice and Print</h3>
                 <p class="step-content">
-                    Set layer height to 0.2mm, infill to 20%, and use supports only where necessary. Print time: approximately 6 hours for the base and 2 hours for the lid.
+                    <strong>Recommended settings:</strong><br><br>
+                    <strong>Material:</strong> PLA (PETG or ASA also work)<br>
+                    <strong>Perimeters:</strong> 4 walls (prevents joint cracking)<br>
+                    <strong>Infill:</strong> 30% (20% may also work)<br>
+                    <strong>Layer height:</strong> 0.25mm<br>
+                    <strong>Supports:</strong> None required<br>
+                    <strong>Print time:</strong> ~9.5 hours per module (average)
+                </p>
+                <p class="step-content" style="margin-top: 1rem;">
+                    The design is completely support-free. Print each module separately—the modular approach means you can add more pieces over time without reprinting your entire setup.
                 </p>
             </div>
             
             <div class="build-step">
-                <h3 class="step-title">Post-Processing</h3>
+                <h3 class="step-title">Assembly</h3>
                 <p class="step-content">
-                    Remove supports carefully, clean up any stringing with a hobby knife, and test the lid fit. Sand edges if needed for a smoother finish.
+                    Connect modules using the built-in snap-fit joints. No tools required—simply align the connectors and press firmly until they click into place. The joints are designed for repeated assembly and disassembly, so you can reconfigure your layout whenever needed. Drawers should slide smoothly but hold firmly even when tilted.
                 </p>
             </div>
             
-            <!-- Add more steps as needed -->
         </div>
     </section>
 
@@ -485,11 +444,6 @@
     <section class="content-section">
         <h2 class="section-title">Photo Gallery</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Photo gallery -->
-        <!-- Add/remove gallery-item divs as needed -->
-        <!-- Images should be in same folder: photo1.jpg, photo2.jpg -->
-        <!-- ============================================ -->
         <div class="photo-gallery">
             <div class="gallery-item">
                 <img src="photo1.jpg" alt="Project photo 1">
@@ -503,7 +457,6 @@
             <div class="gallery-item">
                 <img src="photo4.jpg" alt="Project photo 4">
             </div>
-            <!-- Add more photos as needed -->
         </div>
     </section>
 
@@ -511,96 +464,67 @@
     <section class="content-section">
         <h2 class="section-title">Learned Lessons</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Lessons learned -->
-        <!-- Copy-paste .lesson-item divs to add more lessons -->
-        <!-- ============================================ -->
-        
         <div class="lesson-item">
-            <h3 class="lesson-title">💡 Optimize Print Orientation</h3>
+            <h3 class="lesson-title">💡 Tolerance is Everything</h3>
             <p>
-                Printing the box upright resulted in better layer adhesion and smoother walls. The lid should be printed upside down to avoid supports on the inner surface.
+                Getting the snap-fit joints right required extensive tuning. Too tight and the pieces won't connect; too loose and they fall apart. The final tolerances ensure parts click together firmly while remaining easy to separate for reconfiguration.
             </p>
         </div>
         
         <div class="lesson-item">
-            <h3 class="lesson-title">💡 Infill Strategy</h3>
+            <h3 class="lesson-title">💡 Drawer Design Challenge</h3>
             <p>
-                20% infill provided sufficient strength while keeping print time reasonable. Gyroid infill pattern distributed stress better than grid pattern.
+                Drawers presented a unique engineering puzzle: they needed to slide smoothly for easy access but grip firmly enough to stay put when the desk is bumped or tilted. The solution involved carefully designed rails with just the right amount of friction and retention.
             </p>
         </div>
         
-        <!-- Add more lessons as needed -->
+        <div class="lesson-item">
+            <h3 class="lesson-title">💡 Standardization Enables Flexibility</h3>
+            <p>
+                By committing to a consistent 100x100mm grid, the system becomes infinitely expandable. New module designs can be added without breaking compatibility with existing pieces, creating a truly future-proof organizational system.
+            </p>
+        </div>
+        
     </section>
 
     <!-- Problems & Solutions -->
     <section class="content-section">
         <h2 class="section-title">Problems & Solutions</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Problems encountered and solutions -->
-        <!-- Copy-paste .problem-item divs to add more -->
-        <!-- ============================================ -->
-        
         <div class="problem-item">
-            <h3 class="problem-title">⚠️ Lid Too Tight</h3>
+            <h3 class="problem-title">⚠️ Joint Precision</h3>
             <p>
-                The initial design resulted in a lid that was extremely difficult to remove, requiring excessive force that risked breaking the box.
+                Initial prototypes had joints that either wouldn't connect or broke during assembly. The snap-fit mechanism requires precise dimensions that vary slightly between different printers and materials.
             </p>
             <h4 class="solution-title">✅ Solution</h4>
             <p>
-                Scaled the lid to 100.5% in XY axes (horizontal plane only) in the slicer. This provided just enough clearance for smooth operation while maintaining a secure fit.
+                Extensive testing led to optimized tolerances that work across different printer types. The 4-wall perimeter specification ensures the joint areas have sufficient strength to handle repeated connections without cracking.
             </p>
         </div>
         
         <div class="problem-item">
-            <h3 class="problem-title">⚠️ Warping Corners</h3>
+            <h3 class="problem-title">⚠️ Drawer Retention vs. Smooth Operation</h3>
             <p>
-                Corners of the base lifted during printing, causing dimensional inaccuracy and poor bed adhesion.
+                Early drawer designs either fell out too easily or required excessive force to open. Finding the balance between retention and smooth operation was critical for everyday usability.
             </p>
             <h4 class="solution-title">✅ Solution</h4>
             <p>
-                Enabled brim (5mm width) and increased bed temperature to 65°C for PLA. Also cleaned the print bed thoroughly with isopropyl alcohol before each print.
+                Implemented a rail system with carefully calculated friction points. The drawers glide smoothly during normal use but grip securely when tilted. Multiple test prints refined the rail geometry until the feel was just right.
             </p>
         </div>
         
-        <!-- Add more problems as needed -->
     </section>
 
     <!-- Files & Downloads -->
     <section class="content-section">
         <h2 class="section-title">Files & Downloads</h2>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Download links -->
-        <!-- Add/remove .download-card divs as needed -->
-        <!-- ============================================ -->
         <div class="downloads-grid">
-            <a href="https://www.printables.com/model/1119948-box" target="_blank" class="download-card">
+            <a href="https://www.printables.com/model/1520046-desk-organizer" target="_blank" class="download-card">
                 <div class="download-icon">🖨️</div>
                 <h3 class="download-title">STL Files</h3>
                 <p class="download-description">Download from Printables</p>
             </a>
-            
-            <a href="bom.csv" download class="download-card">
-                <div class="download-icon">📋</div>
-                <h3 class="download-title">Bill of Materials</h3>
-                <p class="download-description">CSV file</p>
-            </a>
-            
-            <!-- Example: Arduino code (if applicable) -->
-            <!-- <a href="code.ino" download class="download-card">
-                <div class="download-icon">💾</div>
-                <h3 class="download-title">Arduino Code</h3>
-                <p class="download-description">.ino file</p>
-            </a> -->
-            
-            <!-- Example: Wiring diagram (if applicable) -->
-            <!-- <a href="wiring.pdf" download class="download-card">
-                <div class="download-icon">📄</div>
-                <h3 class="download-title">Wiring Diagram</h3>
-                <p class="download-description">PDF file</p>
-            </a> -->
         </div>
     </section>
 
