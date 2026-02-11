@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:www.printables.com)"
+      "WebFetch(domain:www.printables.com)",
+      "Bash(powershell -Command:*)"
     ]
   }
 }
