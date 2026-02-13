@@ -397,10 +397,13 @@
         <!-- EDIT: Project description (2-3 paragraphs) -->
         <!-- ============================================ -->
         <p class="description">
-            This universal storage box is designed to organize small parts, components, and tools in workshops, garages, or hobby spaces. The modular design allows for easy stacking and efficient use of shelf space.
+            Everyone wants to display their favorite items—3D prints, toys, collectibles—but most of us are fighting an ongoing battle with limited desk and wall space. These hexagonal shelves solve that problem with modular geometry inspired by honeycomb structures.
         </p>
         <p class="description">
-            The box features reinforced corners for durability and a snap-fit lid that keeps contents secure while remaining easy to open. Multiple sizes can be printed to accommodate different storage needs.
+            The hexagonal shape isn't just visually interesting; it's functionally brilliant. Like bees building a hive, you can stack and arrange individual hex modules into countless configurations—tall towers, wide grids, asymmetric patterns—creating custom display layouts for desks or walls. Each shelf connects to its neighbors using simple printed connector pieces, and the system scales from a single shelf to elaborate wall installations.
+        </p>
+        <p class="description">
+            Available in two sizes: a standard version fitting Prusa MK4/Core One build volumes, and a larger version for Prusa XL. Mix and match sizes for even more design possibilities.
         </p>
     </section>
 
@@ -415,35 +418,31 @@
         <table class="bom-table">
             <thead>
                 <tr>
-                    <th>Material / Component</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Link</th>
+                    <th>Component</th>
+                    <th>Standard (MK4/Core One)</th>
+                    <th>Large (Prusa XL)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>PLA Filament (1kg)</td>
-                    <td>~200g</td>
-                    <td>100 Kč</td>
-                    <td><a href="#" target="_blank">Prusa Store</a></td>
+                    <td>Hexagonal Shelf Module</td>
+                    <td>~279g (~92m) per module<br>~16h 45min print time</td>
+                    <td>~542g (~178m) per module</td>
                 </tr>
                 <tr>
-                    <td>M3 x 10mm screws (optional)</td>
-                    <td>4 pcs</td>
-                    <td>10 Kč</td>
-                    <td><a href="#" target="_blank">Local hardware store</a></td>
+                    <td>Connector Piece (per joint)</td>
+                    <td>~2.1g (~0.7m)<br>~11 minutes</td>
+                    <td>~4.8g (~1.6m)<br>~15 minutes</td>
                 </tr>
-                <!-- Add more rows here -->
             </tbody>
         </table>
         
         <!-- ============================================ -->
         <!-- EDIT: Total cost -->
         <!-- ============================================ -->
-        <div class="total-cost">
-            Total Cost: ~110 Kč
-        </div>
+        <p style="color: var(--text-gray); margin-top: 1rem;">
+            <strong>Material:</strong> PLA or PETG recommended. Print time and material usage scale with the number of shelves in your configuration.
+        </p>
     </section>
 
     <!-- Build Process -->
@@ -457,29 +456,41 @@
             <!-- ============================================ -->
             
             <div class="build-step">
-                <h3 class="step-title">Prepare 3D Model</h3>
+                <h3 class="step-title">Print Hexagonal Shelves</h3>
                 <p class="step-content">
-                    Download the STL files from Printables and import them into your slicer software (PrusaSlicer, Cura, etc.). Orient the parts for optimal printing with minimal supports.
+                    <strong>Print settings:</strong><br><br>
+                    <strong>Material:</strong> PLA or PETG<br>
+                    <strong>Perimeters:</strong> 4 walls<br>
+                    <strong>Infill:</strong> 25%<br>
+                    <strong>Layer height:</strong> 0.2mm (0.3mm also works)<br>
+                    <strong>Supports:</strong> None required<br><br>
+                    <strong>Standard size (MK4/Core One):</strong> ~16h 45min, ~279g<br>
+                    <strong>Large size (Prusa XL):</strong> Print time varies, ~542g
                 </p>
-                <!-- Optional: Add image to step -->
-                <!-- <img src="step1.jpg" alt="Step 1" class="step-image"> -->
+                <p class="step-content" style="margin-top: 1rem;">
+                    Print as many hexagonal shelf modules as you need for your desired configuration. The simple geometry requires no supports and prints reliably.
+                </p>
             </div>
-            
+
             <div class="build-step">
-                <h3 class="step-title">Slice and Print</h3>
+                <h3 class="step-title">Print Connector Pieces</h3>
                 <p class="step-content">
-                    Set layer height to 0.2mm, infill to 20%, and use supports only where necessary. Print time: approximately 6 hours for the base and 2 hours for the lid.
+                    Each joint between two hex shelves requires one connector piece. Print connectors using the same settings as the shelves—they're small and print quickly (~11-15 minutes each, ~2-5g depending on size).
+                </p>
+                <p class="step-content" style="margin-top: 1rem;">
+                    <strong>Connector count planning:</strong> Each hex shelf has 6 sides. A shelf connected on 3 sides needs 3 connectors. Plan your layout first to determine how many connectors you'll need.
                 </p>
             </div>
-            
+
             <div class="build-step">
-                <h3 class="step-title">Post-Processing</h3>
+                <h3 class="step-title">Assemble Your Configuration</h3>
                 <p class="step-content">
-                    Remove supports carefully, clean up any stringing with a hobby knife, and test the lid fit. Sand edges if needed for a smoother finish.
+                    Connect hex shelves using the printed connector pieces. The connectors snap or press-fit into the hex modules (check the Printables page for specific assembly details for your version).
+                </p>
+                <p class="step-content" style="margin-top: 1rem;">
+                    Experiment with different arrangements—horizontal grids, vertical towers, asymmetric patterns. The modular design lets you reconfigure anytime. For wall mounting, ensure proper anchoring for the weight of your displayed items.
                 </p>
             </div>
-            
-            <!-- Add more steps as needed -->
         </div>
     </section>
 
@@ -512,20 +523,11 @@
         <!-- ============================================ -->
         
         <div class="lesson-item">
-            <h3 class="lesson-title">💡 Optimize Print Orientation</h3>
+            <h3 class="lesson-title">💡 Sometimes It's Just Fun</h3>
             <p>
-                Printing the box upright resulted in better layer adhesion and smoother walls. The lid should be printed upside down to avoid supports on the inner surface.
+                Not every project needs to teach complex technical lessons. This one was pure enjoyment—designing modular geometry, experimenting with arrangements, and creating something visually interesting for displaying finished prints. Sometimes the lesson is simply that 3D printing can be fun and creative without needing to solve a critical problem.
             </p>
         </div>
-        
-        <div class="lesson-item">
-            <h3 class="lesson-title">💡 Infill Strategy</h3>
-            <p>
-                20% infill provided sufficient strength while keeping print time reasonable. Gyroid infill pattern distributed stress better than grid pattern.
-            </p>
-        </div>
-        
-        <!-- Add more lessons as needed -->
     </section>
 
     <!-- Problems & Solutions -->
@@ -537,29 +539,10 @@
         <!-- Copy-paste .problem-item divs to add more -->
         <!-- ============================================ -->
         
-        <div class="problem-item">
-            <h3 class="problem-title">⚠️ Lid Too Tight</h3>
-            <p>
-                The initial design resulted in a lid that was extremely difficult to remove, requiring excessive force that risked breaking the box.
-            </p>
-            <h4 class="solution-title">✅ Solution</h4>
-            <p>
-                Scaled the lid to 100.5% in XY axes (horizontal plane only) in the slicer. This provided just enough clearance for smooth operation while maintaining a secure fit.
-            </p>
-        </div>
-        
-        <div class="problem-item">
-            <h3 class="problem-title">⚠️ Warping Corners</h3>
-            <p>
-                Corners of the base lifted during printing, causing dimensional inaccuracy and poor bed adhesion.
-            </p>
-            <h4 class="solution-title">✅ Solution</h4>
-            <p>
-                Enabled brim (5mm width) and increased bed temperature to 65°C for PLA. Also cleaned the print bed thoroughly with isopropyl alcohol before each print.
-            </p>
-        </div>
-        
-        <!-- Add more problems as needed -->
+        <p style="color: var(--text-gray); padding: 1.5rem; background: var(--card-bg); border-radius: 8px; border-left: 4px solid #48bb78;">
+            <strong style="color: #48bb78;">✅ No Problems Encountered</strong><br><br>
+            The hexagonal geometry is straightforward to print with no special requirements. The simple shape requires no supports, prints reliably, and the connector pieces work as designed. This project went smoothly from design to assembly.
+        </p>
     </section>
 
     <!-- Files & Downloads -->
@@ -571,7 +554,7 @@
         <!-- Add/remove .download-card divs as needed -->
         <!-- ============================================ -->
         <div class="downloads-grid">
-            <a href="https://www.printables.com/model/1119948-box" target="_blank" class="download-card">
+            <a href="https://www.printables.com/model/1527186-hexa-shelf" target="_blank" class="download-card">
                 <div class="download-icon">🖨️</div>
                 <h3 class="download-title">STL Files</h3>
                 <p class="download-description">Download from Printables</p>

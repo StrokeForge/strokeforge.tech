@@ -395,10 +395,10 @@
         <!-- EDIT: Project description (2-3 paragraphs) -->
         <!-- ============================================ -->
         <p class="description">
-            This universal storage box is designed to organize small parts, components, and tools in workshops, garages, or hobby spaces. The modular design allows for easy stacking and efficient use of shelf space.
+            These simple filament labels were designed to solve a common organization problem: identifying filaments stored in dryboxes, bins, and various containers. Generic labels like "PET Blue" aren't helpful when you have multiple blue PET filaments with different properties or manufacturers.
         </p>
         <p class="description">
-            The box features reinforced corners for durability and a snap-fit lid that keeps contents secure while remaining easy to open. Multiple sizes can be printed to accommodate different storage needs.
+            The solution is elegantly simple: print each label in the same color as the filament it identifies. Material cost? Essentially zero—just 7 grams per label. At a glance, you'll know exactly which filament is in each container. The label can include manufacturer, color code, purchase date, or any other details you find useful.
         </p>
     </section>
 
@@ -421,27 +421,24 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>PLA Filament (1kg)</td>
-                    <td>~200g</td>
-                    <td>100 Kč</td>
-                    <td><a href="#" target="_blank">Prusa Store</a></td>
+                    <td>PLA / PETG / ASA Filament</td>
+                    <td>~7g (~2m)</td>
+                    <td>Notes</td>
                 </tr>
                 <tr>
-                    <td>M3 x 10mm screws (optional)</td>
-                    <td>4 pcs</td>
-                    <td>10 Kč</td>
-                    <td><a href="#" target="_blank">Local hardware store</a></td>
+                    <td>Double-sided tape</td>
+                    <td>Small piece</td>
+                    <td>For attaching label to container</td>
                 </tr>
-                <!-- Add more rows here -->
             </tbody>
         </table>
         
         <!-- ============================================ -->
         <!-- EDIT: Total cost -->
         <!-- ============================================ -->
-        <div class="total-cost">
-            Total Cost: ~110 Kč
-        </div>
+        <p style="color: var(--text-gray); margin-top: 1rem;">
+            <strong>Tip:</strong> Print labels in the same color as the filament they identify—material usage is minimal (7g per label) and instant visual identification is worth it.
+        </p>
     </section>
 
     <!-- Build Process -->
@@ -455,29 +452,31 @@
             <!-- ============================================ -->
             
             <div class="build-step">
-                <h3 class="step-title">Prepare 3D Model</h3>
+                <h3 class="step-title">Print the Labels</h3>
                 <p class="step-content">
-                    Download the STL files from Printables and import them into your slicer software (PrusaSlicer, Cura, etc.). Orient the parts for optimal printing with minimal supports.
+                    <strong>Print settings:</strong><br><br>
+                    <strong>Material:</strong> PLA, PETG, ASA, or whatever matches the filament you're labeling<br>
+                    <strong>Perimeters:</strong> 2 walls<br>
+                    <strong>Infill:</strong> 100%<br>
+                    <strong>Layer height:</strong> 0.2mm (or adjust as preferred)<br>
+                    <strong>Supports:</strong> None required<br>
+                    <strong>Print time:</strong> ~30 minutes per label<br>
+                    <strong>Filament usage:</strong> ~2m (~7g) per label
                 </p>
-                <!-- Optional: Add image to step -->
-                <!-- <img src="step1.jpg" alt="Step 1" class="step-image"> -->
+                <p class="step-content" style="margin-top: 1rem;">
+                    <strong>Pro tip:</strong> Print each label in the color of the filament it will identify. The minimal material cost (7g) is worth the instant visual recognition.
+                </p>
             </div>
-            
+
             <div class="build-step">
-                <h3 class="step-title">Slice and Print</h3>
+                <h3 class="step-title">Attach to Containers</h3>
                 <p class="step-content">
-                    Set layer height to 0.2mm, infill to 20%, and use supports only where necessary. Print time: approximately 6 hours for the base and 2 hours for the lid.
+                    Use double-sided tape to attach labels to your dryboxes, storage bins, or filament bags. The labels are designed to be visible and easy to read at a glance.
+                </p>
+                <p class="step-content" style="margin-top: 1rem;">
+                    Write or print information on the label surface using a permanent marker, label maker, or printed paper insert (depending on your label design).
                 </p>
             </div>
-            
-            <div class="build-step">
-                <h3 class="step-title">Post-Processing</h3>
-                <p class="step-content">
-                    Remove supports carefully, clean up any stringing with a hobby knife, and test the lid fit. Sand edges if needed for a smoother finish.
-                </p>
-            </div>
-            
-            <!-- Add more steps as needed -->
         </div>
     </section>
 
@@ -491,20 +490,11 @@
         <!-- ============================================ -->
         
         <div class="lesson-item">
-            <h3 class="lesson-title">💡 Optimize Print Orientation</h3>
+            <h3 class="lesson-title">💡 Simplicity is Beauty</h3>
             <p>
-                Printing the box upright resulted in better layer adhesion and smoother walls. The lid should be printed upside down to avoid supports on the inner surface.
+                Sometimes the most effective solutions are the simplest ones. A small printed label in matching filament color solves a real organizational problem with minimal material cost and zero complexity. When you can solve a problem with 7 grams of plastic and 30 minutes of print time, that's good design.
             </p>
         </div>
-        
-        <div class="lesson-item">
-            <h3 class="lesson-title">💡 Infill Strategy</h3>
-            <p>
-                20% infill provided sufficient strength while keeping print time reasonable. Gyroid infill pattern distributed stress better than grid pattern.
-            </p>
-        </div>
-        
-        <!-- Add more lessons as needed -->
     </section>
 
     <!-- Problems & Solutions -->
@@ -516,29 +506,10 @@
         <!-- Copy-paste .problem-item divs to add more -->
         <!-- ============================================ -->
         
-        <div class="problem-item">
-            <h3 class="problem-title">⚠️ Lid Too Tight</h3>
-            <p>
-                The initial design resulted in a lid that was extremely difficult to remove, requiring excessive force that risked breaking the box.
-            </p>
-            <h4 class="solution-title">✅ Solution</h4>
-            <p>
-                Scaled the lid to 100.5% in XY axes (horizontal plane only) in the slicer. This provided just enough clearance for smooth operation while maintaining a secure fit.
-            </p>
-        </div>
-        
-        <div class="problem-item">
-            <h3 class="problem-title">⚠️ Warping Corners</h3>
-            <p>
-                Corners of the base lifted during printing, causing dimensional inaccuracy and poor bed adhesion.
-            </p>
-            <h4 class="solution-title">✅ Solution</h4>
-            <p>
-                Enabled brim (5mm width) and increased bed temperature to 65°C for PLA. Also cleaned the print bed thoroughly with isopropyl alcohol before each print.
-            </p>
-        </div>
-        
-        <!-- Add more problems as needed -->
+        <p style="color: var(--text-gray); padding: 1.5rem; background: var(--card-bg); border-radius: 8px; border-left: 4px solid #48bb78;">
+            <strong style="color: #48bb78;">✅ No Problems Encountered</strong><br><br>
+            This is a straightforward print with no special requirements. The simple geometry and solid infill mean there's nothing that can go wrong—just slice, print, and attach with double-sided tape.
+        </p>
     </section>
 
     <!-- Files & Downloads -->
@@ -550,7 +521,7 @@
         <!-- Add/remove .download-card divs as needed -->
         <!-- ============================================ -->
         <div class="downloads-grid">
-            <a href="https://www.printables.com/model/1119948-box" target="_blank" class="download-card">
+            <a href="https://www.printables.com/model/1119933-label" target="_blank" class="download-card">
                 <div class="download-icon">🖨️</div>
                 <h3 class="download-title">STL Files</h3>
                 <p class="download-description">Download from Printables</p>

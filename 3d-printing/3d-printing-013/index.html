@@ -395,10 +395,13 @@
         <!-- EDIT: Project description (2-3 paragraphs) -->
         <!-- ============================================ -->
         <p class="description">
-            This universal storage box is designed to organize small parts, components, and tools in workshops, garages, or hobby spaces. The modular design allows for easy stacking and efficient use of shelf space.
+            This project started with a simple request from family: create drink coasters that would actually last. Cork coasters crumbled and broke, paper coasters dissolved or wore out quickly—neither option was acceptable for daily use. The solution? 3D printed coasters in PETG with integrated storage holders for 4 or 8 coasters.
         </p>
         <p class="description">
-            The box features reinforced corners for durability and a snap-fit lid that keeps contents secure while remaining easy to open. Multiple sizes can be printed to accommodate different storage needs.
+            The design includes a clever organizational feature: print each coaster in a different color. When the whole family gathers, everyone knows which glass is theirs by the coaster color. No more confusion about whose drink is whose—just track your color. The holders keep the coasters neatly stacked and accessible on the table or counter.
+        </p>
+        <p class="description">
+            Simple, functional, and durable. As the saying goes, in simplicity there is beauty.
         </p>
     </section>
 
@@ -413,35 +416,36 @@
         <table class="bom-table">
             <thead>
                 <tr>
-                    <th>Material / Component</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Link</th>
+                    <th>Component</th>
+                    <th>Filament</th>
+                    <th>Print Time</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>PLA Filament (1kg)</td>
-                    <td>~200g</td>
-                    <td>100 Kč</td>
-                    <td><a href="#" target="_blank">Prusa Store</a></td>
+                    <td>Single Coaster</td>
+                    <td>~25.5g (~8.5m)</td>
+                    <td>~50 minutes</td>
                 </tr>
                 <tr>
-                    <td>M3 x 10mm screws (optional)</td>
-                    <td>4 pcs</td>
-                    <td>10 Kč</td>
-                    <td><a href="#" target="_blank">Local hardware store</a></td>
+                    <td>Small Holder (4 coasters)</td>
+                    <td>~53g (~17.5m)</td>
+                    <td>~2 hours</td>
                 </tr>
-                <!-- Add more rows here -->
+                <tr>
+                    <td>Large Holder (8 coasters)</td>
+                    <td>~80g (~26.5m)</td>
+                    <td>~3.5 hours</td>
+                </tr>
             </tbody>
         </table>
         
         <!-- ============================================ -->
         <!-- EDIT: Total cost -->
         <!-- ============================================ -->
-        <div class="total-cost">
-            Total Cost: ~110 Kč
-        </div>
+        <p style="color: var(--text-gray); margin-top: 1rem;">
+            <strong>Material:</strong> PETG recommended for heat resistance and durability. Print coasters in different colors for easy identification.
+        </p>
     </section>
 
     <!-- Build Process -->
@@ -455,59 +459,45 @@
             <!-- ============================================ -->
             
             <div class="build-step">
-                <h3 class="step-title">Prepare 3D Model</h3>
+                <h3 class="step-title">Print Coasters in Different Colors</h3>
                 <p class="step-content">
-                    Download the STL files from Printables and import them into your slicer software (PrusaSlicer, Cura, etc.). Orient the parts for optimal printing with minimal supports.
+                    <strong>Print settings:</strong><br><br>
+                    <strong>Material:</strong> PETG (heat resistant and durable)<br>
+                    <strong>Perimeters:</strong> 4 walls<br>
+                    <strong>Infill:</strong> 30%<br>
+                    <strong>Layer height:</strong> 0.2mm<br>
+                    <strong>Supports:</strong> None required<br>
+                    <strong>Print time:</strong> ~50 minutes per coaster<br>
+                    <strong>Filament usage:</strong> ~25.5g (~8.5m) per coaster
                 </p>
-                <!-- Optional: Add image to step -->
-                <!-- <img src="step1.jpg" alt="Step 1" class="step-image"> -->
+                <p class="step-content" style="margin-top: 1rem;">
+                    <strong>Pro tip:</strong> Experiment with infill patterns (gyroid, honeycomb, grid) to create interesting visual designs visible through the coaster surface. Different patterns create different aesthetic effects.
+                </p>
+                <p class="step-content" style="margin-top: 1rem;">
+                    Print each coaster in a different color—this lets family members easily identify their own glass. Need 4 coasters? Use 4 different colors. Need 8? Use 8 different colors.
+                </p>
             </div>
-            
+
             <div class="build-step">
-                <h3 class="step-title">Slice and Print</h3>
+                <h3 class="step-title">Print Storage Holder</h3>
                 <p class="step-content">
-                    Set layer height to 0.2mm, infill to 20%, and use supports only where necessary. Print time: approximately 6 hours for the base and 2 hours for the lid.
+                    Choose between the small holder (4 coasters, ~2 hours) or large holder (8 coasters, ~3.5 hours). Use the same print settings as the coasters: PETG, 4 perimeters, 30% infill, 0.2mm layer height, no supports.
+                </p>
+                <p class="step-content" style="margin-top: 1rem;">
+                    The holder keeps coasters organized and accessible on your table or counter. Print the holder in a neutral color or match it to your décor.
                 </p>
             </div>
-            
+
             <div class="build-step">
-                <h3 class="step-title">Post-Processing</h3>
+                <h3 class="step-title">Assembly and Use</h3>
                 <p class="step-content">
-                    Remove supports carefully, clean up any stringing with a hobby knife, and test the lid fit. Sand edges if needed for a smoother finish.
+                    No assembly required—just stack the coasters in the holder. Each coaster is ready to use immediately after printing. The PETG material resists heat from hot beverages and wipes clean easily with a damp cloth.
                 </p>
             </div>
-            
-            <!-- Add more steps as needed -->
         </div>
     </section>
 
-    <!-- Photo Gallery -->
-    <section class="content-section">
-        <h2 class="section-title">Photo Gallery</h2>
-        
-        <!-- ============================================ -->
-        <!-- EDIT: Photo gallery -->
-        <!-- Add/remove gallery-item divs as needed -->
-        <!-- Images should be in same folder: photo1.jpg, photo2.jpg -->
-        <!-- ============================================ -->
-        <div class="photo-gallery">
-            <div class="gallery-item">
-                <img src="photo1.jpg" alt="Project photo 1">
-            </div>
-            <div class="gallery-item">
-                <img src="photo2.jpg" alt="Project photo 2">
-            </div>
-            <div class="gallery-item">
-                <img src="photo3.jpg" alt="Project photo 3">
-            </div>
-            <div class="gallery-item">
-                <img src="photo4.jpg" alt="Project photo 4">
-            </div>
-            <!-- Add more photos as needed -->
-        </div>
-    </section>
-
-    <!-- Learned Lessons -->
+<!-- Learned Lessons -->
     <section class="content-section">
         <h2 class="section-title">Learned Lessons</h2>
         
@@ -517,20 +507,14 @@
         <!-- ============================================ -->
         
         <div class="lesson-item">
-            <h3 class="lesson-title">💡 Optimize Print Orientation</h3>
+            <h3 class="lesson-title">💡 Infill Patterns Create Design Opportunities</h3>
             <p>
-                Printing the box upright resulted in better layer adhesion and smoother walls. The lid should be printed upside down to avoid supports on the inner surface.
+                The flat surface of coasters provides a perfect canvas for experimenting with infill patterns. Gyroid creates flowing organic shapes, honeycomb produces geometric hexagons, grid offers clean lines—each pattern creates unique visual effects visible through the top surface. This simple project became an opportunity to explore how functional settings (infill) can serve aesthetic purposes.
+            </p>
+            <p style="margin-top: 1rem;">
+                Try printing sample coasters with different infill patterns to see which design you prefer. The structural requirements are minimal, so you're free to prioritize appearance.
             </p>
         </div>
-        
-        <div class="lesson-item">
-            <h3 class="lesson-title">💡 Infill Strategy</h3>
-            <p>
-                20% infill provided sufficient strength while keeping print time reasonable. Gyroid infill pattern distributed stress better than grid pattern.
-            </p>
-        </div>
-        
-        <!-- Add more lessons as needed -->
     </section>
 
     <!-- Problems & Solutions -->
@@ -542,29 +526,10 @@
         <!-- Copy-paste .problem-item divs to add more -->
         <!-- ============================================ -->
         
-        <div class="problem-item">
-            <h3 class="problem-title">⚠️ Lid Too Tight</h3>
-            <p>
-                The initial design resulted in a lid that was extremely difficult to remove, requiring excessive force that risked breaking the box.
-            </p>
-            <h4 class="solution-title">✅ Solution</h4>
-            <p>
-                Scaled the lid to 100.5% in XY axes (horizontal plane only) in the slicer. This provided just enough clearance for smooth operation while maintaining a secure fit.
-            </p>
-        </div>
-        
-        <div class="problem-item">
-            <h3 class="problem-title">⚠️ Warping Corners</h3>
-            <p>
-                Corners of the base lifted during printing, causing dimensional inaccuracy and poor bed adhesion.
-            </p>
-            <h4 class="solution-title">✅ Solution</h4>
-            <p>
-                Enabled brim (5mm width) and increased bed temperature to 65°C for PLA. Also cleaned the print bed thoroughly with isopropyl alcohol before each print.
-            </p>
-        </div>
-        
-        <!-- Add more problems as needed -->
+        <p style="color: var(--text-gray); padding: 1.5rem; background: var(--card-bg); border-radius: 8px; border-left: 4px solid #48bb78;">
+            <strong style="color: #48bb78;">✅ No Problems Encountered</strong><br><br>
+            This project was problem-free from start to finish. The simple geometry, no-support design, and straightforward printing made it a perfect example of functional design that "just works." Everything printed correctly on the first attempt.
+        </p>
     </section>
 
     <!-- Files & Downloads -->
@@ -576,7 +541,7 @@
         <!-- Add/remove .download-card divs as needed -->
         <!-- ============================================ -->
         <div class="downloads-grid">
-            <a href="https://www.printables.com/model/1119948-box" target="_blank" class="download-card">
+            <a href="https://www.printables.com/model/1520022-coaster" target="_blank" class="download-card">
                 <div class="download-icon">🖨️</div>
                 <h3 class="download-title">STL Files</h3>
                 <p class="download-description">Download from Printables</p>
