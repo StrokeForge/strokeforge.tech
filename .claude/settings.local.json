@@ -5,7 +5,11 @@
       "Bash(powershell -Command:*)",
       "Bash(echo:*)",
       "Bash(done)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(for proj in {001..015})",
+      "Bash(do)",
+      "Bash(python3:*)",
+      "Bash(done $proj)"
     ]
   }
 }
