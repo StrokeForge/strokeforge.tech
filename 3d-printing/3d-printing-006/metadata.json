@@ -3,5 +3,6 @@
   "difficulty": "beginner",
   "time": "57 hours",
   "description": "Passive filament storage solution with desiccant compartments. Advanced version of the original drybox design.",
-  "thumbnail": "thumb.jpg"
+  "thumbnail": "thumb.jpg",
+  "category": "storage"
 }

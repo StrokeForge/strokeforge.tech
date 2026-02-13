@@ -3,5 +3,6 @@
   "difficulty": "beginner",
   "time": "1.5 hours",
   "description": "Customizable label system for organizing and identifying stored items. Compatible with various storage solutions.",
-  "thumbnail": "thumb.jpg"
+  "thumbnail": "thumb.jpg",
+  "category": "storage"
 }

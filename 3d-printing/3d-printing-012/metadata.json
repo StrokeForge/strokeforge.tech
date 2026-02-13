@@ -3,5 +3,6 @@
   "difficulty": "beginner",
   "time": "3 hours",
   "description": "Classic tic-tac-toe game with board and playing pieces. Fun and quick print project suitable for all ages.",
-  "thumbnail": "thumb.jpg"
+  "thumbnail": "thumb.jpg",
+  "category": "games"
 }

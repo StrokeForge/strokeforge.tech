@@ -3,5 +3,6 @@
   "difficulty": "intermediate",
   "time": "38 hours",
   "description": "Complete 3D printable chess set with board and all pieces. Features elegant design suitable for display and gameplay.",
-  "thumbnail": "thumb.jpg"
+  "thumbnail": "thumb.jpg",
+  "category": "games"
 }

@@ -1,9 +1,11 @@
 // 3D Printing Projects Page JavaScript
 let allProjects = [];
+let currentCategory = 'all';
 
 // Load projects on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadProjects();
+    initCategoryNavigation();
 });
 
 async function loadProjects() {
@@ -114,5 +116,38 @@ function showErrorMessage(message) {
                 <p>${message}</p>
             </div>
         `;
+    }
+}
+
+// Initialize category navigation
+function initCategoryNavigation() {
+    const categoryLinks = document.querySelectorAll('.category-link');
+
+    categoryLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const category = this.getAttribute('data-category');
+
+            // Update active state
+            categoryLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+
+            // Update current category
+            currentCategory = category;
+
+            // Filter and display projects
+            filterProjects(category);
+        });
+    });
+}
+
+// Filter projects by category
+function filterProjects(category) {
+    if (category === 'all') {
+        displayProjects(allProjects);
+    } else {
+        const filtered = allProjects.filter(project => project.category === category);
+        displayProjects(filtered);
     }
 }
