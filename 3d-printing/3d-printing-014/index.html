@@ -7,8 +7,8 @@
     <!-- Primary Meta Tags -->
     <title>Mini Spool | 3D Printing Project | StrokeForge</title>
     <meta name="title" content="Mini Spool | 3D Printing Project">
-    <meta name="description" content="Compact filament spool for sample materials and leftovers. 4-hour print, beginner-friendly. Organize small quantities of filament efficiently.">
-    <meta name="keywords" content="mini spool, filament spool, 3D printing, sample storage, STL files, organization">
+    <meta name="description" content="3D printed mini spools for leftover filament and cables. Two side plate sizes, variable center widths 15-60mm. Robust design with M3 hardware assembly. Beginner-friendly.">
+    <meta name="keywords" content="mini spool, filament spool, 3D printing, filament storage, cable spool, STL files, organization, leftover filament">
     <meta name="author" content="StrokeForge">
     <meta name="robots" content="index, follow">
 
@@ -16,7 +16,7 @@
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://strokeforge.tech/3d-printing/3d-printing-014/">
     <meta property="og:title" content="Mini Spool | Build Guide">
-    <meta property="og:description" content="Compact filament spool for sample materials and leftovers. 4-hour print, beginner-friendly. Organize small quantities of filament efficiently.">
+    <meta property="og:description" content="3D printed mini spools for leftover filament and cables. Two side plate sizes, variable center widths. Robust and compact.">
     <meta property="og:image" content="https://strokeforge.tech/3d-printing/3d-printing-014/main.jpg">
     <meta property="article:author" content="StrokeForge">
     <meta property="article:section" content="3D Printing">
@@ -25,7 +25,7 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://strokeforge.tech/3d-printing/3d-printing-014/">
     <meta property="twitter:title" content="Mini Spool | Build Guide">
-    <meta property="twitter:description" content="Compact filament spool for sample materials and leftovers. 4-hour print, beginner-friendly. Organize small quantities of filament efficiently.">
+    <meta property="twitter:description" content="3D printed mini spools for leftover filament and cables. Two side plate sizes, variable center widths. Robust and compact.">
     <meta property="twitter:image" content="https://strokeforge.tech/3d-printing/3d-printing-014/main.jpg">
 
     <!-- Canonical URL -->
@@ -393,18 +393,12 @@
             ← Back to 3D Printing Projects
         </a>
         
-        <!-- ============================================ -->
-        <!-- EDIT: Project Title -->
-        <!-- ============================================ -->
         <h1 class="project-title">Mini Spool</h1>
-        
-        <!-- ============================================ -->
-        <!-- EDIT: Category and Difficulty -->
-        <!-- Options: difficulty-beginner, difficulty-intermediate, difficulty-advanced -->
-        <!-- ============================================ -->
+
         <div class="project-meta">
             <span class="meta-item">📁 3D Printing</span>
             <span class="meta-item difficulty-beginner">⭐ Beginner</span>
+            <span class="meta-item">⏱️ 3–6 hours</span>
         </div>
     </section>
 
@@ -420,137 +414,91 @@
     <!-- Description -->
     <section class="content-section">
         <h2 class="section-title">Project Description</h2>
-        
-        <!-- ============================================ -->
-        <!-- EDIT: Project description (2-3 paragraphs) -->
-        <!-- ============================================ -->
+
         <p class="description">
-            This universal storage box is designed to organize small parts, components, and tools in workshops, garages, or hobby spaces. The modular design allows for easy stacking and efficient use of shelf space.
+            Mini spools designed for storing leftover filament and cables. I had tons of filament remnants at home and it felt wasteful to have large spools taking up space when the filament could be rewound onto something much smaller.
         </p>
         <p class="description">
-            The box features reinforced corners for durability and a snap-fit lid that keeps contents secure while remaining easy to open. Multiple sizes can be printed to accommodate different storage needs.
+            The design is compact yet robust enough to handle rough use. Available in two side plate sizes (40mm and 50mm diameter) with variable center widths from 15mm to 60mm, so you can pick the perfect size for your needs.
         </p>
     </section>
 
+    <!-- Print Settings -->
+    <section class="content-section">
+        <h2 class="section-title">Print Settings</h2>
+
+        <table class="bom-table">
+            <tr><th>Parameter</th><th>Value</th></tr>
+            <tr><td>Material</td><td>PLA / PETG / ASA (no limits)</td></tr>
+            <tr><td>Layer Height</td><td>0.2 mm (optionally 0.3 mm)</td></tr>
+            <tr><td>Infill</td><td>20%</td></tr>
+            <tr><td>Supports</td><td>No</td></tr>
+        </table>
+
+        <h3 style="color: var(--primary-orange); margin: 2rem 0 1rem;">Print Times</h3>
+
+        <table class="bom-table">
+            <tr><th>Part</th><th>Print Time</th><th>Filament</th></tr>
+            <tr><td>Both side plates 40mm</td><td>2h 50m</td><td>24 m / 72 g</td></tr>
+            <tr><td>Both side plates 50mm</td><td>3h</td><td>25 m / 76 g</td></tr>
+            <tr><td>Center 15mm</td><td>35m</td><td>5 m / 14.6 g</td></tr>
+            <tr><td>Center 20mm</td><td>44m</td><td>6.5 m / 19 g</td></tr>
+            <tr><td>Center 25mm</td><td>55m</td><td>7.5 m / 23 g</td></tr>
+            <tr><td>Center 30mm</td><td>1h 4m</td><td>9 m / 27 g</td></tr>
+            <tr><td>Center 35mm</td><td>1h 14m</td><td>10.5 m / 31.2 g</td></tr>
+            <tr><td>Center 40mm</td><td>1h 24m</td><td>11.5 m / 35.3 g</td></tr>
+            <tr><td>Center 45mm</td><td>1h 33m</td><td>13 m / 39.3 g</td></tr>
+            <tr><td>Center 50mm</td><td>1h 43m</td><td>14.5 m / 44 g</td></tr>
+            <tr><td>Center 60mm</td><td>2h</td><td>17 m / 52 g</td></tr>
+        </table>
     </section>
 
-    <!-- Build Process -->
+    <!-- Assembly -->
     <section class="content-section">
-        <h2 class="section-title">Build Process</h2>
-        
-        <div class="build-steps">
-            <!-- ============================================ -->
-            <!-- EDIT: Build steps -->
-            <!-- Copy-paste .build-step divs to add more steps -->
-            <!-- ============================================ -->
-            
-            <div class="build-step">
-                <h3 class="step-title">Prepare 3D Model</h3>
-                <p class="step-content">
-                    Download the STL files from Printables and import them into your slicer software (PrusaSlicer, Cura, etc.). Orient the parts for optimal printing with minimal supports.
-                </p>
-                <!-- Optional: Add image to step -->
-                <!-- <img src="step1.jpg" alt="Step 1" class="step-image"> -->
-            </div>
-            
-            <div class="build-step">
-                <h3 class="step-title">Slice and Print</h3>
-                <p class="step-content">
-                    Set layer height to 0.2mm, infill to 20%, and use supports only where necessary. Print time: approximately 6 hours for the base and 2 hours for the lid.
-                </p>
-            </div>
-            
-            <div class="build-step">
-                <h3 class="step-title">Post-Processing</h3>
-                <p class="step-content">
-                    Remove supports carefully, clean up any stringing with a hobby knife, and test the lid fit. Sand edges if needed for a smoother finish.
-                </p>
-            </div>
-            
-            <!-- Add more steps as needed -->
-        </div>
-    </section>
+        <h2 class="section-title">Assembly</h2>
 
-    <!-- Photo Gallery -->
-    <section class="content-section">
-        <h2 class="section-title">Photo Gallery</h2>
-        
-        <!-- ============================================ -->
-        <!-- EDIT: Photo gallery -->
-        <!-- Add/remove gallery-item divs as needed -->
-        <!-- Images should be in same folder: photo1.jpg, photo2.jpg -->
-        <!-- ============================================ -->
-        <div class="photo-gallery">
-            <div class="gallery-item">
-                <img src="photo1.jpg" alt="Project photo 1">
-            </div>
-            <div class="gallery-item">
-                <img src="photo2.jpg" alt="Project photo 2">
-            </div>
-            <div class="gallery-item">
-                <img src="photo3.jpg" alt="Project photo 3">
-            </div>
-        </div>
+        <p class="description">You will need the following hardware for assembly:</p>
+
+        <table class="bom-table">
+            <tr><th>Center Width</th><th>Screw (DIN 912 or similar)</th><th>Nuts</th></tr>
+            <tr><td>15 mm</td><td>M3 x 25 mm</td><td>5x M3</td></tr>
+            <tr><td>20 mm</td><td>M3 x 30 mm</td><td>5x M3</td></tr>
+            <tr><td>25 mm</td><td>M3 x 35 mm</td><td>5x M3</td></tr>
+            <tr><td>30 mm</td><td>M3 x 40 mm</td><td>5x M3</td></tr>
+            <tr><td>35 mm</td><td>M3 x 45 mm</td><td>5x M3</td></tr>
+            <tr><td>40 mm</td><td>M3 x 50 mm</td><td>5x M3</td></tr>
+            <tr><td>45 mm</td><td>M3 x 55 mm</td><td>5x M3</td></tr>
+            <tr><td>50 mm</td><td>M3 x 60 mm</td><td>5x M3</td></tr>
+            <tr><td>60 mm</td><td>M3 x 70 mm</td><td>5x M3</td></tr>
+        </table>
     </section>
 
     <!-- Learned Lessons -->
     <section class="content-section">
         <h2 class="section-title">Learned Lessons</h2>
-        
-        <!-- ============================================ -->
-        <!-- EDIT: Lessons learned -->
-        <!-- Copy-paste .lesson-item divs to add more lessons -->
-        <!-- ============================================ -->
-        
+
         <div class="lesson-item">
-            <h3 class="lesson-title">💡 Optimize Print Orientation</h3>
+            <h3 class="lesson-title">💡 Patience with Tight Tolerances</h3>
             <p>
-                Printing the box upright resulted in better layer adhesion and smoother walls. The lid should be printed upside down to avoid supports on the inner surface.
+                Fitting the center pieces into the side plates wasn't as simple as expected. I wanted to keep the grooves as tight as possible to avoid slop, which meant several iterations to get the fit just right. Even with such simple parts, precision matters.
             </p>
         </div>
-        
-        <div class="lesson-item">
-            <h3 class="lesson-title">💡 Infill Strategy</h3>
-            <p>
-                20% infill provided sufficient strength while keeping print time reasonable. Gyroid infill pattern distributed stress better than grid pattern.
-            </p>
-        </div>
-        
-        <!-- Add more lessons as needed -->
     </section>
 
     <!-- Problems & Solutions -->
     <section class="content-section">
         <h2 class="section-title">Problems & Solutions</h2>
-        
-        <!-- ============================================ -->
-        <!-- EDIT: Problems encountered and solutions -->
-        <!-- Copy-paste .problem-item divs to add more -->
-        <!-- ============================================ -->
-        
+
         <div class="problem-item">
-            <h3 class="problem-title">⚠️ Lid Too Tight</h3>
+            <h3 class="problem-title">⚠️ Side Plate Groove Fitment</h3>
             <p>
-                The initial design resulted in a lid that was extremely difficult to remove, requiring excessive force that risked breaking the box.
+                The grooves in the side plates for the center piece were too tight or too loose depending on printer calibration and material shrinkage.
             </p>
             <h4 class="solution-title">✅ Solution</h4>
             <p>
-                Scaled the lid to 100.5% in XY axes (horizontal plane only) in the slicer. This provided just enough clearance for smooth operation while maintaining a secure fit.
+                Multiple test prints with incremental adjustments to the groove width until achieving a snug but smooth fit across different materials.
             </p>
         </div>
-        
-        <div class="problem-item">
-            <h3 class="problem-title">⚠️ Warping Corners</h3>
-            <p>
-                Corners of the base lifted during printing, causing dimensional inaccuracy and poor bed adhesion.
-            </p>
-            <h4 class="solution-title">✅ Solution</h4>
-            <p>
-                Enabled brim (5mm width) and increased bed temperature to 65°C for PLA. Also cleaned the print bed thoroughly with isopropyl alcohol before each print.
-            </p>
-        </div>
-        
-        <!-- Add more problems as needed -->
     </section>
 
     <!-- Files & Downloads -->
