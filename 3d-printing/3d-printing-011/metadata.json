@@ -1,8 +1,8 @@
 {
-  "title": "Chesse Game",
+  "title": "Triggle Game",
   "difficulty": "intermediate",
   "time": "38 hours total",
-  "description": "Strategy board game where players use rubber bands to claim territory on a pin board. Includes game board, storage boxes, game pieces, and pins. A fun brain teaser for 2+ players.",
+  "description": "3D printed version of the Triggle strategy board game. Stretch rubber bands across pegs to create triangles and claim territory. Includes board, storage boxes, game pieces, and pins for 2+ players.",
   "thumbnail": "thumb.jpg",
   "category": "games"
 }
