@@ -9,7 +9,8 @@
       "Bash(for proj in {001..015})",
       "Bash(do)",
       "Bash(python3:*)",
-      "Bash(done $proj)"
+      "Bash(done $proj)",
+      "Bash(pip install:*)"
     ]
   }
 }
