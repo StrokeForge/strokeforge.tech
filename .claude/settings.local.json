@@ -10,7 +10,9 @@
       "Bash(do)",
       "Bash(python3:*)",
       "Bash(done $proj)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(test:*)",
+      "Bash(find:*)"
     ]
   }
 }
