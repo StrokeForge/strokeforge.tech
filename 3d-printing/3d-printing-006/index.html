@@ -7,8 +7,8 @@
     <!-- Primary Meta Tags -->
     <title>Drybox V2 - Passive | 3D Printing Project | StrokeForge</title>
     <meta name="title" content="Drybox V2 - Passive | 3D Printing Project">
-    <meta name="description" content="Passive filament drybox with desiccant compartments for 3D printing. 57-hour print, beginner difficulty. No electronics required, simple and effective.">
-    <meta name="keywords" content="drybox, passive drybox, filament storage, 3D printing, desiccant, STL files, Prusa">
+    <meta name="description" content="Stackable passive drybox with bearing rollers for direct 3D printing. 81-hour print, intermediate difficulty. Keeps filament dry and ready without unpacking.">
+    <meta name="keywords" content="drybox, passive drybox, filament storage, 3D printing, desiccant, silica gel, stackable, bearing rollers, direct printing, STL files">
     <meta name="author" content="StrokeForge">
     <meta name="robots" content="index, follow">
 
@@ -16,7 +16,7 @@
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://strokeforge.tech/3d-printing/3d-printing-006/">
     <meta property="og:title" content="Drybox V2 - Passive | Build Guide">
-    <meta property="og:description" content="Passive filament drybox with desiccant compartments for 3D printing. 57-hour print, beginner difficulty. No electronics required.">
+    <meta property="og:description" content="Stackable passive drybox with bearing rollers for direct 3D printing. 81-hour print, intermediate difficulty. Keeps filament dry and ready without unpacking.">
     <meta property="og:image" content="https://strokeforge.tech/3d-printing/3d-printing-006/main.jpg">
     <meta property="article:author" content="StrokeForge">
     <meta property="article:section" content="3D Printing">
@@ -25,7 +25,7 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://strokeforge.tech/3d-printing/3d-printing-006/">
     <meta property="twitter:title" content="Drybox V2 - Passive | Build Guide">
-    <meta property="twitter:description" content="Passive filament drybox with desiccant compartments for 3D printing. 57-hour print, beginner difficulty. No electronics required.">
+    <meta property="twitter:description" content="Stackable passive drybox with bearing rollers for direct 3D printing. 81-hour print, intermediate difficulty. Keeps filament dry and ready without unpacking.">
     <meta property="twitter:image" content="https://strokeforge.tech/3d-printing/3d-printing-006/main.jpg">
 
     <!-- Canonical URL -->
@@ -403,7 +403,7 @@
         <!-- ============================================ -->
         <div class="project-meta">
             <span class="meta-item">📁 3D Printing</span>
-            <span class="meta-item difficulty-beginner">⭐ Beginner</span>
+            <span class="meta-item difficulty-intermediate">⭐ Intermediate</span>
         </div>
     </section>
 
@@ -424,10 +424,13 @@
         <!-- EDIT: Project description (2-3 paragraphs) -->
         <!-- ============================================ -->
         <p class="description">
-            This universal storage box is designed to organize small parts, components, and tools in workshops, garages, or hobby spaces. The modular design allows for easy stacking and efficient use of shelf space.
+            A passive drybox designed for direct printing — filament is loaded inside and fed directly to the printer without ever opening the box. No more unpacking spools every time you want to print.
         </p>
         <p class="description">
-            The box features reinforced corners for durability and a snap-fit lid that keeps contents secure while remaining easy to open. Multiple sizes can be printed to accommodate different storage needs.
+            The boxes are fully stackable, saving valuable workshop space. Each box features a silica gel compartment to absorb moisture, a port for a hygrometer to monitor humidity, and two rollers on bearings for smooth and effortless spool unwinding.
+        </p>
+        <p class="description">
+            Built from PETG for rigidity with FLEX seals for an airtight fit. Print time is around 81 hours total — a significant investment that pays off in convenience and filament quality.
         </p>
     </section>
 
@@ -442,29 +445,55 @@
             <!-- ============================================ -->
             
             <div class="build-step">
-                <h3 class="step-title">Prepare 3D Model</h3>
+                <h3 class="step-title">Print All Parts</h3>
                 <p class="step-content">
-                    Download the STL files from Printables and import them into your slicer software (PrusaSlicer, Cura, etc.). Orient the parts for optimal printing with minimal supports.
+                    Download STL files from Printables. Print the main body and structural parts in PETG, seals and flexible parts in FLEX.<br><br>
+                    <strong>Print settings:</strong> Layer height 0.2 mm · 4 perimeters · 30% infill · No supports<br>
+                    <strong>Filament consumption:</strong> ~1.9 kg / 620 m<br>
+                    <strong>Total print time:</strong> ~81 hours
                 </p>
-                <!-- Optional: Add image to step -->
-                <!-- <img src="step1.jpg" alt="Step 1" class="step-image"> -->
             </div>
-            
+
             <div class="build-step">
-                <h3 class="step-title">Slice and Print</h3>
+                <h3 class="step-title">Gather Hardware</h3>
                 <p class="step-content">
-                    Set layer height to 0.2mm, infill to 20%, and use supports only where necessary. Print time: approximately 6 hours for the base and 2 hours for the lid.
+                    Prepare the following hardware before assembly:<br><br>
+                    · DIN 912 M3×8 — 8 pcs<br>
+                    · DIN 912 M3×10 — 36 pcs<br>
+                    · DIN 934 M3 nut — 44 pcs<br>
+                    · ISO 2338 5×32 pin — 6 pcs<br>
+                    · ZKL 608-2Z bearing — 4 pcs<br>
+                    · Grommet for PTFE tube 4×3-M5 — 2 pcs
                 </p>
             </div>
-            
+
             <div class="build-step">
-                <h3 class="step-title">Post-Processing</h3>
+                <h3 class="step-title">Assemble Bearing Rollers</h3>
                 <p class="step-content">
-                    Remove supports carefully, clean up any stringing with a hobby knife, and test the lid fit. Sand edges if needed for a smoother finish.
+                    Press the ZKL 608-2Z bearings into the roller housings. Insert the ISO 2338 5×32 pins as axles. The rollers allow the spool to spin freely with minimal resistance for smooth filament feeding.
                 </p>
             </div>
-            
-            <!-- Add more steps as needed -->
+
+            <div class="build-step">
+                <h3 class="step-title">Install Filament Outlet & Seal</h3>
+                <p class="step-content">
+                    Press the PTFE tube grommets (4×3-M5) into the outlet holes on the side of the box. Thread your PTFE tube through them to route filament directly to the printer while keeping the box sealed.
+                </p>
+            </div>
+
+            <div class="build-step">
+                <h3 class="step-title">Add Silica Gel & Hygrometer</h3>
+                <p class="step-content">
+                    Fill the silica gel compartment with desiccant beads. Insert a small hygrometer into the dedicated port to monitor humidity inside the box. Regenerate the silica gel periodically in an oven.
+                </p>
+            </div>
+
+            <div class="build-step">
+                <h3 class="step-title">Load Spool & Stack Boxes</h3>
+                <p class="step-content">
+                    Place your filament spool onto the bearing rollers, thread the filament through the PTFE grommet, and close the lid with the FLEX seal seated properly. Stack additional dryboxes on top as needed.
+                </p>
+            </div>
         </div>
     </section>
 
@@ -479,18 +508,14 @@
         <!-- ============================================ -->
         <div class="photo-gallery">
             <div class="gallery-item">
-                <img src="photo1.jpg" alt="Project photo 1">
+                <img src="photo1.jpg" alt="Drybox V2 - stacked boxes">
             </div>
             <div class="gallery-item">
-                <img src="photo2.jpg" alt="Project photo 2">
+                <img src="photo2.jpg" alt="Drybox V2 - bearing rollers detail">
             </div>
             <div class="gallery-item">
-                <img src="photo3.jpg" alt="Project photo 3">
+                <img src="photo3.jpg" alt="Drybox V2 - hygrometer and silica gel compartment">
             </div>
-            <div class="gallery-item">
-                <img src="photo4.jpg" alt="Project photo 4">
-            </div>
-            <!-- Add more photos as needed -->
         </div>
     </section>
 
@@ -504,54 +529,32 @@
         <!-- ============================================ -->
         
         <div class="lesson-item">
-            <h3 class="lesson-title">💡 Optimize Print Orientation</h3>
+            <h3 class="lesson-title">💡 Hinge Load Is No Joke</h3>
             <p>
-                Printing the box upright resulted in better layer adhesion and smoother walls. The lid should be printed upside down to avoid supports on the inner surface.
+                Designing the hinges was one of the bigger challenges. The lid is heavy, and hinges on a printed part need to be sized and oriented carefully. Underestimate the load and they crack after a few opens.
             </p>
         </div>
-        
-        <div class="lesson-item">
-            <h3 class="lesson-title">💡 Infill Strategy</h3>
-            <p>
-                20% infill provided sufficient strength while keeping print time reasonable. Gyroid infill pattern distributed stress better than grid pattern.
-            </p>
-        </div>
-        
-        <!-- Add more lessons as needed -->
-    </section>
 
-    <!-- Problems & Solutions -->
-    <section class="content-section">
-        <h2 class="section-title">Problems & Solutions</h2>
-        
-        <!-- ============================================ -->
-        <!-- EDIT: Problems encountered and solutions -->
-        <!-- Copy-paste .problem-item divs to add more -->
-        <!-- ============================================ -->
-        
-        <div class="problem-item">
-            <h3 class="problem-title">⚠️ Lid Too Tight</h3>
+        <div class="lesson-item">
+            <h3 class="lesson-title">💡 Print Precision Matters for Assembly</h3>
             <p>
-                The initial design resulted in a lid that was extremely difficult to remove, requiring excessive force that risked breaking the box.
-            </p>
-            <h4 class="solution-title">✅ Solution</h4>
-            <p>
-                Scaled the lid to 100.5% in XY axes (horizontal plane only) in the slicer. This provided just enough clearance for smooth operation while maintaining a secure fit.
+                With over 40 bolts and nuts in the assembly, even small dimensional errors add up. Calibrating the printer before starting and using 4 perimeters ensured everything fit together cleanly.
             </p>
         </div>
-        
-        <div class="problem-item">
-            <h3 class="problem-title">⚠️ Warping Corners</h3>
+
+        <div class="lesson-item">
+            <h3 class="lesson-title">💡 Part Orientation Affects Strength</h3>
             <p>
-                Corners of the base lifted during printing, causing dimensional inaccuracy and poor bed adhesion.
-            </p>
-            <h4 class="solution-title">✅ Solution</h4>
-            <p>
-                Enabled brim (5mm width) and increased bed temperature to 65°C for PLA. Also cleaned the print bed thoroughly with isopropyl alcohol before each print.
+                Structural parts need to be oriented so layer lines run parallel to the main stress direction. Getting this right the first time saves reprinting parts that snap along layer boundaries.
             </p>
         </div>
-        
-        <!-- Add more problems as needed -->
+
+        <div class="lesson-item">
+            <h3 class="lesson-title">💡 The Result Was Worth the Effort</h3>
+            <p>
+                This was only my second larger 3D printing project and genuinely a challenge. But the drybox does exactly what it was designed to do — filament stays dry, stacking works perfectly, and printing directly from the box is a real quality-of-life improvement.
+            </p>
+        </div>
     </section>
 
     <!-- Files & Downloads -->

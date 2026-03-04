@@ -1,0 +1,6 @@
+{
+  "title": "Cutting Plan Optimizer",
+  "type": "tool",
+  "description": "Browser-based tool for optimizing 1D cutting plans for bars, tubes, and profiles. Minimize waste using First Fit Decreasing algorithm.",
+  "thumbnail": "thumb.jpg"
+}

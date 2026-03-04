@@ -1,8 +1,8 @@
 {
   "title": "Drybox V2 - Passive",
-  "difficulty": "beginner",
-  "time": "57 hours",
-  "description": "Passive filament storage solution with desiccant compartments. Advanced version of the original drybox design.",
+  "difficulty": "intermediate",
+  "time": "81 hours",
+  "description": "Stackable passive drybox with bearing rollers that keeps filament dry and ready to print at any time — no unpacking required.",
   "thumbnail": "thumb.jpg",
   "category": "storage"
 }
