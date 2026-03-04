@@ -17,7 +17,9 @@
       "Bash(powershell -ExecutionPolicy Bypass -File:*)",
       "Bash(git restore:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)"
     ]
   }
 }
