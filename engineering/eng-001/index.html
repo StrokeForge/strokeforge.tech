@@ -264,7 +264,6 @@
                 <a href="../../index.html">Home</a>
                 <a href="../../3d-printing.html">3D Printing</a>
                 <a href="../../electronics.html">Electronics</a>
-                <a href="../../mechanical.html">Mechanical</a>
                 <a href="../../other.html">Other</a>
                 <a href="../../engineering.html" class="active">Engineering</a>
             </div>
@@ -332,7 +331,7 @@
             </div>
             <div class="diagram-wrap">
                 <h3>Tolerance zone diagram</h3>
-                <canvas id="tol-canvas" width="620" height="200"></canvas>
+                <canvas id="tol-canvas" width="620" height="240"></canvas>
             </div>
         </div>
 
@@ -644,49 +643,57 @@
         var W = canvas.width, H = canvas.height;
         ctx.clearRect(0, 0, W, H);
 
-        // Colors
         var orange = '#ff6b35';
         var blue = '#60a5fa';
         var gray = '#6b7280';
-        var green = '#48bb78';
         var textColor = '#e5e7eb';
         var dimLine = '#4b5563';
 
-        // Layout
-        var midY = H / 2;
-        var leftPad = 90, rightPad = 30;
-        var zoneW = 120, shaftX = leftPad + zoneW + 60, holeX = leftPad;
-        var zoneH = Math.max(hole.IT, shaft.IT, 10);
-        var scale = Math.min(80 / zoneH, 3.5);
+        // Dynamic range — include all deviations + zero so nothing goes off-canvas
+        var allVals = [hole.ES, hole.EI, shaft.es, shaft.ei, 0];
+        var maxVal = Math.max.apply(null, allVals);
+        var minVal = Math.min.apply(null, allVals);
+        var range = Math.max(Math.abs(maxVal - minVal), 10);
+        var pad = range * 0.3;
+        var dispMax = maxVal + pad;
+        var dispMin = minVal - pad;
+        var dispRange = dispMax - dispMin;
 
-        // Zero line
+        var topPad = 12, botPad = 22, leftPad = 88;
+        var drawH = H - topPad - botPad;
+        var scale = drawH / dispRange;
+
+        function yFor(v) { return topPad + (dispMax - v) * scale; }
+
+        var zeroY = yFor(0);
+
+        // Zero / nominal line
         ctx.strokeStyle = dimLine;
         ctx.lineWidth = 1;
         ctx.setLineDash([4, 4]);
-        ctx.beginPath(); ctx.moveTo(leftPad - 10, midY); ctx.lineTo(W - rightPad, midY); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(leftPad - 8, zeroY); ctx.lineTo(W - 20, zeroY); ctx.stroke();
         ctx.setLineDash([]);
 
-        // Labels
         ctx.fillStyle = gray;
         ctx.font = '11px monospace';
-        ctx.fillText('0 (nominal)', leftPad - 80, midY + 4);
+        ctx.textAlign = 'right';
+        ctx.fillText('0 (nominal)', leftPad - 12, zeroY + 4);
+        ctx.textAlign = 'start';
 
-        // Draw zone: x, yTop(μm from zero), height(μm), color, label
+        // Draw tolerance zone
         function drawZone(x, upperDev, lowerDev, color, label) {
-            var yTop = midY - upperDev * scale;
-            var yBot = midY - lowerDev * scale;
+            var yTop = yFor(upperDev);
+            var yBot = yFor(lowerDev);
             var zw = 100;
             ctx.fillStyle = color + '33';
             ctx.strokeStyle = color;
             ctx.lineWidth = 2;
             ctx.fillRect(x, yTop, zw, yBot - yTop);
             ctx.strokeRect(x, yTop, zw, yBot - yTop);
-            // Label inside
             ctx.fillStyle = color;
             ctx.font = 'bold 13px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText(label, x + zw / 2, (yTop + yBot) / 2 + 5);
-            // Deviation values
             ctx.fillStyle = textColor;
             ctx.font = '10px monospace';
             ctx.textAlign = 'left';
@@ -695,14 +702,14 @@
             ctx.textAlign = 'start';
         }
 
-        drawZone(holeX, hole.ES, hole.EI, orange, document.getElementById('hole-tol').value);
-        drawZone(shaftX, shaft.es, shaft.ei, blue, document.getElementById('shaft-tol').value);
+        drawZone(leftPad,       hole.ES, hole.EI, orange, document.getElementById('hole-tol').value);
+        drawZone(leftPad + 160, shaft.es, shaft.ei, blue,  document.getElementById('shaft-tol').value);
 
-        // Axis label
+        // Bottom label
         ctx.fillStyle = gray;
         ctx.font = '10px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('↕ deviation (μm)', W / 2, H - 6);
+        ctx.fillText('↕ deviation (μm)', W / 2, H - 5);
         ctx.textAlign = 'start';
     }
 

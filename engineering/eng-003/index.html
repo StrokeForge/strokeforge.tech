@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISO Metric Thread Standards M1–M68 | StrokeForge Engineering</title>
+    <meta name="description" content="Complete ISO metric thread dimensions table M1–M68: coarse and fine pitches, pitch diameter, minor diameter, stress area, and wrench sizes.">
+    <meta name="keywords" content="ISO metric thread, thread dimensions, pitch diameter, minor diameter, stress area, DIN 13, M1 M2 M3 M4 M5 M6 M8 M10 M12 M16 M20 M24 M30 M36 M42 M48 M64">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-003/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 1100px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+
+        .ctrl-card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.25rem 1.75rem; margin-bottom: 1.25rem; }
+        .ctrl-row { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: flex-end; }
+        .ctrl-group { display: flex; flex-direction: column; gap: 0.35rem; }
+        .ctrl-group label { font-size: 0.82rem; color: var(--text-gray); }
+        .ctrl-group input, .ctrl-group select {
+            background: var(--darker-bg); border: 1px solid var(--border-gray);
+            color: var(--light-gray); border-radius: 6px; padding: 0.5rem 0.7rem; font-size: 0.95rem;
+        }
+        .ctrl-group input:focus, .ctrl-group select:focus { outline: none; border-color: var(--primary-orange); }
+
+        .info-box { background: rgba(255,107,53,0.07); border-left: 3px solid var(--primary-orange); border-radius: 4px; padding: 0.8rem 1rem; font-size: 0.85rem; color: var(--text-gray); line-height: 1.6; margin-top: 1rem; }
+
+        .table-card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.5rem 2rem; overflow-x: auto; }
+        .table-card h2 { color: var(--primary-orange); font-size: 1.1rem; margin-bottom: 1rem; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.83rem; min-width: 800px; }
+        th {
+            background: var(--darker-bg); color: var(--primary-orange);
+            padding: 0.55rem 0.65rem; text-align: right; font-weight: 600;
+            border-bottom: 2px solid var(--border-gray); white-space: nowrap;
+        }
+        th:first-child { text-align: left; }
+        td {
+            padding: 0.42rem 0.65rem; color: var(--light-gray);
+            border-bottom: 1px solid var(--border-gray);
+            text-align: right; font-family: monospace; white-space: nowrap;
+        }
+        td:first-child { text-align: left; font-weight: 700; color: var(--primary-orange); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,107,53,0.06); }
+        .fine { color: #60a5fa; font-size: 0.78rem; }
+        .sep td { background: rgba(255,107,53,0.04); color: var(--text-gray); font-size: 0.75rem; font-style: italic; }
+        .sep td:first-child { color: var(--text-gray); font-weight: normal; }
+        .hidden { display: none; }
+
+        .badge { display: inline-block; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 10px; vertical-align: middle; margin-left: 4px; }
+        .badge-c { background: rgba(255,107,53,0.15); color: var(--primary-orange); }
+        .badge-f { background: rgba(96,165,250,0.15); color: #60a5fa; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../3d-printing.html">3D Printing</a>
+                <a href="../../electronics.html">Electronics</a>
+                <a href="../../other.html">Other</a>
+                <a href="../../engineering.html" class="active">Engineering</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>🔧 ISO Metric Thread Standards</h1>
+        <p>DIN 13 / ISO 261 | M1–M68 | Coarse &amp; fine pitches | Key dimensions</p>
+    </header>
+
+    <div class="tool-wrap">
+
+        <div class="ctrl-card">
+            <div class="ctrl-row">
+                <div class="ctrl-group">
+                    <label for="search">Search (e.g. M10, M16)</label>
+                    <input type="text" id="search" placeholder="M8, M24 …" oninput="filterTable()" style="width:180px;">
+                </div>
+                <div class="ctrl-group">
+                    <label for="series">Show</label>
+                    <select id="series" onchange="filterTable()" style="width:200px;">
+                        <option value="all">Coarse + Fine pitches</option>
+                        <option value="coarse">Coarse only</option>
+                        <option value="fine">Fine only</option>
+                    </select>
+                </div>
+                <div class="ctrl-group">
+                    <label for="range-min">Diameter from (mm)</label>
+                    <input type="number" id="range-min" min="1" max="68" value="1" oninput="filterTable()" style="width:110px;">
+                </div>
+                <div class="ctrl-group">
+                    <label for="range-max">to (mm)</label>
+                    <input type="number" id="range-max" min="1" max="68" value="68" oninput="filterTable()" style="width:110px;">
+                </div>
+            </div>
+            <div class="info-box">
+                d₂ = pitch diameter = d − 0.6495·p &nbsp;|&nbsp;
+                d₁ = minor diameter = d − 1.2269·p &nbsp;|&nbsp;
+                A<sub>s</sub> = π/4·(d − 0.9382·p)² &nbsp;|&nbsp;
+                Standard: ISO 261 / DIN 13-1 to 13-11
+            </div>
+        </div>
+
+        <div class="table-card">
+            <h2>Thread dimensions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Thread</th>
+                        <th>d (mm)</th>
+                        <th>Pitch (mm)</th>
+                        <th>d₂ (mm)</th>
+                        <th>d₁ (mm)</th>
+                        <th>A<sub>s</sub> (mm²)</th>
+                        <th>Hex AF (mm)</th>
+                        <th>Allen (mm)</th>
+                    </tr>
+                </thead>
+                <tbody id="thread-tbody"></tbody>
+            </table>
+            <div id="row-count" style="margin-top:0.75rem;font-size:0.8rem;color:var(--text-gray);"></div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem;">
+            <a href="https://www.printables.com/@TechMaster" target="_blank" style="color:#ff6b35;text-decoration:none;">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // Thread data: [label, d, coarse_pitch, [fine_pitches,...], hex_af, allen]
+    // Dimensions calculated via formula; wrench sizes per DIN 933/ISO 4014 and ISO 4762
+    // null = not standardised / not common
+    var THREADS = [
+        ['M1',    1,    0.25, [],              null, null],
+        ['M1.2',  1.2,  0.25, [],              null, null],
+        ['M1.4',  1.4,  0.3,  [],              null, null],
+        ['M1.6',  1.6,  0.35, [],              3.2,  1.5 ],
+        ['M1.8',  1.8,  0.35, [],              null, null],
+        ['M2',    2,    0.4,  [],              4,    1.5 ],
+        ['M2.5',  2.5,  0.45, [],              5,    2   ],
+        ['M3',    3,    0.5,  [],              5.5,  2.5 ],
+        ['M3.5',  3.5,  0.6,  [],              6,    null],
+        ['M4',    4,    0.7,  [],              7,    3   ],
+        ['M5',    5,    0.8,  [],              8,    4   ],
+        ['M6',    6,    1.0,  [],              10,   5   ],
+        ['M7',    7,    1.0,  [],              11,   null],
+        ['M8',    8,    1.25, [1.0],           13,   6   ],
+        ['M10',   10,   1.5,  [1.25, 1.0],    17,   8   ],
+        ['M12',   12,   1.75, [1.5, 1.25],    19,   10  ],
+        ['M14',   14,   2.0,  [1.5],          22,   null],
+        ['M16',   16,   2.0,  [1.5],          24,   14  ],
+        ['M18',   18,   2.5,  [2.0, 1.5],    27,   null],
+        ['M20',   20,   2.5,  [2.0, 1.5],    30,   17  ],
+        ['M22',   22,   2.5,  [2.0, 1.5],    32,   null],
+        ['M24',   24,   3.0,  [2.0],          36,   19  ],
+        ['M27',   27,   3.0,  [2.0],          41,   null],
+        ['M30',   30,   3.5,  [3.0, 2.0],    46,   22  ],
+        ['M33',   33,   3.5,  [3.0, 2.0],    50,   null],
+        ['M36',   36,   4.0,  [3.0],          55,   27  ],
+        ['M39',   39,   4.0,  [3.0],          60,   null],
+        ['M42',   42,   4.5,  [4.0, 3.0],    65,   32  ],
+        ['M45',   45,   4.5,  [4.0, 3.0],    70,   null],
+        ['M48',   48,   5.0,  [4.0, 3.0],    75,   36  ],
+        ['M52',   52,   5.0,  [4.0],          80,   null],
+        ['M56',   56,   5.5,  [4.0],          85,   41  ],
+        ['M60',   60,   5.5,  [4.0],          90,   null],
+        ['M64',   64,   6.0,  [4.0],          95,   46  ],
+        ['M68',   68,   6.0,  [4.0],          100,  null]
+    ];
+
+    function calcDims(d, p) {
+        var d2 = d - 0.6495 * p;
+        var d1 = d - 1.2269 * p;
+        var As = Math.PI / 4 * Math.pow(d - 0.9382 * p, 2);
+        return { d2: d2.toFixed(3), d1: d1.toFixed(3), As: As.toFixed(2) };
+    }
+
+    function fmt(v) { return v !== null ? v : '—'; }
+
+    function buildRows() {
+        var tbody = document.getElementById('thread-tbody');
+        tbody.innerHTML = '';
+        var series = document.getElementById('series').value;
+        var search = document.getElementById('search').value.trim().toLowerCase();
+        var minD   = parseFloat(document.getElementById('range-min').value) || 0;
+        var maxD   = parseFloat(document.getElementById('range-max').value) || 999;
+        var count  = 0;
+
+        THREADS.forEach(function(t) {
+            var label = t[0], d = t[1], pc = t[2], fines = t[3], hex = t[4], allen = t[5];
+
+            if (d < minD || d > maxD) return;
+            if (search && label.toLowerCase().indexOf(search) === -1) return;
+
+            // Coarse row
+            if (series === 'all' || series === 'coarse') {
+                var dim = calcDims(d, pc);
+                var tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td>' + label + ' <span class="badge badge-c">coarse</span></td>' +
+                    '<td>' + d + '</td>' +
+                    '<td>' + pc.toFixed(2) + '</td>' +
+                    '<td>' + dim.d2 + '</td>' +
+                    '<td>' + dim.d1 + '</td>' +
+                    '<td>' + dim.As + '</td>' +
+                    '<td>' + fmt(hex) + '</td>' +
+                    '<td>' + fmt(allen) + '</td>';
+                tbody.appendChild(tr);
+                count++;
+            }
+
+            // Fine rows
+            if (series === 'all' || series === 'fine') {
+                fines.forEach(function(pf) {
+                    var dimf = calcDims(d, pf);
+                    var trf = document.createElement('tr');
+                    trf.innerHTML =
+                        '<td>' + label + '×' + pf.toFixed(2) + ' <span class="badge badge-f">fine</span></td>' +
+                        '<td>' + d + '</td>' +
+                        '<td class="fine">' + pf.toFixed(2) + '</td>' +
+                        '<td>' + dimf.d2 + '</td>' +
+                        '<td>' + dimf.d1 + '</td>' +
+                        '<td>' + dimf.As + '</td>' +
+                        '<td>' + fmt(hex) + '</td>' +
+                        '<td>' + fmt(allen) + '</td>';
+                    tbody.appendChild(trf);
+                    count++;
+                });
+            }
+        });
+
+        document.getElementById('row-count').textContent = 'Showing ' + count + ' rows';
+    }
+
+    function filterTable() { buildRows(); }
+
+    buildRows();
+    </script>
+</body>
+</html>

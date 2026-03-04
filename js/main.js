@@ -9,8 +9,7 @@ async function loadProjectCounts() {
     const categories = [
         { file: 'data/3d-printing-projects.json', id: 'count-3dprint' },
         { file: 'data/electronics-projects.json', id: 'count-electronics' },
-        { file: 'data/mechanical-projects.json', id: 'count-mechanical' },
-        { file: 'data/other-projects.json', id: 'count-other' },
+{ file: 'data/other-projects.json', id: 'count-other' },
         { file: 'data/engineering-projects.json', id: 'count-engineering' }
     ];
 

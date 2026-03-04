@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bolt Tightening Torques M3–M24 | StrokeForge Engineering</title>
+    <meta name="description" content="Free browser-based bolt tightening torque calculator per ISO 898-1. Covers M3–M24, strength classes 4.6–12.9, multiple friction conditions.">
+    <meta name="keywords" content="bolt tightening torque, utahovací moment, ISO 898-1, strength class, M3 M4 M5 M6 M8 M10 M12 M16 M20 M24, preload force">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-002/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 1000px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+
+        .ctrl-card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 1.5rem; }
+        .ctrl-card h2 { color: var(--primary-orange); font-size: 1.1rem; margin-bottom: 1.1rem; }
+        .ctrl-row { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-end; }
+        .ctrl-group { display: flex; flex-direction: column; gap: 0.35rem; min-width: 180px; }
+        .ctrl-group label { font-size: 0.83rem; color: var(--text-gray); }
+        .ctrl-group select, .ctrl-group input {
+            background: var(--darker-bg); border: 1px solid var(--border-gray);
+            color: var(--light-gray); border-radius: 6px; padding: 0.5rem 0.7rem; font-size: 0.95rem;
+        }
+        .ctrl-group select:focus, .ctrl-group input:focus { outline: none; border-color: var(--primary-orange); }
+
+        .info-box { background: rgba(255,107,53,0.07); border-left: 3px solid var(--primary-orange); border-radius: 4px; padding: 0.8rem 1rem; font-size: 0.85rem; color: var(--text-gray); line-height: 1.6; margin-top: 1rem; }
+
+        .table-card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 1.5rem; overflow-x: auto; }
+        .table-card h2 { color: var(--primary-orange); font-size: 1.1rem; margin-bottom: 1rem; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 600px; }
+        th { background: var(--darker-bg); color: var(--primary-orange); padding: 0.6rem 0.75rem; text-align: right; font-weight: 600; border-bottom: 2px solid var(--border-gray); white-space: nowrap; }
+        th:first-child { text-align: left; }
+        td { padding: 0.5rem 0.75rem; color: var(--light-gray); border-bottom: 1px solid var(--border-gray); text-align: right; font-family: monospace; white-space: nowrap; }
+        td:first-child { text-align: left; font-weight: 600; color: var(--primary-orange); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,107,53,0.06); }
+        .hi { color: var(--primary-orange); font-weight: 700; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../3d-printing.html">3D Printing</a>
+                <a href="../../electronics.html">Electronics</a>
+                <a href="../../other.html">Other</a>
+                <a href="../../engineering.html" class="active">Engineering</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>🔩 Bolt Tightening Torques</h1>
+        <p>ISO 898-1 | Metric bolts M3–M24 | Strength classes 4.6 – 12.9</p>
+    </header>
+
+    <div class="tool-wrap">
+
+        <div class="ctrl-card">
+            <h2>Parameters</h2>
+            <div class="ctrl-row">
+                <div class="ctrl-group">
+                    <label for="cls">Strength class</label>
+                    <select id="cls" onchange="rebuild()">
+                        <option value="4.6">4.6 — Rp = 240 MPa</option>
+                        <option value="5.6">5.6 — Rp = 300 MPa</option>
+                        <option value="6.8">6.8 — Rp = 480 MPa</option>
+                        <option value="8.8" selected>8.8 — Rp = 640 MPa</option>
+                        <option value="10.9">10.9 — Rp = 940 MPa</option>
+                        <option value="12.9">12.9 — Rp = 1100 MPa</option>
+                    </select>
+                </div>
+                <div class="ctrl-group">
+                    <label for="mu">Friction condition</label>
+                    <select id="mu" onchange="rebuild()">
+                        <option value="0.12">K = 0.12 — MoS₂ / heavily lubricated</option>
+                        <option value="0.15" selected>K = 0.15 — lightly oiled (standard)</option>
+                        <option value="0.20">K = 0.20 — dry / as-supplied</option>
+                        <option value="0.25">K = 0.25 — zinc plated dry / corroded</option>
+                    </select>
+                </div>
+                <div class="ctrl-group">
+                    <label for="util">Utilization rate</label>
+                    <select id="util" onchange="rebuild()">
+                        <option value="0.90" selected>90 % — standard assembly</option>
+                        <option value="0.75">75 % — conservative</option>
+                        <option value="1.00">100 % — yield-controlled tightening</option>
+                    </select>
+                </div>
+            </div>
+            <div class="info-box">
+                <strong>Formula:</strong> T = K × d × F<sub>V</sub> &nbsp;|&nbsp;
+                F<sub>V</sub> = A<sub>s</sub> × R<sub>p0.2</sub> × utilization<br>
+                K = nut factor (torque coefficient) &nbsp;|&nbsp; d = nominal diameter (mm) &nbsp;|&nbsp;
+                A<sub>s</sub> = tensile stress area (mm²)
+            </div>
+        </div>
+
+        <div class="table-card">
+            <h2 id="table-title">Tightening torques — 8.8, K = 0.15, utilization 90 %</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Size</th>
+                        <th>Pitch (mm)</th>
+                        <th>A<sub>s</sub> (mm²)</th>
+                        <th>F<sub>V</sub> (kN)</th>
+                        <th>Torque (Nm)</th>
+                    </tr>
+                </thead>
+                <tbody id="torque-tbody"></tbody>
+            </table>
+        </div>
+
+        <div class="ctrl-card">
+            <h2>Notes</h2>
+            <div class="info-box" style="margin-top:0;">
+                <strong>Strength class marking:</strong> first digit × 100 = tensile strength (MPa), first digit × last digit × 10 = yield strength (MPa).<br>
+                Example: 8.8 → R<sub>m</sub> = 800 MPa, R<sub>p0.2</sub> = 640 MPa.<br><br>
+                <strong>Friction coefficient K:</strong> value depends on surface finish, coating, and lubricant.
+                Unlubricated as-supplied bolts: K ≈ 0.20. Always use consistent lubricant for critical joints.<br><br>
+                <strong>Utilization:</strong> 90% is standard for controlled torque tightening. Yield-controlled tightening (100%) requires angle monitoring.<br><br>
+                <strong>Source:</strong> ISO 898-1, VDI 2230, DIN 13.
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem;">
+            <a href="https://www.printables.com/@TechMaster" target="_blank" style="color:#ff6b35;text-decoration:none;">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // Thread data: [size_label, d_mm, pitch_mm, As_mm2]
+    var BOLTS = [
+        ['M3',   3,  0.50,  5.03],
+        ['M4',   4,  0.70,  8.78],
+        ['M5',   5,  0.80, 14.2 ],
+        ['M6',   6,  1.00, 20.1 ],
+        ['M7',   7,  1.00, 28.9 ],
+        ['M8',   8,  1.25, 36.6 ],
+        ['M10', 10,  1.50, 58.0 ],
+        ['M12', 12,  1.75, 84.3 ],
+        ['M14', 14,  2.00, 115  ],
+        ['M16', 16,  2.00, 157  ],
+        ['M18', 18,  2.50, 192  ],
+        ['M20', 20,  2.50, 245  ],
+        ['M22', 22,  2.50, 303  ],
+        ['M24', 24,  3.00, 353  ]
+    ];
+
+    var RP = { '4.6': 240, '5.6': 300, '6.8': 480, '8.8': 640, '10.9': 940, '12.9': 1100 };
+
+    function rebuild() {
+        var cls  = document.getElementById('cls').value;
+        var K    = parseFloat(document.getElementById('mu').value);
+        var util = parseFloat(document.getElementById('util').value);
+        var rp   = RP[cls];
+
+        document.getElementById('table-title').textContent =
+            'Tightening torques — ' + cls + ', K = ' + K.toFixed(2) + ', utilization ' + (util * 100) + ' %';
+
+        var tbody = document.getElementById('torque-tbody');
+        tbody.innerHTML = '';
+
+        BOLTS.forEach(function(b) {
+            var label = b[0], d = b[1], pitch = b[2], As = b[3];
+            var Fv = As * rp * util;          // N
+            var T  = K * (d / 1000) * Fv;    // Nm
+
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td>' + label + '</td>' +
+                '<td>' + pitch.toFixed(2) + '</td>' +
+                '<td>' + As.toFixed(1) + '</td>' +
+                '<td>' + (Fv / 1000).toFixed(2) + '</td>' +
+                '<td class="hi">' + Math.round(T) + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+
+    rebuild();
+    </script>
+</body>
+</html>
