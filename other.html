@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -32,6 +32,18 @@
 
     <link rel="stylesheet" href="css/colors.css">
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Other Projects | StrokeForge",
+      "url": "https://strokeforge.tech/other.html",
+      "description": "Browser-based tools and miscellaneous maker projects by StrokeForge.",
+      "author": { "@type": "Person", "name": "Stanislav Odolan", "url": "https://strokeforge.tech" }
+    }
+    </script>
     <style>
         /* Navigation */
         .navbar {
@@ -212,6 +224,7 @@
                 <a href="mechanical.html">Mechanical</a>
                 <a href="other.html" class="active">Other</a>
             </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
     </nav>
 
@@ -256,5 +269,6 @@
             </a>
         </p>
     </footer>
+    <script src="js/nav.js"></script>
 </body>
 </html>

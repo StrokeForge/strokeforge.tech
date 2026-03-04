@@ -282,6 +282,59 @@ body {
     text-align: center;
 }
 
+/* ---- Hamburger Menu ---- */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 26px;
+    height: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.hamburger span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--light-gray);
+    border-radius: 2px;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.hamburger.nav-open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.hamburger.nav-open span:nth-child(2) { opacity: 0; }
+.hamburger.nav-open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+@media (max-width: 640px) {
+    .hamburger { display: flex; }
+
+    .navbar .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: rgba(6, 6, 16, 0.97);
+        border-bottom: 1px solid var(--border-gray);
+        z-index: 200;
+    }
+
+    .navbar .nav-links.nav-open { display: flex; }
+
+    .navbar .nav-links a {
+        padding: 0.8rem 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .navbar-content { position: relative; }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .logo {

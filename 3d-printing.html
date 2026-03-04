@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -32,6 +32,18 @@
 
     <link rel="stylesheet" href="css/colors.css">
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "3D Printing Projects | StrokeForge",
+      "url": "https://strokeforge.tech/3d-printing.html",
+      "description": "Collection of 3D printing projects with free STL files and detailed build guides. Dryboxes, organizers, and functional prints.",
+      "author": { "@type": "Person", "name": "Stanislav Odolan", "url": "https://strokeforge.tech" }
+    }
+    </script>
     <style>
         /* Navigation */
         .navbar {
@@ -310,6 +322,7 @@
                 <a href="mechanical.html">Mechanical</a>
                 <a href="other.html">Other</a>
             </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
     </nav>
 
@@ -366,5 +379,6 @@
 
     <!-- Load 3D Printing Projects JavaScript -->
     <script src="js/3d-printing.js"></script>
+    <script src="js/nav.js"></script>
 </body>
 </html>
