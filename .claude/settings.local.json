@@ -12,7 +12,8 @@
       "Bash(done $proj)",
       "Bash(pip install:*)",
       "Bash(test:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "WebFetch(domain:strokeforge.tech)"
     ]
   }
 }
