@@ -13,7 +13,11 @@
       "Bash(pip install:*)",
       "Bash(test:*)",
       "Bash(find:*)",
-      "WebFetch(domain:strokeforge.tech)"
+      "WebFetch(domain:strokeforge.tech)",
+      "Bash(powershell -ExecutionPolicy Bypass -File:*)",
+      "Bash(git restore:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
