@@ -129,6 +129,13 @@ body {
     margin-top: 0.5rem;
 }
 
+/* Wide category bar (Engineering) */
+.category-card--wide {
+    margin-top: 1.5rem;
+    padding: 1.5rem 2rem;
+    text-align: left;
+}
+
 /* Category specific colors */
 .category-card[data-category="3d-print"]:hover {
     border-color: var(--category-3dprint);

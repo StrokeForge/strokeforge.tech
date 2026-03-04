@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary Meta Tags -->
+    <title>ISO 286-1 Tolerance & Fits Calculator | StrokeForge Engineering</title>
+    <meta name="title" content="ISO 286-1 Tolerance & Fits Calculator | StrokeForge Engineering">
+    <meta name="description" content="Free browser-based ISO 286-1 tolerance and fits calculator. Enter nominal diameter, choose hole and shaft tolerances, get limit deviations, fit type, and tolerance zone diagram.">
+    <meta name="keywords" content="ISO 286, tolerance calculator, fits and tolerances, shaft tolerance, hole tolerance, engineering tables, clearance fit, interference fit, transition fit">
+    <meta name="author" content="StrokeForge">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://strokeforge.tech/engineering/eng-001/">
+    <meta property="og:title" content="ISO 286-1 Tolerance & Fits Calculator | StrokeForge">
+    <meta property="og:description" content="Free browser-based ISO 286-1 tolerance and fits calculator.">
+    <meta property="og:image" content="https://strokeforge.tech/images/logo.png">
+    <meta property="og:site_name" content="StrokeForge">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-001/">
+
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        /* ---- Navbar ---- */
+        .navbar {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-gray);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        /* ---- Page ---- */
+        .page-header {
+            text-align: center;
+            padding: 1.5rem 2rem 1rem;
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+        }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap {
+            max-width: 900px;
+            margin: 2rem auto 4rem;
+            padding: 0 1.5rem;
+        }
+
+        /* ---- Input card ---- */
+        .input-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .input-card h2 {
+            color: var(--primary-orange);
+            font-size: 1.15rem;
+            margin-bottom: 1.25rem;
+        }
+        .input-row {
+            display: flex;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            min-width: 140px;
+        }
+        .input-group label {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+        .input-group input,
+        .input-group select {
+            background: var(--darker-bg);
+            border: 1px solid var(--border-gray);
+            color: var(--light-gray);
+            border-radius: 6px;
+            padding: 0.55rem 0.75rem;
+            font-size: 1rem;
+            width: 100%;
+        }
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+        }
+        .calc-btn {
+            background: var(--primary-orange);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.65rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            align-self: flex-end;
+        }
+        .calc-btn:hover { opacity: 0.85; }
+
+        /* ---- Results ---- */
+        .results-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        .results-card.visible { display: block; }
+        .results-card h2 { color: var(--primary-orange); font-size: 1.15rem; margin-bottom: 1.25rem; }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .result-box {
+            background: var(--darker-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 1.1rem 1.25rem;
+        }
+        .result-box h3 {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .result-val {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--light-gray);
+            font-family: monospace;
+        }
+        .result-sub {
+            font-size: 0.82rem;
+            color: var(--text-gray);
+            margin-top: 0.3rem;
+        }
+
+        /* Fit badge */
+        .fit-badge {
+            display: inline-block;
+            padding: 0.35rem 1.1rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+        .fit-clearance  { background: rgba(72, 187, 120, 0.15); color: #48bb78; border: 1px solid #48bb78; }
+        .fit-transition { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b; }
+        .fit-interference { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; }
+
+        /* ---- Tolerance zone diagram ---- */
+        .diagram-wrap {
+            margin: 1.5rem 0 0.5rem;
+        }
+        .diagram-wrap h3 {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+        #tol-canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 6px;
+            background: var(--darker-bg);
+            max-width: 100%;
+        }
+
+        /* ---- Quick reference table ---- */
+        .ref-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .ref-card h2 { color: var(--primary-orange); font-size: 1.15rem; margin-bottom: 1rem; }
+        .ref-card p { font-size: 0.88rem; color: var(--text-gray); margin-bottom: 1rem; }
+
+        .ref-table-wrap { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        th {
+            background: var(--darker-bg);
+            color: var(--primary-orange);
+            padding: 0.55rem 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-gray);
+            white-space: nowrap;
+        }
+        td {
+            padding: 0.5rem 0.75rem;
+            color: var(--light-gray);
+            border-bottom: 1px solid var(--border-gray);
+            font-family: monospace;
+            white-space: nowrap;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,107,53,0.06); }
+        td.fit-c { color: #48bb78; }
+        td.fit-t { color: #f59e0b; }
+        td.fit-i { color: #ef4444; }
+        td.desc { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; }
+
+        /* ---- Info box ---- */
+        .info-box {
+            background: rgba(255,107,53,0.07);
+            border-left: 3px solid var(--primary-orange);
+            border-radius: 4px;
+            padding: 0.9rem 1.1rem;
+            font-size: 0.88rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-top: 1rem;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 640px) {
+            .results-grid { grid-template-columns: 1fr; }
+            .input-group { min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../3d-printing.html">3D Printing</a>
+                <a href="../../electronics.html">Electronics</a>
+                <a href="../../mechanical.html">Mechanical</a>
+                <a href="../../other.html">Other</a>
+                <a href="../../engineering.html" class="active">Engineering</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>⚙️ ISO 286-1 Tolerance &amp; Fits Calculator</h1>
+        <p>Calculate limit deviations, tolerance values, and fit types according to ISO 286-1</p>
+    </header>
+
+    <div class="tool-wrap">
+
+        <!-- Input -->
+        <div class="input-card">
+            <h2>Input Parameters</h2>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="nominal">Nominal diameter (mm)</label>
+                    <input type="number" id="nominal" min="0" max="500" step="0.001" value="25" placeholder="e.g. 25">
+                </div>
+                <div class="input-group">
+                    <label for="hole-tol">Hole tolerance</label>
+                    <select id="hole-tol"></select>
+                </div>
+                <div class="input-group">
+                    <label for="shaft-tol">Shaft tolerance</label>
+                    <select id="shaft-tol"></select>
+                </div>
+                <button class="calc-btn" onclick="calculate()">Calculate</button>
+            </div>
+            <div class="info-box" style="margin-top:1rem;">
+                Convention: <strong>Hole basis system</strong> — H = fundamental deviation 0 (EI = 0). IT = tolerance grade width. Deviations per ISO 286-1:2010.
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="results-card" id="results-card">
+            <h2>Results</h2>
+            <div class="results-grid">
+                <div class="result-box">
+                    <h3>Hole</h3>
+                    <div class="result-val" id="res-hole-sym">—</div>
+                    <div class="result-sub" id="res-hole-lim">ES = — &nbsp; EI = —</div>
+                    <div class="result-sub" id="res-hole-it">IT = —</div>
+                </div>
+                <div class="result-box">
+                    <h3>Shaft</h3>
+                    <div class="result-val" id="res-shaft-sym">—</div>
+                    <div class="result-sub" id="res-shaft-lim">es = — &nbsp; ei = —</div>
+                    <div class="result-sub" id="res-shaft-it">IT = —</div>
+                </div>
+                <div class="result-box">
+                    <h3>Fit type</h3>
+                    <div id="res-fit-badge">—</div>
+                    <div class="result-sub" id="res-fit-detail" style="margin-top:0.5rem;"></div>
+                </div>
+                <div class="result-box">
+                    <h3>Limits of fit</h3>
+                    <div class="result-sub" id="res-fit-max">Max clearance / Min interference: —</div>
+                    <div class="result-sub" id="res-fit-min">Min clearance / Max interference: —</div>
+                </div>
+            </div>
+            <div class="diagram-wrap">
+                <h3>Tolerance zone diagram</h3>
+                <canvas id="tol-canvas" width="620" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Quick Reference Table -->
+        <div class="ref-card">
+            <h2>Common Fits Quick Reference</h2>
+            <p>ISO 286-1 preferred fits for the entered nominal diameter. Hole basis (H) system.</p>
+            <div class="ref-table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fit designation</th>
+                            <th>Type</th>
+                            <th>Max clearance (μm)</th>
+                            <th>Min clearance (μm)</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ref-table-body">
+                        <tr><td colspan="5" style="color:var(--text-gray);text-align:center;">Enter a nominal diameter and click Calculate.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="ref-card">
+            <h2>How to use</h2>
+            <div class="info-box" style="margin-top:0;">
+                <strong>1.</strong> Enter the nominal diameter in mm (0–500 mm range per ISO 286-1).<br>
+                <strong>2.</strong> Select hole tolerance (e.g. H7) and shaft tolerance (e.g. f7, k6, p6).<br>
+                <strong>3.</strong> Click <em>Calculate</em> to see limit deviations, fit type, and tolerance zone diagram.<br><br>
+                <strong>Sign convention:</strong> Positive deviation = above nominal line. Negative = below.<br>
+                Hole: ES = upper deviation, EI = lower deviation.<br>
+                Shaft: es = upper deviation, ei = lower deviation.<br><br>
+                <strong>IT grades</strong> available: IT01, IT0, IT1 … IT18.<br>
+                <strong>Fundamental deviations</strong> for holes: A–ZC. For shafts: a–zc.
+            </div>
+        </div>
+
+    </div><!-- /tool-wrap -->
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+            <a href="https://www.printables.com/@TechMaster" target="_blank" style="color: #ff6b35; text-decoration: none;">
+                Printables: @TechMaster
+            </a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ============================================================
+    //  ISO 286-1 data tables
+    // ============================================================
+
+    // IT grade values in μm by size range index.
+    // Size ranges (lower exclusive, upper inclusive):
+    // [0,3], (3,6], (6,10], (10,18], (18,30], (30,50], (50,80],
+    // (80,120], (120,180], (180,250], (250,315], (315,400], (400,500]
+    var SIZE_RANGES = [
+        [0, 3], [3, 6], [6, 10], [10, 18], [18, 30],
+        [30, 50], [50, 80], [80, 120], [120, 180],
+        [180, 250], [250, 315], [315, 400], [400, 500]
+    ];
+
+    // IT grades: IT1..IT18 (index 0=IT1 ... index 17=IT18) in μm
+    var IT_TABLE = [
+        //IT1  IT2  IT3  IT4  IT5  IT6  IT7  IT8  IT9  IT10  IT11  IT12  IT13  IT14  IT15  IT16  IT17  IT18
+        [  0.8, 1.2,   2,   3,   4,   6,  10,  14,  25,   40,   60,  100,  140,  250,  400,  600, 1000, 1400 ], // 0-3
+        [  1.0, 1.5, 2.5,   4,   5,   8,  12,  18,  30,   48,   75,  120,  180,  300,  480,  750, 1200, 1800 ], // 3-6
+        [  1.0, 1.5, 2.5,   4,   6,   9,  15,  22,  36,   58,   90,  150,  220,  360,  580,  900, 1500, 2200 ], // 6-10
+        [  1.2, 2.0, 3.0,   5,   8,  11,  18,  27,  43,   70,  110,  180,  270,  430,  700, 1100, 1800, 2700 ], // 10-18
+        [  1.5, 2.5, 4.0,   6,   9,  13,  21,  33,  52,   84,  130,  210,  330,  520,  840, 1300, 2100, 3300 ], // 18-30
+        [  1.5, 2.5, 4.0,   7,  11,  16,  25,  39,  62,  100,  160,  250,  390,  620, 1000, 1600, 2500, 3900 ], // 30-50
+        [  2.0, 3.0, 5.0,   8,  13,  19,  30,  46,  74,  120,  190,  300,  460,  740, 1200, 1900, 3000, 4600 ], // 50-80
+        [  2.5, 4.0, 6.0,  10,  15,  22,  35,  54,  87,  140,  220,  350,  540,  870, 1400, 2200, 3500, 5400 ], // 80-120
+        [  3.5, 5.0, 8.0,  12,  18,  25,  40,  63, 100,  160,  250,  400,  630, 1000, 1600, 2500, 4000, 6300 ], // 120-180
+        [  4.5, 7.0,10.0,  14,  20,  29,  46,  72, 115,  185,  290,  460,  720, 1150, 1850, 2900, 4600, 7200 ], // 180-250
+        [  6.0, 8.0,12.0,  16,  23,  32,  52,  81, 130,  210,  320,  520,  810, 1300, 2100, 3200, 5200, 8100 ], // 250-315
+        [  7.0, 9.0,13.0,  18,  25,  36,  57,  89, 140,  230,  360,  570,  890, 1400, 2300, 3600, 5700, 8900 ], // 315-400
+        [  8.0,10.0,15.0,  20,  27,  40,  63,  97, 155,  250,  400,  630,  970, 1550, 2500, 4000, 6300, 9700 ]  // 400-500
+    ];
+
+    // Fundamental deviations for SHAFTS (μm), upper dev (es) for a–h, lower dev (ei) for k–z
+    // Null = not standardized in basic table (use complex formula or not supported here).
+    // Keys: letter, value: array[13] by size range index
+    var SHAFT_FD = {
+        //       0-3     3-6    6-10   10-18   18-30   30-50   50-80  80-120 120-180 180-250 250-315 315-400 400-500
+        'a': [ -270,  -270,  -280,  -290,  -300,  -310,  -320,  -340,  -360,  -380,  -410,  -440,  -480 ],
+        'b': [ -140,  -140,  -150,  -150,  -160,  -170,  -180,  -190,  -200,  -210,  -230,  -240,  -260 ],
+        'c': [  -60,   -70,   -80,   -95,  -110,  -120,  -130,  -140,  -145,  -170,  -190,  -210,  -230 ],
+        'cd':[  -34,   -46,   -56,  null,  null,  null,  null,  null,  null,  null,  null,  null,  null ],
+        'd': [  -20,   -30,   -40,   -50,   -65,   -80,  -100,  -120,  -145,  -170,  -190,  -210,  -230 ],
+        'e': [  -14,   -20,   -25,   -32,   -40,   -50,   -60,   -72,   -85,  -100,  -110,  -125,  -135 ],
+        'ef':[   -6,   -10,   -13,  null,  null,  null,  null,  null,  null,  null,  null,  null,  null ],
+        'f': [   -6,   -10,   -13,   -16,   -20,   -25,   -30,   -36,   -43,   -50,   -56,   -62,   -68 ],
+        'fg':[   -4,    -6,    -8,  null,  null,  null,  null,  null,  null,  null,  null,  null,  null ],
+        'g': [   -2,    -4,    -5,    -6,    -7,    -9,   -10,   -12,   -14,   -15,   -17,   -18,   -20 ],
+        'h': [    0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0  ],
+        // k–n: ei (lower deviation), positive
+        'k': [    0,     1,     1,     1,     2,     2,     2,     3,     3,     2,     2,     3,     4  ],
+        'm': [    2,     4,     6,     7,     8,     9,    11,    13,    15,    17,    20,    21,    23  ],
+        'n': [    4,     8,    10,    12,    15,    17,    20,    23,    27,    31,    34,    37,    40  ],
+        'p': [    6,    12,    15,    18,    22,    26,    32,    37,    43,    50,    56,    62,    68  ],
+        'r': [   10,    15,    19,    23,    28,    34,    41,    51,    63,    77,    98,   114,   132  ],
+        's': [   14,    19,    23,    28,    35,    43,    53,    71,    92,   122,   150,   182,   214  ],
+        't': [ null,  null,    28,    34,    41,    48,    66,    91,   124,   170,   202,   248,   294  ],
+        'u': [   18,    23,    28,    33,    41,    60,    87,   124,   170,   236,   284,   350,   425  ],
+        'v': [ null,  null,  null,    39,    47,    55,    78,   114,   150,   210,   258,   318,   390  ],
+        'x': [   20,    28,    34,    40,    50,    70,    94,   136,   188,   274,   330,   405,   490  ],
+        'y': [ null,  null,  null,  null,    60,    87,   114,   166,   228,   316,   385,   475,   570  ],
+        'z': [   26,    35,    42,    50,    65,    100,  134,   197,   280,   385,   475,   580,   710  ]
+    };
+
+    // Hole fundamental deviations (EI, lower deviation) for A–H, ES = EI + IT
+    // A–G mirror shaft a–g with opposite sign; H = 0
+    var HOLE_LOWER_LETTERS = ['A','B','C','CD','D','E','EF','F','FG','G','H'];
+    // For holes J..ZC: EI = -(shaft es for same letter in lower case) = -(-fd) not straightforward;
+    // simplification: support H + JS (symmetric about zero) holes here.
+    // JS/js: es = +IT/2, ei = -IT/2
+
+    var HOLE_LETTERS = ['A','B','C','D','E','EF','F','FG','G','H','JS','J','K','M','N','P','R','S','T','U','V','X','Y','Z'];
+    var SHAFT_LETTERS = ['a','b','c','cd','d','e','ef','f','fg','g','h','js','j','k','m','n','p','r','s','t','u','v','x','y','z'];
+
+    var IT_GRADES = ['IT1','IT2','IT3','IT4','IT5','IT6','IT7','IT8','IT9','IT10','IT11','IT12','IT13','IT14','IT15','IT16'];
+
+    // ---- Populate selects ----
+    (function initSelects() {
+        var holeSel = document.getElementById('hole-tol');
+        var shaftSel = document.getElementById('shaft-tol');
+
+        // Preferred hole tolerances
+        var prefHoles = ['H5','H6','H7','H8','H9','H10','H11','JS6','JS7','K6','K7','M6','M7','N6','N7','P6','P7'];
+        prefHoles.forEach(function(t) {
+            var o = document.createElement('option');
+            o.value = t;
+            o.text = t;
+            if (t === 'H7') o.selected = true;
+            holeSel.appendChild(o);
+        });
+
+        // Preferred shaft tolerances
+        var prefShafts = ['c11','d9','d10','e8','e9','f6','f7','f8','g5','g6','h5','h6','h7','h8','h9','h10','h11',
+                          'js5','js6','k5','k6','m5','m6','n5','n6','p6','p7','r5','r6','s5','s6','s7','t5','t6','t7',
+                          'u6','u7','v6','x6','y6','z6'];
+        prefShafts.forEach(function(t) {
+            var o = document.createElement('option');
+            o.value = t;
+            o.text = t;
+            if (t === 'f7') o.selected = true;
+            shaftSel.appendChild(o);
+        });
+    })();
+
+    // ---- Helpers ----
+    function getSizeIndex(d) {
+        for (var i = 0; i < SIZE_RANGES.length; i++) {
+            if (d > SIZE_RANGES[i][0] && d <= SIZE_RANGES[i][1]) return i;
+        }
+        return -1;
+    }
+
+    function getIT(grade, sizeIdx) {
+        // grade: integer 1..18
+        if (grade < 1 || grade > 18) return null;
+        if (sizeIdx < 0) return null;
+        return IT_TABLE[sizeIdx][grade - 1];
+    }
+
+    function parseTolerance(str) {
+        // Returns { letter, grade } or null
+        var m = str.match(/^([A-Za-z]{1,3})(\d{1,2})$/);
+        if (!m) return null;
+        return { letter: m[1], grade: parseInt(m[2], 10) };
+    }
+
+    // Returns {es, ei, IT} in μm for shaft, or null
+    function calcShaft(letter, grade, sizeIdx) {
+        var it = getIT(grade, sizeIdx);
+        if (it == null) return null;
+        var lo = letter.toLowerCase();
+        var fd = SHAFT_FD[lo];
+        if (lo === 'js') {
+            // symmetric
+            return { es: Math.round(it / 2), ei: -Math.round(it / 2), IT: it };
+        }
+        if (!fd) return null;
+        var fdVal = fd[sizeIdx];
+        if (fdVal === null) return null;
+        // a-h: es = FD (negative), ei = es - IT
+        var clearanceGroup = ['a','b','c','cd','d','e','ef','f','fg','g','h'];
+        if (clearanceGroup.indexOf(lo) !== -1) {
+            var es = fdVal;
+            var ei = es - it;
+            return { es: es, ei: ei, IT: it };
+        } else {
+            // k-z: ei = FD (positive), es = ei + IT
+            var ei2 = fdVal;
+            var es2 = ei2 + it;
+            return { es: es2, ei: ei2, IT: it };
+        }
+    }
+
+    // Returns {ES, EI, IT} in μm for hole, or null
+    function calcHole(letter, grade, sizeIdx) {
+        var it = getIT(grade, sizeIdx);
+        if (it == null) return null;
+        var up = letter.toUpperCase();
+        if (up === 'H') {
+            return { ES: it, EI: 0, IT: it };
+        }
+        if (up === 'JS') {
+            return { ES: Math.round(it / 2), EI: -Math.round(it / 2), IT: it };
+        }
+        // For A-G holes: EI = negative of shaft es for same letter (lower)
+        // i.e. EI = -shaft_es_for_same_letter, ES = EI + IT
+        var shaftResult = calcShaft(letter.toLowerCase(), grade, sizeIdx);
+        if (!shaftResult) return null;
+        // Mirror: hole EI = |shaft es| (for clearance holes A-G, shaft es is negative → EI = -es > 0)
+        var EI = -shaftResult.es;
+        var ES = EI + it;
+        return { ES: ES, EI: EI, IT: it };
+    }
+
+    // ---- Main calculation ----
+    function calculate() {
+        var d = parseFloat(document.getElementById('nominal').value);
+        var holeTolStr = document.getElementById('hole-tol').value;
+        var shaftTolStr = document.getElementById('shaft-tol').value;
+
+        if (isNaN(d) || d <= 0 || d > 500) {
+            alert('Please enter a nominal diameter between 0 and 500 mm.');
+            return;
+        }
+        var sizeIdx = getSizeIndex(d);
+        if (sizeIdx < 0) {
+            alert('Nominal diameter out of range (0–500 mm).');
+            return;
+        }
+
+        var hp = parseTolerance(holeTolStr);
+        var sp = parseTolerance(shaftTolStr);
+        if (!hp || !sp) { alert('Invalid tolerance designation.'); return; }
+
+        var hole = calcHole(hp.letter, hp.grade, sizeIdx);
+        var shaft = calcShaft(sp.letter, sp.grade, sizeIdx);
+        if (!hole) { alert('Hole tolerance ' + holeTolStr + ' not supported for this diameter.'); return; }
+        if (!shaft) { alert('Shaft tolerance ' + shaftTolStr + ' not supported for this diameter.'); return; }
+
+        // Sign: EI, ES, es, ei in μm
+        var maxClearance = hole.ES - shaft.ei; // max hole - min shaft
+        var minClearance = hole.EI - shaft.es; // min hole - max shaft
+
+        var fitType, fitClass;
+        if (minClearance >= 0) {
+            fitType = 'Clearance fit'; fitClass = 'fit-clearance';
+        } else if (maxClearance <= 0) {
+            fitType = 'Interference fit'; fitClass = 'fit-interference';
+        } else {
+            fitType = 'Transition fit'; fitClass = 'fit-transition';
+        }
+
+        // Update DOM
+        document.getElementById('res-hole-sym').textContent = holeTolStr;
+        document.getElementById('res-hole-lim').innerHTML = 'ES = ' + fmtDev(hole.ES) + ' μm &nbsp; EI = ' + fmtDev(hole.EI) + ' μm';
+        document.getElementById('res-hole-it').textContent = 'IT' + hp.grade + ' = ' + hole.IT + ' μm';
+
+        document.getElementById('res-shaft-sym').textContent = shaftTolStr;
+        document.getElementById('res-shaft-lim').innerHTML = 'es = ' + fmtDev(shaft.es) + ' μm &nbsp; ei = ' + fmtDev(shaft.ei) + ' μm';
+        document.getElementById('res-shaft-it').textContent = 'IT' + sp.grade + ' = ' + shaft.IT + ' μm';
+
+        var badge = document.getElementById('res-fit-badge');
+        badge.innerHTML = '<span class="fit-badge ' + fitClass + '">' + fitType + '</span>';
+
+        if (fitType === 'Clearance fit') {
+            document.getElementById('res-fit-detail').textContent =
+                'Max clearance: ' + maxClearance + ' μm   Min clearance: ' + minClearance + ' μm';
+        } else if (fitType === 'Interference fit') {
+            document.getElementById('res-fit-detail').textContent =
+                'Max interference: ' + Math.abs(minClearance) + ' μm   Min interference: ' + Math.abs(maxClearance) + ' μm';
+        } else {
+            document.getElementById('res-fit-detail').textContent =
+                'Max clearance: ' + maxClearance + ' μm   Max interference: ' + Math.abs(minClearance) + ' μm';
+        }
+
+        document.getElementById('res-fit-max').textContent =
+            (fitType === 'Interference fit' ? 'Min interference: ' : 'Max clearance: ') + maxClearance + ' μm';
+        document.getElementById('res-fit-min').textContent =
+            (fitType === 'Clearance fit' ? 'Min clearance: ' : 'Max interference: ') + minClearance + ' μm';
+
+        document.getElementById('results-card').classList.add('visible');
+
+        drawDiagram(hole, shaft, d);
+        buildRefTable(d, sizeIdx);
+    }
+
+    function fmtDev(v) {
+        if (v === 0) return '0';
+        return (v > 0 ? '+' : '') + v;
+    }
+
+    // ---- Canvas diagram ----
+    function drawDiagram(hole, shaft, d) {
+        var canvas = document.getElementById('tol-canvas');
+        var ctx = canvas.getContext('2d');
+        var W = canvas.width, H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+
+        // Colors
+        var orange = '#ff6b35';
+        var blue = '#60a5fa';
+        var gray = '#6b7280';
+        var green = '#48bb78';
+        var textColor = '#e5e7eb';
+        var dimLine = '#4b5563';
+
+        // Layout
+        var midY = H / 2;
+        var leftPad = 90, rightPad = 30;
+        var zoneW = 120, shaftX = leftPad + zoneW + 60, holeX = leftPad;
+        var zoneH = Math.max(hole.IT, shaft.IT, 10);
+        var scale = Math.min(80 / zoneH, 3.5);
+
+        // Zero line
+        ctx.strokeStyle = dimLine;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.moveTo(leftPad - 10, midY); ctx.lineTo(W - rightPad, midY); ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Labels
+        ctx.fillStyle = gray;
+        ctx.font = '11px monospace';
+        ctx.fillText('0 (nominal)', leftPad - 80, midY + 4);
+
+        // Draw zone: x, yTop(μm from zero), height(μm), color, label
+        function drawZone(x, upperDev, lowerDev, color, label) {
+            var yTop = midY - upperDev * scale;
+            var yBot = midY - lowerDev * scale;
+            var zw = 100;
+            ctx.fillStyle = color + '33';
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.fillRect(x, yTop, zw, yBot - yTop);
+            ctx.strokeRect(x, yTop, zw, yBot - yTop);
+            // Label inside
+            ctx.fillStyle = color;
+            ctx.font = 'bold 13px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(label, x + zw / 2, (yTop + yBot) / 2 + 5);
+            // Deviation values
+            ctx.fillStyle = textColor;
+            ctx.font = '10px monospace';
+            ctx.textAlign = 'left';
+            ctx.fillText(fmtDev(upperDev) + ' μm', x + zw + 6, yTop + 4);
+            ctx.fillText(fmtDev(lowerDev) + ' μm', x + zw + 6, yBot + 4);
+            ctx.textAlign = 'start';
+        }
+
+        drawZone(holeX, hole.ES, hole.EI, orange, document.getElementById('hole-tol').value);
+        drawZone(shaftX, shaft.es, shaft.ei, blue, document.getElementById('shaft-tol').value);
+
+        // Axis label
+        ctx.fillStyle = gray;
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('↕ deviation (μm)', W / 2, H - 6);
+        ctx.textAlign = 'start';
+    }
+
+    // ---- Quick reference table ----
+    var COMMON_FITS = [
+        { hole: 'H11', shaft: 'c11', desc: 'Very loose clearance, large play' },
+        { hole: 'H9',  shaft: 'd9',  desc: 'Free running, generous clearance' },
+        { hole: 'H8',  shaft: 'e8',  desc: 'Easy sliding, lubricated motion' },
+        { hole: 'H7',  shaft: 'f7',  desc: 'Close sliding, rotating/sliding' },
+        { hole: 'H7',  shaft: 'g6',  desc: 'Snug sliding, precision location' },
+        { hole: 'H7',  shaft: 'h6',  desc: 'Location clearance, easy assembly' },
+        { hole: 'H7',  shaft: 'k6',  desc: 'Location transition, slight interference possible' },
+        { hole: 'H7',  shaft: 'm6',  desc: 'Location transition, press or tap' },
+        { hole: 'H7',  shaft: 'n6',  desc: 'Location transition, heavy press' },
+        { hole: 'H7',  shaft: 'p6',  desc: 'Light press fit, non-removable' },
+        { hole: 'H7',  shaft: 's6',  desc: 'Medium press fit, driven fit' },
+        { hole: 'H7',  shaft: 'u6',  desc: 'Heavy press fit, shrink fit' }
+    ];
+
+    function buildRefTable(d, sizeIdx) {
+        var tbody = document.getElementById('ref-table-body');
+        tbody.innerHTML = '';
+        COMMON_FITS.forEach(function(fit) {
+            var hp = parseTolerance(fit.hole);
+            var sp = parseTolerance(fit.shaft);
+            var hole = calcHole(hp.letter, hp.grade, sizeIdx);
+            var shaft = calcShaft(sp.letter, sp.grade, sizeIdx);
+            if (!hole || !shaft) return;
+            var maxC = hole.ES - shaft.ei;
+            var minC = hole.EI - shaft.es;
+            var fitClass, fitLabel, fitCls;
+            if (minC >= 0) { fitLabel = 'Clearance'; fitCls = 'fit-c'; }
+            else if (maxC <= 0) { fitLabel = 'Interference'; fitCls = 'fit-i'; }
+            else { fitLabel = 'Transition'; fitCls = 'fit-t'; }
+
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td>' + fit.hole + '/' + fit.shaft + '</td>' +
+                '<td class="' + fitCls + '">' + fitLabel + '</td>' +
+                '<td>' + maxC + '</td>' +
+                '<td>' + minC + '</td>' +
+                '<td class="desc">' + fit.desc + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Auto-calculate on load
+    window.addEventListener('load', function() { calculate(); });
+    </script>
+</body>
+</html>

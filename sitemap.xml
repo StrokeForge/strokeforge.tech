@@ -124,6 +124,20 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Engineering Tools -->
+  <url>
+    <loc>https://strokeforge.tech/engineering.html</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://strokeforge.tech/engineering/eng-001/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Other Projects -->
   <url>
     <loc>https://strokeforge.tech/other/other-001/</loc>

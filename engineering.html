@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary Meta Tags -->
+    <title>Engineering Tools | StrokeForge</title>
+    <meta name="title" content="Engineering Tools | StrokeForge">
+    <meta name="description" content="Browser-based engineering tools and reference tables. ISO tolerances, fits, structural calculations and more — by a mechanical engineer.">
+    <meta name="keywords" content="engineering tools, ISO tolerance calculator, fits and tolerances, mechanical engineering, technical tables, browser calculator">
+    <meta name="author" content="StrokeForge">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://strokeforge.tech/engineering.html">
+    <meta property="og:title" content="Engineering Tools | StrokeForge">
+    <meta property="og:description" content="Browser-based engineering tools and reference tables by a mechanical engineer.">
+    <meta property="og:image" content="https://strokeforge.tech/images/logo.png">
+    <meta property="og:site_name" content="StrokeForge">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:url" content="https://strokeforge.tech/engineering.html">
+    <meta property="twitter:title" content="Engineering Tools | StrokeForge">
+    <meta property="twitter:description" content="Browser-based engineering tools and reference tables by a mechanical engineer.">
+    <meta property="twitter:image" content="https://strokeforge.tech/images/logo.png">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://strokeforge.tech/engineering.html">
+
+    <link rel="stylesheet" href="css/colors.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Engineering Tools | StrokeForge",
+      "url": "https://strokeforge.tech/engineering.html",
+      "description": "Browser-based engineering tools and reference tables by StrokeForge.",
+      "author": { "@type": "Person", "name": "Stanislav Odolan", "url": "https://strokeforge.tech" }
+    }
+    </script>
+    <style>
+        /* Navigation */
+        .navbar {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-gray);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+        }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .page-header p { font-size: 1rem; color: var(--text-gray); }
+
+        /* Projects Grid */
+        .projects-grid {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-orange);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+        }
+        .project-image {
+            width: 100%;
+            height: 220px;
+            background: var(--darker-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-gray);
+            font-size: 4rem;
+            overflow: hidden;
+        }
+        .project-image img { width: 100%; height: 100%; object-fit: cover; }
+        .project-content { padding: 1.5rem; }
+        .project-title { font-size: 1.4rem; color: var(--light-gray); margin-bottom: 0.75rem; font-weight: 600; }
+        .project-meta { display: flex; gap: 1rem; margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-gray); flex-wrap: wrap; }
+        .project-description { color: var(--text-gray); font-size: 0.95rem; line-height: 1.6; }
+
+        @media (max-width: 768px) {
+            .nav-links { gap: 1rem; font-size: 0.9rem; }
+            .projects-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="3d-printing.html">3D Printing</a>
+                <a href="electronics.html">Electronics</a>
+                <a href="mechanical.html">Mechanical</a>
+                <a href="other.html">Other</a>
+                <a href="engineering.html" class="active">Engineering</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>⚙️ Engineering Tools</h1>
+        <p>Browser-based calculators and reference tables for mechanical engineers</p>
+    </header>
+
+    <!-- Projects Grid -->
+    <section class="projects-grid">
+        <a href="engineering/eng-001/index.html" class="project-card">
+            <div class="project-image">⚙️</div>
+            <div class="project-content">
+                <h2 class="project-title">ISO 286-1 Tolerance &amp; Fits Calculator</h2>
+                <div class="project-meta">
+                    <span>🔧 Web Tool</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate limit deviations and fit types according to ISO 286-1. Enter nominal diameter, select hole and shaft tolerances — get ES, EI, es, ei values, fit type (clearance / transition / interference), and a visual tolerance zone diagram.</p>
+            </div>
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+            <a href="https://www.printables.com/@TechMaster" target="_blank" style="color: #ff6b35; text-decoration: none;">
+                Printables: @TechMaster
+            </a>
+        </p>
+    </footer>
+    <script src="js/nav.js"></script>
+</body>
+</html>
