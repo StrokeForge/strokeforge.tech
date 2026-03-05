@@ -33,6 +33,43 @@
     <link rel="stylesheet" href="css/colors.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
+        /* Category navbar */
+        .category-navbar {
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 2px solid var(--primary-orange);
+            position: sticky;
+            top: 70px;
+            z-index: 90;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .category-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.5rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-orange) rgba(0,0,0,0.3);
+        }
+        .category-container::-webkit-scrollbar { height: 6px; }
+        .category-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        .category-container::-webkit-scrollbar-thumb { background: var(--primary-orange); border-radius: 3px; }
+        .category-link {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 0.15rem; padding: 0.4rem 1rem; min-width: 90px;
+            background: var(--card-bg); border: 2px solid var(--border-gray);
+            border-radius: 8px; color: var(--light-gray);
+            text-decoration: none; white-space: nowrap;
+            transition: all 0.3s ease; font-weight: 500;
+        }
+        .category-link:hover { border-color: var(--primary-orange); background: rgba(255,107,53,0.1); transform: translateY(-2px); }
+        .category-link.active { border-color: var(--primary-orange); background: var(--primary-orange); color: var(--dark-bg); box-shadow: 0 4px 10px rgba(255,107,53,0.3); }
+        .category-icon { font-size: 1.1rem; line-height: 1; }
+        .category-text { font-size: 0.75rem; line-height: 1; }
+
         /* Navigation */
         .navbar {
             background: rgba(0, 0, 0, 0.5);
@@ -218,60 +255,46 @@
 
     <!-- Page Header -->
     <header class="page-header">
-        <h1>⚡ Electronics Projects</h1>
-        <p>Arduino, ESP32, and embedded systems</p>
+        <h1>⚡ Electronics</h1>
+        <p>Calculators and reference tools for electronics hobbyists</p>
     </header>
 
-    <!-- Projects Grid -->
-    <section class="projects-grid">
-        <a href="electronics/elec-004/" class="project-card">
-            <div class="project-image">🔺</div>
-            <div class="project-content">
-                <h2 class="project-title">Ohm's Law Calculator</h2>
-                <div class="project-meta">
-                    <span>⚡ Basic</span>
-                    <span class="difficulty-beginner">● Beginner</span>
-                </div>
-                <p class="project-description">Enter any 2 of 4 values (U, I, R, P) — get the remaining two instantly. Visual Ohm's law triangle with all formulas and beginner-friendly explanations.</p>
-            </div>
-        </a>
+    <!-- Category Filter Navbar -->
+    <nav class="category-navbar">
+        <div class="category-container">
+            <a href="#all" class="category-link active" data-category="all">
+                <span class="category-icon">📋</span>
+                <span class="category-text">All</span>
+            </a>
+            <a href="#basic" class="category-link" data-category="basic">
+                <span class="category-icon">🔧</span>
+                <span class="category-text">Basic</span>
+            </a>
+            <a href="#power" class="category-link" data-category="power">
+                <span class="category-icon">🔋</span>
+                <span class="category-text">Power</span>
+            </a>
+            <a href="#signals" class="category-link" data-category="signals">
+                <span class="category-icon">📡</span>
+                <span class="category-text">Signals</span>
+            </a>
+            <a href="#arduino" class="category-link" data-category="arduino">
+                <span class="category-icon">🤖</span>
+                <span class="category-text">Arduino / ESP32</span>
+            </a>
+            <a href="#reference" class="category-link" data-category="reference">
+                <span class="category-icon">📊</span>
+                <span class="category-text">Reference</span>
+            </a>
+            <a href="#diodes" class="category-link" data-category="diodes">
+                <span class="category-icon">💡</span>
+                <span class="category-text">Diodes</span>
+            </a>
+        </div>
+    </nav>
 
-        <a href="electronics/elec-003/" class="project-card">
-            <div class="project-image">⚡</div>
-            <div class="project-content">
-                <h2 class="project-title">Voltage Divider Calculator</h2>
-                <div class="project-meta">
-                    <span>⚡ Basic</span>
-                    <span class="difficulty-beginner">● Beginner</span>
-                </div>
-                <p class="project-description">Calculate output voltage of a resistor divider. Supports 3 modes: Uout, find R1, or find R2. Includes load effect, power dissipation, and circuit diagram.</p>
-            </div>
-        </a>
-
-        <a href="electronics/elec-002/" class="project-card">
-            <div class="project-image">💡</div>
-            <div class="project-content">
-                <h2 class="project-title">LED Series Resistor Calculator</h2>
-                <div class="project-meta">
-                    <span>⚡ Basic</span>
-                    <span class="difficulty-beginner">● Beginner</span>
-                </div>
-                <p class="project-description">Calculate the correct current-limiting resistor for an LED. Includes E12/E24 standard values, power dissipation, and multiple LEDs in series.</p>
-            </div>
-        </a>
-
-        <a href="electronics/elec-001/" class="project-card">
-            <div class="project-image">🎨</div>
-            <div class="project-content">
-                <h2 class="project-title">Resistor Color Code Calculator</h2>
-                <div class="project-meta">
-                    <span>⚡ Electronics</span>
-                    <span class="difficulty-beginner">● Beginner</span>
-                </div>
-                <p class="project-description">Decode resistor color bands to get resistance value, tolerance, and temperature coefficient. Supports 4, 5, and 6 band resistors. Includes reverse lookup.</p>
-            </div>
-        </a>
-    </section>
+    <!-- Projects Grid (filled dynamically) -->
+    <section class="projects-grid"></section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -283,5 +306,6 @@
         </p>
     </footer>
     <script src="js/nav.js"></script>
+    <script src="js/electronics.js"></script>
 </body>
 </html>

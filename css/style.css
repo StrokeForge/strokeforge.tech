@@ -1,6 +1,20 @@
 /* Import color variables */
 @import 'colors.css';
 
+/* Breadcrumb back link */
+.breadcrumb {
+    max-width: 1200px;
+    margin: 0.6rem auto 0;
+    padding: 0 2rem;
+}
+.breadcrumb a {
+    color: var(--text-gray);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: color 0.2s;
+}
+.breadcrumb a:hover { color: var(--primary-orange); }
+
 /* Reset */
 * {
     margin: 0;

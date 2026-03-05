@@ -107,6 +107,7 @@
             <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
     </nav>
+    <div class="breadcrumb"><a href="../../electronics.html">&larr; Electronics</a></div>
 
     <header class="page-header">
         <h1>⚡ Voltage Divider Calculator</h1>
@@ -325,97 +326,97 @@
     function drawCircuit(uin, uout, r1, r2, rl) {
         var svg = document.getElementById('circuit-svg');
         svg.innerHTML = '';
-        var W = 380, H = 280;
-        var orange = '#ff6b35', gray = '#9ca3af', light = '#e5e7eb';
+        var orange = '#ff6b35', gray = '#9ca3af', light = '#e5e7eb', blue = '#60a5fa';
 
-        function line(x1,y1,x2,y2,col,w) {
-            var el = document.createElementNS('http://www.w3.org/2000/svg','line');
-            el.setAttribute('x1',x1); el.setAttribute('y1',y1);
-            el.setAttribute('x2',x2); el.setAttribute('y2',y2);
-            el.setAttribute('stroke',col||light); el.setAttribute('stroke-width',w||2);
-            svg.appendChild(el);
+        function ln(x1,y1,x2,y2,col,w) {
+            var e = document.createElementNS('http://www.w3.org/2000/svg','line');
+            e.setAttribute('x1',x1);e.setAttribute('y1',y1);e.setAttribute('x2',x2);e.setAttribute('y2',y2);
+            e.setAttribute('stroke',col||light);e.setAttribute('stroke-width',w||2);svg.appendChild(e);
         }
-        function rect(x,y,w,h,fill,stroke) {
-            var el = document.createElementNS('http://www.w3.org/2000/svg','rect');
-            el.setAttribute('x',x); el.setAttribute('y',y);
-            el.setAttribute('width',w); el.setAttribute('height',h);
-            el.setAttribute('rx',4);
-            el.setAttribute('fill',fill||'none'); el.setAttribute('stroke',stroke||orange);
-            el.setAttribute('stroke-width',2);
-            svg.appendChild(el);
+        function bx(x,y,w,h,col) {
+            var e = document.createElementNS('http://www.w3.org/2000/svg','rect');
+            e.setAttribute('x',x);e.setAttribute('y',y);e.setAttribute('width',w);e.setAttribute('height',h);
+            e.setAttribute('rx',4);e.setAttribute('fill','var(--darker-bg,#111)');
+            e.setAttribute('stroke',col||orange);e.setAttribute('stroke-width',2);svg.appendChild(e);
         }
-        function txt(x,y,s,col,size,anchor) {
-            var el = document.createElementNS('http://www.w3.org/2000/svg','text');
-            el.setAttribute('x',x); el.setAttribute('y',y);
-            el.setAttribute('fill',col||gray); el.setAttribute('font-size',size||11);
-            el.setAttribute('font-family','monospace'); el.setAttribute('text-anchor',anchor||'middle');
-            el.textContent = s; svg.appendChild(el);
+        function tx(x,y,s,col,sz,a) {
+            var e = document.createElementNS('http://www.w3.org/2000/svg','text');
+            e.setAttribute('x',x);e.setAttribute('y',y);e.setAttribute('fill',col||gray);
+            e.setAttribute('font-size',sz||11);e.setAttribute('font-family','monospace');
+            e.setAttribute('text-anchor',a||'middle');e.textContent=s;svg.appendChild(e);
+        }
+        function dot(x,y,col) {
+            var e = document.createElementNS('http://www.w3.org/2000/svg','circle');
+            e.setAttribute('cx',x);e.setAttribute('cy',y);e.setAttribute('r',4);
+            e.setAttribute('fill',col||orange);svg.appendChild(e);
         }
 
-        // Layout: main vertical line at x=80, Uout tap at y=160, Rl branch right
-        var lx = 80;      // left rail x
-        var topY = 30, midY = 150, botY = 250;
-        var rx = rl ? 260 : lx;
+        // Layout
+        // Battery on left: x=50, top=30, bot=250
+        // Right rail: x=310 (or 240 without RL)
+        // R1: top wire segment (right rail, 30→110)
+        // R2: right rail, 130→210
+        // Tap for Uout at y=130 (between R1 and R2)
+        // RL horizontal from tap
 
-        // Left rail top → bottom
-        line(lx, topY, lx, botY);
+        var lx = 50, rightX = rl ? 310 : 250;
+        var topY = 30, botY = 250;
+        var r1Top = 40, r1Bot = 110;
+        var r2Top = 130, r2Bot = 200;
+        var tapY = 130; // junction between R1 and R2
 
-        // Battery (left rail)
-        line(lx-14, topY+40, lx+14, topY+40, orange, 3); // + plate
-        line(lx-9,  topY+52, lx+9,  topY+52, gray,   2); // - plate
-        line(lx-14, topY+64, lx+14, topY+64, orange, 3);
-        line(lx-9,  topY+76, lx+9,  topY+76, gray,   2);
-        txt(lx, topY+32, '+', orange, 11);
-        txt(lx-26, topY+60, fmtV(uin), light, 10, 'middle');
+        // Left rail (full height)
+        ln(lx, topY, lx, botY);
 
-        // Top wire lx → R1 box
-        line(lx, topY, 140, topY);
-        // R1 box
-        rect(140, topY-14, 60, 28, 'none', orange);
-        txt(170, topY+5, 'R1', orange, 11);
-        txt(170, topY+18, fmtR(r1), gray, 9);
-        // Wire R1 → right top corner
-        line(200, topY, rl ? rx : 240, topY);
+        // Battery on left rail
+        ln(lx-12,topY+50,lx+12,topY+50,orange,3);
+        ln(lx-7, topY+62,lx+7, topY+62,gray,2);
+        ln(lx-12,topY+74,lx+12,topY+74,orange,3);
+        ln(lx-7, topY+86,lx+7, topY+86,gray,2);
+        tx(lx-22, topY+72, fmtV(uin), light, 10);
+        tx(lx,    topY+44, '+', orange, 10);
 
-        // Right vertical line (if RL exists, extends to different x)
-        var rightX = rl ? rx : 240;
-        line(rightX, topY, rightX, botY);
+        // Top wire: lx → rightX at topY
+        ln(lx, topY, rightX, topY);
+        // Bottom wire: lx → rightX at botY
+        ln(lx, botY, rightX, botY);
 
-        // Bottom wire
-        line(lx, botY, rightX, botY);
+        // Right rail: topY → r1Top (wire)
+        ln(rightX, topY, rightX, r1Top);
+        // R1 box on right rail
+        bx(rightX-30, r1Top, 60, r1Bot-r1Top, orange);
+        tx(rightX, r1Top+18, 'R1', orange, 11);
+        tx(rightX, r1Top+32, fmtR(r1), gray, 9);
+        // Right rail: r1Bot → tapY (wire)
+        ln(rightX, r1Bot, rightX, tapY);
 
-        // R2 box (midpoint between midY and botY on left rail)
-        var r2y = midY;
-        line(lx, midY-14, lx, midY-14); // just positioning
-        rect(lx-30, r2y-14, 60, 28, 'none', orange);
-        txt(lx, r2y+5, 'R2', orange, 11);
-        txt(lx, r2y+18, fmtR(r2), gray, 9);
+        // Tap dot
+        dot(rightX, tapY);
 
-        // Uout tap line from midY to right
-        var tapX = 190;
-        line(lx+30, midY, tapX, midY, light, 1.5);
+        // R2 box on right rail
+        bx(rightX-30, r2Top, 60, r2Bot-r2Top, orange);
+        tx(rightX, r2Top+18, 'R2', orange, 11);
+        tx(rightX, r2Top+32, fmtR(r2), gray, 9);
+        // Right rail: r2Bot → botY (wire)
+        ln(rightX, r2Bot, rightX, botY);
 
-        // Uout label
-        txt(tapX+8, midY+4, fmtV(uout), orange, 11, 'start');
-        txt(tapX+8, midY+16, 'Uout', gray, 10, 'start');
-
-        // RL box (if present)
-        if (rl) {
-            var rlx = rx - 30;
-            var rly = midY;
-            line(tapX, midY, rlx, midY, light, 1.5);
-            rect(rlx, rly-14, 60, 28, 'none', '#60a5fa');
-            txt(rx, rly+5, 'RL', '#60a5fa', 11);
-            txt(rx, rly+18, fmtR(rl), gray, 9);
-            line(rx+30, midY, rightX, midY, light, 1.5);
-            line(rightX, midY, rightX, botY, light, 1.5);
+        // Uout tap
+        if (!rl) {
+            // Simple tap line to the right
+            ln(rightX, tapY, rightX+50, tapY, light, 1.5);
+            tx(rightX+55, tapY-6, fmtV(uout), orange, 11, 'start');
+            tx(rightX+55, tapY+8, 'Uout', gray, 10, 'start');
+        } else {
+            // RL branch horizontal
+            var rlLeft = rightX + 20, rlRight = rlLeft + 70;
+            ln(rightX, tapY, rlLeft, tapY, light, 1.5);
+            bx(rlLeft, tapY-14, 70, 28, blue);
+            tx(rlLeft+35, tapY+5, 'RL', blue, 11);
+            tx(rlLeft+35, tapY+18, fmtR(rl), gray, 9);
+            ln(rlRight, tapY, rlRight, botY, light, 1.5);
+            ln(rightX,  botY, rlRight, botY, light, 1.5);
+            tx(rlLeft+35, tapY-18, fmtV(uout), orange, 10);
         }
-
-        // Dot at tap
-        var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
-        dot.setAttribute('cx', lx); dot.setAttribute('cy', midY);
-        dot.setAttribute('r', 4); dot.setAttribute('fill', orange);
-        svg.appendChild(dot);
     }
 
     // Init

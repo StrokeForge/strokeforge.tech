@@ -1,7 +1,8 @@
 {
+  "id": "elec-001",
   "title": "Resistor Color Code Calculator",
-  "type": "tool",
-  "description": "Browser-based resistor color code calculator. Select band colors to get resistance value and tolerance, or enter a value to find the matching color code. Supports 4, 5, and 6 band resistors.",
-  "thumbnail": "thumb.jpg",
-  "date": "2026-03-04"
+  "category": "basic",
+  "description": "Decode resistor color bands to get resistance value, tolerance, and temperature coefficient. Supports 4, 5, and 6 band resistors. Includes reverse lookup — enter a value to find matching color bands.",
+  "icon": "🎨",
+  "difficulty": "beginner"
 }
