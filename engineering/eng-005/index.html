@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Průvodce výběrem materiálu | StrokeForge Engineering</title>
+    <meta name="description" content="Interaktivní průvodce výběrem strojního materiálu. Odpověz na otázky o zatížení, svařování, prostředí a pevnosti — systém doporučí nejvhodnější materiál a vysvětlí proč.">
+    <meta name="keywords" content="výběr materiálu, strojní materiál doporučení, ocel hliník výběr, svařitelnost obrobitelnost, korozivzdorná ocel výběr">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-005/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 860px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+
+        /* Progress bar */
+        .progress-wrap { margin-bottom: 2rem; }
+        .progress-steps { display: flex; gap: 0; margin-bottom: 0.5rem; }
+        .step-dot { flex: 1; height: 4px; background: var(--border-gray); transition: background 0.3s; border-radius: 2px; margin: 0 2px; }
+        .step-dot.done    { background: var(--primary-orange); }
+        .step-dot.current { background: #fb923c99; }
+        .progress-label { font-size: 0.75rem; color: var(--text-gray); text-align: center; }
+
+        /* Wizard card */
+        .wizard-card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 14px; padding: 2rem 2.25rem; }
+        .step-num  { font-size: 0.75rem; color: var(--primary-orange); font-weight: 700; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+        .step-q    { font-size: 1.25rem; font-weight: 700; color: var(--light-gray); margin-bottom: 0.35rem; }
+        .step-hint { font-size: 0.82rem; color: var(--text-gray); margin-bottom: 1.5rem; }
+
+        /* Option cards */
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.75rem; }
+        @media (max-width: 560px) { .options-grid { grid-template-columns: 1fr; } }
+        .options-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+        @media (max-width: 640px) { .options-grid.cols3 { grid-template-columns: 1fr 1fr; } }
+
+        .opt-card { background: var(--darker-bg); border: 2px solid var(--border-gray); border-radius: 10px; padding: 1rem 1.1rem; cursor: pointer; transition: all 0.18s; user-select: none; }
+        .opt-card:hover  { border-color: rgba(251,146,60,0.5); }
+        .opt-card.selected { border-color: var(--primary-orange); background: rgba(251,146,60,0.08); }
+        .opt-icon  { font-size: 1.6rem; margin-bottom: 0.4rem; }
+        .opt-label { font-size: 0.92rem; font-weight: 700; color: var(--light-gray); margin-bottom: 0.2rem; }
+        .opt-desc  { font-size: 0.75rem; color: var(--text-gray); line-height: 1.5; }
+        .opt-check { float: right; font-size: 1rem; color: var(--primary-orange); display: none; }
+        .opt-card.selected .opt-check { display: inline; }
+
+        /* Multi-select hint */
+        .multi-hint { font-size: 0.73rem; color: var(--primary-orange); margin-bottom: 1rem; }
+
+        /* Nav buttons */
+        .wizard-nav { display: flex; gap: 1rem; justify-content: space-between; align-items: center; }
+        .btn-back { background: none; border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 8px; padding: 0.6rem 1.5rem; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
+        .btn-back:hover { border-color: var(--light-gray); color: var(--light-gray); }
+        .btn-next { background: var(--primary-orange); border: none; color: #000; border-radius: 8px; padding: 0.65rem 2rem; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+        .btn-next:disabled { opacity: 0.35; cursor: not-allowed; }
+        .btn-next:not(:disabled):hover { opacity: 0.85; }
+        .btn-restart { background: none; border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 8px; padding: 0.55rem 1.2rem; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+        .btn-restart:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+
+        /* Results */
+        .results-header { text-align: center; margin-bottom: 1.75rem; }
+        .results-header h2 { font-size: 1.4rem; color: var(--primary-orange); margin-bottom: 0.3rem; }
+        .results-header p  { font-size: 0.85rem; color: var(--text-gray); }
+
+        .result-card { background: var(--darker-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; position: relative; overflow: hidden; }
+        .result-card.rank-1 { border-color: #fb923c; }
+        .result-card.rank-2 { border-color: #60a5fa66; }
+        .result-card.rank-3 { border-color: #4ade8066; }
+
+        .result-rank { position: absolute; top: 1rem; right: 1.2rem; font-size: 1.5rem; font-weight: 900; color: rgba(255,255,255,0.07); font-family: monospace; }
+
+        .result-top { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 0.85rem; flex-wrap: wrap; }
+        .result-name { flex: 1; }
+        .result-name .rn-csn  { font-size: 1.1rem; font-weight: 800; color: var(--primary-orange); font-family: monospace; }
+        .result-name .rn-en   { font-size: 0.85rem; color: var(--text-gray); margin-top: 0.1rem; }
+        .result-score { text-align: right; }
+        .score-bar-wrap { width: 80px; }
+        .score-label { font-size: 0.65rem; color: var(--text-gray); margin-bottom: 0.2rem; text-align: right; }
+        .score-bar { height: 6px; background: var(--border-gray); border-radius: 3px; overflow: hidden; }
+        .score-fill { height: 100%; border-radius: 3px; background: var(--primary-orange); transition: width 0.5s; }
+        .score-pct { font-size: 0.7rem; color: var(--primary-orange); text-align: right; margin-top: 0.2rem; font-weight: 700; }
+
+        .result-props { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.85rem; }
+        .prop-chip { background: rgba(255,255,255,0.05); border-radius: 5px; padding: 0.2rem 0.6rem; font-size: 0.75rem; color: var(--text-gray); }
+        .prop-chip span { color: var(--light-gray); font-weight: 600; }
+
+        .result-pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.78rem; }
+        @media (max-width: 500px) { .result-pros-cons { grid-template-columns: 1fr; } }
+        .pros { }
+        .cons { }
+        .pros-label { color: #4ade80; font-weight: 700; margin-bottom: 0.3rem; font-size: 0.72rem; }
+        .cons-label { color: #f87171; font-weight: 700; margin-bottom: 0.3rem; font-size: 0.72rem; }
+        .pros li, .cons li { color: var(--text-gray); line-height: 1.5; list-style: none; padding-left: 1rem; position: relative; }
+        .pros li::before { content: '+'; position: absolute; left: 0; color: #4ade80; }
+        .cons li::before { content: '−'; position: absolute; left: 0; color: #f87171; }
+
+        .eng004-link { display: inline-block; margin-top: 0.75rem; font-size: 0.78rem; color: var(--primary-orange); text-decoration: none; }
+        .eng004-link:hover { text-decoration: underline; }
+
+        .no-results { text-align: center; padding: 2rem; color: var(--text-gray); }
+
+        /* Summary chips */
+        .summary-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; justify-content: center; }
+        .s-chip { background: rgba(251,146,60,0.12); border: 1px solid rgba(251,146,60,0.3); border-radius: 20px; padding: 0.2rem 0.7rem; font-size: 0.75rem; color: var(--primary-orange); }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../3d-printing.html">3D Printing</a>
+                <a href="../../electronics.html">Electronics</a>
+                <a href="../../mechanical.html" class="active">Engineering</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="breadcrumb"><a href="../../mechanical.html">← Engineering</a></div>
+
+    <header class="page-header">
+        <h1>🎯 Průvodce výběrem materiálu</h1>
+        <p>Odpověz na 5 otázek — systém doporučí nejvhodnější strojní materiál a vysvětlí proč.</p>
+    </header>
+
+    <main class="tool-wrap">
+        <div class="progress-wrap">
+            <div class="progress-steps" id="progress-steps"></div>
+            <div class="progress-label" id="progress-label">Krok 1 z 5</div>
+        </div>
+
+        <div class="wizard-card" id="wizard-card"></div>
+    </main>
+
+    <footer>
+        <p>Část <a href="../../mechanical.html">StrokeForge Engineering</a> — technické tabulky pro strojaře</p>
+    </footer>
+
+    <script>
+    // ═══════════════════════════════════════════════════════════════════════
+    // MATERIAL DATABASE
+    // ═══════════════════════════════════════════════════════════════════════
+    // svar/obrob: v=výborná, d=dobrá, o=omezená, s=špatná
+    // kor: odolnost korozi: h=výborná, s=střední, n=nízká
+    // hm: hustota: L=lehký(Al/Mg), M=střední(Ti), H=těžký(ocel/litina)
+    // cena: 1=levná, 2=střední, 3=drahá, 4=velmi drahá
+    // teplota: max pracovní teplota °C
+    // cats: kategorie
+
+    const MAT = [
+        // ── KONSTRUKČNÍ OCEL ─────────────────────────────────────────────
+        { csn:'11 373', en:'S235JR / 1.0038',  re:235,  rm:360,  svar:'v', obrob:'d', kor:'n', hm:'H', cena:1, teplota:400, cats:['konstrukcni'],
+          pouziti:'Ocelové konstrukce, rámy, svařované díly',
+          pros:['Nejlevnější konstrukční ocel','Výborně svařitelná','Snadno dostupná'],
+          cons:['Nízká pevnost','Koroduje — nutný nátěr','Nekalitelná'] },
+        { csn:'11 523', en:'S355JR / 1.0045',  re:355,  rm:510,  svar:'d', obrob:'d', kor:'n', hm:'H', cena:1, teplota:400, cats:['konstrukcni'],
+          pouziti:'Jeřáby, mosty, ocelové haly, stroje',
+          pros:['Dobrá pevnost za nízkou cenu','Svařitelná','Nejběžnější nosná ocel'],
+          cons:['Koroduje','Nutný předehřev u tlusté plechy','Nekalitelná'] },
+        { csn:'11 600', en:'C45 / 1.0503',     re:305,  rm:580,  svar:'o', obrob:'d', kor:'n', hm:'H', cena:1, teplota:400, cats:['konstrukcni'],
+          pouziti:'Hřídele, ozubená kola, čepy, klíny',
+          pros:['Kalitelná','Dobrá obrobitelnost','Levná a dostupná'],
+          cons:['Svářet obtížněji — nutný předehřev','Koroduje','Omezená houževnatost po kalení'] },
+        { csn:'12 050', en:'C45E / 1.1191',    re:340,  rm:620,  svar:'o', obrob:'d', kor:'n', hm:'H', cena:1, teplota:400, cats:['konstrukcni'],
+          pouziti:'Hřídele, šrouby pevnostních tříd, ozubená kola',
+          pros:['Čistší tavenina než C45','Vhodná pro povrchové kalení','Dobrá obrobitelnost'],
+          cons:['Svařování s předehřevem','Koroduje'] },
+        { csn:'13 240', en:'42CrMo4 / 1.7225', re:650,  rm:900,  svar:'o', obrob:'d', kor:'n', hm:'H', cena:2, teplota:450, cats:['konstrukcni'],
+          pouziti:'Hřídele, šrouby 10.9, ozubená kola, vrtací tyče',
+          pros:['Vysoká pevnost','Dobrá houževnatost','Dostupná ušlechtilá ocel'],
+          cons:['Nutný předehřev před svařováním','Koroduje','Vyšší cena než C45'] },
+        { csn:'15 230', en:'34CrNiMo6 / 1.6582', re:800, rm:1000, svar:'o', obrob:'d', kor:'n', hm:'H', cena:2, teplota:450, cats:['konstrukcni'],
+          pouziti:'Klikové hřídele, ojnice, extrémně namáhané hřídele',
+          pros:['Velmi vysoká pevnost i houževnatost','Dobrá obrobitelnost'],
+          cons:['Svařování jen výjimečně','Koroduje','Vyšší cena'] },
+
+        // ── NEREZOVÁ OCEL ────────────────────────────────────────────────
+        { csn:'17 240', en:'304 / 1.4301',  re:210, rm:520,  svar:'d', obrob:'o', kor:'h', hm:'H', cena:2, teplota:700, cats:['nerez'],
+          pouziti:'Nádrže, potrubí, kuchyňské vybavení, architektura',
+          pros:['Výborná korozní odolnost','Hygienická','Estetický vzhled'],
+          cons:['Horší obrobitelnost — lepí se na nástroj','Nižší pevnost','Dražší než konstrukční ocel'] },
+        { csn:'17 246', en:'304L / 1.4307', re:200, rm:500,  svar:'v', obrob:'o', kor:'h', hm:'H', cena:2, teplota:700, cats:['nerez'],
+          pouziti:'Svařované nádrže, potravinářství, chemie',
+          pros:['Výborně svařitelná — bez senzibilizace','Korozní odolnost','Potravinářský standard'],
+          cons:['Nižší pevnost než 304','Obrobitelnost horší','Cena'] },
+        { csn:'17 248', en:'316 / 1.4401',  re:220, rm:530,  svar:'d', obrob:'o', kor:'h', hm:'H', cena:3, teplota:700, cats:['nerez'],
+          pouziti:'Chemický průmysl, mořské prostředí, farmaceuta',
+          pros:['Lepší odolnost chloridům než 304','Odolná kyselinám','Medicínský materiál'],
+          cons:['Dražší než 304','Horší obrobitelnost','Nižší pevnost'] },
+        { csn:'17 349', en:'316L / 1.4404', re:200, rm:500,  svar:'v', obrob:'o', kor:'h', hm:'H', cena:3, teplota:700, cats:['nerez'],
+          pouziti:'Svařované díly v agresivním prostředí, implantáty',
+          pros:['Výborně svařitelná','Odolnost chloridům','Standard pro medicínu a farmacii'],
+          cons:['Nejvyšší cena v základní nerez řadě','Nízká pevnost','Obtížná obrobitelnost'] },
+        { csn:'17 022', en:'430 / 1.4016',  re:230, rm:430,  svar:'o', obrob:'d', kor:'s', hm:'H', cena:2, teplota:800, cats:['nerez'],
+          pouziti:'Dekorativní prvky, spotřebiče, výfuky',
+          pros:['Levnější nerez (bez Ni)','Magnetická','Dobrá obrobitelnost'],
+          cons:['Horší korozní odolnost než 304','Obtížněji svařitelná','Nižší pevnost'] },
+        { csn:'17 465', en:'2205 / 1.4462', re:460, rm:640,  svar:'d', obrob:'o', kor:'h', hm:'H', cena:3, teplota:250, cats:['nerez'],
+          pouziti:'Chemický průmysl, desalinace, mořské stavby',
+          pros:['Dvojnásobná pevnost oproti 304','Výborná odolnost pittingu a SCC','Dobrá svařitelnost'],
+          cons:['Drahá','Obtížnější obrobitelnost','Max. teplota omezena na 250°C'] },
+
+        // ── NÁSTROJOVÁ OCEL ──────────────────────────────────────────────
+        { csn:'19 083', en:'D2 / 1.2379',   re:null, rm:null, svar:'s', obrob:'o', kor:'s', hm:'H', cena:3, teplota:200, cats:['nastrojova'],
+          pouziti:'Střižné nástroje, razníky, formy na plast',
+          pros:['Výborná odolnost opotřebení','Vysoká tvrdost HRC 60–62','Rozměrová stabilita při kalení'],
+          cons:['Nesvařitelná','Obtížná obrobitelnost','Zpracování jen broušením po kalení'] },
+        { csn:'19 437', en:'H13 / 1.2344',  re:null, rm:null, svar:'o', obrob:'d', kor:'s', hm:'H', cena:3, teplota:600, cats:['nastrojova'],
+          pouziti:'Lisovací formy, tlakovéodlitky Al, kovací zápustky',
+          pros:['Odolnost tepelné únavě','Vysoká houževnatost za tepla','Obrábí se v žíhaném stavu'],
+          cons:['Drahá','Svařitelná jen s předehřevem','Po kalení jen broušení'] },
+        { csn:'19 550', en:'M2 / 1.3343',   re:null, rm:null, svar:'s', obrob:'s', kor:'s', hm:'H', cena:3, teplota:600, cats:['nastrojova'],
+          pouziti:'Vrtáky, frézy, závitníky, protahovací trny',
+          pros:['Tvrdost zachována do 600°C','Výborná řezivost','Standard pro řezné nástroje'],
+          cons:['Nesvařitelná','Špatná obrobitelnost — jen broušení','Křehká při rázech'] },
+        { csn:'19 732', en:'P20 / 1.2311',  re:900,  rm:1050, svar:'o', obrob:'v', kor:'s', hm:'H', cena:2, teplota:300, cats:['nastrojova'],
+          pouziti:'Formy pro vstřikování plastů, předdodávaný stav',
+          pros:['Výborná obrobitelnost — dodává se kalenovaný','Bez nutnosti tepelného zpracování','Rozumná cena'],
+          cons:['Nižší tvrdost než D2/H13','Svařitelné s opatrností','Omezená odolnost opotřebení'] },
+
+        // ── HLINÍK ───────────────────────────────────────────────────────
+        { csn:'AlSi1MgMn', en:'EN AW-6082 / 3.2315', re:260, rm:310, svar:'d', obrob:'v', kor:'s', hm:'L', cena:2, teplota:200, cats:['hlinik'],
+          pouziti:'Nosníky, profily, strojní díly, dopravní prostředky',
+          pros:['Výborná obrobitelnost','Lehký — 2.7 g/cm³','Dobrá korozní odolnost','Nejběžnější konstrukční Al v Evropě'],
+          cons:['Nižší pevnost než ocel','Omezená svařitelnost (nutný TIG)','Max. teplota ~200°C'] },
+        { csn:'AlMg1SiCu', en:'EN AW-6061 / 3.3211', re:276, rm:310, svar:'d', obrob:'v', kor:'s', hm:'L', cena:2, teplota:200, cats:['hlinik'],
+          pouziti:'CNC obrobky, letadlové rámy, sportovní díly',
+          pros:['Výborná obrobitelnost','Všestranná slitina T6','Lehký','Dobrá korozní odolnost'],
+          cons:['Nižší pevnost než ocel','Svařitelné s opatrností','Max. teplota ~200°C'] },
+        { csn:'AlZn5.5MgCu', en:'EN AW-7075 / 3.4365', re:503, rm:572, svar:'s', obrob:'d', kor:'s', hm:'L', cena:3, teplota:120, cats:['hlinik'],
+          pouziti:'Letecké konstrukce, high-end CNC díly, sportovní vybavení',
+          pros:['Nejvyšší pevnost z běžných Al slitin','Lehký','Výborný pro CNC'],
+          cons:['Nesvařitelná','Náchylná na SCC','Drahá','Max. teplota jen 120°C'] },
+        { csn:'AlMg4.5Mn', en:'EN AW-5083 / 3.3547', re:200, rm:290, svar:'v', obrob:'d', kor:'h', hm:'L', cena:2, teplota:65, cats:['hlinik'],
+          pouziti:'Námořní stavby, kryogenní nádrže, tlaková zařízení',
+          pros:['Výborná korozní odolnost i v mořském prostředí','Výborně svařitelná','Funkční do −200°C'],
+          cons:['Nižší pevnost','Nelze tepelně zpracovat','Max. provozní teplota +65°C'] },
+        { csn:'AlCu4Mg1', en:'EN AW-2024 / 3.1355',  re:325, rm:470, svar:'s', obrob:'v', kor:'n', hm:'L', cena:3, teplota:150, cats:['hlinik'],
+          pouziti:'Letecké konstrukce, potahy, přesné strojní díly',
+          pros:['Vysoká pevnost pro Al','Výborná obrobitelnost','Letecký standard'],
+          cons:['Nesvařitelná','Náchylná na mezikrystalickou korozi','Nutná povrchová ochrana'] },
+
+        // ── LITINA ───────────────────────────────────────────────────────
+        { csn:'42 2420', en:'EN-GJL-200',  re:null, rm:200, svar:'s', obrob:'v', kor:'n', hm:'H', cena:1, teplota:300, cats:['litina'],
+          pouziti:'Bloky motorů, převodovkové skříně, ložiskové domky',
+          pros:['Výborná obrobitelnost','Výborné tlumení vibrací','Nejlevnější strojní materiál','Složité tvary odléváním'],
+          cons:['Křehká — nízká tažnost','Koroduje','Nelze svařovat (prakticky)','Nízká pevnost v tahu'] },
+        { csn:'42 2305', en:'EN-GJS-400-15', re:250, rm:400, svar:'o', obrob:'d', kor:'n', hm:'H', cena:1, teplota:300, cats:['litina'],
+          pouziti:'Příruby, armatury, součásti převodovek, klikové hřídele',
+          pros:['Tažná — grafit ve tvaru kuliček','Dobrá pevnost pro odlitek','Levná','Tlumení vibrací'],
+          cons:['Koroduje','Svařování náročné','Horší obrobitelnost než šedá litina'] },
+
+        // ── PRUŽINOVÁ OCEL ───────────────────────────────────────────────
+        { csn:'14 260', en:'60Si2Mn / 1.0961', re:1200, rm:1350, svar:'s', obrob:'o', kor:'n', hm:'H', cena:2, teplota:250, cats:['pruzinova'],
+          pouziti:'Listové pružiny, vinuté pružiny, odpružení vozidel',
+          pros:['Výborná pružnost a relaxační odolnost','Vysoká mez únavy','Dostupná'],
+          cons:['Nesvařitelná','Koroduje','Zpracování obtížné'] },
+        { csn:'16 343', en:'51CrV4 / 1.8159', re:900, rm:1100, svar:'s', obrob:'o', kor:'n', hm:'H', cena:2, teplota:250, cats:['pruzinova'],
+          pouziti:'Vinuté pružiny, ventilové pružiny, torzní tyče',
+          pros:['Výborná únavová pevnost','Houževnatá','Oblíbená pro přesné pružiny'],
+          cons:['Nesvařitelná','Koroduje','Obrobitelnost omezená'] },
+        { csn:'17 221', en:'17-7PH / 1.4568', re:1100, rm:1300, svar:'o', obrob:'o', kor:'h', hm:'H', cena:4, teplota:370, cats:['pruzinova','nerez'],
+          pouziti:'Nerezové pružiny, medicína, potravinářství',
+          pros:['Kombinace pevnosti a korozní odolnosti','Nerezová — hygienická','Výborná únava'],
+          cons:['Velmi drahá','Svařitelnost omezená','Obtížná obrobitelnost'] },
+    ];
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // WIZARD STEPS
+    // ═══════════════════════════════════════════════════════════════════════
+    const STEPS = [
+        {
+            id: 'zatizeni',
+            q: 'Jaký typ zatížení bude součást snášet?',
+            hint: 'Určuje požadovanou pevnost, houževnatost a únavové vlastnosti.',
+            multi: false,
+            opts: [
+                { val:'static',  icon:'⬛', label:'Statické',     desc:'Stálé zatížení, žádné rázy ani vibrace (stojan, nosník, rám)' },
+                { val:'dynamic', icon:'🔄', label:'Dynamické',    desc:'Střídavé nebo cyklické zatížení (hřídel, ojnice, pero)' },
+                { val:'impact',  icon:'💥', label:'Rázové',       desc:'Náhlé nárazy, vibrace (kladiva, zápustky, úchyty)' },
+                { val:'wear',    icon:'⚙️', label:'Opotřebení',   desc:'Třecí nebo abrazivní kontakt (vodítka, ozubení, střižníky)' },
+                { val:'spring',  icon:'🌀', label:'Pružení',      desc:'Opakovaná elastická deformace (pružiny, péra, klipy)' },
+            ]
+        },
+        {
+            id: 'technologie',
+            q: 'Jaká výrobní technologie se použije?',
+            hint: 'Výběr ovlivňuje svařitelnost a obrobitelnost.',
+            multi: true,
+            opts: [
+                { val:'machining', icon:'🔧', label:'Obrábění',    desc:'Soustružení, frézování, vrtání, broušení' },
+                { val:'welding',   icon:'🔥', label:'Svařování',   desc:'MIG/MAG, TIG, elektrodové svařování' },
+                { val:'casting',   icon:'🏭', label:'Odlévání',    desc:'Tvarové odlitky, tlakovéodlitky' },
+                { val:'forming',   icon:'🔨', label:'Tváření',     desc:'Ohýbání, lisování, tažení, kování' },
+            ]
+        },
+        {
+            id: 'prostredi',
+            q: 'V jakém prostředí bude součást pracovat?',
+            hint: 'Určuje požadavky na korozní odolnost a teplotní stabilitu.',
+            multi: false,
+            opts: [
+                { val:'normal',   icon:'🏠', label:'Běžné prostředí',       desc:'Interiér, stroje, suchý vzduch — bez zvláštních nároků' },
+                { val:'outdoor',  icon:'🌧️', label:'Venkovní / vlhkost',    desc:'Déšť, kondenzace, vlhkost — riziko koroze' },
+                { val:'chemical', icon:'⚗️', label:'Chemické / agresivní',  desc:'Kyseliny, zásady, chloridy, mořská voda' },
+                { val:'food',     icon:'🍽️', label:'Potravinářství / med.', desc:'Hygienické požadavky, čistitelnost, 316L standard' },
+                { val:'hightemp', icon:'🌡️', label:'Vysoká teplota >300°C', desc:'Pece, výfuky, obrábění za tepla, kovací nástroje' },
+            ]
+        },
+        {
+            id: 'pevnost',
+            q: 'Jaká je požadovaná pevnost (Rm)?',
+            hint: 'Minimální pevnost v tahu. Pro dynamicky namáhané díly volte o stupeň výše.',
+            multi: false,
+            opts: [
+                { val:'low',      icon:'🟢', label:'Nízká  < 400 MPa',    desc:'Kryty, rámy, nenamáhané díly, nádrže' },
+                { val:'medium',   icon:'🟡', label:'Střední 400–700 MPa', desc:'Hřídele, nosníky, příruby, strojní součásti' },
+                { val:'high',     icon:'🟠', label:'Vysoká 700–1200 MPa', desc:'Ušlechtilé hřídele, ozubení, šrouby 10.9' },
+                { val:'extreme',  icon:'🔴', label:'Extrémní > 1200 MPa', desc:'Pružiny, nástroje, vysoce namáhané díly' },
+            ]
+        },
+        {
+            id: 'hmotnost',
+            q: 'Jaké jsou požadavky na hmotnost?',
+            hint: 'Ovlivňuje výběr mezi ocelí a lehkými slitinami.',
+            multi: false,
+            opts: [
+                { val:'any',      icon:'⚖️', label:'Není důležitá',         desc:'Hmotnost nehraje roli — volný výběr' },
+                { val:'reduced',  icon:'🪶', label:'Preferovat lehčí',      desc:'Snížení hmotnosti je žádoucí (Al, titan)' },
+                { val:'critical', icon:'🚀', label:'Kriticky důležitá',     desc:'Minimální hmotnost za každou cenu (letectví, sport)' },
+            ]
+        },
+    ];
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════════════════════════════
+    let step = 0;
+    let answers = {}; // stepId → val or [vals]
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // SCORING
+    // ═══════════════════════════════════════════════════════════════════════
+    function score(m, ans) {
+        let s = 0;
+
+        // ── Zatížení ──────────────────────────────────────────────────────
+        const zat = ans.zatizeni;
+        if (zat === 'static') {
+            // Anything works, prefer cheap
+            if (m.cena === 1) s += 2;
+        }
+        if (zat === 'dynamic') {
+            // Need moderate-high strength + some toughness
+            if (m.rm && m.rm >= 400) s += 3;
+            if (m.rm && m.rm >= 700) s += 2;
+            if (m.cats.includes('litina')) s -= 3; // brittle
+            if (m.cats.includes('pruzinova')) s += 1;
+        }
+        if (zat === 'impact') {
+            if (m.rm && m.rm >= 700) s += 2;
+            if (m.cats.includes('litina')) s -= 5; // brittle = bad for impact
+            if (['19 083','19 550'].includes(m.csn)) s -= 3; // tool steels = brittle
+            if (['13 240','15 230'].includes(m.csn)) s += 3; // tough alloy steels
+        }
+        if (zat === 'wear') {
+            if (m.cats.includes('nastrojova')) s += 5;
+            if (['11 600','12 050'].includes(m.csn)) s += 2; // hardenable
+            if (m.cats.includes('litina') && m.csn === '42 2420') s += 1;
+            if (m.cats.includes('hlinik')) s -= 2; // soft
+        }
+        if (zat === 'spring') {
+            if (m.cats.includes('pruzinova')) s += 6;
+            if (m.cats.includes('nastrojova')) s -= 2;
+            if (m.cats.includes('litina')) s -= 5;
+        }
+
+        // ── Technologie ───────────────────────────────────────────────────
+        const tech = ans.technologie || [];
+        if (tech.includes('welding')) {
+            const w = { v:4, d:2, o:-1, s:-5 };
+            s += (w[m.svar] || 0);
+        }
+        if (tech.includes('machining')) {
+            const o = { v:3, d:2, o:0, s:-3 };
+            s += (o[m.obrob] || 0);
+        }
+        if (tech.includes('casting')) {
+            if (m.cats.includes('litina')) s += 5;
+            if (m.cats.includes('hlinik')) s += 2;
+            if (!m.cats.includes('litina') && !m.cats.includes('hlinik')) s -= 1;
+        }
+        if (tech.includes('forming')) {
+            if (m.cats.includes('litina')) s -= 4; // brittle
+            if (m.cats.includes('nastrojova') && !['19 732'].includes(m.csn)) s -= 3;
+            if (m.cats.includes('hlinik')) s += 1;
+            if (['11 373','11 523'].includes(m.csn)) s += 3; // great formability
+        }
+
+        // ── Prostředí ─────────────────────────────────────────────────────
+        const prost = ans.prostredi;
+        if (prost === 'normal') {
+            // No penalty, prefer cheap
+            if (m.cena === 1) s += 1;
+        }
+        if (prost === 'outdoor') {
+            if (m.kor === 'h') s += 3;
+            if (m.kor === 's') s += 1;
+            if (m.kor === 'n') s -= 3;
+        }
+        if (prost === 'chemical') {
+            if (m.kor === 'h') s += 5;
+            if (m.kor === 's') s -= 1;
+            if (m.kor === 'n') s -= 5;
+            // 316/316L best
+            if (['17 248','17 349','17 465'].includes(m.csn)) s += 3;
+        }
+        if (prost === 'food') {
+            if (m.kor === 'h') s += 5;
+            else s -= 5;
+            if (['17 246','17 349','17 248'].includes(m.csn)) s += 3;
+            if (m.cats.includes('nastrojova')) s -= 3;
+            if (m.cats.includes('litina')) s -= 3;
+        }
+        if (prost === 'hightemp') {
+            if (m.teplota >= 500) s += 4;
+            else if (m.teplota >= 300) s += 2;
+            else if (m.teplota < 200) s -= 4;
+            if (m.cats.includes('hlinik')) s -= 5;
+            if (['19 437','19 452','17 465'].includes(m.csn)) s += 2;
+        }
+
+        // ── Pevnost ───────────────────────────────────────────────────────
+        const pev = ans.pevnost;
+        const rm = m.rm;
+        if (pev === 'low') {
+            if (!rm || rm < 400) s += 3;
+            else if (rm < 600) s += 1;
+            else s -= 1; // overkill — not a penalty, just not preferred
+        }
+        if (pev === 'medium') {
+            if (rm && rm >= 400 && rm < 700) s += 4;
+            else if (rm && rm >= 300 && rm < 900) s += 2;
+            else s -= 1;
+        }
+        if (pev === 'high') {
+            if (rm && rm >= 700 && rm < 1200) s += 4;
+            else if (rm && rm >= 500) s += 2;
+            else if (!rm || rm < 400) s -= 3;
+        }
+        if (pev === 'extreme') {
+            if (rm && rm >= 1200) s += 5;
+            else if (rm && rm >= 900) s += 3;
+            else if (!rm || rm < 700) s -= 3;
+            // Tool steels — no Rm but very hard
+            if (m.cats.includes('nastrojova') && m.csn !== '19 732') s += 3;
+        }
+
+        // ── Hmotnost ──────────────────────────────────────────────────────
+        const hm = ans.hmotnost;
+        if (hm === 'reduced') {
+            if (m.hm === 'L') s += 3;
+            if (m.hm === 'M') s += 1;
+        }
+        if (hm === 'critical') {
+            if (m.hm === 'L') s += 5;
+            if (m.hm === 'H') s -= 3;
+        }
+
+        return s;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // RENDER
+    // ═══════════════════════════════════════════════════════════════════════
+    function renderProgress() {
+        const stepsEl = document.getElementById('progress-steps');
+        stepsEl.innerHTML = '';
+        STEPS.forEach((_, i) => {
+            const d = document.createElement('div');
+            d.className = 'step-dot' + (i < step ? ' done' : i === step ? ' current' : '');
+            stepsEl.appendChild(d);
+        });
+        document.getElementById('progress-label').textContent =
+            step < STEPS.length ? `Krok ${step+1} z ${STEPS.length}` : 'Výsledky';
+    }
+
+    function renderStep() {
+        const s = STEPS[step];
+        const sel = answers[s.id] || (s.multi ? [] : null);
+
+        let html = `
+            <div class="step-num">KROK ${step+1} / ${STEPS.length}</div>
+            <div class="step-q">${s.q}</div>
+            <div class="step-hint">${s.hint}</div>
+            ${s.multi ? '<div class="multi-hint">✦ Lze vybrat více možností</div>' : ''}
+            <div class="options-grid${s.opts.length >= 4 ? '' : ' cols3'}">
+        `;
+        s.opts.forEach(o => {
+            const isSelected = s.multi
+                ? (sel.includes(o.val))
+                : (sel === o.val);
+            html += `
+                <div class="opt-card${isSelected?' selected':''}" onclick="selectOpt('${s.id}','${o.val}',${s.multi})">
+                    <span class="opt-check">✓</span>
+                    <div class="opt-icon">${o.icon}</div>
+                    <div class="opt-label">${o.label}</div>
+                    <div class="opt-desc">${o.desc}</div>
+                </div>
+            `;
+        });
+        html += `</div>
+            <div class="wizard-nav">
+                <button class="btn-back" onclick="goBack()" ${step===0?'style="visibility:hidden"':''}>← Zpět</button>
+                <button class="btn-next" id="btn-next" onclick="goNext()" ${!hasAnswer(s.id,s.multi)?'disabled':''}>
+                    ${step === STEPS.length-1 ? 'Zobrazit výsledky →' : 'Další →'}
+                </button>
+            </div>
+        `;
+        document.getElementById('wizard-card').innerHTML = html;
+    }
+
+    function hasAnswer(id, multi) {
+        if (multi) return (answers[id] || []).length > 0;
+        return answers[id] != null;
+    }
+
+    function selectOpt(id, val, multi) {
+        if (multi) {
+            if (!answers[id]) answers[id] = [];
+            const idx = answers[id].indexOf(val);
+            if (idx >= 0) answers[id].splice(idx, 1);
+            else answers[id].push(val);
+        } else {
+            answers[id] = val;
+        }
+        renderStep();
+    }
+
+    function goBack() {
+        if (step > 0) { step--; renderProgress(); renderStep(); }
+    }
+
+    function goNext() {
+        const s = STEPS[step];
+        if (!hasAnswer(s.id, s.multi)) return;
+        step++;
+        renderProgress();
+        if (step >= STEPS.length) renderResults();
+        else renderStep();
+    }
+
+    // ── RESULTS ───────────────────────────────────────────────────────────
+    function renderResults() {
+        const scored = MAT.map(m => ({ m, s: score(m, answers) }))
+            .sort((a,b) => b.s - a.s);
+
+        const maxS = scored[0].s;
+        const top  = scored.slice(0, 5).filter(x => x.s > 0);
+
+        // Summary chips
+        const stepLabels = {
+            zatizeni:    STEPS[0].opts.find(o => o.val === answers.zatizeni)?.label,
+            technologie: (answers.technologie||[]).map(v => STEPS[1].opts.find(o=>o.val===v)?.label).join(', '),
+            prostredi:   STEPS[2].opts.find(o => o.val === answers.prostredi)?.label,
+            pevnost:     STEPS[3].opts.find(o => o.val === answers.pevnost)?.label,
+            hmotnost:    STEPS[4].opts.find(o => o.val === answers.hmotnost)?.label,
+        };
+        const chips = Object.entries(stepLabels).filter(([,v])=>v).map(([,v]) =>
+            `<span class="s-chip">${v}</span>`).join('');
+
+        let html = `
+            <div class="results-header">
+                <h2>Doporučené materiály</h2>
+                <p>Na základě tvých požadavků — od nejlépe po méně vhodné.</p>
+            </div>
+            <div class="summary-chips">${chips}</div>
+        `;
+
+        if (top.length === 0) {
+            html += `<div class="no-results">Nepodařilo se najít ideální shodu. Zkus změnit požadavky — kombinace může být vzájemně vylučující.</div>`;
+        } else {
+            top.forEach(({m, s: sc}, i) => {
+                const pct = Math.round((sc / maxS) * 100);
+                const rankCls = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : 'rank-3';
+                html += `
+                    <div class="result-card ${rankCls}">
+                        <div class="result-rank">#${i+1}</div>
+                        <div class="result-top">
+                            <div class="result-name">
+                                <div class="rn-csn">ČSN ${m.csn}</div>
+                                <div class="rn-en">${m.en}</div>
+                            </div>
+                            <div class="result-score">
+                                <div class="score-bar-wrap">
+                                    <div class="score-label">Shoda</div>
+                                    <div class="score-bar"><div class="score-fill" style="width:${pct}%"></div></div>
+                                    <div class="score-pct">${pct}%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-props">
+                            ${m.re ? `<div class="prop-chip">Re <span>${m.re} MPa</span></div>` : ''}
+                            ${m.rm ? `<div class="prop-chip">Rm <span>${m.rm} MPa</span></div>` : ''}
+                            <div class="prop-chip">Svař. <span>${{v:'výborná',d:'dobrá',o:'omezená',s:'špatná'}[m.svar]}</span></div>
+                            <div class="prop-chip">Obrob. <span>${{v:'výborná',d:'dobrá',o:'omezená',s:'špatná'}[m.obrob]}</span></div>
+                            <div class="prop-chip">Cena <span>${['','nízká','střední','vyšší','vysoká'][m.cena]}</span></div>
+                        </div>
+                        <div style="font-size:0.8rem;color:var(--text-gray);margin-bottom:0.75rem">${m.pouziti}</div>
+                        <div class="result-pros-cons">
+                            <div class="pros">
+                                <div class="pros-label">✓ Výhody pro tvůj případ</div>
+                                <ul>${m.pros.map(p=>`<li>${p}</li>`).join('')}</ul>
+                            </div>
+                            <div class="cons">
+                                <div class="cons-label">− Nevýhody / kompromisy</div>
+                                <ul>${m.cons.map(c=>`<li>${c}</li>`).join('')}</ul>
+                            </div>
+                        </div>
+                        <a class="eng004-link" href="../eng-004/" target="_blank">→ Zobrazit detail v tabulce materiálů</a>
+                    </div>
+                `;
+            });
+        }
+
+        html += `
+            <div class="wizard-nav" style="margin-top:1.5rem">
+                <button class="btn-restart" onclick="restart()">← Začít znovu</button>
+                <a href="../eng-004/" style="font-size:0.82rem;color:var(--primary-orange);text-decoration:none">Celá tabulka materiálů →</a>
+            </div>
+        `;
+
+        document.getElementById('wizard-card').innerHTML = html;
+    }
+
+    function restart() {
+        step = 0;
+        answers = {};
+        renderProgress();
+        renderStep();
+    }
+
+    // ── INIT ──────────────────────────────────────────────────────────────
+    renderProgress();
+    renderStep();
+    </script>
+</body>
+</html>

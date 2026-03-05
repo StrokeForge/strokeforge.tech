@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strojní materiály — přehled a vlastnosti | StrokeForge Engineering</title>
+    <meta name="description" content="Přehled 90+ strojních materiálů: konstrukční, nerezové, nástrojové oceli, hliník, litina, měď, mosaz, titan a technické plasty. Převody norem ČSN / EN / W.Nr / DIN / AISI, svařitelnost, obrobitelnost.">
+    <meta name="keywords" content="strojní materiály, tabulka ocelí, ČSN EN převod, mosaz bronz měď, technické plasty POM PEEK, titan Ti-6Al-4V, nástrojová ocel, svařitelnost obrobitelnost">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-004/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 1400px; margin: 1.5rem auto 4rem; padding: 0 1.5rem; }
+
+        /* Search & filter bar */
+        .controls { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+        .search-wrap { flex: 1; min-width: 200px; position: relative; }
+        .search-inp { width: 100%; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 8px; padding: 0.55rem 0.9rem 0.55rem 2.2rem; font-size: 0.9rem; outline: none; transition: border-color 0.2s; box-sizing: border-box; }
+        .search-inp:focus { border-color: var(--primary-orange); }
+        .search-icon { position: absolute; left: 0.7rem; top: 50%; transform: translateY(-50%); color: var(--text-gray); font-size: 0.9rem; pointer-events: none; }
+        .search-clear { position: absolute; right: 0.7rem; top: 50%; transform: translateY(-50%); color: var(--text-gray); font-size: 0.85rem; cursor: pointer; display: none; }
+        .search-clear:hover { color: var(--primary-orange); }
+
+        .cat-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .cat-btn { background: none; border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.4rem 0.9rem; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .cat-btn.active { background: var(--primary-orange); color: #000; border-color: var(--primary-orange); }
+        .cat-btn:not(.active):hover { border-color: var(--light-gray); color: var(--light-gray); }
+
+        .result-count { font-size: 0.78rem; color: var(--text-gray); white-space: nowrap; }
+
+        /* Table */
+        .table-wrap { overflow-x: auto; background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        thead th { padding: 0.7rem 0.8rem; text-align: left; color: var(--text-gray); border-bottom: 1px solid var(--border-gray); white-space: nowrap; font-weight: 600; cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--card-bg); z-index: 2; }
+        thead th:hover { color: var(--primary-orange); }
+        thead th.sort-asc::after  { content: ' ↑'; color: var(--primary-orange); }
+        thead th.sort-desc::after { content: ' ↓'; color: var(--primary-orange); }
+        tbody tr { cursor: pointer; transition: background 0.15s; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        tbody tr:hover { background: rgba(251,146,60,0.06); }
+        tbody tr.expanded { background: rgba(251,146,60,0.04); }
+        tbody td { padding: 0.55rem 0.8rem; color: var(--light-gray); vertical-align: middle; white-space: nowrap; }
+        tbody td.csn  { color: var(--primary-orange); font-weight: 700; font-family: monospace; }
+        tbody td.num  { font-family: monospace; color: var(--light-gray); }
+        tbody td.note { color: var(--text-gray); font-size: 0.78rem; white-space: normal; max-width: 220px; }
+
+        /* Detail row */
+        .detail-row { display: none; }
+        .detail-row.open { display: table-row; }
+        .detail-cell { padding: 0.75rem 1rem 1rem 2rem !important; background: rgba(0,0,0,0.25); border-bottom: 2px solid var(--border-gray) !important; white-space: normal !important; }
+        .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.6rem; }
+        .detail-item { }
+        .detail-item .dl { font-size: 0.7rem; color: var(--text-gray); margin-bottom: 0.1rem; }
+        .detail-item .dv { font-size: 0.85rem; color: var(--light-gray); font-weight: 600; }
+        .detail-note { margin-top: 0.6rem; font-size: 0.8rem; color: var(--text-gray); line-height: 1.5; border-top: 1px solid var(--border-gray); padding-top: 0.5rem; }
+
+        /* Rating badges */
+        .badge { display: inline-block; border-radius: 4px; padding: 0.15rem 0.5rem; font-size: 0.73rem; font-weight: 700; white-space: nowrap; }
+        .badge-v { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+        .badge-d { background: rgba(134,239,172,0.1); color: #86efac; border: 1px solid rgba(134,239,172,0.2); }
+        .badge-o { background: rgba(251,146,60,0.15); color: #fb923c; border: 1px solid rgba(251,146,60,0.3); }
+        .badge-s { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
+        .badge-n { background: rgba(100,116,139,0.15); color: #94a3b8; border: 1px solid rgba(100,116,139,0.25); }
+
+        /* Category color dot */
+        .cat-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; flex-shrink: 0; }
+
+        /* Empty state */
+        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-gray); }
+        .empty-state h3 { color: var(--light-gray); margin-bottom: 0.5rem; }
+
+        /* Legend */
+        .legend { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; font-size: 0.75rem; color: var(--text-gray); }
+        .legend-item { display: flex; align-items: center; gap: 0.35rem; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); margin-top: 2rem; }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../3d-printing.html">3D Printing</a>
+                <a href="../../electronics.html">Electronics</a>
+                <a href="../../mechanical.html" class="active">Engineering</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="breadcrumb"><a href="../../mechanical.html">← Engineering</a></div>
+
+    <header class="page-header">
+        <h1>🔩 Strojní materiály</h1>
+        <p>Přehled mechanických vlastností, křížové převody norem a hodnocení svařitelnosti a obrobitelnosti.</p>
+    </header>
+
+    <main class="tool-wrap">
+
+        <div class="controls">
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input class="search-inp" type="text" id="search" placeholder="Hledat: 11600, S355, 1.4301, 304, H13, 6082...">
+                <span class="search-clear" id="search-clear" onclick="clearSearch()">✕</span>
+            </div>
+            <div class="cat-tabs" id="cat-tabs"></div>
+            <div class="result-count" id="result-count"></div>
+        </div>
+
+        <div class="table-wrap">
+            <table id="mat-table">
+                <thead>
+                    <tr id="table-head"></tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+
+        <div class="legend">
+            <strong style="color:var(--light-gray)">Legenda:</strong>
+            <div class="legend-item"><span class="badge badge-v">výborná</span></div>
+            <div class="legend-item"><span class="badge badge-d">dobrá</span></div>
+            <div class="legend-item"><span class="badge badge-o">omezená</span></div>
+            <div class="legend-item"><span class="badge badge-s">špatná</span></div>
+            <div class="legend-item"><span class="badge badge-n">—</span> nelze / n/a</div>
+            <div class="legend-item" style="margin-left:auto;color:var(--text-gray)">* HRC = po kalení | HB = žíhaný stav | kliknutím na řádek zobrazíte detail</div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Část <a href="../../mechanical.html">StrokeForge Engineering</a> — technické tabulky pro strojaře</p>
+    </footer>
+
+    <script>
+    // ═══════════════════════════════════════════════════════════════════════
+    // MATERIAL DATA
+    // ═══════════════════════════════════════════════════════════════════════
+    // Svařitelnost / Obrobitelnost: 'v'=výborná, 'd'=dobrá, 'o'=omezená, 's'=špatná, 'n'=nelze
+    // HB / HRC: číslo, typ v poli 'htyp': 'HB' nebo 'HRC'
+
+    const MATERIALS = [
+
+        // ── KONSTRUKČNÍ OCEL ─────────────────────────────────────────────
+        {
+            cat:'konstrukcni', csn:'11 373', en:'S235JR', wn:'1.0038', din:'St 37-2', aisi:'A36',
+            re:235, rm:360, a5:26, h:105, htyp:'HB', svar:'v', obrob:'d',
+            pouziti:'Obecné ocelové konstrukce, svařované rámy, plechy',
+            pozn:'Nejběžnější konstrukční ocel. Vhodná pro svařování bez předehřevu. Nekalitelná.'
+        },
+        {
+            cat:'konstrukcni', csn:'11 423', en:'S275JR', wn:'1.0044', din:'St 44-2', aisi:'—',
+            re:275, rm:430, a5:23, h:125, htyp:'HB', svar:'v', obrob:'d',
+            pouziti:'Nosníky, mostní konstrukce, jeřábové dráhy',
+            pozn:'Vyšší pevnost než S235. Stále výborně svařitelná. Hojně používaná v průmyslových stavbách.'
+        },
+        {
+            cat:'konstrukcni', csn:'11 523', en:'S355JR', wn:'1.0045', din:'St 52-3', aisi:'—',
+            re:355, rm:510, a5:22, h:160, htyp:'HB', svar:'d', obrob:'d',
+            pouziti:'Ocelové konstrukce, jeřáby, mosty, stroje',
+            pozn:'Vysokopevnostní konstrukční ocel. Při tloušťce >30mm doporučen předehřev před svařováním.'
+        },
+        {
+            cat:'konstrukcni', csn:'11 600', en:'C45', wn:'1.0503', din:'Ck45', aisi:'1045',
+            re:305, rm:580, a5:20, h:170, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Hřídele, ozubená kola, čepy, klíny, šrouby',
+            pozn:'Nejpoužívanější strojní ocel na hřídele. Kalitelná do vody/oleje. Po kalení a popuštění Re≥490 MPa.'
+        },
+        {
+            cat:'konstrukcni', csn:'11 700', en:'C60', wn:'1.0601', din:'Ck60', aisi:'1060',
+            re:360, rm:660, a5:14, h:195, htyp:'HB', svar:'s', obrob:'d',
+            pouziti:'Pružiny, kolejnice, nože, kladky, páky',
+            pozn:'Vyšší obsah uhlíku → tvrdší, ale méně houževnatá. Svařování nevhodné bez speciálních opatření.'
+        },
+        {
+            cat:'konstrukcni', csn:'12 050', en:'C45E', wn:'1.1191', din:'Ck45', aisi:'1045',
+            re:340, rm:620, a5:17, h:180, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Hřídele, ozubená kola, šrouby pevnostních tříd',
+            pozn:'Vyšší čistota taveniny než 11 600. Vhodná pro povrchové kalení (HRC 55–60 na povrchu).'
+        },
+        {
+            cat:'konstrukcni', csn:'12 060', en:'C55E', wn:'1.1203', din:'Ck55', aisi:'1055',
+            re:380, rm:660, a5:13, h:195, htyp:'HB', svar:'s', obrob:'d',
+            pouziti:'Kladky, čepy, pružinové díly menších průřezů',
+            pozn:'Přechodová ocel mezi strojními a pružinovými ocelemi.'
+        },
+        {
+            cat:'konstrukcni', csn:'13 240', en:'42CrMo4', wn:'1.7225', din:'42CrMo4', aisi:'4140',
+            re:650, rm:900, a5:14, h:260, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Hřídele, ozubená kola, vrtací tyče, šrouby pevnostní třídy 10.9',
+            pozn:'Velmi rozšířená ušlechtilá ocel. Nutný předehřev před svařováním. Kalí se do oleje.'
+        },
+        {
+            cat:'konstrukcni', csn:'14 220', en:'20MnCr5', wn:'1.7147', din:'20MnCr5', aisi:'5120',
+            re:635, rm:885, a5:12, h:260, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Cementovaná ozubená kola, hřídele, ložiskové čepy',
+            pozn:'Cementovatelná ocel. Tvrdý povrch (HRC 58–62) + houževnaté jádro. Výborná pro ozubení.'
+        },
+        {
+            cat:'konstrukcni', csn:'15 230', en:'34CrNiMo6', wn:'1.6582', din:'34CrNiMo6', aisi:'4340',
+            re:800, rm:1000, a5:12, h:300, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Vysoce namáhané hřídele, klikové hřídele, ojnice',
+            pozn:'Vysoce ušlechtilá ocel s výbornou houževnatostí. Nutný předehřev 200–300°C před svařováním.'
+        },
+        {
+            cat:'konstrukcni', csn:'15 260', en:'36NiCrMo16', wn:'1.6773', din:'36NiCrMo16', aisi:'—',
+            re:900, rm:1100, a5:11, h:320, htyp:'HB', svar:'s', obrob:'d',
+            pouziti:'Extrémně namáhané díly, torzní tyče, vrtací tyče',
+            pozn:'Jedna z nejpevnějších ušlechtilých ocelí v sériové výrobě. Svařování jen ve výjimečných případech.'
+        },
+        {
+            cat:'konstrukcni', csn:'16 343', en:'51CrV4', wn:'1.8159', din:'50CrV4', aisi:'6150',
+            re:900, rm:1100, a5:10, h:310, htyp:'HB', svar:'s', obrob:'o',
+            pouziti:'Vinuté a listové pružiny, torzní tyče, ventilové pružiny',
+            pozn:'Klasická pružinová ocel. Výborná únavová pevnost. Používá se i pro nástroje.'
+        },
+
+        // ── NEREZOVÁ OCEL ────────────────────────────────────────────────
+        {
+            cat:'nerez', csn:'17 240', en:'X5CrNi18-10', wn:'1.4301', din:'X5CrNi18-10', aisi:'304',
+            re:210, rm:520, a5:45, h:150, htyp:'HB', svar:'d', obrob:'o',
+            pouziti:'Nádrže, potrubí, kuchyňské vybavení, architektura',
+            pozn:'Nejrozšířenější nerezová ocel. Austenitická. Nemagnetická (po tváření slabě mag.). Odolná 0–400°C.'
+        },
+        {
+            cat:'nerez', csn:'17 246', en:'X2CrNi19-11', wn:'1.4307', din:'X2CrNi18-9', aisi:'304L',
+            re:200, rm:500, a5:45, h:140, htyp:'HB', svar:'v', obrob:'o',
+            pouziti:'Svařované nádrže, potravinářství, chemický průmysl',
+            pozn:'Nízký obsah uhlíku → eliminuje senzibilizaci při svařování. Přednostní volba pro svařované díly.'
+        },
+        {
+            cat:'nerez', csn:'17 248', en:'X5CrNiMo17-12-2', wn:'1.4401', din:'X5CrNiMo17-12-2', aisi:'316',
+            re:220, rm:530, a5:45, h:150, htyp:'HB', svar:'d', obrob:'o',
+            pouziti:'Chemický průmysl, mořské prostředí, farmaceuta',
+            pozn:'Přídavek Mo zvyšuje odolnost proti pittingové korozi. Odolná chloridům lépe než 304.'
+        },
+        {
+            cat:'nerez', csn:'17 349', en:'X2CrNiMo17-12-2', wn:'1.4404', din:'—', aisi:'316L',
+            re:200, rm:500, a5:45, h:140, htyp:'HB', svar:'v', obrob:'o',
+            pouziti:'Svařované konstrukce v agresivním prostředí, implantáty',
+            pozn:'Nejběžnější varianta 316 pro svařování. Nízký C = bez senzibilizace. Standard pro medicínu.'
+        },
+        {
+            cat:'nerez', csn:'17 022', en:'X6Cr17', wn:'1.4016', din:'X6Cr17', aisi:'430',
+            re:230, rm:430, a5:22, h:160, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Dekorativní prvky, domácí spotřebiče, výfukové systémy',
+            pozn:'Feritická nerezová ocel. Magnetická. Levnější (bez Ni). Omezená svařitelnost — nutný žíhací ohřev.'
+        },
+        {
+            cat:'nerez', csn:'17 029', en:'X12Cr13', wn:'1.4006', din:'X10Cr13', aisi:'410',
+            re:280, rm:480, a5:20, h:160, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Příbory, šrouby, čerpadlové díly, ventily',
+            pozn:'Martenzitická ocel, kalitelná (HRC až 40). Magnetická. Odolnost korozi nižší než austenitické řady.'
+        },
+        {
+            cat:'nerez', csn:'17 465', en:'X2CrNiMoN22-5-3', wn:'1.4462', din:'—', aisi:'2205',
+            re:460, rm:640, a5:25, h:220, htyp:'HB', svar:'d', obrob:'o',
+            pouziti:'Chemický průmysl, námořní stavby, desalinace, výměníky',
+            pozn:'Duplexní ocel (austenit + ferit). Dvojnásobná Re oproti 304/316. Výborná odolnost pittingu a SCC.'
+        },
+        {
+            cat:'nerez', csn:'17 350', en:'X6CrNiTi18-10', wn:'1.4541', din:'X6CrNiTi18-10', aisi:'321',
+            re:200, rm:500, a5:40, h:150, htyp:'HB', svar:'v', obrob:'o',
+            pouziti:'Vysokoteplotní aplikace, svařované díly do 850°C',
+            pozn:'Stabilizovaná Ti. Odolná žíhání za provozu. Vhodná pro výfuky, tepelné výměníky při vyšších teplotách.'
+        },
+
+        // ── NÁSTROJOVÁ OCEL ──────────────────────────────────────────────
+        {
+            cat:'nastrojova', csn:'19 083', en:'X153CrMoV12', wn:'1.2379', din:'X155CrVMo12-1', aisi:'D2',
+            re:null, rm:null, a5:1, h:62, htyp:'HRC', svar:'s', obrob:'o',
+            pouziti:'Střižné nástroje, razníky, válce, formy na plast',
+            pozn:'Vysokolegovaná chromová ocel. Velmi dobrá odolnost opotřebení. Po kalení HRC 58–62. Obrábí se v žíhaném stavu.'
+        },
+        {
+            cat:'nastrojova', csn:'19 312', en:'100Cr6', wn:'1.3505', din:'100Cr6', aisi:'52100',
+            re:null, rm:null, a5:2, h:62, htyp:'HRC', svar:'s', obrob:'o',
+            pouziti:'Ložiska, válce, kuličky, jehly, vodící pouzdra',
+            pozn:'Klasická ložisková ocel. Výborná kontaktní pevnost a odolnost opotřebení. Kalí se do oleje (HRC 60–64).'
+        },
+        {
+            cat:'nastrojova', csn:'19 437', en:'X40CrMoV5-1', wn:'1.2344', din:'X40CrMoV5-1', aisi:'H13',
+            re:null, rm:null, a5:8, h:52, htyp:'HRC', svar:'o', obrob:'d',
+            pouziti:'Lisovací formy, vtlačovací nástroje, hliníkové tlakovéodlitky',
+            pozn:'Ocel pro práci za tepla. Výborná tepelná únava a houževnatost za tepla. Obrábí se v žíhaném stavu (HB 200).'
+        },
+        {
+            cat:'nastrojova', csn:'19 452', en:'X37CrMoV5-1', wn:'1.2343', din:'X38CrMoV5-1', aisi:'H11',
+            re:null, rm:null, a5:10, h:50, htyp:'HRC', svar:'o', obrob:'d',
+            pouziti:'Zápustky, lisovníky, protlačovací nástroje',
+            pozn:'Podobná H13, ale vyšší houževnatost na úkor tvrdosti. Vhodná pro rázově namáhané nástroje.'
+        },
+        {
+            cat:'nastrojova', csn:'19 550', en:'HS6-5-2', wn:'1.3343', din:'S6-5-2', aisi:'M2',
+            re:null, rm:null, a5:2, h:65, htyp:'HRC', svar:'s', obrob:'s',
+            pouziti:'Vrtáky, frézy, závitníky, výstružníky, protahovací trny',
+            pozn:'Klasická rychlořezná ocel (HSS). Zachovává tvrdost do 600°C. Obrobitelnost špatná — broušení po kalení.'
+        },
+        {
+            cat:'nastrojova', csn:'19 191', en:'100MnCrW4', wn:'1.2510', din:'100MnCrW4', aisi:'O1',
+            re:null, rm:null, a5:2, h:62, htyp:'HRC', svar:'s', obrob:'d',
+            pouziti:'Měřidla, šablony, malé střižné nástroje, raznice',
+            pozn:'Olejová kalitelná ocel. Minimální deformace při kalení — ideální pro přesné nástroje a měřidla.'
+        },
+        {
+            cat:'nastrojova', csn:'19 732', en:'40CrMnNiMo8-6-4', wn:'1.2311', din:'40CrMnNiMo8-6-4', aisi:'P20',
+            re:900, rm:1050, a5:12, h:300, htyp:'HB', svar:'o', obrob:'v',
+            pouziti:'Formy pro vstřikování plastů, tlakové odlitky, předdodávané bloky',
+            pozn:'Dodává se v předkalenovaném stavu (HB 280–325). Výborná obrobitelnost v tomto stavu. Není třeba kalit.'
+        },
+        {
+            cat:'nastrojova', csn:'19 436', en:'X38CrMoV5-3', wn:'1.2367', din:'X38CrMoV5-3', aisi:'H10',
+            re:null, rm:null, a5:9, h:52, htyp:'HRC', svar:'o', obrob:'d',
+            pouziti:'Formy pro hliníkové tlakové odlitky, tváření za tepla',
+            pozn:'Vyšší obsah Mo než H13 → lepší odolnost tepelnému únavovému popraskání. Populární v automobilovém průmyslu.'
+        },
+
+        // ── HLINÍK A SLITINY ─────────────────────────────────────────────
+        {
+            cat:'hlinik', csn:'Al 99.5', en:'EN AW-1050A', wn:'3.0255', din:'Al 99.5', aisi:'1050',
+            re:85, rm:105, a5:6, h:30, htyp:'HB', svar:'v', obrob:'o',
+            pouziti:'Folie, chemické nádoby, elektrotechnika, kondenzátory',
+            pozn:'Technicky čistý hliník. Výborná korozní odolnost a elektrická vodivost. Nízká pevnost.'
+        },
+        {
+            cat:'hlinik', csn:'AlCu4MgSi', en:'EN AW-2017A', wn:'3.1325', din:'AlCuMg1', aisi:'2017',
+            re:275, rm:425, a5:15, h:120, htyp:'HB', svar:'s', obrob:'v',
+            pouziti:'Letecké díly, šrouby, nýty, přesné strojní součásti (Dural)',
+            pozn:'Klasický Dural (AlCuMg). Výborná pevnost, ale špatně svařitelný. Náchylný na mezikrystalickou korozi.'
+        },
+        {
+            cat:'hlinik', csn:'AlCu4Mg1', en:'EN AW-2024', wn:'3.1355', din:'AlCuMg2', aisi:'2024',
+            re:325, rm:470, a5:18, h:130, htyp:'HB', svar:'s', obrob:'v',
+            pouziti:'Letecké potahy, konstrukční díly letadel, sportovní výbava',
+            pozn:'Nejpoužívanější letecký hliník. Nejčastěji ve stavu T3 (po tváření + přirozené stárnutí). Povrch anodizovat.'
+        },
+        {
+            cat:'hlinik', csn:'AlMg3', en:'EN AW-5754', wn:'3.3535', din:'AlMg3', aisi:'5754',
+            re:160, rm:220, a5:11, h:65, htyp:'HB', svar:'v', obrob:'d',
+            pouziti:'Karoserie vozidel, lodě, nádrže, výměníky tepla',
+            pozn:'Výborná korozní odolnost v mořském prostředí. Nelze tepelně zpracovat, zpevňuje se tvářením.'
+        },
+        {
+            cat:'hlinik', csn:'AlMg4.5Mn', en:'EN AW-5083', wn:'3.3547', din:'AlMg4.5Mn0.7', aisi:'5083',
+            re:200, rm:290, a5:16, h:75, htyp:'HB', svar:'v', obrob:'d',
+            pouziti:'Námořní stavby, kryogenní nádrže, tlaková zařízení, LNG tanky',
+            pozn:'Nejvyšší pevnost z nespevnitelné Al-Mg série. Výborná pro teploty až −200°C. Standard pro kryogeniku.'
+        },
+        {
+            cat:'hlinik', csn:'AlMg1SiCu', en:'EN AW-6061', wn:'3.3211', din:'AlMgSi1', aisi:'6061',
+            re:276, rm:310, a5:12, h:95, htyp:'HB', svar:'d', obrob:'v',
+            pouziti:'Strojní díly, letadlové rámy, sportovní kola, CNC obrobky',
+            pozn:'Všestranná slitina T6. Výborná obrobitelnost. Dobrá korozní odolnost. Standard pro CNC obrábění.'
+        },
+        {
+            cat:'hlinik', csn:'AlSi1MgMn', en:'EN AW-6082', wn:'3.2315', din:'AlSi1MgMn', aisi:'6082',
+            re:260, rm:310, a5:10, h:95, htyp:'HB', svar:'d', obrob:'v',
+            pouziti:'Nosníky, příruby, profily, strojní díly, dopravní prostředky',
+            pozn:'Nejběžnější konstrukční hliník v Evropě. Profily T6. Lepší pevnost než 6061 při srovnatelné obrobitelnosti.'
+        },
+        {
+            cat:'hlinik', csn:'AlZn5.5MgCu', en:'EN AW-7075', wn:'3.4365', din:'AlZnMgCu1.5', aisi:'7075',
+            re:503, rm:572, a5:11, h:150, htyp:'HB', svar:'s', obrob:'d',
+            pouziti:'Letecké konstrukce, sportovní vybavení, high-end CNC díly',
+            pozn:'Nejvyšší pevnost z běžných Al slitin. Stav T6. Náchylný na korozní praskání pod napětím (SCC).'
+        },
+        {
+            cat:'hlinik', csn:'AlMgSi', en:'EN AW-6063', wn:'3.3206', din:'AlMgSi0.5', aisi:'6063',
+            re:170, rm:215, a5:12, h:73, htyp:'HB', svar:'d', obrob:'d',
+            pouziti:'Architektonické profily, okna, dveře, rámy, anodizované výrobky',
+            pozn:'Standardní profilová slitina. Horší pevnost než 6082, ale výborný povrch po anodizaci a extruzi.'
+        },
+
+        // ── LITINA ───────────────────────────────────────────────────────
+        {
+            cat:'litina', csn:'42 2415', en:'EN-GJL-150', wn:'—', din:'GG-15', aisi:'No. 20',
+            re:null, rm:150, a5:null, h:160, htyp:'HB', svar:'s', obrob:'v',
+            pouziti:'Méně namáhané odlitky, kryty, konzole',
+            pozn:'Šedá litina. Grafit ve tvaru lupínků. Výborná útlumová schopnost vibrací. Křehká — tah nízký, tlak vysoký.'
+        },
+        {
+            cat:'litina', csn:'42 2420', en:'EN-GJL-200', wn:'—', din:'GG-20', aisi:'No. 25',
+            re:null, rm:200, a5:null, h:180, htyp:'HB', svar:'s', obrob:'v',
+            pouziti:'Bloky motorů, převodovkové skříně, ložiskové domky',
+            pozn:'Nejpoužívanější šedá litina. Dobrý kompromis pevnosti a obrobitelnosti. Tlumí vibrace lépe než ocel.'
+        },
+        {
+            cat:'litina', csn:'42 2425', en:'EN-GJL-250', wn:'—', din:'GG-25', aisi:'No. 35',
+            re:null, rm:250, a5:null, h:210, htyp:'HB', svar:'s', obrob:'d',
+            pouziti:'Válce, ložiskové domky, hydraulické bloky',
+            pozn:'Vyšší pevnost šedé litiny. Stále výborná obrobitelnost. Vhodná pro tlakové díly.'
+        },
+        {
+            cat:'litina', csn:'42 2430', en:'EN-GJL-300', wn:'—', din:'GG-30', aisi:'No. 45',
+            re:null, rm:300, a5:null, h:240, htyp:'HB', svar:'s', obrob:'d',
+            pouziti:'Vysoce namáhané odlitky, ozubená kola, vřetena obráběcích strojů',
+            pozn:'Perlitická šedá litina. Dobrá odolnost opotřebení.'
+        },
+        {
+            cat:'litina', csn:'42 2305', en:'EN-GJS-400-15', wn:'—', din:'GGG-40', aisi:'60-40-18',
+            re:250, rm:400, a5:15, h:150, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Součásti převodovek, příruby, tvarovky, armatury',
+            pozn:'Tvárná (sferoidická) litina — grafit ve tvaru kuliček. Tažná, houževnatá. Svařitelná se speciálním přídavkem.'
+        },
+        {
+            cat:'litina', csn:'42 2306', en:'EN-GJS-500-7', wn:'—', din:'GGG-50', aisi:'80-55-06',
+            re:320, rm:500, a5:7, h:185, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Klikové hřídele, ojnice, nápravy, tvarovky',
+            pozn:'Tvárná litina vyšší pevnosti. Feritická + perlitická matrice. Alternativa k oceli pro odlitky složitých tvarů.'
+        },
+        {
+            cat:'litina', csn:'42 2307', en:'EN-GJS-700-2', wn:'—', din:'GGG-70', aisi:'100-70-03',
+            re:420, rm:700, a5:2, h:280, htyp:'HB', svar:'s', obrob:'o',
+            pouziti:'Vysoce namáhané odlitky, ozubená kola, válce',
+            pozn:'Tvárná litina, čistě perlitická matrice. Nízká tažnost. Potřebná přesná metalurgie při výrobě.'
+        },
+
+        // ── PRUŽINOVÁ OCEL ───────────────────────────────────────────────
+        {
+            cat:'pruzinova', csn:'14 260', en:'60Si2Mn', wn:'1.0961', din:'60Si7', aisi:'9260',
+            re:1200, rm:1350, a5:6, h:390, htyp:'HB', svar:'s', obrob:'o',
+            pouziti:'Listové pružiny, vinuté tyčové pružiny, odpružení vozidel',
+            pozn:'Klasická silicioManganová pružinová ocel. Výborná relaxační odolnost. Kalí se do oleje.'
+        },
+        {
+            cat:'pruzinova', csn:'14 270', en:'55Si2', wn:'1.0904', din:'55Si7', aisi:'9255',
+            re:1100, rm:1250, a5:7, h:360, htyp:'HB', svar:'s', obrob:'o',
+            pouziti:'Střední a větší vinuté pružiny, torzní tyče',
+            pozn:'Nižší obsah Si než 14 260, o něco houževnatější. Vhodná pro větší průřezy.'
+        },
+        {
+            cat:'pruzinova', csn:'16 343', en:'51CrV4', wn:'1.8159', din:'50CrV4', aisi:'6150',
+            re:900, rm:1100, a5:10, h:310, htyp:'HB', svar:'s', obrob:'o',
+            pouziti:'Vinuté pružiny, ventilové pružiny, torzní tyče, pera',
+            pozn:'Chromvanadiová pružinová ocel. Výborná únavová pevnost a houbevnatost. Populární pro přesné pružiny.'
+        },
+        {
+            cat:'pruzinova', csn:'17 221', en:'X7CrNiAl17-7', wn:'1.4568', din:'X7CrNiAl17-7', aisi:'631',
+            re:1100, rm:1300, a5:5, h:380, htyp:'HB', svar:'o', obrob:'o',
+            pouziti:'Nerezové pružiny pro korozní prostředí, medicína, potravinářství',
+            pozn:'17-7PH nerezová pružinová ocel. Precipitačně vytvrditelná. Výborná kombinace pevnosti a korozní odolnosti.'
+        },
+        {
+            cat:'pruzinova', csn:'—', en:'X10CrNi18-8', wn:'1.4310', din:'X12CrNi17-7', aisi:'301',
+            re:800, rm:1000, a5:10, h:280, htyp:'HB', svar:'o', obrob:'o',
+            pouziti:'Vinuté nerezové pružiny, kontaktní pružiny, spony',
+            pozn:'Nejpoužívanější nerezová ocel pro pružiny. Zpevňuje se tvářením za studena. Nižší Ni → levnější než 304.'
+        },
+
+        // ── KONSTRUKČNÍ OCEL — doplněk ───────────────────────────────────
+        {
+            cat:'konstrukcni', csn:'11 320', en:'S185', wn:'1.0035', din:'St 33', aisi:'A284',
+            re:185, rm:290, a5:28, h:85, htyp:'HB', svar:'v', obrob:'d',
+            pouziti:'Nenamáhané výrobky, ohýbané díly, základní tvarové ocelové prvky',
+            pozn:'Nejměkčí a nejlevnější konstrukční ocel. Výborná tvarovatelnost, ale velmi nízká pevnost. Vhodná pouze pro nenamáhané aplikace.'
+        },
+        {
+            cat:'konstrukcni', csn:'11 109', en:'11SMn30', wn:'1.0715', din:'9SMn28', aisi:'12L14',
+            re:275, rm:390, a5:22, h:120, htyp:'HB', svar:'s', obrob:'v',
+            pouziti:'Automatová výroba šroubů, čepů, matic — CNC automaty',
+            pozn:'Automatová ocel s přídavkem síry a manganu. Nejlepší obrobitelnost ze všech ocelí. Nesvařitelná. Snížená houževnatost.'
+        },
+        {
+            cat:'konstrukcni', csn:'11 375', en:'S235J2', wn:'1.0117', din:'St 37-3', aisi:'—',
+            re:235, rm:360, a5:26, h:105, htyp:'HB', svar:'v', obrob:'d',
+            pouziti:'Ocelové konstrukce s požadavky na vrubovou houževnatost za nízkých teplot',
+            pozn:'Jako S235JR, ale s garantovanou vrubovou houževnatostí KV ≥ 27 J při −20°C. Mosty, jeřábové dráhy v chladném prostředí.'
+        },
+        {
+            cat:'konstrukcni', csn:'11 500', en:'E295', wn:'1.0050', din:'St 50-2', aisi:'—',
+            re:295, rm:490, a5:20, h:145, htyp:'HB', svar:'d', obrob:'d',
+            pouziti:'Hřídele, tyče, šrouby — průměrné namáhání bez kalení',
+            pozn:'Přechodová ocel mezi konstrukční a strojní. Vhodná pro součásti střední pevnosti bez nutnosti tepelného zpracování.'
+        },
+        {
+            cat:'konstrukcni', csn:'13 180', en:'16MnCr5', wn:'1.7131', din:'16MnCr5', aisi:'5115',
+            re:635, rm:880, a5:13, h:260, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Cementovaná ozubená kola, hřídele, ložiskové čepy — automobilový průmysl',
+            pozn:'Cementovatelná ocel. Tvrdý povrch HRC 58–62 po cementování + kalení. Houževnaté jádro. Alternativa k 20MnCr5.'
+        },
+        {
+            cat:'konstrukcni', csn:'14 331', en:'25CrMo4', wn:'1.7218', din:'25CrMo4', aisi:'4130',
+            re:600, rm:800, a5:15, h:240, htyp:'HB', svar:'d', obrob:'d',
+            pouziti:'Trubky pro tlakové nádoby, letecké rámy, svařované konstrukce střední pevnosti',
+            pozn:'Ušlechtilá chrom-molybdenová ocel. Dobrá svařitelnost mezi legovanými ocelemi. Populární v leteckém průmyslu.'
+        },
+        {
+            cat:'konstrukcni', csn:'14 109', en:'30CrMoV9', wn:'1.7707', din:'30CrMoV9', aisi:'—',
+            re:700, rm:900, a5:14, h:270, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Součásti parních turbín, kotlů, vysokoteplotní šrouby do 500°C',
+            pozn:'Vanadiem legovaná ocel pro práci za tepla při středních teplotách. Výborná pevnost za tepla a creepová odolnost.'
+        },
+        {
+            cat:'konstrukcni', csn:'12 061', en:'C60E', wn:'1.1221', din:'Ck60', aisi:'1060',
+            re:380, rm:700, a5:12, h:205, htyp:'HB', svar:'s', obrob:'d',
+            pouziti:'Kladky, páky, klínové hřídele, kolejnice, menší pružinové díly',
+            pozn:'Vyšší obsah uhlíku zajišťuje dobrou povrchovou tvrdost po kalení. Přechodová ocel mezi strojní a pružinovou řadou.'
+        },
+
+        // ── NEREZOVÁ OCEL — doplněk ──────────────────────────────────────
+        {
+            cat:'nerez', csn:'17 241', en:'X8CrNiS18-9', wn:'1.4305', din:'X12CrNiS18-8', aisi:'303',
+            re:210, rm:510, a5:40, h:150, htyp:'HB', svar:'s', obrob:'v',
+            pouziti:'CNC soustružené a frézované nerezové díly — šrouby, matice, příruby',
+            pozn:'Automatová nerezová ocel s přídavkem síry. Nejlepší obrobitelnost v nerez třídě. Svařitelnost špatná — při svaru praskání.'
+        },
+        {
+            cat:'nerez', csn:'17 024', en:'X20Cr13', wn:'1.4021', din:'X20Cr13', aisi:'420',
+            re:450, rm:650, a5:14, h:200, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Příbory, chirurgické nástroje, čepele, lopatkové stroje, ventily',
+            pozn:'Martenzitická nerezová ocel. Kalitelná do HRC 45–50. Magnetická. Dobrá korozní odolnost v žíhaném stavu.'
+        },
+        {
+            cat:'nerez', csn:'—', en:'X46Cr13', wn:'1.4034', din:'X46Cr13', aisi:'420C',
+            re:500, rm:750, a5:12, h:215, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Nože, nůžky, chirurgické nástroje s vyšší tvrdostí',
+            pozn:'Vyšší obsah C než 420 → tvrdší po kalení (HRC až 55). Méně houževnatá. Nejčastěji pro ostré nástroje.'
+        },
+        {
+            cat:'nerez', csn:'—', en:'X5CrNiCuNb16-4', wn:'1.4542', din:'X5CrNiCuNb17-4', aisi:'17-4PH',
+            re:1000, rm:1100, a5:14, h:336, htyp:'HB', svar:'d', obrob:'d',
+            pouziti:'Letecké díly, čerpadlová tělesa, jaderná technika, olejářský průmysl',
+            pozn:'Precipitačně vytvrditelná nerezová ocel. Jedinečná kombinace: Re>1000MPa + korozní odolnost srovnatelná s 304.'
+        },
+        {
+            cat:'nerez', csn:'—', en:'X1NiCrMoCu25-20-5', wn:'1.4539', din:'—', aisi:'904L',
+            re:220, rm:530, a5:40, h:160, htyp:'HB', svar:'v', obrob:'o',
+            pouziti:'Kyselinové potrubí, chemické reaktory, mořská voda — agresivní prostředí',
+            pozn:'Super austenitická nerezová ocel s 25% Ni a 4.5% Mo. Extrémní odolnost chloridům a H₂SO₄. Dražší alternativa k titanu.'
+        },
+        {
+            cat:'nerez', csn:'17 255', en:'X2CrNiMo17-12-3', wn:'1.4432', din:'—', aisi:'316',
+            re:210, rm:510, a5:45, h:150, htyp:'HB', svar:'d', obrob:'o',
+            pouziti:'Chemický průmysl, zařízení pro halogeny a chloridy',
+            pozn:'Vyšší obsah Mo (3%) než standardní 316 → lepší odolnost pittingu. Vhodná kde 316 nestačí a 904L je příliš drahá.'
+        },
+
+        // ── NÁSTROJOVÁ OCEL — doplněk ────────────────────────────────────
+        {
+            cat:'nastrojova', csn:'19 152', en:'C105W1', wn:'1.1545', din:'C105W1', aisi:'W1',
+            re:null, rm:null, a5:2, h:64, htyp:'HRC', svar:'s', obrob:'d',
+            pouziti:'Jednoduché řezné nástroje, sekáče, průbojníky, dláta',
+            pozn:'Nejjednodušší nástrojová ocel — pouze uhlík, žádné legury. Levná. Kalení ve vodě — vysoké riziko deformace. Vhodná pro malé nástroje.'
+        },
+        {
+            cat:'nastrojova', csn:'—', en:'90MnCrV8', wn:'1.2842', din:'90MnCrV8', aisi:'O2',
+            re:null, rm:null, a5:2, h:62, htyp:'HRC', svar:'s', obrob:'d',
+            pouziti:'Střižné nástroje, razidla, šablony — minimum deformace při kalení',
+            pozn:'Olejová kalitelná ocel. Menší deformace při kalení než O1. Dobrá houževnatost. Alternativa k 1.2510 pro větší průřezy.'
+        },
+        {
+            cat:'nastrojova', csn:'—', en:'X32CrMoV3-3', wn:'1.2365', din:'X32CrMoV3-3', aisi:'H10',
+            re:null, rm:null, a5:9, h:52, htyp:'HRC', svar:'o', obrob:'d',
+            pouziti:'Formy pro lisování mědi a jejích slitin, tváření za tepla',
+            pozn:'Podobná H13, ale s vyšším obsahem Mo → lepší tepelná vodivost. Vhodná pro lisování Cu/mosazi kde H13 nestačí.'
+        },
+        {
+            cat:'nastrojova', csn:'—', en:'HS10-4-3-10', wn:'1.3207', din:'S10-4-3-10', aisi:'M42',
+            re:null, rm:null, a5:1, h:67, htyp:'HRC', svar:'s', obrob:'s',
+            pouziti:'Nástroje pro obrábění superslitin, nerezí, titanu — extrémní podmínky',
+            pozn:'Kobaltová rychlořezná ocel (10% Co). Nejvyšší tvrdost za tepla z HSS řady. Nutné pro obrábění těžkoobrobitelných materiálů.'
+        },
+
+        // ── MĚĎ A SLITINY ─────────────────────────────────────────────────
+        {
+            cat:'med', csn:'—', en:'Cu-ETP', wn:'CW004A', din:'E-Cu58', aisi:'C11000',
+            re:200, rm:260, a5:45, h:85, htyp:'HB', svar:'d', obrob:'o',
+            pouziti:'Elektrické vodiče, sběrnice, transformátory, konektory',
+            pozn:'Elektrolytická čistá měď (99.9% Cu). Nejlepší elektrická vodivost. Obrobitelnost horší — lepí se. Výborná svařitelnost a pájetelnost.'
+        },
+        {
+            cat:'med', csn:'—', en:'CuZn39Pb3', wn:'CW614N', din:'CuZn39Pb3', aisi:'C38500',
+            re:310, rm:380, a5:35, h:100, htyp:'HB', svar:'s', obrob:'v',
+            pouziti:'Automatová výroba přesných dílů — ventily, armatury, konektory, šrouby',
+            pozn:'Automatová mosaz Ms58. Nejlepší obrobitelnost ze všech mosazí. Přidaný Pb jako lámač třísky. Svařitelnost špatná.'
+        },
+        {
+            cat:'med', csn:'—', en:'CuZn37', wn:'CW508L', din:'CuZn37', aisi:'C27200',
+            re:290, rm:360, a5:40, h:90, htyp:'HB', svar:'d', obrob:'d',
+            pouziti:'Hlubokotažné díly, patrony, chladiče, výměníky tepla',
+            pozn:'Hlubokotažná mosaz Ms63. Výborná tvarovatelnost za studena. Standard pro patrony a náboje. Bez olova — ekologická varianta.'
+        },
+        {
+            cat:'med', csn:'—', en:'CuZn20Al2', wn:'CW702R', din:'CuZn20Al2', aisi:'C68700',
+            re:380, rm:480, a5:25, h:120, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Výměníky tepla v mořském prostředí, kondenzátory, lodní průmysl',
+            pozn:'Hliníková mosaz — přídavek Al výrazně zlepšuje odolnost korozi v mořské vodě. Vhodná kde jiné mosazi korodují.'
+        },
+        {
+            cat:'med', csn:'—', en:'CuSn8', wn:'CW453K', din:'CuSn8', aisi:'C52100',
+            re:380, rm:600, a5:20, h:140, htyp:'HB', svar:'d', obrob:'d',
+            pouziti:'Ložiska, kluzná pouzdra, šneková kola, pérové kontakty',
+            pozn:'Cínový bronz. Výborná odolnost opotřebení a korozi. Samomazná vlastnost — ideální pro kluzná ložiska bez mazání.'
+        },
+        {
+            cat:'med', csn:'—', en:'CuAl10Fe3', wn:'CW306G', din:'CuAl10Fe3', aisi:'C62300',
+            re:490, rm:700, a5:18, h:170, htyp:'HB', svar:'d', obrob:'d',
+            pouziti:'Lodní šrouby, čerpadlová tělesa, ventily pro mořskou vodu',
+            pozn:'Hliníkový bronz. Nejodolnější z bronzů vůči korozi a kavitaci. Výborný v mořské vodě. Antimikrobiální vlastnosti.'
+        },
+        {
+            cat:'med', csn:'—', en:'CuBe2', wn:'CW101C', din:'CuBe2', aisi:'C17200',
+            re:1100, rm:1250, a5:5, h:380, htyp:'HB', svar:'o', obrob:'d',
+            pouziti:'Pružinové kontakty, membránové spínače, neiskřivé nástroje',
+            pozn:'Berylliová měď. Nejvyšší pevnost ze všech Cu slitin. Výborná pružnost, elektrická vodivost a odolnost únavě. Drahá, Beryllium toxické při obrábění.'
+        },
+
+        // ── TITAN A SLITINY ───────────────────────────────────────────────
+        {
+            cat:'titan', csn:'—', en:'Ti Grade 2', wn:'3.7035', din:'—', aisi:'Grade 2',
+            re:275, rm:345, a5:20, h:130, htyp:'HB', svar:'v', obrob:'o',
+            pouziti:'Chemický průmysl, mořské prostředí, medicínské implantáty, letectví',
+            pozn:'Technicky čistý titan. Výborná korozní odolnost (i v HNO₃ a HCl). Polovina hmotnosti oceli. Svařitelný TIG v ochranné atmosféře.'
+        },
+        {
+            cat:'titan', csn:'—', en:'Ti-6Al-4V', wn:'3.7165', din:'—', aisi:'Grade 5',
+            re:880, rm:950, a5:14, h:320, htyp:'HB', svar:'d', obrob:'o',
+            pouziti:'Letecké konstrukční díly, medicínské implantáty, sportovní technika, motocyklové díly',
+            pozn:'Nejpoužívanější titanová slitina (>50% světové produkce Ti). Pevnost srovnatelná s ocelí, polovina hmotnosti. Obtížná obrobitelnost — nutné pomalé řezné rychlosti a chlazení.'
+        },
+        {
+            cat:'titan', csn:'—', en:'Ti Grade 5 ELI', wn:'3.7165', din:'—', aisi:'Grade 23',
+            re:760, rm:860, a5:15, h:300, htyp:'HB', svar:'d', obrob:'o',
+            pouziti:'Medicínské implantáty — kyčelní náhrady, šrouby, spinální fixace',
+            pozn:'Extra Low Interstitials — čistší než Grade 5. Standard pro kostní implantáty. Biokompatibilní. Vyšší houževnatost než standardní Grade 5.'
+        },
+
+        // ── TECHNICKÉ PLASTY ──────────────────────────────────────────────
+        // Pro plasty: re=mez kluzu [MPa], rm=pevnost v tahu [MPa], a5=tažnost [%], h=tvrdost Shore D nebo HRR
+        {
+            cat:'plast', csn:'—', en:'POM-C (Delrin)', wn:'—', din:'—', aisi:'—',
+            re:65, rm:70, a5:35, h:82, htyp:'Shore D', svar:'n', obrob:'v',
+            pouziti:'Ozubená kola, ložiska, vodící lišty, vačky, kliky, samomazné díly',
+            pozn:'Polyoxymetylén — nejpoužívanější technický plast pro obrábění. Výborná tuhost, nízké tření, dobré rozměrové stálosti. Max. teplota 100°C.'
+        },
+        {
+            cat:'plast', csn:'—', en:'PA66 (Nylon 66)', wn:'—', din:'—', aisi:'—',
+            re:80, rm:85, a5:30, h:80, htyp:'Shore D', svar:'o', obrob:'d',
+            pouziti:'Ozubená kola, ložisková pouzdra, páky, kryty, vodicí prvky',
+            pozn:'Polyamid 66. Vyšší pevnost než PA6, lepší teplotní odolnost (120°C). Nevýhoda: absorbuje vlhkost → rozměrové změny. Nutno sušit před obráběním.'
+        },
+        {
+            cat:'plast', csn:'—', en:'PA6 (Nylon 6)', wn:'—', din:'—', aisi:'—',
+            re:70, rm:75, a5:40, h:78, htyp:'Shore D', svar:'o', obrob:'d',
+            pouziti:'Kluzná ložiska, ozubená kola pro nižší namáhání, textilní díly',
+            pozn:'Polyamid 6. Levnější než PA66, lepší houževnatost, ale nižší pevnost. Absorpce vlhkosti až 3.5% — rozměrově nestabilní při vlhkosti.'
+        },
+        {
+            cat:'plast', csn:'—', en:'PEEK', wn:'—', din:'—', aisi:'—',
+            re:100, rm:110, a5:30, h:85, htyp:'Shore D', svar:'n', obrob:'d',
+            pouziti:'Letectví, medicína, chemická zařízení, těsnění do 250°C',
+            pozn:'Polyetereterketón. Špičkový technický plast. Trvalá teplota do 250°C, výborná chemická odolnost. Cena 10–50× vyšší než POM. Alternativa titanu v medicíně.'
+        },
+        {
+            cat:'plast', csn:'—', en:'PTFE (Teflon)', wn:'—', din:'—', aisi:'—',
+            re:20, rm:30, a5:300, h:55, htyp:'Shore D', svar:'n', obrob:'d',
+            pouziti:'Těsnění, kluzné podložky, vložky ventilů, kabelová izolace',
+            pozn:'Polytetrafluorethylen. Nejnižší koeficient tření ze všech plastů. Chemicky zcela inertní. Nízká pevnost a tuhost. Max. teplota 260°C.'
+        },
+        {
+            cat:'plast', csn:'—', en:'PC (Polykarbonát)', wn:'—', din:'—', aisi:'—',
+            re:60, rm:65, a5:120, h:75, htyp:'Shore D', svar:'o', obrob:'d',
+            pouziti:'Kryty strojů, průzory, bezpečnostní skla, helmy, pouzdra',
+            pozn:'Polykarbonát. Výborná transparentnost a rázová houževnatost. Citlivý na chemikálie a UV záření (nutná stabilizace). Max. teplota 120°C.'
+        },
+        {
+            cat:'plast', csn:'—', en:'HDPE', wn:'—', din:'—', aisi:'—',
+            re:25, rm:30, a5:800, h:65, htyp:'Shore D', svar:'d', obrob:'v',
+            pouziti:'Kuchyňské prkénka, nádrže, potrubí, kluzné desky, lodní obložení',
+            pozn:'Vysokohustotní polyethylen. Výborná chemická odolnost a kluznost. Hygienický, FDA schválený. Nízká pevnost, ale výborná obrobitelnost a svařitelnost horkým vzduchem.'
+        },
+        {
+            cat:'plast', csn:'—', en:'UHMWPE', wn:'—', din:'—', aisi:'—',
+            re:20, rm:40, a5:350, h:63, htyp:'Shore D', svar:'n', obrob:'d',
+            pouziti:'Kluzné lišty, vodící prvky dopravníků, protézy, balistická ochrana',
+            pozn:'Ultra-vysokomolekulární polyethylen. Extrémně vysoká rázová houževnatost a odolnost opotřebení. Obtížné lepení a svařování. Standard pro lodní obložení a protézy.'
+        },
+    ];
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CATEGORIES
+    // ═══════════════════════════════════════════════════════════════════════
+    const CATS = [
+        { id:'all',          label:'Vše',                 color:'#fb923c' },
+        { id:'konstrukcni',  label:'Konstrukční ocel',    color:'#60a5fa' },
+        { id:'nerez',        label:'Nerezová ocel',       color:'#4ade80' },
+        { id:'nastrojova',   label:'Nástrojová ocel',     color:'#f87171' },
+        { id:'hlinik',       label:'Hliník',              color:'#facc15' },
+        { id:'litina',       label:'Litina',              color:'#a78bfa' },
+        { id:'pruzinova',    label:'Pružinová ocel',      color:'#fb923c' },
+        { id:'med',          label:'Měď a slitiny',       color:'#f97316' },
+        { id:'titan',        label:'Titan',               color:'#e2e8f0' },
+        { id:'plast',        label:'Technické plasty',    color:'#34d399' },
+    ];
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // COLUMNS definition
+    // ═══════════════════════════════════════════════════════════════════════
+    const COLS = [
+        { key:'csn',   label:'ČSN',      cls:'csn',  sortable:true  },
+        { key:'en',    label:'EN / Označení', cls:'', sortable:true  },
+        { key:'wn',    label:'W.Nr',     cls:'num',  sortable:true  },
+        { key:'din',   label:'DIN',      cls:'',     sortable:true  },
+        { key:'aisi',  label:'AISI/UNS', cls:'',     sortable:true  },
+        { key:'re',    label:'Re [MPa]', cls:'num',  sortable:true  },
+        { key:'rm',    label:'Rm [MPa]', cls:'num',  sortable:true  },
+        { key:'a5',    label:'A5 [%]',   cls:'num',  sortable:true  },
+        { key:'h',     label:'Tvrdost',  cls:'num',  sortable:true  },
+        { key:'svar',  label:'Svař.',    cls:'',     sortable:true  },
+        { key:'obrob', label:'Obrob.',   cls:'',     sortable:true  },
+        { key:'pouziti',label:'Použití', cls:'note', sortable:false },
+    ];
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════════════════════════════
+    let filterCat   = 'all';
+    let searchQuery = '';
+    let sortKey     = 'csn';
+    let sortDir     = 1;
+    let expandedIdx = null;
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // HELPERS
+    // ═══════════════════════════════════════════════════════════════════════
+    const BADGE = { v:'badge-v', d:'badge-d', o:'badge-o', s:'badge-s', n:'badge-n' };
+    const LABEL = { v:'výborná', d:'dobrá', o:'omezená', s:'špatná', n:'—' };
+
+    function badge(code) {
+        return `<span class="badge ${BADGE[code]||'badge-n'}">${LABEL[code]||'—'}</span>`;
+    }
+
+    function catColor(catId) {
+        return CATS.find(c => c.id === catId)?.color || '#9ca3af';
+    }
+
+    function matchSearch(m, q) {
+        if (!q) return true;
+        const s = q.toLowerCase().replace(/\s+/g,'');
+        const fields = [m.csn, m.en, m.wn, m.din, m.aisi, m.pouziti]
+            .join(' ').toLowerCase().replace(/\s+/g,'');
+        return fields.includes(s);
+    }
+
+    function getFiltered() {
+        return MATERIALS.filter(m =>
+            (filterCat === 'all' || m.cat === filterCat) &&
+            matchSearch(m, searchQuery)
+        );
+    }
+
+    function sortedData(data) {
+        if (!sortKey) return data;
+        return [...data].sort((a, b) => {
+            let av = a[sortKey], bv = b[sortKey];
+            if (av === null || av === undefined || av === '—' || av === '') av = sortDir > 0 ? Infinity : -Infinity;
+            if (bv === null || bv === undefined || bv === '—' || bv === '') bv = sortDir > 0 ? Infinity : -Infinity;
+            if (typeof av === 'string') return av.localeCompare(bv, 'cs') * sortDir;
+            return (av - bv) * sortDir;
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // RENDER
+    // ═══════════════════════════════════════════════════════════════════════
+    function renderHead() {
+        const tr = document.getElementById('table-head');
+        tr.innerHTML = '';
+        COLS.forEach(col => {
+            const th = document.createElement('th');
+            th.textContent = col.label;
+            if (col.sortable) {
+                th.onclick = () => {
+                    if (sortKey === col.key) sortDir *= -1;
+                    else { sortKey = col.key; sortDir = 1; }
+                    renderTable();
+                };
+            }
+            if (sortKey === col.key) th.className = sortDir > 0 ? 'sort-asc' : 'sort-desc';
+            tr.appendChild(th);
+        });
+    }
+
+    function renderTable() {
+        renderHead();
+        const tbody = document.getElementById('table-body');
+        tbody.innerHTML = '';
+
+        const data = sortedData(getFiltered());
+        document.getElementById('result-count').textContent = `${data.length} / ${MATERIALS.length} materiálů`;
+
+        if (data.length === 0) {
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.colSpan = COLS.length;
+            td.innerHTML = '<div class="empty-state"><h3>Žádné výsledky</h3><p>Zkus jiný výraz nebo kategorii.</p></div>';
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+            return;
+        }
+
+        data.forEach((m, i) => {
+            // Main row
+            const tr = document.createElement('tr');
+            tr.className = expandedIdx === i ? 'expanded' : '';
+
+            COLS.forEach(col => {
+                const td = document.createElement('td');
+                if (col.cls) td.className = col.cls;
+
+                if (col.key === 'csn') {
+                    const color = catColor(m.cat);
+                    td.innerHTML = `<span class="cat-dot" style="background:${color}"></span>${m.csn}`;
+                } else if (col.key === 'svar' || col.key === 'obrob') {
+                    td.innerHTML = badge(m[col.key]);
+                } else if (col.key === 'h') {
+                    td.textContent = m.h !== null ? `${m.h} ${m.htyp}` : '—';
+                } else if (col.key === 're' || col.key === 'rm' || col.key === 'a5') {
+                    td.textContent = m[col.key] !== null ? m[col.key] : '—';
+                } else {
+                    td.textContent = m[col.key] || '—';
+                }
+                tr.appendChild(td);
+            });
+
+            tr.addEventListener('click', () => {
+                expandedIdx = expandedIdx === i ? null : i;
+                renderTable();
+            });
+            tbody.appendChild(tr);
+
+            // Detail row
+            const dtr = document.createElement('tr');
+            dtr.className = 'detail-row' + (expandedIdx === i ? ' open' : '');
+            const dtd = document.createElement('td');
+            dtd.colSpan = COLS.length;
+            dtd.className = 'detail-cell';
+            dtd.innerHTML = `
+                <div class="detail-grid">
+                    <div class="detail-item"><div class="dl">ČSN</div><div class="dv">${m.csn}</div></div>
+                    <div class="detail-item"><div class="dl">EN / Označení</div><div class="dv">${m.en}</div></div>
+                    <div class="detail-item"><div class="dl">Werkstoffnummer</div><div class="dv">${m.wn}</div></div>
+                    <div class="detail-item"><div class="dl">DIN</div><div class="dv">${m.din}</div></div>
+                    <div class="detail-item"><div class="dl">AISI / UNS</div><div class="dv">${m.aisi}</div></div>
+                    <div class="detail-item"><div class="dl">Mez kluzu Re</div><div class="dv">${m.re !== null ? m.re+' MPa' : '—'}</div></div>
+                    <div class="detail-item"><div class="dl">Mez pevnosti Rm</div><div class="dv">${m.rm !== null ? m.rm+' MPa' : '—'}</div></div>
+                    <div class="detail-item"><div class="dl">Tažnost A5</div><div class="dv">${m.a5 !== null ? m.a5+' %' : '—'}</div></div>
+                    <div class="detail-item"><div class="dl">Tvrdost</div><div class="dv">${m.h !== null ? m.h+' '+m.htyp : '—'}</div></div>
+                    <div class="detail-item"><div class="dl">Svařitelnost</div><div class="dv">${badge(m.svar)}</div></div>
+                    <div class="detail-item"><div class="dl">Obrobitelnost</div><div class="dv">${badge(m.obrob)}</div></div>
+                </div>
+                <div class="detail-note">
+                    <strong>Použití:</strong> ${m.pouziti}<br>
+                    <strong>Poznámky:</strong> ${m.pozn}
+                </div>
+            `;
+            dtr.appendChild(dtd);
+            tbody.appendChild(dtr);
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════════════════════════
+    function initCats() {
+        const wrap = document.getElementById('cat-tabs');
+        CATS.forEach(c => {
+            const btn = document.createElement('button');
+            btn.className = 'cat-btn' + (c.id === filterCat ? ' active' : '');
+            btn.innerHTML = `<span class="cat-dot" style="background:${c.color};display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px"></span>${c.label}`;
+            btn.onclick = () => {
+                filterCat = c.id;
+                expandedIdx = null;
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderTable();
+            };
+            wrap.appendChild(btn);
+        });
+    }
+
+    function initSearch() {
+        const inp = document.getElementById('search');
+        const clr = document.getElementById('search-clear');
+        inp.addEventListener('input', () => {
+            searchQuery = inp.value;
+            clr.style.display = searchQuery ? '' : 'none';
+            expandedIdx = null;
+            renderTable();
+        });
+    }
+
+    function clearSearch() {
+        document.getElementById('search').value = '';
+        searchQuery = '';
+        document.getElementById('search-clear').style.display = 'none';
+        expandedIdx = null;
+        renderTable();
+    }
+
+    initCats();
+    initSearch();
+    renderTable();
+    </script>
+</body>
+</html>

@@ -5,26 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Primary Meta Tags -->
-    <title>StrokeForge | Engineer's Evolution - 3D Printing & Maker Projects</title>
-    <meta name="title" content="StrokeForge | Engineer's Evolution - 3D Printing & Maker Projects">
-    <meta name="description" content="Mechanical engineer sharing 3D printing designs, electronics builds, and maker projects. Free STL files, detailed build guides, and lessons learned. From concept to reality.">
-    <meta name="keywords" content="3D printing, maker projects, DIY electronics, mechanical design, STL files, Prusa, Arduino, CAD design, structural engineering, hobby projects">
+    <title>StrokeForge | Engineering Reference Portal — Tools for Engineers & Makers</title>
+    <meta name="title" content="StrokeForge | Engineering Reference Portal — Tools for Engineers & Makers">
+    <meta name="description" content="Open reference portal for mechanical engineers, electronics enthusiasts, and DIY makers. Material databases, electronics calculators, resistor tools, battery sizing — and 3D printing projects with free STL files.">
+    <meta name="keywords" content="engineering tools, material selection, strojní materiály, resistor calculator, battery life calculator, LM317, 3D printing, STL files, mechanical engineer, electronics reference">
     <meta name="author" content="Stanislav Odolan - StrokeForge">
     <meta name="robots" content="index, follow">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://strokeforge.tech/">
-    <meta property="og:title" content="StrokeForge | Engineer's Evolution - Maker Projects">
-    <meta property="og:description" content="Mechanical engineer sharing 3D printing designs, electronics builds, and maker projects. Free STL files and detailed build guides.">
+    <meta property="og:title" content="StrokeForge | Engineering Reference Portal">
+    <meta property="og:description" content="Open reference portal for mechanical engineers, electronics enthusiasts, and DIY makers. Material databases, electronics calculators, and 3D printing projects.">
     <meta property="og:image" content="https://strokeforge.tech/images/logo.png">
     <meta property="og:site_name" content="StrokeForge">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://strokeforge.tech/">
-    <meta property="twitter:title" content="StrokeForge | Engineer's Evolution">
-    <meta property="twitter:description" content="Mechanical engineer sharing 3D printing designs, electronics builds, and maker projects.">
+    <meta property="twitter:title" content="StrokeForge | Engineering Reference Portal">
+    <meta property="twitter:description" content="Open reference portal for mechanical engineers, electronics enthusiasts, and DIY makers.">
     <meta property="twitter:image" content="https://strokeforge.tech/images/logo.png">
 
     <!-- Canonical URL -->
@@ -32,6 +32,129 @@
 
     <link rel="stylesheet" href="css/colors.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Portal intro */
+        .portal-intro {
+            max-width: 800px;
+            margin: 2.5rem auto 0;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        .portal-intro p {
+            font-size: 1.1rem;
+            line-height: 1.85;
+            color: var(--text-gray);
+        }
+        .portal-intro strong {
+            color: var(--light-gray);
+        }
+
+        /* Category cards with description */
+        .category-card .cat-desc {
+            font-size: 0.88rem;
+            color: var(--text-gray);
+            margin-top: 0.5rem;
+            line-height: 1.5;
+        }
+        .category-card .cat-count-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 0.35rem;
+            margin-top: 0.75rem;
+        }
+        .category-card .cat-count-row .category-count {
+            font-size: 1.6rem;
+        }
+        .category-card .cat-count-row span {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+        }
+
+        /* 3D Printing banner */
+        .printing-banner {
+            max-width: 1200px;
+            margin: 2rem auto 4rem;
+            padding: 0 2rem;
+        }
+        .printing-banner-inner {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 2rem 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+        .printing-banner-inner:hover {
+            border-color: var(--primary-orange);
+            box-shadow: 0 6px 24px rgba(255, 107, 53, 0.15);
+            transform: translateY(-2px);
+        }
+        .printing-banner-left {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+        .printing-banner-icon {
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+        .printing-banner-text h3 {
+            font-size: 1.2rem;
+            color: var(--light-gray);
+            margin-bottom: 0.25rem;
+        }
+        .printing-banner-text p {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+        .printing-banner-right {
+            display: flex;
+            align-items: baseline;
+            gap: 0.35rem;
+            flex-shrink: 0;
+        }
+        .printing-banner-right .category-count {
+            font-size: 2rem;
+        }
+        .printing-banner-right span {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        .printing-banner-arrow {
+            color: var(--primary-orange);
+            font-size: 1.5rem;
+            margin-left: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* Section label */
+        .section-label {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-gray);
+            margin-bottom: -1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .printing-banner-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .printing-banner-right { margin-top: 0.5rem; }
+            .printing-banner-arrow { display: none; }
+        }
+    </style>
 
     <!-- Schema.org -->
     <script type="application/ld+json">
@@ -42,7 +165,7 @@
           "@type": "WebSite",
           "name": "StrokeForge",
           "url": "https://strokeforge.tech",
-          "description": "Mechanical engineer sharing 3D printing designs, electronics builds, and maker projects. Free STL files and detailed build guides."
+          "description": "Open reference portal for mechanical engineers, electronics enthusiasts, and DIY makers. Material databases, electronics calculators, and maker projects."
         },
         {
           "@type": "Person",
@@ -63,65 +186,100 @@
         <p class="tagline" style="font-weight: bold; margin-top: 1.5rem;">Engineer's Evolution – From Zero to Maker</p>
     </header>
 
-    <!-- Category Bars -->
+    <!-- Portal Intro -->
+    <section class="portal-intro">
+        <p>
+            StrokeForge is an <strong>open reference portal</strong> for mechanical engineers, electronics enthusiasts,
+            and DIY makers. Whether you're choosing the right steel grade for a weld, calculating resistor dissipation
+            for a circuit, or figuring out how long a battery pack will last — you'll find practical, no-nonsense tools
+            here. Built by an engineer, for engineers. <strong>No ads, no paywalls.</strong>
+        </p>
+    </section>
+
+    <!-- Main Categories -->
     <section class="categories-section">
         <div class="categories-grid">
+
             <a href="engineering.html" class="category-card" data-category="engineering">
                 <div class="category-icon">⚙️</div>
-                <h3>ENGINEERING TOOLS</h3>
+                <h3>Engineering Tools</h3>
+                <p class="cat-desc">Material databases, norm cross-references, selection wizards. ČSN / EN / DIN / AISI — all in one place.</p>
+                <div class="cat-count-row">
+                    <span class="category-count" id="count-engineering">0</span>
+                    <span>tools</span>
+                </div>
             </a>
 
             <a href="electronics.html" class="category-card" data-category="electronics">
                 <div class="category-icon">⚡</div>
-                <h3>ELECTRONICS</h3>
+                <h3>Electronics</h3>
+                <p class="cat-desc">Resistor calculators, E-series lookup, battery life, LM317 design, series/parallel configurations.</p>
+                <div class="cat-count-row">
+                    <span class="category-count" id="count-electronics">0</span>
+                    <span>tools</span>
+                </div>
             </a>
 
             <a href="other.html" class="category-card" data-category="other">
                 <div class="category-icon">📦</div>
-                <h3>OTHER</h3>
+                <h3>Other</h3>
+                <p class="cat-desc">Everything that doesn't fit neatly elsewhere — mixed tools, experiments, and one-off references.</p>
+                <div class="cat-count-row">
+                    <span class="category-count" id="count-other">0</span>
+                    <span>projects</span>
+                </div>
             </a>
-        </div>
 
-        <a href="3d-printing.html" class="category-card category-card--wide" data-category="3d-print">
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.4rem; justify-content: center;">
-                <div style="display: flex; align-items: center; gap: 1.25rem;">
-                    <div class="category-icon" style="font-size: 2.5rem; margin: 0;">🖨️</div>
-                    <h3 style="margin: 0; font-size: 1.4rem;">3D PRINTING</h3>
-                </div>
-                <div style="display: flex; align-items: baseline; gap: 0.4rem;">
-                    <div class="category-count" id="count-3dprint" style="font-size: 2rem;">0</div>
-                    <span style="color: #9ca3af; font-size: 1rem;">projects</span>
-                </div>
-            </div>
-        </a>
+        </div>
     </section>
 
-    <!-- About Me Section -->
+    <!-- About Me -->
     <section class="about-section">
         <h2>About Me</h2>
         <p>
-            Mechanical designer specializing in structural design and custom machinery.
-            My background includes designing overhead cranes, special-purpose machines,
-            and production lines for the automotive industry. Currently working with 3D printing technology.
+            Mechanical designer with a background in structural design, overhead cranes, special-purpose machines,
+            and production lines for the automotive industry. I've spent years working at the intersection of
+            engineering theory and shop-floor reality — where material choice, tolerances, and weldability
+            actually matter.
         </p>
         <p>
-            This platform is dedicated to sharing my personal projects and collaborations
-            (with permission from contributors). From concept sketches to working prototypes –
-            with full documentation, CAD files, and lessons learned.
+            StrokeForge started as a 3D printing portfolio and gradually evolved into something more useful:
+            an engineering reference platform. The tools I kept building for my own work turned out to be
+            helpful to others too, so here we are.
         </p>
         <p>
-            <strong>Need help with your project?</strong> I offer free design consultation and structural engineering support.
-            The only requirement: share your completed project here with the community so others can learn from it.
+            <strong>Working on a project and need a second opinion?</strong> I offer free design consultation
+            and structural engineering input. The only ask: share your finished project here so the community
+            can learn from it.
         </p>
         <p style="margin-top: 1.5rem; padding: 1rem; background: rgba(255, 107, 53, 0.1); border-left: 3px solid #ff6b35; border-radius: 4px;">
-            📧 Email: <a href="mailto:stanislav.odolan@gmail.com" style="color: #ff6b35; text-decoration: none;">stanislav.odolan@gmail.com</a><br>
+            📧 <a href="mailto:stanislav.odolan@gmail.com" style="color: #ff6b35; text-decoration: none;">stanislav.odolan@gmail.com</a><br>
             🖨️ Printables: <a href="https://www.printables.com/@TechMaster" target="_blank" style="color: #ff6b35; text-decoration: none;">@TechMaster</a>
         </p>
     </section>
 
+    <!-- 3D Printing Banner -->
+    <div class="section-label">Also on StrokeForge</div>
+    <div class="printing-banner">
+        <a href="3d-printing.html" class="printing-banner-inner">
+            <div class="printing-banner-left">
+                <div class="printing-banner-icon">🖨️</div>
+                <div class="printing-banner-text">
+                    <h3>3D Printing Projects</h3>
+                    <p>Free STL files, build documentation, and lessons learned. Functional prints for makers and engineers.</p>
+                </div>
+            </div>
+            <div class="printing-banner-right">
+                <span class="category-count" id="count-3dprint">0</span>
+                <span>projects</span>
+            </div>
+            <div class="printing-banner-arrow">→</div>
+        </a>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
-        <p>Designs from concept to reality | 2026</p>
+        <p>Engineering reference & maker projects | 2026</p>
         <p style="margin-top: 0.5rem; font-size: 0.8rem;">
             <a href="https://www.printables.com/@TechMaster" target="_blank" style="color: #ff6b35; text-decoration: none;">
                 Printables: @TechMaster

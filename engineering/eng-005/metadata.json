@@ -1,0 +1,8 @@
+{
+  "id": "eng-005",
+  "title": "Průvodce výběrem materiálu",
+  "category": "reference",
+  "description": "Interaktivní průvodce výběrem strojního materiálu. Odpověz na 5 otázek o zatížení, výrobní technologii, prostředí, pevnosti a hmotnosti — systém doporučí nejvhodnější materiály a vysvětlí proč.",
+  "icon": "🎯",
+  "difficulty": "beginner"
+}
