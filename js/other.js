@@ -3,7 +3,6 @@ let allProjects = [];
 
 document.addEventListener('DOMContentLoaded', function() {
     loadProjects();
-    initCategoryNavigation();
 });
 
 async function loadProjects() {
@@ -69,18 +68,6 @@ function createProjectCard(project) {
     return card;
 }
 
-function initCategoryNavigation() {
-    const links = document.querySelectorAll('.category-link');
-    links.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            links.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-            const cat = this.getAttribute('data-category');
-            displayProjects(cat === 'all' ? allProjects : allProjects.filter(p => p.type === cat));
-        });
-    });
-}
 
 function showErrorMessage(message) {
     const grid = document.querySelector('.projects-grid');
