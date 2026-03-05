@@ -1,0 +1,8 @@
+{
+  "id": "elec-003",
+  "title": "Voltage Divider Calculator",
+  "category": "basic",
+  "description": "Calculate output voltage of a resistor voltage divider. Enter Uin, R1, R2 and optional load resistance — get Uout, current, power dissipation and load effect.",
+  "icon": "⚡",
+  "difficulty": "beginner"
+}

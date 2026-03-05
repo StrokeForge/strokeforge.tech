@@ -1,0 +1,8 @@
+{
+  "id": "elec-002",
+  "title": "LED Series Resistor Calculator",
+  "category": "basic",
+  "description": "Calculate the correct series resistor for an LED. Enter supply voltage, LED forward voltage and current — get resistor value, nearest E12/E24 standard value, and power dissipation.",
+  "icon": "💡",
+  "difficulty": "beginner"
+}

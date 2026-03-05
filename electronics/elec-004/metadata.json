@@ -1,0 +1,8 @@
+{
+  "id": "elec-004",
+  "title": "Ohm's Law Calculator",
+  "category": "basic",
+  "description": "Enter any 2 of 4 values (U, I, R, P) and get the remaining two. Visual Ohm's law triangle with highlighted known/calculated values.",
+  "icon": "🔺",
+  "difficulty": "beginner"
+}

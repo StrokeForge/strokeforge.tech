@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voltage Divider Calculator | StrokeForge Electronics</title>
+    <meta name="description" content="Free voltage divider calculator. Enter Uin, R1, R2 and optional load resistance to get Uout, divider current, power dissipation and loading effect.">
+    <meta name="keywords" content="voltage divider calculator, resistor divider, Uout, R1 R2, load resistance, electronics calculator">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-003/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 820px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+
+        .card {
+            background: var(--card-bg); border: 1px solid var(--border-gray);
+            border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem;
+        }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.1rem; }
+        .input-group { display: flex; flex-direction: column; gap: 0.4rem; }
+        .input-group label { font-size: 0.82rem; color: var(--text-gray); }
+        .input-group input {
+            background: var(--darker-bg); border: 1px solid var(--border-gray);
+            color: var(--light-gray); border-radius: 8px;
+            padding: 0.55rem 0.85rem; font-size: 0.95rem;
+            transition: border-color 0.2s; width: 100%; box-sizing: border-box;
+        }
+        .input-group input:focus { outline: none; border-color: var(--primary-orange); }
+        .input-group .unit { font-size: 0.75rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        /* Mode tabs */
+        .mode-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .mode-tab {
+            background: var(--card-bg); border: 2px solid var(--border-gray);
+            color: var(--text-gray); border-radius: 8px; padding: 0.45rem 1.2rem;
+            font-size: 0.88rem; cursor: pointer; transition: all 0.2s;
+        }
+        .mode-tab.active { border-color: var(--primary-orange); color: var(--primary-orange); background: rgba(255,107,53,0.08); }
+
+        .calc-btn {
+            width: 100%; margin-top: 1.25rem;
+            background: var(--primary-orange); color: #fff; border: none;
+            border-radius: 8px; padding: 0.75rem; font-size: 1rem;
+            font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+        }
+        .calc-btn:hover { opacity: 0.85; }
+
+        /* Results */
+        .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+        .result-item { text-align: center; background: var(--darker-bg); border-radius: 8px; padding: 0.85rem 0.5rem; }
+        .result-label { font-size: 0.75rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .result-val { font-size: 1.6rem; font-weight: 800; color: var(--primary-orange); font-family: monospace; line-height: 1.2; }
+        .result-unit { font-size: 0.75rem; color: var(--text-gray); margin-top: 0.15rem; }
+
+        .load-info {
+            background: rgba(255,107,53,0.07); border-left: 3px solid var(--primary-orange);
+            border-radius: 4px; padding: 0.75rem 1rem;
+            font-size: 0.88rem; color: var(--text-gray); margin-top: 0.75rem;
+        }
+        .warn { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.35); border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.88rem; color: #f87171; margin-top: 0.75rem; }
+
+        /* SVG circuit */
+        .circuit-wrap { text-align: center; margin-top: 0.5rem; }
+        .circuit-wrap svg { max-width: 100%; }
+
+        /* Formula card */
+        .formula-card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 1.5rem; }
+        .formula-card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1rem; }
+        .formula { font-family: monospace; font-size: 1rem; color: var(--light-gray); background: var(--darker-bg); border-radius: 8px; padding: 0.75rem 1.25rem; margin-bottom: 0.5rem; }
+        .formula-note { font-size: 0.82rem; color: var(--text-gray); }
+
+        /* Reverse mode inputs */
+        .reverse-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; }
+
+        @media (max-width: 640px) {
+            .input-grid { grid-template-columns: 1fr 1fr; }
+            .result-grid { grid-template-columns: 1fr 1fr; }
+            .reverse-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../3d-printing.html">3D Printing</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../other.html">Other</a>
+                <a href="../../engineering.html">Engineering</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>⚡ Voltage Divider Calculator</h1>
+        <p>Calculate output voltage, load effect, and power dissipation of a resistor divider</p>
+    </header>
+
+    <div class="tool-wrap">
+
+        <!-- Mode selector -->
+        <div class="mode-tabs">
+            <button class="mode-tab active" onclick="setMode('uout')">Uin + R1 + R2 → Uout</button>
+            <button class="mode-tab" onclick="setMode('r2')">Uin + Uout + R1 → R2</button>
+            <button class="mode-tab" onclick="setMode('r1')">Uin + Uout + R2 → R1</button>
+        </div>
+
+        <!-- Input card -->
+        <div class="card">
+            <h2 id="mode-title">Calculate output voltage</h2>
+            <div class="input-grid" id="input-grid">
+                <!-- filled by JS -->
+            </div>
+            <!-- Load resistance (always shown) -->
+            <div style="margin-top:1.1rem;">
+                <div class="input-group">
+                    <label for="rl">Load resistance R<sub>L</sub> <span style="color:#666;">(optional)</span></label>
+                    <input type="number" id="rl" placeholder="Leave blank = no load" min="1" step="1" style="max-width:220px;">
+                    <span class="unit">Ω — resistance of the circuit connected to Uout</span>
+                </div>
+            </div>
+            <button class="calc-btn" onclick="calculate()">Calculate</button>
+        </div>
+
+        <!-- Results -->
+        <div class="card" id="result-card" style="display:none;">
+            <h2>Results</h2>
+            <div class="result-grid" id="result-grid"></div>
+            <div id="load-info" class="load-info" style="display:none;"></div>
+            <div id="warn-load" class="warn" style="display:none;"></div>
+
+            <!-- SVG -->
+            <div class="circuit-wrap" style="margin-top:1.5rem;">
+                <svg id="circuit-svg" viewBox="0 0 380 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:380px;"></svg>
+            </div>
+        </div>
+
+        <!-- Formulas -->
+        <div class="formula-card">
+            <h2>Formulas</h2>
+            <div class="formula">Uout = Uin × R2 / (R1 + R2)</div>
+            <div class="formula-note" style="margin-bottom:0.75rem;">Without load (R<sub>L</sub> = ∞)</div>
+            <div class="formula">Uout = Uin × R<sub>parallel</sub> / (R1 + R<sub>parallel</sub>)</div>
+            <div class="formula-note" style="margin-bottom:0.75rem;">With load: R<sub>parallel</sub> = R2 × R<sub>L</sub> / (R2 + R<sub>L</sub>)</div>
+            <div class="formula">P = Uin² / (R1 + R2)</div>
+            <div class="formula-note">Total power dissipated by the divider (without load)</div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem;">
+            <a href="https://www.printables.com/@TechMaster" target="_blank" style="color:#ff6b35;text-decoration:none;">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    var currentMode = 'uout';
+
+    var MODES = {
+        uout: {
+            title: 'Calculate output voltage',
+            fields: [
+                { id:'uin',  label:'Supply voltage U<sub>in</sub>', placeholder:'e.g. 12', unit:'V', default:'12' },
+                { id:'r1',   label:'Resistor R1 (top)',              placeholder:'e.g. 10000', unit:'Ω', default:'10000' },
+                { id:'r2',   label:'Resistor R2 (bottom)',           placeholder:'e.g. 4700',  unit:'Ω', default:'4700'  }
+            ]
+        },
+        r2: {
+            title: 'Find R2 for desired Uout',
+            fields: [
+                { id:'uin',  label:'Supply voltage U<sub>in</sub>', placeholder:'e.g. 12',   unit:'V', default:'12' },
+                { id:'uout_want', label:'Desired U<sub>out</sub>', placeholder:'e.g. 3.3',  unit:'V', default:'3.3' },
+                { id:'r1',   label:'Resistor R1 (top)',             placeholder:'e.g. 10000', unit:'Ω', default:'10000' }
+            ]
+        },
+        r1: {
+            title: 'Find R1 for desired Uout',
+            fields: [
+                { id:'uin',  label:'Supply voltage U<sub>in</sub>', placeholder:'e.g. 12',   unit:'V', default:'12' },
+                { id:'uout_want', label:'Desired U<sub>out</sub>', placeholder:'e.g. 5',    unit:'V', default:'5' },
+                { id:'r2',   label:'Resistor R2 (bottom)',          placeholder:'e.g. 4700',  unit:'Ω', default:'4700' }
+            ]
+        }
+    };
+
+    function setMode(mode) {
+        currentMode = mode;
+        document.querySelectorAll('.mode-tab').forEach(function(b, i) {
+            b.classList.toggle('active', ['uout','r2','r1'][i] === mode);
+        });
+        document.getElementById('mode-title').innerHTML = MODES[mode].title;
+        buildInputs();
+        document.getElementById('result-card').style.display = 'none';
+    }
+
+    function buildInputs() {
+        var grid = document.getElementById('input-grid');
+        grid.innerHTML = '';
+        MODES[currentMode].fields.forEach(function(f) {
+            var div = document.createElement('div');
+            div.className = 'input-group';
+            div.innerHTML =
+                '<label for="'+f.id+'">'+f.label+'</label>' +
+                '<input type="number" id="'+f.id+'" placeholder="'+f.placeholder+'" value="'+f.default+'" min="0" step="any">' +
+                '<span class="unit">'+f.unit+'</span>';
+            grid.appendChild(div);
+        });
+    }
+
+    function fmtV(v) {
+        if (Math.abs(v) >= 1000) return (v/1000).toPrecision(4).replace(/\.?0+$/,'') + ' kV';
+        return v.toPrecision(4).replace(/\.?0+$/,'') + ' V';
+    }
+    function fmtR(r) {
+        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/\.?0+$/,'') + ' MΩ';
+        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/\.?0+$/,'') + ' kΩ';
+        return r.toPrecision(3).replace(/\.?0+$/,'') + ' Ω';
+    }
+    function fmtP(w) {
+        if (w < 0.001) return (w*1e6).toPrecision(3).replace(/\.?0+$/,'') + ' μW';
+        if (w < 1)     return (w*1000).toPrecision(3).replace(/\.?0+$/,'') + ' mW';
+        return w.toPrecision(3).replace(/\.?0+$/,'') + ' W';
+    }
+    function getVal(id) { var el = document.getElementById(id); return el ? parseFloat(el.value) : NaN; }
+
+    function calculate() {
+        var rl_el = document.getElementById('rl');
+        var rl = rl_el && rl_el.value !== '' ? parseFloat(rl_el.value) : Infinity;
+
+        var uin, r1, r2, uout_noload;
+
+        if (currentMode === 'uout') {
+            uin = getVal('uin'); r1 = getVal('r1'); r2 = getVal('r2');
+            if ([uin,r1,r2].some(isNaN) || uin<=0 || r1<=0 || r2<=0) { alert('Fill in all fields with positive values.'); return; }
+            uout_noload = uin * r2 / (r1 + r2);
+
+        } else if (currentMode === 'r2') {
+            uin = getVal('uin'); var uout_w = getVal('uout_want'); r1 = getVal('r1');
+            if ([uin,uout_w,r1].some(isNaN) || uin<=0 || r1<=0 || uout_w<=0 || uout_w>=uin) { alert('Check inputs — Uout must be between 0 and Uin.'); return; }
+            r2 = r1 * uout_w / (uin - uout_w);
+            uout_noload = uout_w;
+
+        } else { // r1
+            uin = getVal('uin'); var uout_w2 = getVal('uout_want'); r2 = getVal('r2');
+            if ([uin,uout_w2,r2].some(isNaN) || uin<=0 || r2<=0 || uout_w2<=0 || uout_w2>=uin) { alert('Check inputs — Uout must be between 0 and Uin.'); return; }
+            r1 = r2 * (uin - uout_w2) / uout_w2;
+            uout_noload = uout_w2;
+        }
+
+        // With load
+        var r2_eff = isFinite(rl) ? (r2 * rl) / (r2 + rl) : r2;
+        var uout = uin * r2_eff / (r1 + r2_eff);
+        var i_total = uin / (r1 + r2_eff);   // A
+        var p_total = uin * i_total;           // W
+        var p_r1 = i_total * i_total * r1;
+        var p_r2 = (uout * uout) / r2;
+
+        // Show results
+        var rGrid = document.getElementById('result-grid');
+        var items = [];
+        if (currentMode !== 'uout') {
+            items.push({ label: currentMode==='r2' ? 'R2 (calculated)' : 'R1 (calculated)',
+                         val: fmtR(currentMode==='r2' ? r2 : r1), unit: '' });
+        }
+        items.push({ label: 'U<sub>out</sub>' + (isFinite(rl) ? ' (with load)' : ''), val: fmtV(uout), unit: '' });
+        items.push({ label: 'Divider current', val: (i_total*1000).toPrecision(3).replace(/\.?0+$/,''), unit: 'mA' });
+        items.push({ label: 'Total power', val: fmtP(p_total), unit: '' });
+        items.push({ label: 'Power on R1', val: fmtP(p_r1), unit: '' });
+        items.push({ label: 'Power on R2', val: fmtP(p_r2), unit: '' });
+
+        rGrid.innerHTML = items.map(function(it) {
+            return '<div class="result-item">' +
+                   '<div class="result-label">'+it.label+'</div>' +
+                   '<div class="result-val">'+it.val+'</div>' +
+                   (it.unit ? '<div class="result-unit">'+it.unit+'</div>' : '') +
+                   '</div>';
+        }).join('');
+
+        // Load info
+        var liEl = document.getElementById('load-info');
+        var wlEl = document.getElementById('warn-load');
+        if (isFinite(rl)) {
+            var drop_pct = ((uout_noload - uout) / uout_noload * 100);
+            liEl.innerHTML = 'Without load: <strong style="color:var(--primary-orange)">' + fmtV(uout_noload) + '</strong> &nbsp;→&nbsp; ' +
+                             'With R<sub>L</sub> = ' + fmtR(rl) + ': <strong style="color:var(--primary-orange)">' + fmtV(uout) + '</strong>' +
+                             ' &nbsp;(voltage drop: ' + drop_pct.toFixed(1) + '%)';
+            liEl.style.display = 'block';
+            if (drop_pct > 10) {
+                wlEl.innerHTML = '⚠️ Load effect &gt;10% — consider using a lower divider resistance (R1+R2) or add a buffer amplifier (op-amp follower).';
+                wlEl.style.display = 'block';
+            } else { wlEl.style.display = 'none'; }
+        } else {
+            liEl.style.display = 'none';
+            wlEl.style.display = 'none';
+        }
+
+        document.getElementById('result-card').style.display = 'block';
+        drawCircuit(uin, uout, r1, r2, isFinite(rl) ? rl : null);
+        document.getElementById('result-card').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+
+    // ============================================================
+    //  SVG Circuit
+    // ============================================================
+    function drawCircuit(uin, uout, r1, r2, rl) {
+        var svg = document.getElementById('circuit-svg');
+        svg.innerHTML = '';
+        var W = 380, H = 280;
+        var orange = '#ff6b35', gray = '#9ca3af', light = '#e5e7eb';
+
+        function line(x1,y1,x2,y2,col,w) {
+            var el = document.createElementNS('http://www.w3.org/2000/svg','line');
+            el.setAttribute('x1',x1); el.setAttribute('y1',y1);
+            el.setAttribute('x2',x2); el.setAttribute('y2',y2);
+            el.setAttribute('stroke',col||light); el.setAttribute('stroke-width',w||2);
+            svg.appendChild(el);
+        }
+        function rect(x,y,w,h,fill,stroke) {
+            var el = document.createElementNS('http://www.w3.org/2000/svg','rect');
+            el.setAttribute('x',x); el.setAttribute('y',y);
+            el.setAttribute('width',w); el.setAttribute('height',h);
+            el.setAttribute('rx',4);
+            el.setAttribute('fill',fill||'none'); el.setAttribute('stroke',stroke||orange);
+            el.setAttribute('stroke-width',2);
+            svg.appendChild(el);
+        }
+        function txt(x,y,s,col,size,anchor) {
+            var el = document.createElementNS('http://www.w3.org/2000/svg','text');
+            el.setAttribute('x',x); el.setAttribute('y',y);
+            el.setAttribute('fill',col||gray); el.setAttribute('font-size',size||11);
+            el.setAttribute('font-family','monospace'); el.setAttribute('text-anchor',anchor||'middle');
+            el.textContent = s; svg.appendChild(el);
+        }
+
+        // Layout: main vertical line at x=80, Uout tap at y=160, Rl branch right
+        var lx = 80;      // left rail x
+        var topY = 30, midY = 150, botY = 250;
+        var rx = rl ? 260 : lx;
+
+        // Left rail top → bottom
+        line(lx, topY, lx, botY);
+
+        // Battery (left rail)
+        line(lx-14, topY+40, lx+14, topY+40, orange, 3); // + plate
+        line(lx-9,  topY+52, lx+9,  topY+52, gray,   2); // - plate
+        line(lx-14, topY+64, lx+14, topY+64, orange, 3);
+        line(lx-9,  topY+76, lx+9,  topY+76, gray,   2);
+        txt(lx, topY+32, '+', orange, 11);
+        txt(lx-26, topY+60, fmtV(uin), light, 10, 'middle');
+
+        // Top wire lx → R1 box
+        line(lx, topY, 140, topY);
+        // R1 box
+        rect(140, topY-14, 60, 28, 'none', orange);
+        txt(170, topY+5, 'R1', orange, 11);
+        txt(170, topY+18, fmtR(r1), gray, 9);
+        // Wire R1 → right top corner
+        line(200, topY, rl ? rx : 240, topY);
+
+        // Right vertical line (if RL exists, extends to different x)
+        var rightX = rl ? rx : 240;
+        line(rightX, topY, rightX, botY);
+
+        // Bottom wire
+        line(lx, botY, rightX, botY);
+
+        // R2 box (midpoint between midY and botY on left rail)
+        var r2y = midY;
+        line(lx, midY-14, lx, midY-14); // just positioning
+        rect(lx-30, r2y-14, 60, 28, 'none', orange);
+        txt(lx, r2y+5, 'R2', orange, 11);
+        txt(lx, r2y+18, fmtR(r2), gray, 9);
+
+        // Uout tap line from midY to right
+        var tapX = 190;
+        line(lx+30, midY, tapX, midY, light, 1.5);
+
+        // Uout label
+        txt(tapX+8, midY+4, fmtV(uout), orange, 11, 'start');
+        txt(tapX+8, midY+16, 'Uout', gray, 10, 'start');
+
+        // RL box (if present)
+        if (rl) {
+            var rlx = rx - 30;
+            var rly = midY;
+            line(tapX, midY, rlx, midY, light, 1.5);
+            rect(rlx, rly-14, 60, 28, 'none', '#60a5fa');
+            txt(rx, rly+5, 'RL', '#60a5fa', 11);
+            txt(rx, rly+18, fmtR(rl), gray, 9);
+            line(rx+30, midY, rightX, midY, light, 1.5);
+            line(rightX, midY, rightX, botY, light, 1.5);
+        }
+
+        // Dot at tap
+        var dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        dot.setAttribute('cx', lx); dot.setAttribute('cy', midY);
+        dot.setAttribute('r', 4); dot.setAttribute('fill', orange);
+        svg.appendChild(dot);
+    }
+
+    // Init
+    setMode('uout');
+    </script>
+</body>
+</html>
