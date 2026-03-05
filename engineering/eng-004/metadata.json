@@ -1,9 +1,8 @@
 {
   "id": "eng-004",
-  "title": "Strojní materiály — přehled a vlastnosti",
+  "title": "Engineering Materials — Properties & Standards",
   "category": "reference",
-  "description": "Přehled strojních materiálů: konstrukční oceli, nerezové oceli, nástrojové oceli, hliníkové slitiny a litiny. Křížové převody norem ČSN / EN / W.Nr / DIN / AISI, mechanické vlastnosti, svařitelnost a obrobitelnost.",
+  "description": "Reference table of 90+ engineering materials: structural, stainless and tool steels, aluminium alloys, cast iron, copper, brass, titanium and technical plastics. Cross-reference ČSN / EN / W.Nr / DIN / AISI, weldability and machinability.",
   "icon": "🔩",
-  "lang": "cs",
   "difficulty": "beginner"
 }

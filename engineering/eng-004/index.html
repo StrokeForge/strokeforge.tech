@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strojní materiály — přehled a vlastnosti | StrokeForge Engineering</title>
-    <meta name="description" content="Přehled 90+ strojních materiálů: konstrukční, nerezové, nástrojové oceli, hliník, litina, měď, mosaz, titan a technické plasty. Převody norem ČSN / EN / W.Nr / DIN / AISI, svařitelnost, obrobitelnost.">
-    <meta name="keywords" content="strojní materiály, tabulka ocelí, ČSN EN převod, mosaz bronz měď, technické plasty POM PEEK, titan Ti-6Al-4V, nástrojová ocel, svařitelnost obrobitelnost">
+    <title>Engineering Materials — Properties &amp; Standards | StrokeForge Engineering</title>
+    <meta name="description" content="Reference table of 90+ engineering materials: structural, stainless and tool steels, aluminium, cast iron, copper alloys, titanium and technical plastics. Cross-reference ČSN / EN / W.Nr / DIN / AISI, weldability and machinability.">
+    <meta name="keywords" content="engineering materials, steel grades, ČSN EN conversion, brass bronze copper, technical plastics POM PEEK, titanium Ti-6Al-4V, tool steel, weldability machinability">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://strokeforge.tech/engineering/eng-004/">
     <link rel="stylesheet" href="../../css/colors.css">
@@ -106,8 +106,8 @@
     <div class="tool-wrapper" style="padding-top:1.5rem"><a href="../../engineering.html" class="back-button">← Back to Engineering</a></div>
 
     <header class="page-header">
-        <h1>🔩 Strojní materiály</h1>
-        <p>Přehled mechanických vlastností, křížové převody norem a hodnocení svařitelnosti a obrobitelnosti.</p>
+        <h1>🔩 Engineering Materials</h1>
+        <p>Mechanical properties, cross-reference of standards and weldability / machinability ratings.</p>
     </header>
 
     <main class="tool-wrap">
@@ -115,7 +115,7 @@
         <div class="controls">
             <div class="search-wrap">
                 <span class="search-icon">🔍</span>
-                <input class="search-inp" type="text" id="search" placeholder="Hledat: 11600, S355, 1.4301, 304, H13, 6082...">
+                <input class="search-inp" type="text" id="search" placeholder="Search: S355, 1.4301, 304, H13, 6082, Ti-6Al-4V...">
                 <span class="search-clear" id="search-clear" onclick="clearSearch()">✕</span>
             </div>
             <div class="cat-tabs" id="cat-tabs"></div>
@@ -132,563 +132,563 @@
         </div>
 
         <div class="legend">
-            <strong style="color:var(--light-gray)">Legenda:</strong>
-            <div class="legend-item"><span class="badge badge-v">výborná</span></div>
-            <div class="legend-item"><span class="badge badge-d">dobrá</span></div>
-            <div class="legend-item"><span class="badge badge-o">omezená</span></div>
-            <div class="legend-item"><span class="badge badge-s">špatná</span></div>
-            <div class="legend-item"><span class="badge badge-n">—</span> nelze / n/a</div>
-            <div class="legend-item" style="margin-left:auto;color:var(--text-gray)">* HRC = po kalení | HB = žíhaný stav | kliknutím na řádek zobrazíte detail</div>
+            <strong style="color:var(--light-gray)">Legend:</strong>
+            <div class="legend-item"><span class="badge badge-v">excellent</span></div>
+            <div class="legend-item"><span class="badge badge-d">good</span></div>
+            <div class="legend-item"><span class="badge badge-o">limited</span></div>
+            <div class="legend-item"><span class="badge badge-s">poor</span></div>
+            <div class="legend-item"><span class="badge badge-n">—</span> not possible / n/a</div>
+            <div class="legend-item" style="margin-left:auto;color:var(--text-gray)">* HRC = after hardening | HB = annealed condition | click a row to show detail</div>
         </div>
 
     </main>
 
     <footer>
-        <p>Část <a href="../../engineering.html">StrokeForge Engineering</a> — technické tabulky pro strojaře</p>
+        <p>Part of <a href="../../engineering.html">StrokeForge Engineering</a> — reference tables for mechanical engineers</p>
     </footer>
 
     <script>
     // ═══════════════════════════════════════════════════════════════════════
     // MATERIAL DATA
     // ═══════════════════════════════════════════════════════════════════════
-    // Svařitelnost / Obrobitelnost: 'v'=výborná, 'd'=dobrá, 'o'=omezená, 's'=špatná, 'n'=nelze
-    // HB / HRC: číslo, typ v poli 'htyp': 'HB' nebo 'HRC'
+    // Weldability / Machinability: 'v'=excellent, 'd'=good, 'o'=limited, 's'=poor, 'n'=not possible
+    // HB / HRC: number, type in 'htyp' field: 'HB' or 'HRC'
 
     const MATERIALS = [
 
-        // ── KONSTRUKČNÍ OCEL ─────────────────────────────────────────────
+        // ── STRUCTURAL STEEL ─────────────────────────────────────────────
         {
             cat:'konstrukcni', csn:'11 373', en:'S235JR', wn:'1.0038', din:'St 37-2', aisi:'A36',
             re:235, rm:360, a5:26, h:105, htyp:'HB', svar:'v', obrob:'d',
-            pouziti:'Obecné ocelové konstrukce, svařované rámy, plechy',
-            pozn:'Nejběžnější konstrukční ocel. Vhodná pro svařování bez předehřevu. Nekalitelná.'
+            pouziti:'General steel structures, welded frames, sheet metal',
+            pozn:'Most common structural steel. Suitable for welding without preheating. Not hardenable.'
         },
         {
             cat:'konstrukcni', csn:'11 423', en:'S275JR', wn:'1.0044', din:'St 44-2', aisi:'—',
             re:275, rm:430, a5:23, h:125, htyp:'HB', svar:'v', obrob:'d',
-            pouziti:'Nosníky, mostní konstrukce, jeřábové dráhy',
-            pozn:'Vyšší pevnost než S235. Stále výborně svařitelná. Hojně používaná v průmyslových stavbách.'
+            pouziti:'Beams, bridge structures, crane runways',
+            pozn:'Higher strength than S235. Still excellent weldability. Widely used in industrial construction.'
         },
         {
             cat:'konstrukcni', csn:'11 523', en:'S355JR', wn:'1.0045', din:'St 52-3', aisi:'—',
             re:355, rm:510, a5:22, h:160, htyp:'HB', svar:'d', obrob:'d',
-            pouziti:'Ocelové konstrukce, jeřáby, mosty, stroje',
-            pozn:'Vysokopevnostní konstrukční ocel. Při tloušťce >30mm doporučen předehřev před svařováním.'
+            pouziti:'Steel structures, cranes, bridges, machinery',
+            pozn:'High-strength structural steel. Preheat recommended for thicknesses >30 mm before welding.'
         },
         {
             cat:'konstrukcni', csn:'11 600', en:'C45', wn:'1.0503', din:'Ck45', aisi:'1045',
             re:305, rm:580, a5:20, h:170, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Hřídele, ozubená kola, čepy, klíny, šrouby',
-            pozn:'Nejpoužívanější strojní ocel na hřídele. Kalitelná do vody/oleje. Po kalení a popuštění Re≥490 MPa.'
+            pouziti:'Shafts, gears, pins, keys, bolts',
+            pozn:'Most common engineering steel for shafts. Hardenable in water/oil. After Q&T: Re≥490 MPa.'
         },
         {
             cat:'konstrukcni', csn:'11 700', en:'C60', wn:'1.0601', din:'Ck60', aisi:'1060',
             re:360, rm:660, a5:14, h:195, htyp:'HB', svar:'s', obrob:'d',
-            pouziti:'Pružiny, kolejnice, nože, kladky, páky',
-            pozn:'Vyšší obsah uhlíku → tvrdší, ale méně houževnatá. Svařování nevhodné bez speciálních opatření.'
+            pouziti:'Springs, rails, knives, pulleys, levers',
+            pozn:'Higher carbon content → harder but less tough. Welding not suitable without special precautions.'
         },
         {
             cat:'konstrukcni', csn:'12 050', en:'C45E', wn:'1.1191', din:'Ck45', aisi:'1045',
             re:340, rm:620, a5:17, h:180, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Hřídele, ozubená kola, šrouby pevnostních tříd',
-            pozn:'Vyšší čistota taveniny než 11 600. Vhodná pro povrchové kalení (HRC 55–60 na povrchu).'
+            pouziti:'Shafts, gears, high-strength bolts',
+            pozn:'Cleaner melt than 11 600. Suitable for surface hardening (HRC 55–60 at surface).'
         },
         {
             cat:'konstrukcni', csn:'12 060', en:'C55E', wn:'1.1203', din:'Ck55', aisi:'1055',
             re:380, rm:660, a5:13, h:195, htyp:'HB', svar:'s', obrob:'d',
-            pouziti:'Kladky, čepy, pružinové díly menších průřezů',
-            pozn:'Přechodová ocel mezi strojními a pružinovými ocelemi.'
+            pouziti:'Pulleys, pins, small spring parts',
+            pozn:'Transitional steel between engineering and spring steels.'
         },
         {
             cat:'konstrukcni', csn:'13 240', en:'42CrMo4', wn:'1.7225', din:'42CrMo4', aisi:'4140',
             re:650, rm:900, a5:14, h:260, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Hřídele, ozubená kola, vrtací tyče, šrouby pevnostní třídy 10.9',
-            pozn:'Velmi rozšířená ušlechtilá ocel. Nutný předehřev před svařováním. Kalí se do oleje.'
+            pouziti:'Shafts, gears, drill rods, grade 10.9 bolts',
+            pozn:'Widely used alloy steel. Preheat required before welding. Oil quenched.'
         },
         {
             cat:'konstrukcni', csn:'14 220', en:'20MnCr5', wn:'1.7147', din:'20MnCr5', aisi:'5120',
             re:635, rm:885, a5:12, h:260, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Cementovaná ozubená kola, hřídele, ložiskové čepy',
-            pozn:'Cementovatelná ocel. Tvrdý povrch (HRC 58–62) + houževnaté jádro. Výborná pro ozubení.'
+            pouziti:'Case-hardened gears, shafts, bearing journals',
+            pozn:'Case hardening steel. Hard surface (HRC 58–62) + tough core. Excellent for gears.'
         },
         {
             cat:'konstrukcni', csn:'15 230', en:'34CrNiMo6', wn:'1.6582', din:'34CrNiMo6', aisi:'4340',
             re:800, rm:1000, a5:12, h:300, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Vysoce namáhané hřídele, klikové hřídele, ojnice',
-            pozn:'Vysoce ušlechtilá ocel s výbornou houževnatostí. Nutný předehřev 200–300°C před svařováním.'
+            pouziti:'Highly loaded shafts, crankshafts, connecting rods',
+            pozn:'Premium alloy steel with excellent toughness. Preheat 200–300°C required before welding.'
         },
         {
             cat:'konstrukcni', csn:'15 260', en:'36NiCrMo16', wn:'1.6773', din:'36NiCrMo16', aisi:'—',
             re:900, rm:1100, a5:11, h:320, htyp:'HB', svar:'s', obrob:'d',
-            pouziti:'Extrémně namáhané díly, torzní tyče, vrtací tyče',
-            pozn:'Jedna z nejpevnějších ušlechtilých ocelí v sériové výrobě. Svařování jen ve výjimečných případech.'
+            pouziti:'Extremely loaded parts, torsion bars, drill rods',
+            pozn:'One of the strongest alloy steels in series production. Welding only in exceptional cases.'
         },
         {
             cat:'konstrukcni', csn:'16 343', en:'51CrV4', wn:'1.8159', din:'50CrV4', aisi:'6150',
             re:900, rm:1100, a5:10, h:310, htyp:'HB', svar:'s', obrob:'o',
-            pouziti:'Vinuté a listové pružiny, torzní tyče, ventilové pružiny',
-            pozn:'Klasická pružinová ocel. Výborná únavová pevnost. Používá se i pro nástroje.'
+            pouziti:'Coil and leaf springs, torsion bars, valve springs',
+            pozn:'Classic spring steel. Excellent fatigue strength. Also used for tools.'
         },
 
-        // ── NEREZOVÁ OCEL ────────────────────────────────────────────────
+        // ── STAINLESS STEEL ──────────────────────────────────────────────
         {
             cat:'nerez', csn:'17 240', en:'X5CrNi18-10', wn:'1.4301', din:'X5CrNi18-10', aisi:'304',
             re:210, rm:520, a5:45, h:150, htyp:'HB', svar:'d', obrob:'o',
-            pouziti:'Nádrže, potrubí, kuchyňské vybavení, architektura',
-            pozn:'Nejrozšířenější nerezová ocel. Austenitická. Nemagnetická (po tváření slabě mag.). Odolná 0–400°C.'
+            pouziti:'Tanks, piping, kitchen equipment, architecture',
+            pozn:'Most common stainless steel. Austenitic. Non-magnetic (slightly magnetic after forming). Resistant 0–400°C.'
         },
         {
             cat:'nerez', csn:'17 246', en:'X2CrNi19-11', wn:'1.4307', din:'X2CrNi18-9', aisi:'304L',
             re:200, rm:500, a5:45, h:140, htyp:'HB', svar:'v', obrob:'o',
-            pouziti:'Svařované nádrže, potravinářství, chemický průmysl',
-            pozn:'Nízký obsah uhlíku → eliminuje senzibilizaci při svařování. Přednostní volba pro svařované díly.'
+            pouziti:'Welded tanks, food industry, chemical industry',
+            pozn:'Low carbon content → eliminates sensitization during welding. Preferred choice for welded parts.'
         },
         {
             cat:'nerez', csn:'17 248', en:'X5CrNiMo17-12-2', wn:'1.4401', din:'X5CrNiMo17-12-2', aisi:'316',
             re:220, rm:530, a5:45, h:150, htyp:'HB', svar:'d', obrob:'o',
-            pouziti:'Chemický průmysl, mořské prostředí, farmaceuta',
-            pozn:'Přídavek Mo zvyšuje odolnost proti pittingové korozi. Odolná chloridům lépe než 304.'
+            pouziti:'Chemical industry, marine environments, pharmaceuticals',
+            pozn:'Mo addition increases pitting corrosion resistance. Better chloride resistance than 304.'
         },
         {
             cat:'nerez', csn:'17 349', en:'X2CrNiMo17-12-2', wn:'1.4404', din:'—', aisi:'316L',
             re:200, rm:500, a5:45, h:140, htyp:'HB', svar:'v', obrob:'o',
-            pouziti:'Svařované konstrukce v agresivním prostředí, implantáty',
-            pozn:'Nejběžnější varianta 316 pro svařování. Nízký C = bez senzibilizace. Standard pro medicínu.'
+            pouziti:'Welded structures in aggressive environments, implants',
+            pozn:'Most common 316 variant for welding. Low C = no sensitization. Medical standard.'
         },
         {
             cat:'nerez', csn:'17 022', en:'X6Cr17', wn:'1.4016', din:'X6Cr17', aisi:'430',
             re:230, rm:430, a5:22, h:160, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Dekorativní prvky, domácí spotřebiče, výfukové systémy',
-            pozn:'Feritická nerezová ocel. Magnetická. Levnější (bez Ni). Omezená svařitelnost — nutný žíhací ohřev.'
+            pouziti:'Decorative elements, household appliances, exhaust systems',
+            pozn:'Ferritic stainless steel. Magnetic. Cheaper (no Ni). Limited weldability — annealing heat treatment required.'
         },
         {
             cat:'nerez', csn:'17 029', en:'X12Cr13', wn:'1.4006', din:'X10Cr13', aisi:'410',
             re:280, rm:480, a5:20, h:160, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Příbory, šrouby, čerpadlové díly, ventily',
-            pozn:'Martenzitická ocel, kalitelná (HRC až 40). Magnetická. Odolnost korozi nižší než austenitické řady.'
+            pouziti:'Cutlery, bolts, pump parts, valves',
+            pozn:'Martensitic steel, hardenable (HRC up to 40). Magnetic. Lower corrosion resistance than austenitic grades.'
         },
         {
             cat:'nerez', csn:'17 465', en:'X2CrNiMoN22-5-3', wn:'1.4462', din:'—', aisi:'2205',
             re:460, rm:640, a5:25, h:220, htyp:'HB', svar:'d', obrob:'o',
-            pouziti:'Chemický průmysl, námořní stavby, desalinace, výměníky',
-            pozn:'Duplexní ocel (austenit + ferit). Dvojnásobná Re oproti 304/316. Výborná odolnost pittingu a SCC.'
+            pouziti:'Chemical industry, offshore construction, desalination, heat exchangers',
+            pozn:'Duplex steel (austenite + ferrite). Double Re vs 304/316. Excellent pitting and SCC resistance.'
         },
         {
             cat:'nerez', csn:'17 350', en:'X6CrNiTi18-10', wn:'1.4541', din:'X6CrNiTi18-10', aisi:'321',
             re:200, rm:500, a5:40, h:150, htyp:'HB', svar:'v', obrob:'o',
-            pouziti:'Vysokoteplotní aplikace, svařované díly do 850°C',
-            pozn:'Stabilizovaná Ti. Odolná žíhání za provozu. Vhodná pro výfuky, tepelné výměníky při vyšších teplotách.'
+            pouziti:'High-temperature applications, welded parts up to 850°C',
+            pozn:'Ti-stabilized. Resistant to sensitization during service. Suitable for exhausts, heat exchangers at higher temperatures.'
         },
 
-        // ── NÁSTROJOVÁ OCEL ──────────────────────────────────────────────
+        // ── TOOL STEEL ───────────────────────────────────────────────────
         {
             cat:'nastrojova', csn:'19 083', en:'X153CrMoV12', wn:'1.2379', din:'X155CrVMo12-1', aisi:'D2',
             re:null, rm:null, a5:1, h:62, htyp:'HRC', svar:'s', obrob:'o',
-            pouziti:'Střižné nástroje, razníky, válce, formy na plast',
-            pozn:'Vysokolegovaná chromová ocel. Velmi dobrá odolnost opotřebení. Po kalení HRC 58–62. Obrábí se v žíhaném stavu.'
+            pouziti:'Blanking tools, punches, rolls, plastic moulds',
+            pozn:'High-alloy chromium steel. Very good wear resistance. HRC 58–62 after hardening. Machined in annealed condition.'
         },
         {
             cat:'nastrojova', csn:'19 312', en:'100Cr6', wn:'1.3505', din:'100Cr6', aisi:'52100',
             re:null, rm:null, a5:2, h:62, htyp:'HRC', svar:'s', obrob:'o',
-            pouziti:'Ložiska, válce, kuličky, jehly, vodící pouzdra',
-            pozn:'Klasická ložisková ocel. Výborná kontaktní pevnost a odolnost opotřebení. Kalí se do oleje (HRC 60–64).'
+            pouziti:'Bearings, rolls, balls, needles, guide bushings',
+            pozn:'Classic bearing steel. Excellent contact strength and wear resistance. Oil hardened (HRC 60–64).'
         },
         {
             cat:'nastrojova', csn:'19 437', en:'X40CrMoV5-1', wn:'1.2344', din:'X40CrMoV5-1', aisi:'H13',
             re:null, rm:null, a5:8, h:52, htyp:'HRC', svar:'o', obrob:'d',
-            pouziti:'Lisovací formy, vtlačovací nástroje, hliníkové tlakovéodlitky',
-            pozn:'Ocel pro práci za tepla. Výborná tepelná únava a houževnatost za tepla. Obrábí se v žíhaném stavu (HB 200).'
+            pouziti:'Die casting moulds, extrusion tooling, aluminium pressure die castings',
+            pozn:'Hot work steel. Excellent thermal fatigue and hot toughness. Machined in annealed state (HB 200).'
         },
         {
             cat:'nastrojova', csn:'19 452', en:'X37CrMoV5-1', wn:'1.2343', din:'X38CrMoV5-1', aisi:'H11',
             re:null, rm:null, a5:10, h:50, htyp:'HRC', svar:'o', obrob:'d',
-            pouziti:'Zápustky, lisovníky, protlačovací nástroje',
-            pozn:'Podobná H13, ale vyšší houževnatost na úkor tvrdosti. Vhodná pro rázově namáhané nástroje.'
+            pouziti:'Drop forging dies, punches, extrusion tools',
+            pozn:'Similar to H13, but higher toughness at the cost of hardness. Suitable for impact-loaded tooling.'
         },
         {
             cat:'nastrojova', csn:'19 550', en:'HS6-5-2', wn:'1.3343', din:'S6-5-2', aisi:'M2',
             re:null, rm:null, a5:2, h:65, htyp:'HRC', svar:'s', obrob:'s',
-            pouziti:'Vrtáky, frézy, závitníky, výstružníky, protahovací trny',
-            pozn:'Klasická rychlořezná ocel (HSS). Zachovává tvrdost do 600°C. Obrobitelnost špatná — broušení po kalení.'
+            pouziti:'Drills, milling cutters, taps, reamers, broaches',
+            pozn:'Classic high-speed steel (HSS). Retains hardness up to 600°C. Poor machinability — ground after hardening.'
         },
         {
             cat:'nastrojova', csn:'19 191', en:'100MnCrW4', wn:'1.2510', din:'100MnCrW4', aisi:'O1',
             re:null, rm:null, a5:2, h:62, htyp:'HRC', svar:'s', obrob:'d',
-            pouziti:'Měřidla, šablony, malé střižné nástroje, raznice',
-            pozn:'Olejová kalitelná ocel. Minimální deformace při kalení — ideální pro přesné nástroje a měřidla.'
+            pouziti:'Gauges, templates, small blanking tools, punches',
+            pozn:'Oil-hardening steel. Minimal distortion during hardening — ideal for precision tools and gauges.'
         },
         {
             cat:'nastrojova', csn:'19 732', en:'40CrMnNiMo8-6-4', wn:'1.2311', din:'40CrMnNiMo8-6-4', aisi:'P20',
             re:900, rm:1050, a5:12, h:300, htyp:'HB', svar:'o', obrob:'v',
-            pouziti:'Formy pro vstřikování plastů, tlakové odlitky, předdodávané bloky',
-            pozn:'Dodává se v předkalenovaném stavu (HB 280–325). Výborná obrobitelnost v tomto stavu. Není třeba kalit.'
+            pouziti:'Injection mould bases, die casting, pre-hardened blocks',
+            pozn:'Supplied in pre-hardened condition (HB 280–325). Excellent machinability in this state. No further hardening required.'
         },
         {
             cat:'nastrojova', csn:'19 436', en:'X38CrMoV5-3', wn:'1.2367', din:'X38CrMoV5-3', aisi:'H10',
             re:null, rm:null, a5:9, h:52, htyp:'HRC', svar:'o', obrob:'d',
-            pouziti:'Formy pro hliníkové tlakové odlitky, tváření za tepla',
-            pozn:'Vyšší obsah Mo než H13 → lepší odolnost tepelnému únavovému popraskání. Populární v automobilovém průmyslu.'
+            pouziti:'Aluminium die casting moulds, hot forming',
+            pozn:'Higher Mo than H13 → better thermal fatigue crack resistance. Popular in the automotive industry.'
         },
 
-        // ── HLINÍK A SLITINY ─────────────────────────────────────────────
+        // ── ALUMINIUM ALLOYS ─────────────────────────────────────────────
         {
             cat:'hlinik', csn:'Al 99.5', en:'EN AW-1050A', wn:'3.0255', din:'Al 99.5', aisi:'1050',
             re:85, rm:105, a5:6, h:30, htyp:'HB', svar:'v', obrob:'o',
-            pouziti:'Folie, chemické nádoby, elektrotechnika, kondenzátory',
-            pozn:'Technicky čistý hliník. Výborná korozní odolnost a elektrická vodivost. Nízká pevnost.'
+            pouziti:'Foil, chemical vessels, electrical engineering, capacitors',
+            pozn:'Commercially pure aluminium. Excellent corrosion resistance and electrical conductivity. Low strength.'
         },
         {
             cat:'hlinik', csn:'AlCu4MgSi', en:'EN AW-2017A', wn:'3.1325', din:'AlCuMg1', aisi:'2017',
             re:275, rm:425, a5:15, h:120, htyp:'HB', svar:'s', obrob:'v',
-            pouziti:'Letecké díly, šrouby, nýty, přesné strojní součásti (Dural)',
-            pozn:'Klasický Dural (AlCuMg). Výborná pevnost, ale špatně svařitelný. Náchylný na mezikrystalickou korozi.'
+            pouziti:'Aircraft parts, bolts, rivets, precision machined parts (Duralumin)',
+            pozn:'Classic Duralumin (AlCuMg). Excellent strength, but poor weldability. Susceptible to intergranular corrosion.'
         },
         {
             cat:'hlinik', csn:'AlCu4Mg1', en:'EN AW-2024', wn:'3.1355', din:'AlCuMg2', aisi:'2024',
             re:325, rm:470, a5:18, h:130, htyp:'HB', svar:'s', obrob:'v',
-            pouziti:'Letecké potahy, konstrukční díly letadel, sportovní výbava',
-            pozn:'Nejpoužívanější letecký hliník. Nejčastěji ve stavu T3 (po tváření + přirozené stárnutí). Povrch anodizovat.'
+            pouziti:'Aircraft skins, structural aircraft parts, sports equipment',
+            pozn:'Most common aerospace aluminium. Usually in T3 condition (cold worked + natural aging). Anodize surface.'
         },
         {
             cat:'hlinik', csn:'AlMg3', en:'EN AW-5754', wn:'3.3535', din:'AlMg3', aisi:'5754',
             re:160, rm:220, a5:11, h:65, htyp:'HB', svar:'v', obrob:'d',
-            pouziti:'Karoserie vozidel, lodě, nádrže, výměníky tepla',
-            pozn:'Výborná korozní odolnost v mořském prostředí. Nelze tepelně zpracovat, zpevňuje se tvářením.'
+            pouziti:'Vehicle bodywork, boats, tanks, heat exchangers',
+            pozn:'Excellent corrosion resistance in marine environments. Not heat treatable, strengthened by cold working.'
         },
         {
             cat:'hlinik', csn:'AlMg4.5Mn', en:'EN AW-5083', wn:'3.3547', din:'AlMg4.5Mn0.7', aisi:'5083',
             re:200, rm:290, a5:16, h:75, htyp:'HB', svar:'v', obrob:'d',
-            pouziti:'Námořní stavby, kryogenní nádrže, tlaková zařízení, LNG tanky',
-            pozn:'Nejvyšší pevnost z nespevnitelné Al-Mg série. Výborná pro teploty až −200°C. Standard pro kryogeniku.'
+            pouziti:'Marine construction, cryogenic tanks, pressure vessels, LNG tanks',
+            pozn:'Highest strength of non-heat-treatable Al-Mg series. Excellent down to −200°C. Cryogenic standard.'
         },
         {
             cat:'hlinik', csn:'AlMg1SiCu', en:'EN AW-6061', wn:'3.3211', din:'AlMgSi1', aisi:'6061',
             re:276, rm:310, a5:12, h:95, htyp:'HB', svar:'d', obrob:'v',
-            pouziti:'Strojní díly, letadlové rámy, sportovní kola, CNC obrobky',
-            pozn:'Všestranná slitina T6. Výborná obrobitelnost. Dobrá korozní odolnost. Standard pro CNC obrábění.'
+            pouziti:'Machine parts, aircraft frames, sports wheels, CNC machined parts',
+            pozn:'Versatile T6 alloy. Excellent machinability. Good corrosion resistance. CNC machining standard.'
         },
         {
             cat:'hlinik', csn:'AlSi1MgMn', en:'EN AW-6082', wn:'3.2315', din:'AlSi1MgMn', aisi:'6082',
             re:260, rm:310, a5:10, h:95, htyp:'HB', svar:'d', obrob:'v',
-            pouziti:'Nosníky, příruby, profily, strojní díly, dopravní prostředky',
-            pozn:'Nejběžnější konstrukční hliník v Evropě. Profily T6. Lepší pevnost než 6061 při srovnatelné obrobitelnosti.'
+            pouziti:'Beams, flanges, profiles, machine parts, transport vehicles',
+            pozn:'Most common structural aluminium in Europe. T6 profiles. Better strength than 6061 at comparable machinability.'
         },
         {
             cat:'hlinik', csn:'AlZn5.5MgCu', en:'EN AW-7075', wn:'3.4365', din:'AlZnMgCu1.5', aisi:'7075',
             re:503, rm:572, a5:11, h:150, htyp:'HB', svar:'s', obrob:'d',
-            pouziti:'Letecké konstrukce, sportovní vybavení, high-end CNC díly',
-            pozn:'Nejvyšší pevnost z běžných Al slitin. Stav T6. Náchylný na korozní praskání pod napětím (SCC).'
+            pouziti:'Aerospace structures, sports equipment, high-end CNC parts',
+            pozn:'Highest strength of common Al alloys. T6 condition. Susceptible to stress corrosion cracking (SCC).'
         },
         {
             cat:'hlinik', csn:'AlMgSi', en:'EN AW-6063', wn:'3.3206', din:'AlMgSi0.5', aisi:'6063',
             re:170, rm:215, a5:12, h:73, htyp:'HB', svar:'d', obrob:'d',
-            pouziti:'Architektonické profily, okna, dveře, rámy, anodizované výrobky',
-            pozn:'Standardní profilová slitina. Horší pevnost než 6082, ale výborný povrch po anodizaci a extruzi.'
+            pouziti:'Architectural profiles, windows, doors, frames, anodized products',
+            pozn:'Standard profile alloy. Lower strength than 6082, but excellent surface finish after anodizing and extrusion.'
         },
 
-        // ── LITINA ───────────────────────────────────────────────────────
+        // ── CAST IRON ────────────────────────────────────────────────────
         {
             cat:'litina', csn:'42 2415', en:'EN-GJL-150', wn:'—', din:'GG-15', aisi:'No. 20',
             re:null, rm:150, a5:null, h:160, htyp:'HB', svar:'s', obrob:'v',
-            pouziti:'Méně namáhané odlitky, kryty, konzole',
-            pozn:'Šedá litina. Grafit ve tvaru lupínků. Výborná útlumová schopnost vibrací. Křehká — tah nízký, tlak vysoký.'
+            pouziti:'Lightly loaded castings, covers, brackets',
+            pozn:'Grey cast iron. Lamellar graphite. Excellent vibration damping. Brittle — low tensile, high compressive strength.'
         },
         {
             cat:'litina', csn:'42 2420', en:'EN-GJL-200', wn:'—', din:'GG-20', aisi:'No. 25',
             re:null, rm:200, a5:null, h:180, htyp:'HB', svar:'s', obrob:'v',
-            pouziti:'Bloky motorů, převodovkové skříně, ložiskové domky',
-            pozn:'Nejpoužívanější šedá litina. Dobrý kompromis pevnosti a obrobitelnosti. Tlumí vibrace lépe než ocel.'
+            pouziti:'Engine blocks, gearbox housings, bearing housings',
+            pozn:'Most common grey cast iron. Good compromise of strength and machinability. Better vibration damping than steel.'
         },
         {
             cat:'litina', csn:'42 2425', en:'EN-GJL-250', wn:'—', din:'GG-25', aisi:'No. 35',
             re:null, rm:250, a5:null, h:210, htyp:'HB', svar:'s', obrob:'d',
-            pouziti:'Válce, ložiskové domky, hydraulické bloky',
-            pozn:'Vyšší pevnost šedé litiny. Stále výborná obrobitelnost. Vhodná pro tlakové díly.'
+            pouziti:'Cylinders, bearing housings, hydraulic blocks',
+            pozn:'Higher strength grey iron. Still excellent machinability. Suitable for pressure parts.'
         },
         {
             cat:'litina', csn:'42 2430', en:'EN-GJL-300', wn:'—', din:'GG-30', aisi:'No. 45',
             re:null, rm:300, a5:null, h:240, htyp:'HB', svar:'s', obrob:'d',
-            pouziti:'Vysoce namáhané odlitky, ozubená kola, vřetena obráběcích strojů',
-            pozn:'Perlitická šedá litina. Dobrá odolnost opotřebení.'
+            pouziti:'Heavily loaded castings, gears, machine tool spindles',
+            pozn:'Pearlitic grey iron. Good wear resistance.'
         },
         {
             cat:'litina', csn:'42 2305', en:'EN-GJS-400-15', wn:'—', din:'GGG-40', aisi:'60-40-18',
             re:250, rm:400, a5:15, h:150, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Součásti převodovek, příruby, tvarovky, armatury',
-            pozn:'Tvárná (sferoidická) litina — grafit ve tvaru kuliček. Tažná, houževnatá. Svařitelná se speciálním přídavkem.'
+            pouziti:'Gearbox parts, flanges, fittings, valves',
+            pozn:'Ductile (spheroidal graphite) iron. Ductile, tough. Weldable with special filler.'
         },
         {
             cat:'litina', csn:'42 2306', en:'EN-GJS-500-7', wn:'—', din:'GGG-50', aisi:'80-55-06',
             re:320, rm:500, a5:7, h:185, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Klikové hřídele, ojnice, nápravy, tvarovky',
-            pozn:'Tvárná litina vyšší pevnosti. Feritická + perlitická matrice. Alternativa k oceli pro odlitky složitých tvarů.'
+            pouziti:'Crankshafts, connecting rods, axles, fittings',
+            pozn:'Higher strength ductile iron. Ferritic + pearlitic matrix. Alternative to steel for complex shaped castings.'
         },
         {
             cat:'litina', csn:'42 2307', en:'EN-GJS-700-2', wn:'—', din:'GGG-70', aisi:'100-70-03',
             re:420, rm:700, a5:2, h:280, htyp:'HB', svar:'s', obrob:'o',
-            pouziti:'Vysoce namáhané odlitky, ozubená kola, válce',
-            pozn:'Tvárná litina, čistě perlitická matrice. Nízká tažnost. Potřebná přesná metalurgie při výrobě.'
+            pouziti:'Heavily loaded castings, gears, rolls',
+            pozn:'Ductile iron, fully pearlitic matrix. Low elongation. Precise metallurgy required in production.'
         },
 
-        // ── PRUŽINOVÁ OCEL ───────────────────────────────────────────────
+        // ── SPRING STEEL ─────────────────────────────────────────────────
         {
             cat:'pruzinova', csn:'14 260', en:'60Si2Mn', wn:'1.0961', din:'60Si7', aisi:'9260',
             re:1200, rm:1350, a5:6, h:390, htyp:'HB', svar:'s', obrob:'o',
-            pouziti:'Listové pružiny, vinuté tyčové pružiny, odpružení vozidel',
-            pozn:'Klasická silicioManganová pružinová ocel. Výborná relaxační odolnost. Kalí se do oleje.'
+            pouziti:'Leaf springs, coil bar springs, vehicle suspension',
+            pozn:'Classic silicon-manganese spring steel. Excellent relaxation resistance. Oil hardened.'
         },
         {
             cat:'pruzinova', csn:'14 270', en:'55Si2', wn:'1.0904', din:'55Si7', aisi:'9255',
             re:1100, rm:1250, a5:7, h:360, htyp:'HB', svar:'s', obrob:'o',
-            pouziti:'Střední a větší vinuté pružiny, torzní tyče',
-            pozn:'Nižší obsah Si než 14 260, o něco houževnatější. Vhodná pro větší průřezy.'
+            pouziti:'Medium and larger coil springs, torsion bars',
+            pozn:'Lower Si than 14 260, slightly tougher. Suitable for larger cross-sections.'
         },
         {
             cat:'pruzinova', csn:'16 343', en:'51CrV4', wn:'1.8159', din:'50CrV4', aisi:'6150',
             re:900, rm:1100, a5:10, h:310, htyp:'HB', svar:'s', obrob:'o',
-            pouziti:'Vinuté pružiny, ventilové pružiny, torzní tyče, pera',
-            pozn:'Chromvanadiová pružinová ocel. Výborná únavová pevnost a houbevnatost. Populární pro přesné pružiny.'
+            pouziti:'Coil springs, valve springs, torsion bars, keys',
+            pozn:'Chrome-vanadium spring steel. Excellent fatigue strength and toughness. Popular for precision springs.'
         },
         {
             cat:'pruzinova', csn:'17 221', en:'X7CrNiAl17-7', wn:'1.4568', din:'X7CrNiAl17-7', aisi:'631',
             re:1100, rm:1300, a5:5, h:380, htyp:'HB', svar:'o', obrob:'o',
-            pouziti:'Nerezové pružiny pro korozní prostředí, medicína, potravinářství',
-            pozn:'17-7PH nerezová pružinová ocel. Precipitačně vytvrditelná. Výborná kombinace pevnosti a korozní odolnosti.'
+            pouziti:'Stainless springs for corrosive environments, medical, food industry',
+            pozn:'17-7PH stainless spring steel. Precipitation hardened. Excellent combination of strength and corrosion resistance.'
         },
         {
             cat:'pruzinova', csn:'—', en:'X10CrNi18-8', wn:'1.4310', din:'X12CrNi17-7', aisi:'301',
             re:800, rm:1000, a5:10, h:280, htyp:'HB', svar:'o', obrob:'o',
-            pouziti:'Vinuté nerezové pružiny, kontaktní pružiny, spony',
-            pozn:'Nejpoužívanější nerezová ocel pro pružiny. Zpevňuje se tvářením za studena. Nižší Ni → levnější než 304.'
+            pouziti:'Coiled stainless springs, contact springs, clips',
+            pozn:'Most common stainless steel for springs. Strengthened by cold working. Lower Ni → cheaper than 304.'
         },
 
-        // ── KONSTRUKČNÍ OCEL — doplněk ───────────────────────────────────
+        // ── STRUCTURAL STEEL — supplement ────────────────────────────────
         {
             cat:'konstrukcni', csn:'11 320', en:'S185', wn:'1.0035', din:'St 33', aisi:'A284',
             re:185, rm:290, a5:28, h:85, htyp:'HB', svar:'v', obrob:'d',
-            pouziti:'Nenamáhané výrobky, ohýbané díly, základní tvarové ocelové prvky',
-            pozn:'Nejměkčí a nejlevnější konstrukční ocel. Výborná tvarovatelnost, ale velmi nízká pevnost. Vhodná pouze pro nenamáhané aplikace.'
+            pouziti:'Unloaded parts, bent parts, basic shaped steel elements',
+            pozn:'Softest and cheapest structural steel. Excellent formability, but very low strength. Suitable only for unloaded applications.'
         },
         {
             cat:'konstrukcni', csn:'11 109', en:'11SMn30', wn:'1.0715', din:'9SMn28', aisi:'12L14',
             re:275, rm:390, a5:22, h:120, htyp:'HB', svar:'s', obrob:'v',
-            pouziti:'Automatová výroba šroubů, čepů, matic — CNC automaty',
-            pozn:'Automatová ocel s přídavkem síry a manganu. Nejlepší obrobitelnost ze všech ocelí. Nesvařitelná. Snížená houževnatost.'
+            pouziti:'Automatic machining of bolts, pins, nuts — CNC lathes',
+            pozn:'Free-cutting steel with sulphur and manganese. Best machinability of all steels. Not weldable. Reduced toughness.'
         },
         {
             cat:'konstrukcni', csn:'11 375', en:'S235J2', wn:'1.0117', din:'St 37-3', aisi:'—',
             re:235, rm:360, a5:26, h:105, htyp:'HB', svar:'v', obrob:'d',
-            pouziti:'Ocelové konstrukce s požadavky na vrubovou houževnatost za nízkých teplot',
-            pozn:'Jako S235JR, ale s garantovanou vrubovou houževnatostí KV ≥ 27 J při −20°C. Mosty, jeřábové dráhy v chladném prostředí.'
+            pouziti:'Steel structures requiring notch toughness at low temperatures',
+            pozn:'Like S235JR, but guaranteed notch toughness KV ≥ 27 J at −20°C. Bridges, crane runways in cold environments.'
         },
         {
             cat:'konstrukcni', csn:'11 500', en:'E295', wn:'1.0050', din:'St 50-2', aisi:'—',
             re:295, rm:490, a5:20, h:145, htyp:'HB', svar:'d', obrob:'d',
-            pouziti:'Hřídele, tyče, šrouby — průměrné namáhání bez kalení',
-            pozn:'Přechodová ocel mezi konstrukční a strojní. Vhodná pro součásti střední pevnosti bez nutnosti tepelného zpracování.'
+            pouziti:'Shafts, bars, bolts — moderate loading without hardening',
+            pozn:'Transitional steel between structural and engineering grades. Suitable for medium-strength parts without heat treatment.'
         },
         {
             cat:'konstrukcni', csn:'13 180', en:'16MnCr5', wn:'1.7131', din:'16MnCr5', aisi:'5115',
             re:635, rm:880, a5:13, h:260, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Cementovaná ozubená kola, hřídele, ložiskové čepy — automobilový průmysl',
-            pozn:'Cementovatelná ocel. Tvrdý povrch HRC 58–62 po cementování + kalení. Houževnaté jádro. Alternativa k 20MnCr5.'
+            pouziti:'Case-hardened gears, shafts, bearing journals — automotive industry',
+            pozn:'Case hardening steel. Hard surface HRC 58–62 after carburising + hardening. Tough core. Alternative to 20MnCr5.'
         },
         {
             cat:'konstrukcni', csn:'14 331', en:'25CrMo4', wn:'1.7218', din:'25CrMo4', aisi:'4130',
             re:600, rm:800, a5:15, h:240, htyp:'HB', svar:'d', obrob:'d',
-            pouziti:'Trubky pro tlakové nádoby, letecké rámy, svařované konstrukce střední pevnosti',
-            pozn:'Ušlechtilá chrom-molybdenová ocel. Dobrá svařitelnost mezi legovanými ocelemi. Populární v leteckém průmyslu.'
+            pouziti:'Pressure vessel tubing, aircraft frames, medium-strength welded structures',
+            pozn:'Alloy chrome-molybdenum steel. Good weldability among alloyed steels. Popular in aerospace.'
         },
         {
             cat:'konstrukcni', csn:'14 109', en:'30CrMoV9', wn:'1.7707', din:'30CrMoV9', aisi:'—',
             re:700, rm:900, a5:14, h:270, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Součásti parních turbín, kotlů, vysokoteplotní šrouby do 500°C',
-            pozn:'Vanadiem legovaná ocel pro práci za tepla při středních teplotách. Výborná pevnost za tepla a creepová odolnost.'
+            pouziti:'Steam turbine parts, boilers, high-temperature bolts up to 500°C',
+            pozn:'Vanadium-alloyed steel for medium-temperature hot work. Excellent hot strength and creep resistance.'
         },
         {
             cat:'konstrukcni', csn:'12 061', en:'C60E', wn:'1.1221', din:'Ck60', aisi:'1060',
             re:380, rm:700, a5:12, h:205, htyp:'HB', svar:'s', obrob:'d',
-            pouziti:'Kladky, páky, klínové hřídele, kolejnice, menší pružinové díly',
-            pozn:'Vyšší obsah uhlíku zajišťuje dobrou povrchovou tvrdost po kalení. Přechodová ocel mezi strojní a pružinovou řadou.'
+            pouziti:'Pulleys, levers, splined shafts, rails, small spring parts',
+            pozn:'Higher carbon content provides good surface hardness after quenching. Transitional steel between engineering and spring grades.'
         },
 
-        // ── NEREZOVÁ OCEL — doplněk ──────────────────────────────────────
+        // ── STAINLESS STEEL — supplement ─────────────────────────────────
         {
             cat:'nerez', csn:'17 241', en:'X8CrNiS18-9', wn:'1.4305', din:'X12CrNiS18-8', aisi:'303',
             re:210, rm:510, a5:40, h:150, htyp:'HB', svar:'s', obrob:'v',
-            pouziti:'CNC soustružené a frézované nerezové díly — šrouby, matice, příruby',
-            pozn:'Automatová nerezová ocel s přídavkem síry. Nejlepší obrobitelnost v nerez třídě. Svařitelnost špatná — při svaru praskání.'
+            pouziti:'CNC turned and milled stainless parts — bolts, nuts, flanges',
+            pozn:'Free-cutting stainless steel with sulphur addition. Best machinability in stainless class. Poor weldability — cracking at weld.'
         },
         {
             cat:'nerez', csn:'17 024', en:'X20Cr13', wn:'1.4021', din:'X20Cr13', aisi:'420',
             re:450, rm:650, a5:14, h:200, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Příbory, chirurgické nástroje, čepele, lopatkové stroje, ventily',
-            pozn:'Martenzitická nerezová ocel. Kalitelná do HRC 45–50. Magnetická. Dobrá korozní odolnost v žíhaném stavu.'
+            pouziti:'Cutlery, surgical instruments, blades, turbine blades, valves',
+            pozn:'Martensitic stainless steel. Hardenable to HRC 45–50. Magnetic. Good corrosion resistance in annealed condition.'
         },
         {
             cat:'nerez', csn:'—', en:'X46Cr13', wn:'1.4034', din:'X46Cr13', aisi:'420C',
             re:500, rm:750, a5:12, h:215, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Nože, nůžky, chirurgické nástroje s vyšší tvrdostí',
-            pozn:'Vyšší obsah C než 420 → tvrdší po kalení (HRC až 55). Méně houževnatá. Nejčastěji pro ostré nástroje.'
+            pouziti:'Knives, scissors, surgical instruments requiring higher hardness',
+            pozn:'Higher C than 420 → harder after hardening (HRC up to 55). Less tough. Primarily for sharp-edged tools.'
         },
         {
             cat:'nerez', csn:'—', en:'X5CrNiCuNb16-4', wn:'1.4542', din:'X5CrNiCuNb17-4', aisi:'17-4PH',
             re:1000, rm:1100, a5:14, h:336, htyp:'HB', svar:'d', obrob:'d',
-            pouziti:'Letecké díly, čerpadlová tělesa, jaderná technika, olejářský průmysl',
-            pozn:'Precipitačně vytvrditelná nerezová ocel. Jedinečná kombinace: Re>1000MPa + korozní odolnost srovnatelná s 304.'
+            pouziti:'Aerospace parts, pump bodies, nuclear engineering, oil industry',
+            pozn:'Precipitation hardening stainless steel. Unique combination: Re>1000MPa + corrosion resistance comparable to 304.'
         },
         {
             cat:'nerez', csn:'—', en:'X1NiCrMoCu25-20-5', wn:'1.4539', din:'—', aisi:'904L',
             re:220, rm:530, a5:40, h:160, htyp:'HB', svar:'v', obrob:'o',
-            pouziti:'Kyselinové potrubí, chemické reaktory, mořská voda — agresivní prostředí',
-            pozn:'Super austenitická nerezová ocel s 25% Ni a 4.5% Mo. Extrémní odolnost chloridům a H₂SO₄. Dražší alternativa k titanu.'
+            pouziti:'Acid piping, chemical reactors, seawater — aggressive environments',
+            pozn:'Super austenitic stainless with 25% Ni and 4.5% Mo. Extreme chloride and H₂SO₄ resistance. Expensive alternative to titanium.'
         },
         {
             cat:'nerez', csn:'17 255', en:'X2CrNiMo17-12-3', wn:'1.4432', din:'—', aisi:'316',
             re:210, rm:510, a5:45, h:150, htyp:'HB', svar:'d', obrob:'o',
-            pouziti:'Chemický průmysl, zařízení pro halogeny a chloridy',
-            pozn:'Vyšší obsah Mo (3%) než standardní 316 → lepší odolnost pittingu. Vhodná kde 316 nestačí a 904L je příliš drahá.'
+            pouziti:'Chemical industry, equipment for halogens and chlorides',
+            pozn:'Higher Mo (3%) than standard 316 → better pitting resistance. Use where 316 is insufficient and 904L is too expensive.'
         },
 
-        // ── NÁSTROJOVÁ OCEL — doplněk ────────────────────────────────────
+        // ── TOOL STEEL — supplement ──────────────────────────────────────
         {
             cat:'nastrojova', csn:'19 152', en:'C105W1', wn:'1.1545', din:'C105W1', aisi:'W1',
             re:null, rm:null, a5:2, h:64, htyp:'HRC', svar:'s', obrob:'d',
-            pouziti:'Jednoduché řezné nástroje, sekáče, průbojníky, dláta',
-            pozn:'Nejjednodušší nástrojová ocel — pouze uhlík, žádné legury. Levná. Kalení ve vodě — vysoké riziko deformace. Vhodná pro malé nástroje.'
+            pouziti:'Simple cutting tools, chisels, punches, cold chisels',
+            pozn:'Simplest tool steel — carbon only, no alloying elements. Cheap. Water quenched — high distortion risk. Suitable for small tools.'
         },
         {
             cat:'nastrojova', csn:'—', en:'90MnCrV8', wn:'1.2842', din:'90MnCrV8', aisi:'O2',
             re:null, rm:null, a5:2, h:62, htyp:'HRC', svar:'s', obrob:'d',
-            pouziti:'Střižné nástroje, razidla, šablony — minimum deformace při kalení',
-            pozn:'Olejová kalitelná ocel. Menší deformace při kalení než O1. Dobrá houževnatost. Alternativa k 1.2510 pro větší průřezy.'
+            pouziti:'Blanking tools, punches, templates — minimal distortion on hardening',
+            pozn:'Oil-hardening steel. Less distortion than O1 on hardening. Good toughness. Alternative to 1.2510 for larger sections.'
         },
         {
             cat:'nastrojova', csn:'—', en:'X32CrMoV3-3', wn:'1.2365', din:'X32CrMoV3-3', aisi:'H10',
             re:null, rm:null, a5:9, h:52, htyp:'HRC', svar:'o', obrob:'d',
-            pouziti:'Formy pro lisování mědi a jejích slitin, tváření za tepla',
-            pozn:'Podobná H13, ale s vyšším obsahem Mo → lepší tepelná vodivost. Vhodná pro lisování Cu/mosazi kde H13 nestačí.'
+            pouziti:'Dies for copper and copper alloy pressing, hot forming',
+            pozn:'Similar to H13, but higher Mo content → better thermal conductivity. Suitable for Cu/brass pressing where H13 is insufficient.'
         },
         {
             cat:'nastrojova', csn:'—', en:'HS10-4-3-10', wn:'1.3207', din:'S10-4-3-10', aisi:'M42',
             re:null, rm:null, a5:1, h:67, htyp:'HRC', svar:'s', obrob:'s',
-            pouziti:'Nástroje pro obrábění superslitin, nerezí, titanu — extrémní podmínky',
-            pozn:'Kobaltová rychlořezná ocel (10% Co). Nejvyšší tvrdost za tepla z HSS řady. Nutné pro obrábění těžkoobrobitelných materiálů.'
+            pouziti:'Tooling for machining superalloys, stainless steel, titanium — extreme conditions',
+            pozn:'Cobalt HSS (10% Co). Highest hot hardness in the HSS range. Required for machining difficult-to-cut materials.'
         },
 
-        // ── MĚĎ A SLITINY ─────────────────────────────────────────────────
+        // ── COPPER ALLOYS ────────────────────────────────────────────────
         {
             cat:'med', csn:'—', en:'Cu-ETP', wn:'CW004A', din:'E-Cu58', aisi:'C11000',
             re:200, rm:260, a5:45, h:85, htyp:'HB', svar:'d', obrob:'o',
-            pouziti:'Elektrické vodiče, sběrnice, transformátory, konektory',
-            pozn:'Elektrolytická čistá měď (99.9% Cu). Nejlepší elektrická vodivost. Obrobitelnost horší — lepí se. Výborná svařitelnost a pájetelnost.'
+            pouziti:'Electrical conductors, busbars, transformers, connectors',
+            pozn:'Electrolytic pure copper (99.9% Cu). Best electrical conductivity. Poor machinability — gummy. Excellent weldability and solderability.'
         },
         {
             cat:'med', csn:'—', en:'CuZn39Pb3', wn:'CW614N', din:'CuZn39Pb3', aisi:'C38500',
             re:310, rm:380, a5:35, h:100, htyp:'HB', svar:'s', obrob:'v',
-            pouziti:'Automatová výroba přesných dílů — ventily, armatury, konektory, šrouby',
-            pozn:'Automatová mosaz Ms58. Nejlepší obrobitelnost ze všech mosazí. Přidaný Pb jako lámač třísky. Svařitelnost špatná.'
+            pouziti:'Automatic machining of precision parts — valves, fittings, connectors, bolts',
+            pozn:'Free-cutting brass Ms58. Best machinability of all brasses. Pb added as chip breaker. Poor weldability.'
         },
         {
             cat:'med', csn:'—', en:'CuZn37', wn:'CW508L', din:'CuZn37', aisi:'C27200',
             re:290, rm:360, a5:40, h:90, htyp:'HB', svar:'d', obrob:'d',
-            pouziti:'Hlubokotažné díly, patrony, chladiče, výměníky tepla',
-            pozn:'Hlubokotažná mosaz Ms63. Výborná tvarovatelnost za studena. Standard pro patrony a náboje. Bez olova — ekologická varianta.'
+            pouziti:'Deep-drawn parts, cartridges, radiators, heat exchangers',
+            pozn:'Deep-drawing brass Ms63. Excellent cold formability. Standard for cartridges and shell cases. Lead-free — eco variant.'
         },
         {
             cat:'med', csn:'—', en:'CuZn20Al2', wn:'CW702R', din:'CuZn20Al2', aisi:'C68700',
             re:380, rm:480, a5:25, h:120, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Výměníky tepla v mořském prostředí, kondenzátory, lodní průmysl',
-            pozn:'Hliníková mosaz — přídavek Al výrazně zlepšuje odolnost korozi v mořské vodě. Vhodná kde jiné mosazi korodují.'
+            pouziti:'Marine heat exchangers, condensers, ship industry',
+            pozn:'Aluminium brass — Al addition greatly improves corrosion resistance in seawater. Use where other brasses corrode.'
         },
         {
             cat:'med', csn:'—', en:'CuSn8', wn:'CW453K', din:'CuSn8', aisi:'C52100',
             re:380, rm:600, a5:20, h:140, htyp:'HB', svar:'d', obrob:'d',
-            pouziti:'Ložiska, kluzná pouzdra, šneková kola, pérové kontakty',
-            pozn:'Cínový bronz. Výborná odolnost opotřebení a korozi. Samomazná vlastnost — ideální pro kluzná ložiska bez mazání.'
+            pouziti:'Bearings, sliding bushings, worm gears, spring contacts',
+            pozn:'Tin bronze. Excellent wear and corrosion resistance. Self-lubricating — ideal for plain bearings without lubrication.'
         },
         {
             cat:'med', csn:'—', en:'CuAl10Fe3', wn:'CW306G', din:'CuAl10Fe3', aisi:'C62300',
             re:490, rm:700, a5:18, h:170, htyp:'HB', svar:'d', obrob:'d',
-            pouziti:'Lodní šrouby, čerpadlová tělesa, ventily pro mořskou vodu',
-            pozn:'Hliníkový bronz. Nejodolnější z bronzů vůči korozi a kavitaci. Výborný v mořské vodě. Antimikrobiální vlastnosti.'
+            pouziti:'Marine propellers, pump bodies, seawater valves',
+            pozn:'Aluminium bronze. Most corrosion and cavitation resistant of bronzes. Excellent in seawater. Antimicrobial properties.'
         },
         {
             cat:'med', csn:'—', en:'CuBe2', wn:'CW101C', din:'CuBe2', aisi:'C17200',
             re:1100, rm:1250, a5:5, h:380, htyp:'HB', svar:'o', obrob:'d',
-            pouziti:'Pružinové kontakty, membránové spínače, neiskřivé nástroje',
-            pozn:'Berylliová měď. Nejvyšší pevnost ze všech Cu slitin. Výborná pružnost, elektrická vodivost a odolnost únavě. Drahá, Beryllium toxické při obrábění.'
+            pouziti:'Spring contacts, membrane switches, non-sparking tools',
+            pozn:'Beryllium copper. Highest strength of all Cu alloys. Excellent elasticity, electrical conductivity and fatigue resistance. Expensive, beryllium toxic when machining.'
         },
 
-        // ── TITAN A SLITINY ───────────────────────────────────────────────
+        // ── TITANIUM ALLOYS ──────────────────────────────────────────────
         {
             cat:'titan', csn:'—', en:'Ti Grade 2', wn:'3.7035', din:'—', aisi:'Grade 2',
             re:275, rm:345, a5:20, h:130, htyp:'HB', svar:'v', obrob:'o',
-            pouziti:'Chemický průmysl, mořské prostředí, medicínské implantáty, letectví',
-            pozn:'Technicky čistý titan. Výborná korozní odolnost (i v HNO₃ a HCl). Polovina hmotnosti oceli. Svařitelný TIG v ochranné atmosféře.'
+            pouziti:'Chemical industry, marine environments, medical implants, aerospace',
+            pozn:'Commercially pure titanium. Excellent corrosion resistance (including HNO₃ and HCl). Half the weight of steel. TIG weldable in shielding atmosphere.'
         },
         {
             cat:'titan', csn:'—', en:'Ti-6Al-4V', wn:'3.7165', din:'—', aisi:'Grade 5',
             re:880, rm:950, a5:14, h:320, htyp:'HB', svar:'d', obrob:'o',
-            pouziti:'Letecké konstrukční díly, medicínské implantáty, sportovní technika, motocyklové díly',
-            pozn:'Nejpoužívanější titanová slitina (>50% světové produkce Ti). Pevnost srovnatelná s ocelí, polovina hmotnosti. Obtížná obrobitelnost — nutné pomalé řezné rychlosti a chlazení.'
+            pouziti:'Aerospace structural parts, medical implants, sports equipment, motorcycle parts',
+            pozn:'Most widely used titanium alloy (>50% of world Ti production). Strength comparable to steel, half the weight. Difficult machinability — slow speeds and cooling required.'
         },
         {
             cat:'titan', csn:'—', en:'Ti Grade 5 ELI', wn:'3.7165', din:'—', aisi:'Grade 23',
             re:760, rm:860, a5:15, h:300, htyp:'HB', svar:'d', obrob:'o',
-            pouziti:'Medicínské implantáty — kyčelní náhrady, šrouby, spinální fixace',
-            pozn:'Extra Low Interstitials — čistší než Grade 5. Standard pro kostní implantáty. Biokompatibilní. Vyšší houževnatost než standardní Grade 5.'
+            pouziti:'Medical implants — hip replacements, screws, spinal fixation',
+            pozn:'Extra Low Interstitials — purer than Grade 5. Standard for bone implants. Biocompatible. Higher toughness than standard Grade 5.'
         },
 
-        // ── TECHNICKÉ PLASTY ──────────────────────────────────────────────
-        // Pro plasty: re=mez kluzu [MPa], rm=pevnost v tahu [MPa], a5=tažnost [%], h=tvrdost Shore D nebo HRR
+        // ── TECHNICAL PLASTICS ───────────────────────────────────────────
+        // For plastics: re=yield strength [MPa], rm=tensile strength [MPa], a5=elongation [%], h=hardness Shore D or HRR
         {
             cat:'plast', csn:'—', en:'POM-C (Delrin)', wn:'—', din:'—', aisi:'—',
             re:65, rm:70, a5:35, h:82, htyp:'Shore D', svar:'n', obrob:'v',
-            pouziti:'Ozubená kola, ložiska, vodící lišty, vačky, kliky, samomazné díly',
-            pozn:'Polyoxymetylén — nejpoužívanější technický plast pro obrábění. Výborná tuhost, nízké tření, dobré rozměrové stálosti. Max. teplota 100°C.'
+            pouziti:'Gears, bearings, guide rails, cams, handles, self-lubricating parts',
+            pozn:'Polyoxymethylene — most common engineering plastic for machining. Excellent stiffness, low friction, good dimensional stability. Max. temperature 100°C.'
         },
         {
             cat:'plast', csn:'—', en:'PA66 (Nylon 66)', wn:'—', din:'—', aisi:'—',
             re:80, rm:85, a5:30, h:80, htyp:'Shore D', svar:'o', obrob:'d',
-            pouziti:'Ozubená kola, ložisková pouzdra, páky, kryty, vodicí prvky',
-            pozn:'Polyamid 66. Vyšší pevnost než PA6, lepší teplotní odolnost (120°C). Nevýhoda: absorbuje vlhkost → rozměrové změny. Nutno sušit před obráběním.'
+            pouziti:'Gears, bearing bushings, levers, covers, guide elements',
+            pozn:'Polyamide 66. Higher strength than PA6, better temperature resistance (120°C). Disadvantage: absorbs moisture → dimensional changes. Dry before machining.'
         },
         {
             cat:'plast', csn:'—', en:'PA6 (Nylon 6)', wn:'—', din:'—', aisi:'—',
             re:70, rm:75, a5:40, h:78, htyp:'Shore D', svar:'o', obrob:'d',
-            pouziti:'Kluzná ložiska, ozubená kola pro nižší namáhání, textilní díly',
-            pozn:'Polyamid 6. Levnější než PA66, lepší houževnatost, ale nižší pevnost. Absorpce vlhkosti až 3.5% — rozměrově nestabilní při vlhkosti.'
+            pouziti:'Plain bearings, gears for lower loads, textile parts',
+            pozn:'Polyamide 6. Cheaper than PA66, better toughness, but lower strength. Moisture absorption up to 3.5% — dimensionally unstable when wet.'
         },
         {
             cat:'plast', csn:'—', en:'PEEK', wn:'—', din:'—', aisi:'—',
             re:100, rm:110, a5:30, h:85, htyp:'Shore D', svar:'n', obrob:'d',
-            pouziti:'Letectví, medicína, chemická zařízení, těsnění do 250°C',
-            pozn:'Polyetereterketón. Špičkový technický plast. Trvalá teplota do 250°C, výborná chemická odolnost. Cena 10–50× vyšší než POM. Alternativa titanu v medicíně.'
+            pouziti:'Aerospace, medical, chemical equipment, seals up to 250°C',
+            pozn:'Polyether ether ketone. Premium engineering plastic. Continuous temperature to 250°C, excellent chemical resistance. Price 10–50x higher than POM. Titanium alternative in medicine.'
         },
         {
             cat:'plast', csn:'—', en:'PTFE (Teflon)', wn:'—', din:'—', aisi:'—',
             re:20, rm:30, a5:300, h:55, htyp:'Shore D', svar:'n', obrob:'d',
-            pouziti:'Těsnění, kluzné podložky, vložky ventilů, kabelová izolace',
-            pozn:'Polytetrafluorethylen. Nejnižší koeficient tření ze všech plastů. Chemicky zcela inertní. Nízká pevnost a tuhost. Max. teplota 260°C.'
+            pouziti:'Seals, sliding pads, valve inserts, cable insulation',
+            pozn:'Polytetrafluoroethylene. Lowest friction coefficient of all plastics. Chemically completely inert. Low strength and stiffness. Max. temperature 260°C.'
         },
         {
             cat:'plast', csn:'—', en:'PC (Polykarbonát)', wn:'—', din:'—', aisi:'—',
             re:60, rm:65, a5:120, h:75, htyp:'Shore D', svar:'o', obrob:'d',
-            pouziti:'Kryty strojů, průzory, bezpečnostní skla, helmy, pouzdra',
-            pozn:'Polykarbonát. Výborná transparentnost a rázová houževnatost. Citlivý na chemikálie a UV záření (nutná stabilizace). Max. teplota 120°C.'
+            pouziti:'Machine guards, sight glasses, safety glazing, helmets, housings',
+            pozn:'Polycarbonate. Excellent transparency and impact toughness. Sensitive to chemicals and UV (stabilization required). Max. temperature 120°C.'
         },
         {
             cat:'plast', csn:'—', en:'HDPE', wn:'—', din:'—', aisi:'—',
             re:25, rm:30, a5:800, h:65, htyp:'Shore D', svar:'d', obrob:'v',
-            pouziti:'Kuchyňské prkénka, nádrže, potrubí, kluzné desky, lodní obložení',
-            pozn:'Vysokohustotní polyethylen. Výborná chemická odolnost a kluznost. Hygienický, FDA schválený. Nízká pevnost, ale výborná obrobitelnost a svařitelnost horkým vzduchem.'
+            pouziti:'Cutting boards, tanks, piping, sliding sheets, boat linings',
+            pozn:'High-density polyethylene. Excellent chemical resistance and low friction. Hygienic, FDA approved. Low strength, but excellent machinability and hot-air weldability.'
         },
         {
             cat:'plast', csn:'—', en:'UHMWPE', wn:'—', din:'—', aisi:'—',
             re:20, rm:40, a5:350, h:63, htyp:'Shore D', svar:'n', obrob:'d',
-            pouziti:'Kluzné lišty, vodící prvky dopravníků, protézy, balistická ochrana',
-            pozn:'Ultra-vysokomolekulární polyethylen. Extrémně vysoká rázová houževnatost a odolnost opotřebení. Obtížné lepení a svařování. Standard pro lodní obložení a protézy.'
+            pouziti:'Guide rails, conveyor guides, prosthetics, ballistic protection',
+            pozn:'Ultra-high molecular weight polyethylene. Extremely high impact toughness and wear resistance. Difficult to bond and weld. Standard for boat linings and prosthetics.'
         },
     ];
 
@@ -696,34 +696,34 @@
     // CATEGORIES
     // ═══════════════════════════════════════════════════════════════════════
     const CATS = [
-        { id:'all',          label:'Vše',                 color:'#fb923c' },
-        { id:'konstrukcni',  label:'Konstrukční ocel',    color:'#60a5fa' },
-        { id:'nerez',        label:'Nerezová ocel',       color:'#4ade80' },
-        { id:'nastrojova',   label:'Nástrojová ocel',     color:'#f87171' },
-        { id:'hlinik',       label:'Hliník',              color:'#facc15' },
-        { id:'litina',       label:'Litina',              color:'#a78bfa' },
-        { id:'pruzinova',    label:'Pružinová ocel',      color:'#fb923c' },
-        { id:'med',          label:'Měď a slitiny',       color:'#f97316' },
-        { id:'titan',        label:'Titan',               color:'#e2e8f0' },
-        { id:'plast',        label:'Technické plasty',    color:'#34d399' },
+        { id:'all',          label:'All',                  color:'#fb923c' },
+        { id:'konstrukcni',  label:'Structural Steel',     color:'#60a5fa' },
+        { id:'nerez',        label:'Stainless Steel',      color:'#4ade80' },
+        { id:'nastrojova',   label:'Tool Steel',           color:'#f87171' },
+        { id:'hlinik',       label:'Aluminium',            color:'#facc15' },
+        { id:'litina',       label:'Cast Iron',            color:'#a78bfa' },
+        { id:'pruzinova',    label:'Spring Steel',         color:'#fb923c' },
+        { id:'med',          label:'Copper Alloys',        color:'#f97316' },
+        { id:'titan',        label:'Titanium',             color:'#e2e8f0' },
+        { id:'plast',        label:'Technical Plastics',   color:'#34d399' },
     ];
 
     // ═══════════════════════════════════════════════════════════════════════
     // COLUMNS definition
     // ═══════════════════════════════════════════════════════════════════════
     const COLS = [
-        { key:'csn',   label:'ČSN',      cls:'csn',  sortable:true  },
-        { key:'en',    label:'EN / Označení', cls:'', sortable:true  },
-        { key:'wn',    label:'W.Nr',     cls:'num',  sortable:true  },
-        { key:'din',   label:'DIN',      cls:'',     sortable:true  },
-        { key:'aisi',  label:'AISI/UNS', cls:'',     sortable:true  },
-        { key:'re',    label:'Re [MPa]', cls:'num',  sortable:true  },
-        { key:'rm',    label:'Rm [MPa]', cls:'num',  sortable:true  },
-        { key:'a5',    label:'A5 [%]',   cls:'num',  sortable:true  },
-        { key:'h',     label:'Tvrdost',  cls:'num',  sortable:true  },
-        { key:'svar',  label:'Svař.',    cls:'',     sortable:true  },
-        { key:'obrob', label:'Obrob.',   cls:'',     sortable:true  },
-        { key:'pouziti',label:'Použití', cls:'note', sortable:false },
+        { key:'en',    label:'EN / Name',    cls:'en',  sortable:true  },
+        { key:'csn',   label:'ČSN',          cls:'',    sortable:true  },
+        { key:'wn',    label:'W.Nr',         cls:'num', sortable:true  },
+        { key:'din',   label:'DIN',          cls:'',    sortable:true  },
+        { key:'aisi',  label:'AISI/UNS',     cls:'',    sortable:true  },
+        { key:'re',    label:'Re [MPa]',     cls:'num', sortable:true  },
+        { key:'rm',    label:'Rm [MPa]',     cls:'num', sortable:true  },
+        { key:'a5',    label:'A5 [%]',       cls:'num', sortable:true  },
+        { key:'h',     label:'Hardness',     cls:'num', sortable:true  },
+        { key:'svar',  label:'Weld.',        cls:'',    sortable:true  },
+        { key:'obrob', label:'Mach.',        cls:'',    sortable:true  },
+        { key:'pouziti',label:'Application', cls:'note', sortable:false },
     ];
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -731,7 +731,7 @@
     // ═══════════════════════════════════════════════════════════════════════
     let filterCat   = 'all';
     let searchQuery = '';
-    let sortKey     = 'csn';
+    let sortKey     = 'en';
     let sortDir     = 1;
     let expandedIdx = null;
 
@@ -739,7 +739,7 @@
     // HELPERS
     // ═══════════════════════════════════════════════════════════════════════
     const BADGE = { v:'badge-v', d:'badge-d', o:'badge-o', s:'badge-s', n:'badge-n' };
-    const LABEL = { v:'výborná', d:'dobrá', o:'omezená', s:'špatná', n:'—' };
+    const LABEL = { v:'excellent', d:'good', o:'limited', s:'poor', n:'—' };
 
     function badge(code) {
         return `<span class="badge ${BADGE[code]||'badge-n'}">${LABEL[code]||'—'}</span>`;
@@ -802,13 +802,13 @@
         tbody.innerHTML = '';
 
         const data = sortedData(getFiltered());
-        document.getElementById('result-count').textContent = `${data.length} / ${MATERIALS.length} materiálů`;
+        document.getElementById('result-count').textContent = `${data.length} / ${MATERIALS.length} materials`;
 
         if (data.length === 0) {
             const tr = document.createElement('tr');
             const td = document.createElement('td');
             td.colSpan = COLS.length;
-            td.innerHTML = '<div class="empty-state"><h3>Žádné výsledky</h3><p>Zkus jiný výraz nebo kategorii.</p></div>';
+            td.innerHTML = '<div class="empty-state"><h3>No results</h3><p>Try a different search term or category.</p></div>';
             tr.appendChild(td);
             tbody.appendChild(tr);
             return;
@@ -823,9 +823,9 @@
                 const td = document.createElement('td');
                 if (col.cls) td.className = col.cls;
 
-                if (col.key === 'csn') {
+                if (col.key === 'en') {
                     const color = catColor(m.cat);
-                    td.innerHTML = `<span class="cat-dot" style="background:${color}"></span>${m.csn}`;
+                    td.innerHTML = `<span class="cat-dot" style="background:${color}"></span>${m.en}`;
                 } else if (col.key === 'svar' || col.key === 'obrob') {
                     td.innerHTML = badge(m[col.key]);
                 } else if (col.key === 'h') {
@@ -853,20 +853,20 @@
             dtd.innerHTML = `
                 <div class="detail-grid">
                     <div class="detail-item"><div class="dl">ČSN</div><div class="dv">${m.csn}</div></div>
-                    <div class="detail-item"><div class="dl">EN / Označení</div><div class="dv">${m.en}</div></div>
-                    <div class="detail-item"><div class="dl">Werkstoffnummer</div><div class="dv">${m.wn}</div></div>
+                    <div class="detail-item"><div class="dl">EN / Name</div><div class="dv">${m.en}</div></div>
+                    <div class="detail-item"><div class="dl">Werkstoff-Nr.</div><div class="dv">${m.wn}</div></div>
                     <div class="detail-item"><div class="dl">DIN</div><div class="dv">${m.din}</div></div>
                     <div class="detail-item"><div class="dl">AISI / UNS</div><div class="dv">${m.aisi}</div></div>
-                    <div class="detail-item"><div class="dl">Mez kluzu Re</div><div class="dv">${m.re !== null ? m.re+' MPa' : '—'}</div></div>
-                    <div class="detail-item"><div class="dl">Mez pevnosti Rm</div><div class="dv">${m.rm !== null ? m.rm+' MPa' : '—'}</div></div>
-                    <div class="detail-item"><div class="dl">Tažnost A5</div><div class="dv">${m.a5 !== null ? m.a5+' %' : '—'}</div></div>
-                    <div class="detail-item"><div class="dl">Tvrdost</div><div class="dv">${m.h !== null ? m.h+' '+m.htyp : '—'}</div></div>
-                    <div class="detail-item"><div class="dl">Svařitelnost</div><div class="dv">${badge(m.svar)}</div></div>
-                    <div class="detail-item"><div class="dl">Obrobitelnost</div><div class="dv">${badge(m.obrob)}</div></div>
+                    <div class="detail-item"><div class="dl">Yield Strength Re</div><div class="dv">${m.re !== null ? m.re+' MPa' : '—'}</div></div>
+                    <div class="detail-item"><div class="dl">Tensile Strength Rm</div><div class="dv">${m.rm !== null ? m.rm+' MPa' : '—'}</div></div>
+                    <div class="detail-item"><div class="dl">Elongation A5</div><div class="dv">${m.a5 !== null ? m.a5+' %' : '—'}</div></div>
+                    <div class="detail-item"><div class="dl">Hardness</div><div class="dv">${m.h !== null ? m.h+' '+m.htyp : '—'}</div></div>
+                    <div class="detail-item"><div class="dl">Weldability</div><div class="dv">${badge(m.svar)}</div></div>
+                    <div class="detail-item"><div class="dl">Machinability</div><div class="dv">${badge(m.obrob)}</div></div>
                 </div>
                 <div class="detail-note">
-                    <strong>Použití:</strong> ${m.pouziti}<br>
-                    <strong>Poznámky:</strong> ${m.pozn}
+                    <strong>Application:</strong> ${m.pouziti}<br>
+                    <strong>Notes:</strong> ${m.pozn}
                 </div>
             `;
             dtr.appendChild(dtd);
