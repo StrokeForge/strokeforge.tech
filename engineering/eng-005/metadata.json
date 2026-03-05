@@ -1,8 +1,8 @@
 {
   "id": "eng-005",
-  "title": "Průvodce výběrem materiálu",
+  "title": "Material Selection Wizard",
   "category": "calculator",
-  "description": "Interaktivní průvodce výběrem strojního materiálu. Odpověz na 5 otázek o zatížení, výrobní technologii, prostředí, pevnosti a hmotnosti — systém doporučí nejvhodnější materiály a vysvětlí proč.",
+  "description": "Interactive engineering material selection wizard. Answer 5 questions about load type, manufacturing process, environment, strength, and weight — the system recommends the best materials and explains why.",
   "icon": "🎯",
   "difficulty": "beginner"
 }

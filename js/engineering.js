@@ -50,6 +50,7 @@ function renderProjects(projects) {
         const icon = project.icon || '⚙️';
         const catLabel = project.category === 'reference' ? 'Reference Table' : 'Calculator';
         const catIcon = project.category === 'reference' ? '📊' : '🔧';
+        const langBadge = project.lang === 'cs' ? '<span>🇨🇿 Czech</span>' : '';
 
         card.innerHTML = `
             <div class="project-image">${icon}</div>
@@ -58,6 +59,7 @@ function renderProjects(projects) {
                 <div class="project-meta">
                     <span>${catIcon} ${catLabel}</span>
                     <span>🌐 Browser-based</span>
+                    ${langBadge}
                 </div>
                 <p class="project-description">${project.description}</p>
             </div>
