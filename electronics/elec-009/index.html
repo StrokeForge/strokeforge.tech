@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery Series & Parallel Calculator | StrokeForge Electronics</title>
+    <meta name="description" content="Calculate total voltage, capacity and energy for batteries in series, parallel or series-parallel (nSnP) configurations. Common LiPo and Li-Ion pack presets included.">
+    <meta name="keywords" content="battery series parallel calculator, nSnP battery pack, LiPo series parallel, battery voltage capacity calculator, 2S 3S 4S battery">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-009/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 860px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Presets */
+        .presets { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1.25rem; }
+        .preset-btn { background: none; border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.3rem 0.75rem; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; }
+        .preset-btn:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+
+        /* Input grid */
+        .input-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+        @media (max-width: 620px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
+        .hint { font-size: 0.73rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        /* nSnP label */
+        .pack-label { text-align: center; margin: 1.25rem 0 0.5rem; }
+        .pack-label .nl { font-size: 2.2rem; font-weight: 800; color: var(--primary-orange); font-family: monospace; letter-spacing: 0.05em; }
+        .pack-label .ns { font-size: 0.85rem; color: var(--text-gray); }
+
+        /* Results */
+        .result-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+        @media (max-width: 580px) { .result-row { grid-template-columns: 1fr; } }
+        .r-item { background: var(--darker-bg); border-radius: 10px; padding: 1.1rem 1.2rem; text-align: center; }
+        .r-item .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .r-item .val { font-size: 1.6rem; font-weight: 800; color: var(--primary-orange); }
+        .r-item .sub { font-size: 0.75rem; color: var(--text-gray); margin-top: 0.2rem; }
+
+        .result-row2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+        @media (max-width: 580px) { .result-row2 { grid-template-columns: 1fr 1fr; } }
+        .r2 { background: var(--darker-bg); border-radius: 8px; padding: 0.75rem 1rem; }
+        .r2 .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .r2 .val { font-size: 1rem; font-weight: 700; color: var(--light-gray); }
+
+        /* SVG */
+        .svg-wrap { text-align: center; overflow-x: auto; padding: 0.5rem 0; }
+
+        /* Info / rules table */
+        .rules-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .rules-table th { padding: 0.5rem 0.75rem; text-align: left; color: var(--text-gray); border-bottom: 1px solid var(--border-gray); }
+        .rules-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--light-gray); }
+        .rules-table td:first-child { color: var(--primary-orange); font-weight: 700; width: 100px; }
+
+        /* Common configs */
+        .configs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.75rem; }
+        .cfg-card { background: var(--darker-bg); border: 1px solid var(--border-gray); border-radius: 8px; padding: 0.9rem 1rem; cursor: pointer; transition: all 0.2s; }
+        .cfg-card:hover { border-color: var(--primary-orange); }
+        .cfg-name { font-size: 1rem; font-weight: 700; color: var(--primary-orange); margin-bottom: 0.35rem; font-family: monospace; }
+        .cfg-detail { font-size: 0.75rem; color: var(--text-gray); line-height: 1.5; }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+
+        .warn-box { background: rgba(251,146,60,0.1); border: 1px solid #fb923c; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #fb923c; margin-top: 0.75rem; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../3d-printing.html">3D Printing</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../mechanical.html">Mechanical</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="breadcrumb"><a href="../../electronics.html">← Electronics</a></div>
+
+    <header class="page-header">
+        <h1>🔌 Battery Series &amp; Parallel</h1>
+        <p>Configure battery packs in series, parallel, or nSnP — see total voltage, capacity, and energy.</p>
+    </header>
+
+    <main class="tool-wrap">
+
+        <!-- INPUT -->
+        <div class="card">
+            <h2>Cell parameters</h2>
+            <div class="presets" id="cell-presets"></div>
+            <div class="input-grid">
+                <div class="field">
+                    <label>Nominal voltage / cell</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="inp-Vcell" placeholder="3.7" min="0" step="0.1" oninput="calculate()">
+                        <span class="unit">V</span>
+                    </div>
+                    <div class="hint">Li-Ion/LiPo: 3.7V nominal</div>
+                </div>
+                <div class="field">
+                    <label>Capacity / cell</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="inp-Ccell" placeholder="3000" min="0" step="any" oninput="calculate()">
+                        <span class="unit">mAh</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Cells in series (S)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="inp-S" placeholder="1" min="1" max="20" step="1" value="1" oninput="calculate()">
+                        <span class="unit">S</span>
+                    </div>
+                    <div class="hint">Adds voltage</div>
+                </div>
+                <div class="field">
+                    <label>Cells in parallel (P)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="inp-P" placeholder="1" min="1" max="20" step="1" value="1" oninput="calculate()">
+                        <span class="unit">P</span>
+                    </div>
+                    <div class="hint">Adds capacity</div>
+                </div>
+            </div>
+
+            <div class="pack-label" id="pack-label" style="display:none">
+                <div class="nl" id="nsnp-label">—</div>
+                <div class="ns" id="nsnp-sub">pack configuration</div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card" id="results-card" style="display:none">
+            <h2>Pack results</h2>
+            <div class="result-row">
+                <div class="r-item">
+                    <div class="lbl">Total voltage</div>
+                    <div class="val" id="res-V">—</div>
+                    <div class="sub" id="res-V-sub">nominal</div>
+                </div>
+                <div class="r-item">
+                    <div class="lbl">Total capacity</div>
+                    <div class="val" id="res-C">—</div>
+                    <div class="sub">mAh</div>
+                </div>
+                <div class="r-item">
+                    <div class="lbl">Total energy</div>
+                    <div class="val" id="res-E">—</div>
+                    <div class="sub">Wh</div>
+                </div>
+            </div>
+            <div class="result-row2">
+                <div class="r2"><div class="lbl">Total cells</div><div class="val" id="res-n">—</div></div>
+                <div class="r2"><div class="lbl">Max voltage (fully charged)</div><div class="val" id="res-Vmax">—</div></div>
+                <div class="r2"><div class="lbl">Min voltage (cut-off)</div><div class="val" id="res-Vmin">—</div></div>
+                <div class="r2"><div class="lbl">Energy / cell</div><div class="val" id="res-Ecell">—</div></div>
+                <div class="r2"><div class="lbl">Max charge current (1C)</div><div class="val" id="res-1C">—</div></div>
+                <div class="r2"><div class="lbl">Weight estimate</div><div class="val" id="res-weight">—</div></div>
+            </div>
+            <div id="warn-box" class="warn-box" style="display:none"></div>
+        </div>
+
+        <!-- SVG -->
+        <div class="card">
+            <h2>Circuit diagram</h2>
+            <div class="svg-wrap">
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+        </div>
+
+        <!-- COMMON CONFIGS -->
+        <div class="card">
+            <h2>Common configurations — click to load</h2>
+            <div class="configs-grid" id="configs-grid"></div>
+        </div>
+
+        <!-- RULES -->
+        <div class="card">
+            <h2>Series vs Parallel rules</h2>
+            <table class="rules-table">
+                <thead><tr><th>Config</th><th>Voltage</th><th>Capacity</th><th>Energy</th><th>Use case</th></tr></thead>
+                <tbody>
+                    <tr><td>Series (nS)</td><td>V × n</td><td>C (same)</td><td>E × n</td><td>Higher voltage (motors, inverters)</td></tr>
+                    <tr><td>Parallel (nP)</td><td>V (same)</td><td>C × n</td><td>E × n</td><td>Longer runtime, higher current</td></tr>
+                    <tr><td>nSnP</td><td>V × S</td><td>C × P</td><td>E × S × P</td><td>Both higher voltage and capacity</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Important notes</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Series packs — BMS required</h3>
+                    <ul>
+                        <li>Cells in series must be balanced — slight differences grow over time</li>
+                        <li>Always use a <strong>BMS</strong> (Battery Management System) for Li-Ion/LiPo series packs</li>
+                        <li>BMS protects against overcharge, over-discharge, and short circuit</li>
+                        <li>Use a <strong>cell balancer / balancing charger</strong> for LiPo packs</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Parallel packs</h3>
+                    <ul>
+                        <li>Only parallel cells of the <strong>same chemistry, voltage, and ideally capacity</strong></li>
+                        <li>Before connecting in parallel, make sure cells are at the <strong>same voltage</strong> (within 0.05V)</li>
+                        <li>Never connect a full cell to an empty cell — large inrush current</li>
+                        <li>Parallel cells self-balance continuously during use</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Li-Ion / LiPo voltages</h3>
+                    <ul>
+                        <li>Nominal: <strong>3.7 V</strong></li>
+                        <li>Fully charged: <strong>4.2 V</strong></li>
+                        <li>Cut-off (min): <strong>3.0 V</strong> (never go below)</li>
+                        <li>2S: 7.4V nom / 8.4V max / 6.0V min</li>
+                        <li>3S: 11.1V nom / 12.6V max / 9.0V min</li>
+                        <li>4S: 14.8V nom / 16.8V max / 12.0V min</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Charge rate (C-rating)</h3>
+                    <p>1C = charge current equal to capacity in mAh.<br>
+                    Example: 3000mAh cell at 1C = 3A charge rate.<br><br>
+                    For parallel packs: total 1C = capacity × P.<br>
+                    Most Li-Ion cells: safe at 0.5C–1C charge.<br>
+                    LiPo racing cells: up to 5C charge possible.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Part of <a href="../../electronics.html">StrokeForge Electronics</a> — free tools for makers</p>
+    </footer>
+
+    <script>
+    // ── Li-Ion voltage reference ───────────────────────────────────────────
+    // approximate: nominal 3.7, max 4.2, min 3.0 per cell
+    // LiFePO4: nom 3.2, max 3.65, min 2.5 — detected by nominal ~3.2
+    function cellMaxV(nom) {
+        if (nom >= 3.15 && nom <= 3.25) return 3.65; // LiFePO4
+        if (nom >= 3.5  && nom <= 4.0)  return 4.2;  // Li-Ion / LiPo
+        if (nom >= 1.1  && nom <= 1.3)  return 1.45; // NiMH
+        if (nom >= 1.4  && nom <= 1.6)  return nom;  // Alkaline (non-rechargeable)
+        return nom * 1.14; // fallback
+    }
+    function cellMinV(nom) {
+        if (nom >= 3.15 && nom <= 3.25) return 2.5;
+        if (nom >= 3.5  && nom <= 4.0)  return 3.0;
+        if (nom >= 1.1  && nom <= 1.3)  return 1.0;
+        return nom * 0.8;
+    }
+    // Weight estimate per Wh (g/Wh) - rough
+    function gPerWh(nom) {
+        if (nom >= 3.5 && nom <= 4.0) return 180; // Li-Ion ~180g/Wh
+        if (nom >= 3.1 && nom <= 3.3) return 250; // LiFePO4 heavier
+        return 200;
+    }
+
+    // ── Common configs ────────────────────────────────────────────────────
+    const CONFIGS = [
+        { name:'1S1P', S:1, P:1, Vcell:3.7, Ccell:3000, desc:'Single 18650 cell' },
+        { name:'2S1P', S:2, P:1, Vcell:3.7, Ccell:3000, desc:'RC cars, small drones' },
+        { name:'3S1P', S:3, P:1, Vcell:3.7, Ccell:3000, desc:'250-class drone, 11.1V' },
+        { name:'4S1P', S:4, P:1, Vcell:3.7, Ccell:3000, desc:'5" FPV drone, 14.8V' },
+        { name:'6S1P', S:6, P:1, Vcell:3.7, Ccell:3000, desc:'Long range, 22.2V' },
+        { name:'2S2P', S:2, P:2, Vcell:3.7, Ccell:3000, desc:'7.4V, doubled capacity' },
+        { name:'3S2P', S:3, P:2, Vcell:3.7, Ccell:3000, desc:'11.1V, 6000mAh' },
+        { name:'4S2P', S:4, P:2, Vcell:3.7, Ccell:5000, desc:'E-bike / scooter pack' },
+        { name:'LiFePO4 4S', S:4, P:1, Vcell:3.2, Ccell:3000, desc:'12.8V LiFePO4, DIY UPS' },
+        { name:'NiMH 4×AA', S:4, P:1, Vcell:1.2, Ccell:2500, desc:'4.8V NiMH pack' },
+    ];
+
+    function initConfigs() {
+        const grid = document.getElementById('configs-grid');
+        CONFIGS.forEach(c => {
+            const card = document.createElement('div');
+            card.className = 'cfg-card';
+            const totalV = c.Vcell * c.S;
+            const totalC = c.Ccell * c.P;
+            const totalE = (totalV * totalC / 1000).toFixed(1);
+            card.innerHTML = `<div class="cfg-name">${c.name}</div><div class="cfg-detail">${totalV.toFixed(1)}V · ${totalC >= 1000 ? (totalC/1000).toFixed(1)+'Ah' : totalC+'mAh'} · ${totalE}Wh<br>${c.desc}</div>`;
+            card.addEventListener('click', () => {
+                document.getElementById('inp-Vcell').value = c.Vcell;
+                document.getElementById('inp-Ccell').value = c.Ccell;
+                document.getElementById('inp-S').value = c.S;
+                document.getElementById('inp-P').value = c.P;
+                calculate();
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            });
+            grid.appendChild(card);
+        });
+    }
+
+    function initPresets() {
+        const presets = document.getElementById('cell-presets');
+        [
+            { label:'Li-Ion 18650 (3.7V 3000mAh)', Vcell:3.7, Ccell:3000 },
+            { label:'LiPo (3.7V 1000mAh)',         Vcell:3.7, Ccell:1000 },
+            { label:'LiFePO4 (3.2V 3000mAh)',       Vcell:3.2, Ccell:3000 },
+            { label:'NiMH AA (1.2V 2500mAh)',        Vcell:1.2, Ccell:2500 },
+            { label:'Alkaline AA (1.5V 2700mAh)',    Vcell:1.5, Ccell:2700 },
+        ].forEach(p => {
+            const btn = document.createElement('button');
+            btn.className = 'preset-btn';
+            btn.textContent = p.label;
+            btn.onclick = () => {
+                document.getElementById('inp-Vcell').value = p.Vcell;
+                document.getElementById('inp-Ccell').value = p.Ccell;
+                calculate();
+            };
+            presets.appendChild(btn);
+        });
+    }
+
+    // ── Main calc ─────────────────────────────────────────────────────────
+    function getN(id) {
+        const v = parseInt(document.getElementById('inp-' + id).value);
+        return isNaN(v) || v < 1 ? null : v;
+    }
+    function getF(id) {
+        const v = parseFloat(document.getElementById('inp-' + id).value);
+        return isNaN(v) || v <= 0 ? null : v;
+    }
+
+    function calculate() {
+        const Vcell = getF('Vcell');
+        const Ccell = getF('Ccell');
+        const S = getN('S') || 1;
+        const P = getN('P') || 1;
+
+        // Pack label
+        const lbl = document.getElementById('pack-label');
+        const nsnp = document.getElementById('nsnp-label');
+        const nsub = document.getElementById('nsnp-sub');
+        if (Vcell || Ccell) {
+            lbl.style.display = '';
+            nsnp.textContent = S + 'S' + P + 'P';
+            nsub.textContent = S * P + ' cells total';
+        } else {
+            lbl.style.display = 'none';
+        }
+
+        if (!Vcell || !Ccell) {
+            document.getElementById('results-card').style.display = 'none';
+            drawSVG(null, null, null);
+            return;
+        }
+
+        const Vtotal = Vcell * S;
+        const Ctotal = Ccell * P;         // mAh
+        const Etotal = Vtotal * Ctotal / 1000; // Wh
+        const Ecell  = Vcell * Ccell / 1000;
+        const Vmax   = cellMaxV(Vcell) * S;
+        const Vmin   = cellMinV(Vcell) * S;
+        const charge1C = Ctotal; // mA
+        const weightG  = Math.round(Etotal * gPerWh(Vcell));
+
+        document.getElementById('res-V').textContent    = Vtotal.toFixed(1) + ' V';
+        document.getElementById('res-V-sub').textContent = 'nominal';
+        document.getElementById('res-C').textContent    = Ctotal >= 1000 ? (Ctotal/1000).toFixed(2) + ' Ah' : Ctotal.toFixed(0) + ' mAh';
+        document.getElementById('res-E').textContent    = Etotal.toFixed(2) + ' Wh';
+        document.getElementById('res-n').textContent    = (S * P) + ' cells';
+        document.getElementById('res-Vmax').textContent = Vmax.toFixed(2) + ' V';
+        document.getElementById('res-Vmin').textContent = Vmin.toFixed(2) + ' V';
+        document.getElementById('res-Ecell').textContent= Ecell.toFixed(2) + ' Wh';
+        document.getElementById('res-1C').textContent   = charge1C >= 1000 ? (charge1C/1000).toFixed(2)+'A' : charge1C.toFixed(0)+'mA';
+        document.getElementById('res-weight').textContent = '~' + (weightG >= 1000 ? (weightG/1000).toFixed(2)+'kg' : weightG+'g');
+
+        // Warnings
+        const warns = [];
+        if (S > 1 && Vcell >= 3.5) warns.push('⚠ Series Li-Ion/LiPo pack: always use a BMS with cell balancing.');
+        if (P > 1) warns.push('⚠ Parallel cells: ensure cells are at the same voltage before connecting.');
+        if (S * P > 12) warns.push('⚠ Large pack (' + S*P + ' cells): carefully plan wiring, BMS current rating and thermal management.');
+        const wb = document.getElementById('warn-box');
+        wb.style.display = warns.length ? '' : 'none';
+        wb.innerHTML = warns.join('<br>');
+
+        document.getElementById('results-card').style.display = '';
+        drawSVG(S, P, Vcell, Ccell, Vtotal, Ctotal);
+    }
+
+    // ── SVG ───────────────────────────────────────────────────────────────
+    function drawSVG(S, P, Vcell, Ccell, Vtotal, Ctotal) {
+        const svg = document.getElementById('circuit-svg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const ns = 'http://www.w3.org/2000/svg';
+
+        function el(tag, attrs) {
+            const e = document.createElementNS(ns, tag);
+            Object.entries(attrs).forEach(([k,v]) => e.setAttribute(k,v));
+            return e;
+        }
+        function line(x1,y1,x2,y2,col,w) {
+            return el('line',{x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'round'});
+        }
+        function txt(x,y,t,col,sz,anc) {
+            const e = el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'});
+            e.textContent = t;
+            return e;
+        }
+
+        if (!S || !P) {
+            svg.setAttribute('viewBox','0 0 300 80'); svg.setAttribute('width','300'); svg.setAttribute('height','80');
+            svg.appendChild(txt(150,40,'Enter values to see diagram','#4b5563',11,'middle'));
+            return;
+        }
+
+        // Limit drawn cells to 4S × 4P for readability
+        const drawS = Math.min(S, 4);
+        const drawP = Math.min(P, 4);
+        const cW = 52, cH = 28, gapX = 16, gapY = 14;
+        const padX = 40, padY = 30;
+        const totalW = padX*2 + drawS*cW + (drawS-1)*gapX;
+        const totalH = padY*2 + drawP*cH + (drawP-1)*gapY + 30;
+
+        svg.setAttribute('viewBox', `0 0 ${totalW} ${totalH}`);
+        svg.setAttribute('width', totalW);
+        svg.setAttribute('height', totalH);
+
+        const colors = ['#4ade80','#60a5fa','#fb923c','#f472b6'];
+
+        // Draw cells
+        for (let p = 0; p < drawP; p++) {
+            const cy = padY + p*(cH + gapY) + cH/2;
+            for (let s = 0; s < drawS; s++) {
+                const cx = padX + s*(cW + gapX) + cW/2;
+                // Wire between cells in series
+                if (s > 0) {
+                    svg.appendChild(line(cx - cW/2, cy, cx - cW/2 - gapX, cy, '#6b7280'));
+                }
+                // Cell box
+                svg.appendChild(el('rect',{x:cx-cW/2,y:cy-cH/2,width:cW,height:cH,fill:'#1f2937',stroke:colors[p%4],'stroke-width':1.5,rx:4}));
+                // Battery poles
+                svg.appendChild(el('rect',{x:cx-cW/2-4,y:cy-5,width:4,height:10,fill:colors[p%4],rx:1}));  // +
+                svg.appendChild(el('rect',{x:cx+cW/2,  y:cy-3,width:3,height:6, fill:'#6b7280',rx:1}));     // -
+                // Voltage label
+                if (Vcell) svg.appendChild(txt(cx, cy-3, Vcell+'V', colors[p%4], 9, 'middle'));
+                if (Ccell) svg.appendChild(txt(cx, cy+7, Ccell+'mAh', '#6b7280', 8, 'middle'));
+            }
+            // Left bus wire
+            svg.appendChild(line(padX-4, cy, padX, cy, '#4ade80', 2));
+            // Right bus wire
+            const rightX = padX + drawS*cW + (drawS-1)*gapX;
+            svg.appendChild(line(rightX, cy, rightX+4, cy, '#6b7280', 2));
+        }
+
+        // Vertical bus wires (parallel connections)
+        if (drawP > 1) {
+            const topCy  = padY + cH/2;
+            const botCy  = padY + (drawP-1)*(cH+gapY) + cH/2;
+            // Left bus
+            svg.appendChild(line(padX-4, topCy, padX-4, botCy, '#4ade80', 2));
+            // Right bus
+            const rightX = padX + drawS*cW + (drawS-1)*gapX + 4;
+            svg.appendChild(line(rightX, topCy, rightX, botCy, '#6b7280', 2));
+        }
+
+        // Truncation note
+        if (S > drawS || P > drawP) {
+            svg.appendChild(txt(totalW/2, totalH - 10,
+                `(showing ${drawS}S${drawP}P of ${S}S${P}P)`, '#4b5563', 9, 'middle'));
+        }
+
+        // Total labels
+        svg.appendChild(txt(15, padY + drawP*(cH+gapY)/2, `+`, '#4ade80', 12, 'middle'));
+        svg.appendChild(txt(totalW-10, padY + drawP*(cH+gapY)/2, `−`, '#f87171', 12, 'middle'));
+        if (Vtotal) {
+            svg.appendChild(txt(totalW/2, totalH-12,
+                `${Vtotal.toFixed(1)}V · ${Ctotal>=1000?(Ctotal/1000).toFixed(1)+'Ah':Ctotal+'mAh'}`,
+                '#fb923c', 10, 'middle'));
+        }
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────
+    initPresets();
+    initConfigs();
+    drawSVG(null, null, null);
+    </script>
+</body>
+</html>

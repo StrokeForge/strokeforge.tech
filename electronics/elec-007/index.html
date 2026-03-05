@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Series Standard Resistor Values | StrokeForge Electronics</title>
+    <meta name="description" content="Complete E6, E12, E24, E48, E96 standard resistor value tables. Enter any resistance to find the nearest standard value and percentage error in each series.">
+    <meta name="keywords" content="E12 resistor values, E24 resistor values, E96 resistor series, standard resistor values table, nearest resistor value calculator">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-007/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 940px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Lookup */
+        .lookup-row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+        .lookup-input { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 8px; padding: 0.6rem 1rem; font-size: 1rem; outline: none; width: 180px; transition: border-color 0.2s; }
+        .lookup-input:focus { border-color: var(--primary-orange); }
+        .lookup-unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 8px; padding: 0.6rem 0.75rem; font-size: 0.9rem; cursor: pointer; }
+
+        .lookup-results { margin-top: 1.25rem; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; }
+        @media (max-width: 700px) { .lookup-results { grid-template-columns: 1fr 1fr; } }
+
+        .lookup-card { background: var(--darker-bg); border-radius: 8px; padding: 0.9rem 1rem; border: 1px solid var(--border-gray); transition: border-color 0.2s; }
+        .lookup-card.best { border-color: var(--primary-orange); }
+        .lookup-series { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.35rem; font-weight: 700; letter-spacing: 0.05em; }
+        .lookup-val { font-size: 1.1rem; font-weight: 700; color: var(--light-gray); margin-bottom: 0.2rem; }
+        .lookup-err { font-size: 0.78rem; }
+        .err-good { color: #4ade80; }
+        .err-ok   { color: #fb923c; }
+        .err-bad  { color: #f87171; }
+
+        /* Series tabs */
+        .series-tabs { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .tab-btn { flex: 1; min-width: 60px; padding: 0.6rem 0.5rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+        .tab-btn.active { background: var(--primary-orange); color: #000; }
+        .tab-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        /* Decade selector */
+        .decade-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
+        .decade-row span { font-size: 0.8rem; color: var(--text-gray); margin-right: 0.25rem; }
+        .dec-btn { background: none; border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 5px; padding: 0.25rem 0.6rem; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; }
+        .dec-btn.active { background: var(--primary-orange); color: #000; border-color: var(--primary-orange); }
+        .dec-btn:not(.active):hover { border-color: var(--light-gray); color: var(--light-gray); }
+
+        /* Value grid */
+        .val-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .val-chip { background: var(--darker-bg); border: 1px solid var(--border-gray); border-radius: 5px; padding: 0.3rem 0.55rem; font-size: 0.82rem; color: var(--light-gray); font-family: monospace; cursor: default; transition: all 0.15s; }
+        .val-chip:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+        .val-chip.highlight { border-color: var(--primary-orange); background: rgba(251,146,60,0.15); color: var(--primary-orange); font-weight: 700; }
+
+        /* Info */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+
+        /* Series comparison table */
+        .series-compare { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .series-compare th { padding: 0.5rem 0.75rem; text-align: left; color: var(--text-gray); border-bottom: 1px solid var(--border-gray); }
+        .series-compare td { padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--light-gray); }
+        .series-compare td:first-child { color: var(--primary-orange); font-weight: 700; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../3d-printing.html">3D Printing</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../mechanical.html">Mechanical</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="breadcrumb"><a href="../../electronics.html">← Electronics</a></div>
+
+    <header class="page-header">
+        <h1>📊 E-Series Standard Resistor Values</h1>
+        <p>Find the nearest standard resistor value — E6 through E96. Browse full tables by decade.</p>
+    </header>
+
+    <main class="tool-wrap">
+
+        <!-- LOOKUP -->
+        <div class="card">
+            <h2>Find nearest standard value</h2>
+            <div class="lookup-row">
+                <input class="lookup-input" type="number" id="lookup-inp" placeholder="e.g. 4700" min="0" step="any" oninput="doLookup()">
+                <select class="lookup-unit" id="lookup-unit" onchange="doLookup()">
+                    <option value="1">Ω</option>
+                    <option value="1000">kΩ</option>
+                    <option value="1000000">MΩ</option>
+                </select>
+                <span style="font-size:0.82rem;color:var(--text-gray)">→ nearest value in each series</span>
+            </div>
+            <div class="lookup-results" id="lookup-results" style="display:none"></div>
+        </div>
+
+        <!-- TABLE BROWSER -->
+        <div class="card">
+            <h2>Browse values</h2>
+            <div class="series-tabs">
+                <button class="tab-btn active" onclick="setSeries('E6')" id="tab-E6">E6</button>
+                <button class="tab-btn"        onclick="setSeries('E12')" id="tab-E12">E12</button>
+                <button class="tab-btn"        onclick="setSeries('E24')" id="tab-E24">E24</button>
+                <button class="tab-btn"        onclick="setSeries('E48')" id="tab-E48">E48</button>
+                <button class="tab-btn"        onclick="setSeries('E96')" id="tab-E96">E96</button>
+            </div>
+            <div class="decade-row" id="decade-row"></div>
+            <div class="val-grid" id="val-grid"></div>
+        </div>
+
+        <!-- SERIES OVERVIEW -->
+        <div class="card">
+            <h2>Series overview</h2>
+            <table class="series-compare">
+                <thead>
+                    <tr><th>Series</th><th>Values per decade</th><th>Max error</th><th>Typical use</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>E6</td> <td>6</td>  <td>±20%</td><td>High tolerance (old stock, rough estimates)</td></tr>
+                    <tr><td>E12</td><td>12</td> <td>±10%</td><td>General purpose, most common</td></tr>
+                    <tr><td>E24</td><td>24</td> <td>±5%</td> <td>Precision circuits, preferred for new designs</td></tr>
+                    <tr><td>E48</td><td>48</td> <td>±2%</td> <td>Precision resistors, metal film</td></tr>
+                    <tr><td>E96</td><td>96</td> <td>±1%</td> <td>High-precision, SMD, measurement circuits</td></tr>
+                    <tr><td>E192</td><td>192</td><td>±0.5%</td><td>Very high precision, specialty use</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>About E-series</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>What is an E-series?</h3>
+                    <p>E-series (IEC 60063) defines preferred resistor values so that every value falls within the tolerance range of the nearest standard value. For example, E12 has 12 values per decade — the steps are approximately equal on a logarithmic scale, each about 10^(1/12) ≈ 1.21× apart.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Which series to choose?</h3>
+                    <ul>
+                        <li><strong>E12</strong> — good enough for most DIY and hobby projects</li>
+                        <li><strong>E24</strong> — use when you need closer to a calculated value</li>
+                        <li><strong>E96</strong> — precision circuits: filters, references, DACs</li>
+                        <li>SMD resistors are usually available in E24 and E96</li>
+                        <li>Through-hole resistors: mainly E12 and E24</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>How to read the table</h3>
+                    <p>All values shown are the base mantissa (1.0 – 9.1). Multiply by any power of 10 to get the actual value:<br><br>
+                    E.g. E12 base value <strong>4.7</strong> → available as 0.47Ω · 4.7Ω · 47Ω · 470Ω · 4.7kΩ · 47kΩ · 470kΩ · 4.7MΩ</p>
+                </div>
+                <div class="info-block">
+                    <h3>Tolerance & availability</h3>
+                    <ul>
+                        <li>1% metal film resistors (E96) are now cheap and widely available</li>
+                        <li>5% carbon film = E24 typical</li>
+                        <li>If you can't find an exact value, use two standard values in series or parallel</li>
+                        <li>For pull-up/down resistors, exact value rarely matters — use E12</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Part of <a href="../../electronics.html">StrokeForge Electronics</a> — free tools for makers</p>
+    </footer>
+
+    <script>
+    // ── E-series data ──────────────────────────────────────────────────────
+    const SERIES = {
+        E6:  [1.0, 1.5, 2.2, 3.3, 4.7, 6.8],
+        E12: [1.0, 1.2, 1.5, 1.8, 2.2, 2.7, 3.3, 3.9, 4.7, 5.6, 6.8, 8.2],
+        E24: [1.0, 1.1, 1.2, 1.3, 1.5, 1.6, 1.8, 2.0, 2.2, 2.4, 2.7, 3.0,
+              3.3, 3.6, 3.9, 4.3, 4.7, 5.1, 5.6, 6.2, 6.8, 7.5, 8.2, 9.1],
+        E48: [1.00,1.05,1.10,1.15,1.21,1.27,1.33,1.40,1.47,1.54,1.62,1.69,
+              1.78,1.87,1.96,2.05,2.15,2.26,2.37,2.49,2.61,2.74,2.87,3.01,
+              3.16,3.32,3.48,3.65,3.83,4.02,4.22,4.42,4.64,4.87,5.11,5.36,
+              5.62,5.90,6.19,6.49,6.81,7.15,7.50,7.87,8.25,8.66,9.09,9.53],
+        E96: [1.00,1.02,1.05,1.07,1.10,1.13,1.15,1.18,1.21,1.24,1.27,1.30,
+              1.33,1.37,1.40,1.43,1.47,1.50,1.54,1.58,1.62,1.65,1.69,1.74,
+              1.78,1.82,1.87,1.91,1.96,2.00,2.05,2.10,2.15,2.21,2.26,2.32,
+              2.37,2.43,2.49,2.55,2.61,2.67,2.74,2.80,2.87,2.94,3.01,3.09,
+              3.16,3.24,3.32,3.40,3.48,3.57,3.65,3.74,3.83,3.92,4.02,4.12,
+              4.22,4.32,4.42,4.53,4.64,4.75,4.87,4.99,5.11,5.23,5.36,5.49,
+              5.62,5.76,5.90,6.04,6.19,6.34,6.49,6.65,6.81,6.98,7.15,7.32,
+              7.50,7.68,7.87,8.06,8.25,8.45,8.66,8.87,9.09,9.31,9.53,9.76]
+    };
+
+    const DECADES = [
+        { label: '0.1Ω', exp: -1 },
+        { label: '1Ω',   exp:  0 },
+        { label: '10Ω',  exp:  1 },
+        { label: '100Ω', exp:  2 },
+        { label: '1kΩ',  exp:  3 },
+        { label: '10kΩ', exp:  4 },
+        { label: '100kΩ',exp:  5 },
+        { label: '1MΩ',  exp:  6 },
+    ];
+
+    let currentSeries = 'E6';
+    let currentDecade = 2; // 100Ω default
+    let highlightVal  = null;
+
+    // ── Formatting ─────────────────────────────────────────────────────────
+    function fmtR(r) {
+        if (r >= 1e6) {
+            const v = r / 1e6;
+            return (Number.isInteger(v) ? v : v.toPrecision(3).replace(/\.?0+$/,'')) + ' MΩ';
+        }
+        if (r >= 1e3) {
+            const v = r / 1e3;
+            return (Number.isInteger(v) ? v : v.toPrecision(3).replace(/\.?0+$/,'')) + ' kΩ';
+        }
+        return (Number.isInteger(r) ? r : r.toPrecision(3).replace(/\.?0+$/,'')) + ' Ω';
+    }
+
+    // ── Lookup ─────────────────────────────────────────────────────────────
+    function doLookup() {
+        const raw = parseFloat(document.getElementById('lookup-inp').value);
+        const unit = parseFloat(document.getElementById('lookup-unit').value);
+        const container = document.getElementById('lookup-results');
+
+        if (isNaN(raw) || raw <= 0) {
+            container.style.display = 'none';
+            highlightVal = null;
+            renderGrid();
+            return;
+        }
+
+        const val = raw * unit;
+        container.style.display = 'grid';
+        container.innerHTML = '';
+
+        let bestErr = Infinity, bestSeries = null;
+
+        Object.entries(SERIES).forEach(([sName, sVals]) => {
+            const nearest = findNearest(sVals, val);
+            const err = ((nearest - val) / val * 100);
+            const absErr = Math.abs(err);
+            if (absErr < bestErr) { bestErr = absErr; bestSeries = sName; }
+
+            const card = document.createElement('div');
+            card.className = 'lookup-card';
+            card.id = 'lc-' + sName;
+            const errCls = absErr < 1 ? 'err-good' : absErr < 5 ? 'err-ok' : 'err-bad';
+            card.innerHTML = `
+                <div class="lookup-series">${sName}</div>
+                <div class="lookup-val">${fmtR(nearest)}</div>
+                <div class="lookup-err ${errCls}">${err >= 0 ? '+' : ''}${err.toFixed(2)}%</div>
+            `;
+            card.addEventListener('click', () => {
+                // Jump to table
+                const exp = Math.floor(Math.log10(nearest));
+                currentDecade = DECADES.findIndex(d => d.exp === exp);
+                if (currentDecade < 0) currentDecade = 2;
+                setSeries(sName);
+                highlightVal = nearest;
+                renderGrid();
+                document.querySelector('.card:nth-child(2)').scrollIntoView({behavior:'smooth'});
+            });
+            container.appendChild(card);
+        });
+
+        // Mark best
+        if (bestSeries) {
+            document.getElementById('lc-' + bestSeries)?.classList.add('best');
+        }
+
+        // Also highlight in current grid
+        highlightVal = findNearest(SERIES[currentSeries], val);
+        renderGrid();
+    }
+
+    function findNearest(series, val) {
+        const exp = Math.floor(Math.log10(val));
+        let best = null, bestDiff = Infinity;
+        [-1, 0, 1].forEach(e => {
+            series.forEach(s => {
+                const c = s * Math.pow(10, exp + e);
+                const d = Math.abs(c - val);
+                if (d < bestDiff) { bestDiff = d; best = c; }
+            });
+        });
+        return best;
+    }
+
+    // ── Series / Decade ────────────────────────────────────────────────────
+    function setSeries(s) {
+        currentSeries = s;
+        ['E6','E12','E24','E48','E96'].forEach(n => {
+            document.getElementById('tab-' + n).classList.toggle('active', n === s);
+        });
+        renderDecades();
+        renderGrid();
+    }
+
+    function renderDecades() {
+        const row = document.getElementById('decade-row');
+        row.innerHTML = '<span>Decade:</span>';
+        DECADES.forEach((d, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'dec-btn' + (i === currentDecade ? ' active' : '');
+            btn.textContent = d.label;
+            btn.onclick = () => { currentDecade = i; renderDecades(); renderGrid(); };
+            row.appendChild(btn);
+        });
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('val-grid');
+        grid.innerHTML = '';
+        const exp = DECADES[currentDecade].exp;
+        const mult = Math.pow(10, exp);
+        const series = SERIES[currentSeries];
+
+        series.forEach(base => {
+            const val = base * mult;
+            const chip = document.createElement('div');
+            const isHigh = highlightVal !== null && Math.abs(val - highlightVal) < val * 0.001;
+            chip.className = 'val-chip' + (isHigh ? ' highlight' : '');
+            chip.textContent = fmtR(val);
+            chip.title = val + ' Ω';
+            grid.appendChild(chip);
+        });
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────
+    renderDecades();
+    renderGrid();
+    </script>
+</body>
+</html>

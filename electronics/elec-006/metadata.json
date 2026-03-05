@@ -1,0 +1,8 @@
+{
+  "id": "elec-006",
+  "title": "Series & Parallel Resistors",
+  "category": "basic",
+  "description": "Calculate total resistance for resistors in series or parallel. Add up to 8 resistors, see individual voltage/current distribution, nearest E12/E24 equivalent, and circuit diagram.",
+  "icon": "🔗",
+  "difficulty": "beginner"
+}

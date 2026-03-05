@@ -1,0 +1,8 @@
+{
+  "id": "elec-007",
+  "title": "E-Series Standard Resistor Values",
+  "category": "reference",
+  "description": "Browse and search standard resistor values in E6, E12, E24, E48, E96 series. Enter any resistance and instantly find the nearest standard value with percentage error.",
+  "icon": "📊",
+  "difficulty": "beginner"
+}

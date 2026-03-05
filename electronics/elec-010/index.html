@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LM317 Voltage Regulator Calculator | StrokeForge Electronics</title>
+    <meta name="description" content="Calculate R1 and R2 resistor values for the LM317 adjustable voltage regulator. Get nearest E12/E24 values, actual output voltage, power dissipation, and circuit diagram.">
+    <meta name="keywords" content="LM317 calculator, LM317 resistor values, adjustable voltage regulator, R1 R2 LM317, linear regulator design">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-010/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 860px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Mode tabs */
+        .mode-toggle { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem; }
+        .mode-btn { flex: 1; padding: 0.6rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+        .mode-btn.active { background: var(--primary-orange); color: #000; }
+        .mode-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        /* Input */
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
+        .hint { font-size: 0.72rem; color: var(--text-gray); }
+
+        /* Vout presets */
+        .presets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+        .preset-btn { background: none; border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.28rem 0.65rem; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; }
+        .preset-btn:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+
+        /* Results */
+        .res-main { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        @media (max-width: 480px) { .res-main { grid-template-columns: 1fr; } }
+
+        .res-block { background: var(--darker-bg); border-radius: 10px; padding: 1.1rem 1.3rem; }
+        .res-block .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .res-block .val { font-size: 1.4rem; font-weight: 800; color: var(--primary-orange); }
+        .res-block .sub { font-size: 0.75rem; color: var(--text-gray); margin-top: 0.2rem; }
+        .res-block .e24 { font-size: 0.85rem; color: #60a5fa; margin-top: 0.35rem; }
+        .res-block .e12 { font-size: 0.8rem;  color: #4ade80; }
+
+        .res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 480px) { .res-grid { grid-template-columns: 1fr 1fr; } }
+        .rg { background: var(--darker-bg); border-radius: 8px; padding: 0.75rem 1rem; }
+        .rg .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .rg .val { font-size: 1rem; font-weight: 700; color: var(--light-gray); }
+        .rg .val.ok   { color: #4ade80; }
+        .rg .val.warn { color: #fb923c; }
+        .rg .val.err  { color: #f87171; }
+
+        /* SVG */
+        .svg-wrap { text-align: center; overflow-x: auto; padding: 0.5rem 0; }
+
+        /* Common Vout table */
+        .vout-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+        .vout-table th { padding: 0.45rem 0.75rem; text-align: left; color: var(--text-gray); border-bottom: 1px solid var(--border-gray); }
+        .vout-table td { padding: 0.45rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--light-gray); }
+        .vout-table td:first-child { color: var(--primary-orange); font-weight: 700; }
+        .vout-table tr { cursor: pointer; transition: background 0.15s; }
+        .vout-table tr:hover td { background: rgba(251,146,60,0.07); }
+
+        /* Warn / info */
+        .warn-box { background: rgba(251,146,60,0.1); border: 1px solid #fb923c; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #fb923c; margin-top: 0.75rem; }
+        .err-box  { background: rgba(248,113,113,0.1); border: 1px solid #f87171; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #f87171; margin-top: 0.75rem; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../3d-printing.html">3D Printing</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../mechanical.html">Mechanical</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="breadcrumb"><a href="../../electronics.html">← Electronics</a></div>
+
+    <header class="page-header">
+        <h1>⚙️ LM317 Voltage Regulator</h1>
+        <p>Calculate R1 &amp; R2 for any output voltage. Get nearest standard resistor values, actual Vout, and power dissipation.</p>
+    </header>
+
+    <main class="tool-wrap">
+
+        <!-- MODE -->
+        <div class="card">
+            <h2>Calculator mode</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn active" id="btn-design" onclick="setMode('design')">Design: Vout → R1, R2</button>
+                <button class="mode-btn" id="btn-verify" onclick="setMode('verify')">Verify: R1 + R2 → Vout</button>
+                <button class="mode-btn" id="btn-climit" onclick="setMode('climit')">Current limiter</button>
+            </div>
+
+            <!-- Design mode -->
+            <div id="mode-design">
+                <div style="margin-bottom:0.75rem">
+                    <div style="font-size:0.8rem;color:var(--text-gray);margin-bottom:0.5rem">Common output voltages:</div>
+                    <div class="presets" id="vout-presets"></div>
+                </div>
+                <div class="input-grid">
+                    <div class="field">
+                        <label>Input voltage (Vin)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="d-Vin" placeholder="12" min="0" step="0.1" oninput="calculate()">
+                            <span class="unit">V</span>
+                        </div>
+                        <div class="hint">Max 40V, min Vout + 3V</div>
+                    </div>
+                    <div class="field">
+                        <label>Desired output (Vout)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="d-Vout" placeholder="5" min="1.25" step="0.05" oninput="calculate()">
+                            <span class="unit">V</span>
+                        </div>
+                        <div class="hint">Min 1.25V, max 37V</div>
+                    </div>
+                    <div class="field">
+                        <label>Load current (Iout)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="d-Iout" placeholder="500" min="0" step="any" oninput="calculate()">
+                            <select class="unit" id="d-Iunit" onchange="calculate()">
+                                <option value="0.001">mA</option>
+                                <option value="1">A</option>
+                            </select>
+                        </div>
+                        <div class="hint">For power dissipation calc</div>
+                    </div>
+                    <div class="field">
+                        <label>R1 (fixed, datasheet suggests)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="d-R1" placeholder="240" min="100" step="any" value="240" oninput="calculate()">
+                            <span class="unit">Ω</span>
+                        </div>
+                        <div class="hint">Typically 120–240Ω</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verify mode -->
+            <div id="mode-verify" style="display:none">
+                <div class="input-grid">
+                    <div class="field">
+                        <label>Input voltage (Vin)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="v-Vin" placeholder="12" min="0" step="0.1" oninput="calculate()">
+                            <span class="unit">V</span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>R1</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="v-R1" placeholder="240" min="1" step="any" oninput="calculate()">
+                            <select class="unit" id="v-R1unit" onchange="calculate()">
+                                <option value="1">Ω</option>
+                                <option value="1000">kΩ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>R2</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="v-R2" placeholder="750" min="1" step="any" oninput="calculate()">
+                            <select class="unit" id="v-R2unit" onchange="calculate()">
+                                <option value="1">Ω</option>
+                                <option value="1000">kΩ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Load current (Iout)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="v-Iout" placeholder="500" min="0" step="any" oninput="calculate()">
+                            <select class="unit" id="v-Iunit" onchange="calculate()">
+                                <option value="0.001">mA</option>
+                                <option value="1">A</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current limiter mode -->
+            <div id="mode-climit" style="display:none">
+                <p style="font-size:0.85rem;color:var(--text-gray);margin-bottom:1rem">
+                    LM317 as current limiter: connect ADJ to output via R<sub>sc</sub>.<br>
+                    Formula: I<sub>out</sub> = 1.25V / R<sub>sc</sub>
+                </p>
+                <div class="input-grid">
+                    <div class="field">
+                        <label>Desired current (Iout)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="cl-I" placeholder="500" min="0" step="any" oninput="calculate()">
+                            <select class="unit" id="cl-Iunit" onchange="calculate()">
+                                <option value="0.001">mA</option>
+                                <option value="1">A</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Input voltage (Vin)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="cl-Vin" placeholder="12" min="0" step="0.1" oninput="calculate()">
+                            <span class="unit">V</span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Load voltage (Vload)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="cl-Vload" placeholder="3" min="0" step="0.1" oninput="calculate()">
+                            <span class="unit">V</span>
+                        </div>
+                        <div class="hint">For power dissipation</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card" id="results-card" style="display:none">
+            <h2>Results</h2>
+            <div id="res-content"></div>
+        </div>
+
+        <!-- SVG -->
+        <div class="card">
+            <h2>Circuit diagram</h2>
+            <div class="svg-wrap">
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+        </div>
+
+        <!-- COMMON VOUT TABLE -->
+        <div class="card" id="common-table-card">
+            <h2>Common output voltages — click to load</h2>
+            <div style="overflow-x:auto">
+            <table class="vout-table">
+                <thead><tr><th>Vout</th><th>R1 (240Ω)</th><th>R2 exact</th><th>R2 E24</th><th>Actual Vout</th><th>Error</th></tr></thead>
+                <tbody id="common-tbody"></tbody>
+            </table>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>LM317 basics</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Key specifications</h3>
+                    <ul>
+                        <li>Output range: <strong>1.25V – 37V</strong></li>
+                        <li>Max input: <strong>40V</strong></li>
+                        <li>Max current: <strong>1.5A</strong> (with heatsink)</li>
+                        <li>Dropout: <strong>~3V</strong> (Vin must be Vout + 3V)</li>
+                        <li>Reference voltage: <strong>Vref = 1.25V</strong></li>
+                        <li>Adj current: <strong>Iadj ≈ 50µA</strong> (negligible)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Formula</h3>
+                    <p class="mono">
+                        Vout = 1.25 × (1 + R2/R1)<br><br>
+                        R2 = R1 × (Vout/1.25 − 1)<br><br>
+                        P_lm317 = (Vin − Vout) × Iout<br><br>
+                        Typical: R1 = 240Ω<br>
+                        Minimum R1: 120Ω<br>
+                        Use 0.1µF on input, 1µF on output
+                    </p>
+                </div>
+                <div class="info-block">
+                    <h3>Heatsink guide</h3>
+                    <ul>
+                        <li>&lt; 0.5W — no heatsink needed (TO-220)</li>
+                        <li>0.5–2W — small heatsink recommended</li>
+                        <li>2–5W — medium heatsink required</li>
+                        <li>&gt; 5W — large heatsink + thermal paste</li>
+                        <li>Max junction temp: 125°C (θjc ≈ 5°C/W)</li>
+                        <li>For high dissipation, consider a buck converter instead</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Good to know</h3>
+                    <ul>
+                        <li>Add 10µF capacitor on ADJ pin for better ripple rejection</li>
+                        <li>Add output diode (1N4001) from output to input to protect against reverse current</li>
+                        <li>LM317 efficiency = Vout/Vin — at 5V from 12V it's only 42%!</li>
+                        <li>LM338 is pin-compatible, handles up to 5A</li>
+                        <li>LM317T (TO-220) vs LM317L (TO-92, 100mA max)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Part of <a href="../../electronics.html">StrokeForge Electronics</a> — free tools for makers</p>
+    </footer>
+
+    <script>
+    const Vref = 1.25;
+
+    // ── E-series ──────────────────────────────────────────────────────────
+    const E12 = [1.0,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2];
+    const E24 = [1.0,1.1,1.2,1.3,1.5,1.6,1.8,2.0,2.2,2.4,2.7,3.0,3.3,3.6,3.9,4.3,4.7,5.1,5.6,6.2,6.8,7.5,8.2,9.1];
+
+    function nearestE(series, val) {
+        if (!val || val <= 0) return null;
+        const exp = Math.floor(Math.log10(val));
+        let best = null, bestDiff = Infinity;
+        [-1,0,1].forEach(e => {
+            series.forEach(s => {
+                const c = s * Math.pow(10, exp+e);
+                const d = Math.abs(c - val);
+                if (d < bestDiff) { bestDiff = d; best = c; }
+            });
+        });
+        return best;
+    }
+
+    function fmtR(r) {
+        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/\.?0+$/,'') + ' MΩ';
+        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/\.?0+$/,'') + ' kΩ';
+        return r.toPrecision(3).replace(/\.?0+$/,'') + ' Ω';
+    }
+    function fmtV(v) { return v.toPrecision(4).replace(/\.?0+$/,'') + ' V'; }
+    function fmtP(p) {
+        if (p >= 1) return p.toPrecision(3) + ' W';
+        return (p*1000).toPrecision(3) + ' mW';
+    }
+    function errPct(a,b) { return ((a-b)/b*100).toFixed(2) + '%'; }
+
+    // ── Mode ──────────────────────────────────────────────────────────────
+    let mode = 'design';
+    function setMode(m) {
+        mode = m;
+        ['design','verify','climit'].forEach(x => {
+            document.getElementById('mode-'+x).style.display = x===m ? '' : 'none';
+            document.getElementById('btn-'+x).classList.toggle('active', x===m);
+        });
+        document.getElementById('common-table-card').style.display = m === 'climit' ? 'none' : '';
+        calculate();
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────
+    function g(id) { const v = parseFloat(document.getElementById(id).value); return isNaN(v) ? null : v; }
+    function gu(id) { return parseFloat(document.getElementById(id).value); }
+
+    function heatsinkNote(p) {
+        if (p < 0.5) return { text:'No heatsink needed', cls:'ok' };
+        if (p < 2)   return { text:'Small heatsink recommended', cls:'warn' };
+        if (p < 5)   return { text:'Heatsink required', cls:'warn' };
+        return { text:'Large heatsink + consider buck converter!', cls:'err' };
+    }
+
+    // ── Calculate ─────────────────────────────────────────────────────────
+    function calculate() {
+        const rc = document.getElementById('results-card');
+        const content = document.getElementById('res-content');
+
+        if (mode === 'design') calcDesign(rc, content);
+        else if (mode === 'verify') calcVerify(rc, content);
+        else calcClimit(rc, content);
+    }
+
+    function calcDesign(rc, content) {
+        const Vin  = g('d-Vin');
+        const Vout = g('d-Vout');
+        const R1   = g('d-R1') || 240;
+        const Iraw = g('d-Iout');
+        const Iout = Iraw !== null ? Iraw * gu('d-Iunit') : null;
+
+        if (!Vin || !Vout) { rc.style.display = 'none'; drawCircuit(null,null,null,null); return; }
+
+        const R2exact = R1 * (Vout / Vref - 1);
+        const R2e24   = nearestE(E24, R2exact);
+        const R2e12   = nearestE(E12, R2exact);
+        const VoutE24 = Vref * (1 + R2e24 / R1);
+        const VoutE12 = Vref * (1 + R2e12 / R1);
+
+        let warns = [], errs = [];
+        if (Vin > 40)           errs.push('Vin exceeds maximum 40V for LM317.');
+        if (Vout > 37)          errs.push('Vout exceeds maximum 37V for LM317.');
+        if (Vout < 1.25)        errs.push('Minimum Vout is 1.25V.');
+        if (Vin < Vout + 3)     warns.push('Vin must be at least Vout + 3V (dropout). Regulator may not work correctly.');
+        if (Iout !== null && Iout > 1.5) warns.push('LM317 max current is 1.5A. Consider LM338 (5A) or a different regulator.');
+
+        const Pdiss = Iout !== null ? (Vin - Vout) * Iout : null;
+        const eff   = (Vout / Vin * 100).toFixed(1);
+        const hs    = Pdiss !== null ? heatsinkNote(Pdiss) : null;
+
+        content.innerHTML = `
+            <div class="res-main">
+                <div class="res-block">
+                    <div class="lbl">R2 exact</div>
+                    <div class="val">${fmtR(R2exact)}</div>
+                    <div class="e24">E24 nearest: <strong>${fmtR(R2e24)}</strong> → Vout = ${fmtV(VoutE24)} (${errPct(VoutE24,Vout)})</div>
+                    <div class="e12">E12 nearest: <strong>${fmtR(R2e12)}</strong> → Vout = ${fmtV(VoutE12)} (${errPct(VoutE12,Vout)})</div>
+                </div>
+                <div class="res-block">
+                    <div class="lbl">R1 (fixed)</div>
+                    <div class="val">${fmtR(R1)}</div>
+                    <div class="sub">Standard: 240Ω (or 120Ω for lower noise)</div>
+                </div>
+            </div>
+            <div class="res-grid">
+                <div class="rg"><div class="lbl">Efficiency</div><div class="val ${parseFloat(eff)<50?'warn':''}">${eff}%</div></div>
+                ${Pdiss!==null ? `<div class="rg"><div class="lbl">Power dissipated</div><div class="val ${hs.cls}">${fmtP(Pdiss)}</div></div>` : ''}
+                ${hs ? `<div class="rg"><div class="lbl">Heatsink</div><div class="val ${hs.cls}">${hs.text}</div></div>` : ''}
+                <div class="rg"><div class="lbl">Dropout margin</div><div class="val ${Vin-Vout<3?'err':'ok'}">${(Vin-Vout).toFixed(2)}V</div></div>
+                <div class="rg"><div class="lbl">Vref</div><div class="val">1.25 V</div></div>
+                <div class="rg"><div class="lbl">Formula check</div><div class="val">1.25×(1+R2/R1)</div></div>
+            </div>
+            ${errs.length ? `<div class="err-box">${errs.join('<br>')}</div>` : ''}
+            ${warns.length ? `<div class="warn-box">${warns.join('<br>')}</div>` : ''}
+        `;
+        rc.style.display = '';
+        drawCircuit(Vin, Vout, R1, R2exact, R2e24);
+    }
+
+    function calcVerify(rc, content) {
+        const Vin  = g('v-Vin');
+        const R1   = g('v-R1') !== null ? g('v-R1') * gu('v-R1unit') : null;
+        const R2   = g('v-R2') !== null ? g('v-R2') * gu('v-R2unit') : null;
+        const Iraw = g('v-Iout');
+        const Iout = Iraw !== null ? Iraw * gu('v-Iunit') : null;
+
+        if (!R1 || !R2) { rc.style.display='none'; drawCircuit(null,null,null,null); return; }
+
+        const Vout = Vref * (1 + R2 / R1);
+        const Pdiss = (Vin !== null && Iout !== null) ? (Vin - Vout) * Iout : null;
+        const eff   = Vin ? (Vout / Vin * 100).toFixed(1) : null;
+        const hs    = Pdiss !== null ? heatsinkNote(Pdiss) : null;
+
+        let warns = [];
+        if (Vin && Vin < Vout + 3) warns.push('Vin must be at least Vout + 3V (dropout).');
+        if (Iout > 1.5) warns.push('LM317 max current is 1.5A.');
+
+        content.innerHTML = `
+            <div class="res-main">
+                <div class="res-block">
+                    <div class="lbl">Output voltage (Vout)</div>
+                    <div class="val">${fmtV(Vout)}</div>
+                    <div class="sub">= 1.25 × (1 + ${fmtR(R2)} / ${fmtR(R1)})</div>
+                </div>
+                <div class="res-block">
+                    <div class="lbl">Dropout margin</div>
+                    <div class="val ${Vin && Vin-Vout<3?'err':'ok'}">${Vin ? (Vin-Vout).toFixed(2)+'V' : 'enter Vin'}</div>
+                </div>
+            </div>
+            <div class="res-grid">
+                ${eff ? `<div class="rg"><div class="lbl">Efficiency</div><div class="val ${parseFloat(eff)<50?'warn':''}">${eff}%</div></div>` : ''}
+                ${Pdiss!==null ? `<div class="rg"><div class="lbl">Power dissipated</div><div class="val ${hs.cls}">${fmtP(Pdiss)}</div></div>` : ''}
+                ${hs ? `<div class="rg"><div class="lbl">Heatsink</div><div class="val ${hs.cls}">${hs.text}</div></div>` : ''}
+            </div>
+            ${warns.length ? `<div class="warn-box">${warns.join('<br>')}</div>` : ''}
+        `;
+        rc.style.display = '';
+        drawCircuit(Vin, Vout, R1, R2);
+    }
+
+    function calcClimit(rc, content) {
+        const Iraw  = g('cl-I');
+        const Iunit = gu('cl-Iunit');
+        const Vin   = g('cl-Vin');
+        const Vload = g('cl-Vload');
+
+        if (!Iraw) { rc.style.display='none'; drawCircuit(null,null,null,null,'climit'); return; }
+
+        const Iout = Iraw * Iunit;
+        const Rsc  = Vref / Iout; // in Ω
+        const Re24 = nearestE(E24, Rsc);
+        const Re12 = nearestE(E12, Rsc);
+        const Iactual_e24 = Vref / Re24;
+        const Pdiss = (Vin && Vload) ? (Vin - Vload - Vref) * Iout : null;
+        const Pr    = Vref * Iout; // power in Rsc
+
+        content.innerHTML = `
+            <div class="res-main">
+                <div class="res-block">
+                    <div class="lbl">R<sub>sc</sub> exact</div>
+                    <div class="val">${fmtR(Rsc)}</div>
+                    <div class="e24">E24 nearest: <strong>${fmtR(Re24)}</strong> → I = ${(Iactual_e24*1000).toFixed(1)}mA</div>
+                    <div class="e12">E12 nearest: <strong>${fmtR(Re12)}</strong> → I = ${(Vref/Re12*1000).toFixed(1)}mA</div>
+                </div>
+                <div class="res-block">
+                    <div class="lbl">Power in R<sub>sc</sub></div>
+                    <div class="val">${fmtP(Pr)}</div>
+                    <div class="sub">= Vref × Iout = 1.25 × ${(Iout*1000).toFixed(0)}mA</div>
+                </div>
+            </div>
+            <div class="res-grid">
+                <div class="rg"><div class="lbl">Formula</div><div class="val" style="font-size:0.85rem">Iout = 1.25/Rsc</div></div>
+                ${Pdiss!==null ? `<div class="rg"><div class="lbl">LM317 dissipation</div><div class="val ${heatsinkNote(Pdiss).cls}">${fmtP(Pdiss)}</div></div>` : ''}
+            </div>
+        `;
+        rc.style.display = '';
+        drawCircuit(Vin, null, null, Rsc, null, 'climit');
+    }
+
+    // ── SVG Circuit ───────────────────────────────────────────────────────
+    function drawCircuit(Vin, Vout, R1, R2, R2e24, mode2) {
+        const svg = document.getElementById('circuit-svg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const ns = 'http://www.w3.org/2000/svg';
+
+        function el(tag, attrs) {
+            const e = document.createElementNS(ns, tag);
+            Object.entries(attrs).forEach(([k,v]) => e.setAttribute(k,v));
+            return e;
+        }
+        function line(x1,y1,x2,y2,col,w) {
+            return el('line',{x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'round'});
+        }
+        function txt(x,y,t,col,sz,anc) {
+            const e = el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'});
+            e.textContent = t;
+            return e;
+        }
+        function box(x,y,w,h,col,label,sub) {
+            const g = document.createElementNS(ns,'g');
+            g.appendChild(el('rect',{x:x-w/2,y:y-h/2,width:w,height:h,fill:'#1f2937',stroke:col||'#4ade80','stroke-width':1.5,rx:3}));
+            if(label) g.appendChild(txt(x,sub?y-5:y,label,col||'#4ade80',9,'middle'));
+            if(sub)   g.appendChild(txt(x,y+7,sub,'#6b7280',8,'middle'));
+            return g;
+        }
+
+        const W=340, H=220;
+        svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+        svg.setAttribute('width',W);
+        svg.setAttribute('height',H);
+
+        if (mode2 === 'climit') {
+            // Simple current limiter
+            svg.appendChild(txt(W/2, 20, 'LM317 Current Limiter', '#fb923c', 11, 'middle'));
+            // Vin → IN pin
+            svg.appendChild(line(30,80,100,80,'#6b7280'));
+            svg.appendChild(txt(30,70,'Vin','#facc15',10,'middle'));
+            // LM317 block
+            svg.appendChild(el('rect',{x:100,y:55,width:80,height:50,fill:'#1a2433',stroke:'#fb923c','stroke-width':2,rx:6}));
+            svg.appendChild(txt(140,75,'LM317','#fb923c',11,'middle'));
+            svg.appendChild(txt(100,90,'IN','#6b7280',8,'start'));
+            svg.appendChild(txt(176,90,'OUT','#6b7280',8,'end'));
+            svg.appendChild(txt(140,100,'ADJ','#60a5fa',8,'middle'));
+            // OUT → Rsc → load
+            svg.appendChild(line(180,80,230,80,'#6b7280'));
+            svg.appendChild(box(255,80,40,20,'#4ade80','Rsc', R2 ? fmtR(R2) : '?'));
+            svg.appendChild(line(275,80,310,80,'#6b7280'));
+            svg.appendChild(txt(310,80,'Load →','#6b7280',9,'start'));
+            // ADJ wire down to Rsc mid
+            svg.appendChild(line(140,105,140,140,'#60a5fa'));
+            svg.appendChild(line(140,140,255,140,'#60a5fa'));
+            svg.appendChild(line(255,140,255,90,'#60a5fa'));
+            svg.appendChild(txt(185,135,'ADJ','#60a5fa',8,'middle'));
+            return;
+        }
+
+        // Standard voltage regulator circuit
+        // Vin → IN
+        svg.appendChild(line(30,70,100,70,'#6b7280'));
+        if (Vin) svg.appendChild(txt(30,58,Vin+'V','#facc15',10,'middle'));
+        svg.appendChild(txt(50,76,'Vin','#6b7280',8,'middle'));
+
+        // LM317 block
+        svg.appendChild(el('rect',{x:100,y:45,width:90,height:60,fill:'#1a2433',stroke:'#fb923c','stroke-width':2,rx:6}));
+        svg.appendChild(txt(145,68,'LM317','#fb923c',12,'middle'));
+        svg.appendChild(txt(100,80,'IN','#6b7280',8,'start'));
+        svg.appendChild(txt(186,80,'OUT','#6b7280',8,'end'));
+        svg.appendChild(txt(145,95,'ADJ','#60a5fa',8,'middle'));
+
+        // OUT → wire right
+        svg.appendChild(line(190,70,270,70,'#6b7280'));
+        if (Vout) svg.appendChild(txt(300,70,fmtV(Vout),'#facc15',10,'middle'));
+        svg.appendChild(txt(310,78,'Vout','#6b7280',8,'middle'));
+
+        // R1: ADJ to output rail (bottom of R1 connects to OUT rail, top to ADJ)
+        // ADJ down to R1
+        svg.appendChild(line(145,105,145,135,'#60a5fa'));
+        // R1 box
+        svg.appendChild(box(145,152,40,22,'#4ade80','R1', R1?fmtR(R1):'240Ω'));
+        // R1 bottom to GND rail
+        svg.appendChild(line(145,163,145,185,'#6b7280'));
+
+        // Wire from OUT rail down to ADJ junction
+        svg.appendChild(line(270,70,270,135,'#6b7280'));
+        // Connect OUT rail down to R1 top via horizontal
+        svg.appendChild(line(145,135,270,135,'#6b7280'));
+
+        // R2 box below horizontal junction
+        // Tap from junction to R2
+        svg.appendChild(line(220,135,220,152,'#6b7280'));
+        svg.appendChild(box(220,163,44,22,'#60a5fa','R2', R2e24?fmtR(R2e24):(R2?fmtR(R2):'?')));
+        svg.appendChild(line(220,174,220,185,'#6b7280'));
+
+        // GND rail
+        svg.appendChild(line(30,185,310,185,'#6b7280',1));
+        svg.appendChild(txt(30,192,'GND','#6b7280',8,'middle'));
+
+        // GND from Vin side
+        svg.appendChild(line(30,70,30,185,'#6b7280'));
+        // GND from Vout side
+        svg.appendChild(line(270,135,270,185,'#6b7280'));
+    }
+
+    // ── Common Vout table ─────────────────────────────────────────────────
+    function buildTable() {
+        const R1 = 240;
+        const targets = [1.5, 1.8, 2.5, 3.0, 3.3, 5.0, 6.0, 6.5, 9.0, 12.0, 15.0, 18.0, 24.0];
+        const tbody = document.getElementById('common-tbody');
+        tbody.innerHTML = '';
+        targets.forEach(Vout => {
+            const R2exact = R1 * (Vout / Vref - 1);
+            const R2e24   = nearestE(E24, R2exact);
+            const VoutAct = Vref * (1 + R2e24 / R1);
+            const err     = ((VoutAct - Vout) / Vout * 100).toFixed(2);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${Vout} V</td>
+                <td>${fmtR(R1)}</td>
+                <td>${fmtR(R2exact)}</td>
+                <td>${fmtR(R2e24)}</td>
+                <td>${fmtV(VoutAct)}</td>
+                <td style="color:${Math.abs(parseFloat(err))<1?'#4ade80':'#fb923c'}">${err}%</td>
+            `;
+            tr.addEventListener('click', () => {
+                setMode('design');
+                document.getElementById('d-Vout').value = Vout;
+                document.getElementById('d-R1').value = R1;
+                if (!document.getElementById('d-Vin').value) document.getElementById('d-Vin').value = Math.max(Vout + 4, 12);
+                calculate();
+                window.scrollTo({top:0,behavior:'smooth'});
+            });
+            tbody.appendChild(tr);
+        });
+    }
+
+    // ── Vout presets ──────────────────────────────────────────────────────
+    function buildPresets() {
+        const presets = document.getElementById('vout-presets');
+        [1.5, 2.5, 3.3, 5.0, 6.5, 9.0, 12.0].forEach(v => {
+            const btn = document.createElement('button');
+            btn.className = 'preset-btn';
+            btn.textContent = v + 'V';
+            btn.onclick = () => {
+                document.getElementById('d-Vout').value = v;
+                if (!document.getElementById('d-Vin').value) document.getElementById('d-Vin').value = Math.max(v + 4, 12);
+                calculate();
+            };
+            presets.appendChild(btn);
+        });
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────
+    buildPresets();
+    buildTable();
+    drawCircuit(null,null,null,null);
+    </script>
+</body>
+</html>

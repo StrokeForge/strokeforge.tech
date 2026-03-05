@@ -1,0 +1,8 @@
+{
+  "id": "elec-009",
+  "title": "Battery Series & Parallel Configuration",
+  "category": "power",
+  "description": "Calculate total voltage, capacity, and energy for batteries wired in series, parallel, or series-parallel (nSnP). Includes common LiPo/Li-Ion pack configurations and balancing tips.",
+  "icon": "🔌",
+  "difficulty": "beginner"
+}

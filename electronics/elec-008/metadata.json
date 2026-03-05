@@ -1,0 +1,8 @@
+{
+  "id": "elec-008",
+  "title": "Battery Life Calculator",
+  "category": "power",
+  "description": "Estimate battery runtime from capacity and current draw. Supports multi-mode operation (active + sleep), efficiency factor, and includes a reference table for common battery types.",
+  "icon": "🔋",
+  "difficulty": "beginner"
+}

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery Life Calculator | StrokeForge Electronics</title>
+    <meta name="description" content="Calculate battery runtime from capacity (mAh) and current draw. Supports active/sleep mode cycles, efficiency factor, and common battery reference table (AA, 18650, LiPo, CR2032).">
+    <meta name="keywords" content="battery life calculator, mAh runtime calculator, battery capacity current draw, Arduino battery life, ESP32 battery, IoT battery estimation">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-008/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 860px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Input grid */
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .input-grid { grid-template-columns: 1fr; } }
+
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; cursor: pointer; white-space: nowrap; }
+        .hint { font-size: 0.75rem; color: var(--text-gray); }
+
+        /* Battery presets */
+        .presets { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1.25rem; }
+        .preset-btn { background: none; border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.3rem 0.75rem; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; }
+        .preset-btn:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+
+        /* Mode toggle */
+        .mode-toggle { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; margin-bottom: 1.25rem; }
+        .mode-btn { flex: 1; padding: 0.55rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+        .mode-btn.active { background: var(--primary-orange); color: #000; }
+        .mode-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        /* Sleep mode extra fields */
+        .sleep-fields { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-gray); }
+        @media (max-width: 580px) { .sleep-fields { grid-template-columns: 1fr; } }
+
+        /* Results */
+        .result-big { text-align: center; padding: 1.5rem 1rem; background: var(--darker-bg); border-radius: 10px; margin-bottom: 1rem; }
+        .result-big .r-label { font-size: 0.82rem; color: var(--text-gray); margin-bottom: 0.5rem; }
+        .result-big .r-value { font-size: 2.8rem; font-weight: 800; color: var(--primary-orange); line-height: 1; }
+        .result-big .r-unit  { font-size: 1rem; color: var(--text-gray); margin-top: 0.3rem; }
+
+        .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 580px) { .result-grid { grid-template-columns: 1fr 1fr; } }
+        .r-item { background: var(--darker-bg); border-radius: 8px; padding: 0.85rem 1rem; }
+        .r-item .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.25rem; }
+        .r-item .val { font-size: 1.05rem; font-weight: 700; color: var(--light-gray); }
+
+        /* Battery icon */
+        .bat-icon-wrap { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1rem; }
+        .bat-bar-wrap  { flex: 1; }
+        .bat-bar-label { font-size: 0.75rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .bat-bar-bg    { background: var(--border-gray); border-radius: 5px; height: 14px; overflow: hidden; position: relative; }
+        .bat-bar-fill  { height: 100%; border-radius: 5px; transition: width 0.4s; }
+        .bat-pct-label { font-size: 0.75rem; color: var(--text-gray); margin-top: 0.2rem; text-align: right; }
+
+        /* Warning */
+        .warn-box { background: rgba(251,146,60,0.1); border: 1px solid #fb923c; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #fb923c; margin-top: 0.75rem; }
+
+        /* Battery reference table */
+        .bat-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+        .bat-table th { padding: 0.5rem 0.75rem; text-align: left; color: var(--text-gray); border-bottom: 1px solid var(--border-gray); font-weight: 600; white-space: nowrap; }
+        .bat-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--light-gray); vertical-align: top; }
+        .bat-table td:first-child { color: var(--primary-orange); font-weight: 700; white-space: nowrap; }
+        .bat-table tr { cursor: pointer; transition: background 0.15s; }
+        .bat-table tr:hover td { background: rgba(251,146,60,0.06); }
+        .bat-table tr td:first-child::after { content: ' →'; font-size: 0.7rem; opacity: 0.5; }
+
+        /* Info */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../3d-printing.html">3D Printing</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../mechanical.html">Mechanical</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="breadcrumb"><a href="../../electronics.html">← Electronics</a></div>
+
+    <header class="page-header">
+        <h1>🔋 Battery Life Calculator</h1>
+        <p>Estimate how long your battery will last based on capacity and current draw. Supports active/sleep mode cycles.</p>
+    </header>
+
+    <main class="tool-wrap">
+
+        <!-- BATTERY INPUT -->
+        <div class="card">
+            <h2>Battery</h2>
+            <div class="presets" id="bat-presets"></div>
+            <div class="input-grid">
+                <div class="field">
+                    <label>Battery capacity</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="inp-cap" placeholder="e.g. 2000" min="0" step="any" oninput="calculate()">
+                        <select class="unit" id="unit-cap" onchange="calculate()">
+                            <option value="1">mAh</option>
+                            <option value="1000">Ah</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Regulator / circuit efficiency</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="inp-eff" placeholder="85" min="1" max="100" step="1" value="85" oninput="calculate()">
+                        <span class="unit">%</span>
+                    </div>
+                    <div class="hint">LDO ≈ 75–85%, boost/buck ≈ 85–95%, direct ≈ 100%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LOAD INPUT -->
+        <div class="card">
+            <h2>Load current</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn active" id="btn-simple" onclick="setMode('simple')">Simple (constant current)</button>
+                <button class="mode-btn" id="btn-sleep" onclick="setMode('sleep')">Active + Sleep cycle</button>
+            </div>
+
+            <!-- Simple mode -->
+            <div id="simple-fields">
+                <div class="field" style="max-width:300px">
+                    <label>Average current draw</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="inp-I" placeholder="e.g. 50" min="0" step="any" oninput="calculate()">
+                        <select class="unit" id="unit-I" onchange="calculate()">
+                            <option value="0.001">mA</option>
+                            <option value="1">A</option>
+                            <option value="0.000001">µA</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sleep/cycle mode -->
+            <div id="sleep-fields" style="display:none">
+                <div class="sleep-fields">
+                    <div class="field">
+                        <label>Active current</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="inp-Iact" placeholder="e.g. 80" min="0" step="any" oninput="calculate()">
+                            <select class="unit" id="unit-Iact" onchange="calculate()">
+                                <option value="0.001">mA</option>
+                                <option value="1">A</option>
+                                <option value="0.000001">µA</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Sleep current</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="inp-Islp" placeholder="e.g. 10" min="0" step="any" oninput="calculate()">
+                            <select class="unit" id="unit-Islp" onchange="calculate()">
+                                <option value="0.000001">µA</option>
+                                <option value="0.001">mA</option>
+                                <option value="1">A</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Cycle: active time</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="inp-Tact" placeholder="e.g. 100" min="0" step="any" oninput="calculate()">
+                            <select class="unit" id="unit-Tact" onchange="calculate()">
+                                <option value="0.001">ms</option>
+                                <option value="1">s</option>
+                                <option value="60">min</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Cycle: sleep time</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="inp-Tslp" placeholder="e.g. 900" min="0" step="any" oninput="calculate()">
+                            <select class="unit" id="unit-Tslp" onchange="calculate()">
+                                <option value="1">s</option>
+                                <option value="0.001">ms</option>
+                                <option value="60">min</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Average current (computed)</label>
+                        <div class="field-row" style="padding: 0.5rem 0">
+                            <span id="avg-I-display" style="font-size:1rem;font-weight:700;color:var(--primary-orange)">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card" id="results-card" style="display:none">
+            <h2>Results</h2>
+            <div class="result-big">
+                <div class="r-label">Estimated battery life</div>
+                <div class="r-value" id="res-main">—</div>
+                <div class="r-unit"  id="res-unit">hours</div>
+            </div>
+
+            <div class="result-grid">
+                <div class="r-item">
+                    <div class="lbl">In hours</div>
+                    <div class="val" id="res-h">—</div>
+                </div>
+                <div class="r-item">
+                    <div class="lbl">In days</div>
+                    <div class="val" id="res-d">—</div>
+                </div>
+                <div class="r-item">
+                    <div class="lbl">In weeks</div>
+                    <div class="val" id="res-w">—</div>
+                </div>
+                <div class="r-item">
+                    <div class="lbl">Effective capacity</div>
+                    <div class="val" id="res-eff-cap">—</div>
+                </div>
+                <div class="r-item">
+                    <div class="lbl">Average current</div>
+                    <div class="val" id="res-avg-I">—</div>
+                </div>
+                <div class="r-item">
+                    <div class="lbl">Battery drain/day</div>
+                    <div class="val" id="res-drain">—</div>
+                </div>
+            </div>
+
+            <!-- Visual battery bar -->
+            <div class="bat-icon-wrap">
+                <div style="font-size:3rem">🔋</div>
+                <div class="bat-bar-wrap">
+                    <div class="bat-bar-label">Estimated discharge over time</div>
+                    <div style="display:flex;gap:0.5rem;font-size:0.75rem;color:var(--text-gray);margin-bottom:0.3rem">
+                        <span>0%</span><span style="margin-left:auto">100% drained</span>
+                    </div>
+                    <div style="display:flex;gap:2px">
+                        <div class="bat-bar-bg" style="flex:1" id="bat-24h">
+                            <div class="bat-bar-fill" style="background:#4ade80"></div>
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-gray);margin-top:0.25rem">
+                        <span id="bat-label-24h">After 24h</span>
+                        <span id="bat-pct-24h"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="warn-box" class="warn-box" style="display:none"></div>
+        </div>
+
+        <!-- BATTERY REFERENCE TABLE -->
+        <div class="card">
+            <h2>Common battery types — click to use</h2>
+            <div style="overflow-x:auto">
+            <table class="bat-table">
+                <thead>
+                    <tr><th>Type</th><th>Nominal V</th><th>Typical capacity</th><th>Chemistry</th><th>Common use</th></tr>
+                </thead>
+                <tbody id="bat-ref-body"></tbody>
+            </table>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Tips & notes</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Why use efficiency factor?</h3>
+                    <p>Voltage regulators waste energy. An LDO from 9V to 3.3V operates at only ~37% efficiency — most energy becomes heat. Buck converters are 85–95% efficient. The efficiency factor adjusts effective capacity accordingly.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Sleep mode matters</h3>
+                    <ul>
+                        <li>An ESP32 active draws ~80–240mA → weeks on 18650</li>
+                        <li>ESP32 deep sleep → ~10µA → months or years on 18650</li>
+                        <li>Wake every 60s for 100ms: avg ≈ 0.013mA — huge difference</li>
+                        <li>Use the Active + Sleep mode tab to model this</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Real-world derating</h3>
+                    <ul>
+                        <li>Cold temperatures reduce effective capacity (Li-Ion -20% at 0°C)</li>
+                        <li>High discharge rates reduce capacity (Peukert effect)</li>
+                        <li>Battery aging: expect 20–30% capacity loss over 2–3 years</li>
+                        <li>Multiply result by 0.7–0.8 for a conservative estimate</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Formula</h3>
+                    <p>
+                        t = (C × η) / I<br><br>
+                        where:<br>
+                        t = runtime [hours]<br>
+                        C = capacity [mAh]<br>
+                        η = efficiency factor<br>
+                        I = average current [mA]<br><br>
+                        For sleep cycles:<br>
+                        I_avg = (I_act × T_act + I_slp × T_slp) / (T_act + T_slp)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Part of <a href="../../electronics.html">StrokeForge Electronics</a> — free tools for makers</p>
+    </footer>
+
+    <script>
+    // ── Battery reference data ─────────────────────────────────────────────
+    const BATTERIES = [
+        { name:'AA (alkaline)',   voltage:1.5,  mAh:2700,  chem:'Alkaline',  use:'Remote controls, toys, flashlights' },
+        { name:'AAA (alkaline)',  voltage:1.5,  mAh:1200,  chem:'Alkaline',  use:'Small devices, remotes' },
+        { name:'C (alkaline)',    voltage:1.5,  mAh:8000,  chem:'Alkaline',  use:'Medium devices, radios' },
+        { name:'D (alkaline)',    voltage:1.5,  mAh:15000, chem:'Alkaline',  use:'High-drain devices, lanterns' },
+        { name:'9V (alkaline)',   voltage:9,    mAh:550,   chem:'Alkaline',  use:'Smoke detectors, effects pedals' },
+        { name:'CR2032',          voltage:3,    mAh:220,   chem:'Li/MnO₂',  use:'Watches, RTC backup, key fobs' },
+        { name:'CR2016',          voltage:3,    mAh:90,    chem:'Li/MnO₂',  use:'Thin watches, small remotes' },
+        { name:'CR123A',          voltage:3,    mAh:1500,  chem:'Li/MnO₂',  use:'Cameras, flashlights, security' },
+        { name:'18650 Li-Ion',    voltage:3.7,  mAh:3000,  chem:'Li-Ion',   use:'Power banks, vapes, DIY projects' },
+        { name:'21700 Li-Ion',    voltage:3.7,  mAh:5000,  chem:'Li-Ion',   use:'High-power devices, EVs' },
+        { name:'LiPo 1S 500mAh', voltage:3.7,  mAh:500,   chem:'LiPo',     use:'Small drones, wearables' },
+        { name:'LiPo 1S 2000mAh',voltage:3.7,  mAh:2000,  chem:'LiPo',     use:'RC models, medium projects' },
+        { name:'LiPo 2S 5000mAh',voltage:7.4,  mAh:5000,  chem:'LiPo',     use:'Racing drones, RC cars' },
+        { name:'AA (NiMH)',       voltage:1.2,  mAh:2500,  chem:'NiMH',     use:'High-drain devices, rechargeable' },
+        { name:'AAA (NiMH)',      voltage:1.2,  mAh:900,   chem:'NiMH',     use:'Small rechargeable devices' },
+        { name:'Lead-acid 7Ah',   voltage:12,   mAh:7000,  chem:'Lead-acid', use:'UPS, alarm systems, solar' },
+    ];
+
+    // ── State ──────────────────────────────────────────────────────────────
+    let calcMode = 'simple';
+
+    // ── Init ───────────────────────────────────────────────────────────────
+    function init() {
+        // Battery presets
+        const presets = document.getElementById('bat-presets');
+        [
+            { label:'CR2032 (220mAh)', cap:220 },
+            { label:'AA (2700mAh)',    cap:2700 },
+            { label:'18650 (3000mAh)', cap:3000 },
+            { label:'LiPo 1S 2000mAh',cap:2000 },
+            { label:'9V (550mAh)',     cap:550 },
+        ].forEach(p => {
+            const btn = document.createElement('button');
+            btn.className = 'preset-btn';
+            btn.textContent = p.label;
+            btn.onclick = () => {
+                document.getElementById('inp-cap').value = p.cap;
+                document.getElementById('unit-cap').value = '1';
+                calculate();
+            };
+            presets.appendChild(btn);
+        });
+
+        // Battery reference table
+        const tbody = document.getElementById('bat-ref-body');
+        BATTERIES.forEach(b => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${b.name}</td>
+                <td>${b.voltage} V</td>
+                <td>${b.mAh >= 1000 ? (b.mAh/1000).toFixed(1)+'Ah' : b.mAh+'mAh'}</td>
+                <td>${b.chem}</td>
+                <td style="color:var(--text-gray)">${b.use}</td>
+            `;
+            tr.addEventListener('click', () => {
+                document.getElementById('inp-cap').value = b.mAh;
+                document.getElementById('unit-cap').value = '1';
+                calculate();
+                document.querySelector('.tool-wrap').scrollIntoView({behavior:'smooth'});
+            });
+            tbody.appendChild(tr);
+        });
+    }
+
+    // ── Mode switch ────────────────────────────────────────────────────────
+    function setMode(m) {
+        calcMode = m;
+        document.getElementById('btn-simple').classList.toggle('active', m === 'simple');
+        document.getElementById('btn-sleep').classList.toggle('active', m === 'sleep');
+        document.getElementById('simple-fields').style.display = m === 'simple' ? '' : 'none';
+        document.getElementById('sleep-fields').style.display  = m === 'sleep'  ? '' : 'none';
+        calculate();
+    }
+
+    // ── Helpers ────────────────────────────────────────────────────────────
+    function getInp(id) {
+        const v = parseFloat(document.getElementById('inp-' + id).value);
+        return isNaN(v) ? null : v;
+    }
+    function getUnit(id) {
+        return parseFloat(document.getElementById('unit-' + id).value);
+    }
+    function fmtI(mA) {
+        if (mA >= 1000) return (mA/1000).toPrecision(3) + ' A';
+        if (mA < 0.001) return (mA*1000).toPrecision(3) + ' nA';
+        if (mA < 1)     return (mA*1000).toPrecision(3) + ' µA';
+        return mA.toPrecision(3) + ' mA';
+    }
+
+    // ── Main calculation ───────────────────────────────────────────────────
+    function calculate() {
+        const capRaw = getInp('cap');
+        const capUnit = getUnit('cap');
+        const eff = getInp('eff');
+
+        if (capRaw === null || eff === null) {
+            document.getElementById('results-card').style.display = 'none';
+            return;
+        }
+
+        const capMah = capRaw * capUnit; // in mAh
+        const effFactor = eff / 100;
+        const effCap = capMah * effFactor;
+
+        let avgI_mA = null; // in mA
+
+        if (calcMode === 'simple') {
+            const I = getInp('I');
+            if (I === null) { document.getElementById('results-card').style.display = 'none'; return; }
+            const unitI = getUnit('I') * 1000; // convert to mA
+            avgI_mA = I * unitI;
+
+        } else {
+            const Iact  = getInp('Iact');  const uIact = getUnit('Iact')  * 1000;
+            const Islp  = getInp('Islp');  const uIslp = getUnit('Islp')  * 1000;
+            const Tact  = getInp('Tact');  const uTact = getUnit('Tact');
+            const Tslp  = getInp('Tslp');  const uTslp = getUnit('Tslp');
+
+            if (Iact === null || Islp === null || Tact === null || Tslp === null) {
+                document.getElementById('avg-I-display').textContent = '—';
+                document.getElementById('results-card').style.display = 'none';
+                return;
+            }
+
+            const Iact_mA = Iact * uIact;
+            const Islp_mA = Islp * uIslp;
+            const Tact_s  = Tact * uTact;
+            const Tslp_s  = Tslp * uTslp;
+            const Tcyc = Tact_s + Tslp_s;
+            if (Tcyc <= 0) { document.getElementById('results-card').style.display = 'none'; return; }
+
+            avgI_mA = (Iact_mA * Tact_s + Islp_mA * Tslp_s) / Tcyc;
+            document.getElementById('avg-I-display').textContent = fmtI(avgI_mA);
+        }
+
+        if (avgI_mA <= 0) { document.getElementById('results-card').style.display = 'none'; return; }
+
+        const hours = effCap / avgI_mA;
+        const days  = hours / 24;
+        const weeks = days / 7;
+
+        // Display main result
+        let mainVal, mainUnit;
+        if (hours < 2)       { mainVal = (hours * 60).toFixed(1); mainUnit = 'minutes'; }
+        else if (hours < 48) { mainVal = hours.toFixed(1);         mainUnit = 'hours'; }
+        else if (days < 14)  { mainVal = days.toFixed(1);          mainUnit = 'days'; }
+        else if (weeks < 52) { mainVal = weeks.toFixed(1);         mainUnit = 'weeks'; }
+        else                 { mainVal = (weeks/52).toFixed(1);    mainUnit = 'years'; }
+
+        document.getElementById('res-main').textContent = mainVal;
+        document.getElementById('res-unit').textContent = mainUnit;
+        document.getElementById('res-h').textContent = hours >= 1 ? hours.toFixed(1) + ' h' : (hours*60).toFixed(0) + ' min';
+        document.getElementById('res-d').textContent = days.toFixed(2) + ' d';
+        document.getElementById('res-w').textContent = weeks.toFixed(2) + ' w';
+        document.getElementById('res-eff-cap').textContent = effCap.toFixed(0) + ' mAh';
+        document.getElementById('res-avg-I').textContent = fmtI(avgI_mA);
+        document.getElementById('res-drain').textContent = (avgI_mA * 24).toFixed(1) + ' mAh/day';
+
+        // Battery bar (24h consumption)
+        const used24h = Math.min(100, (avgI_mA * 24 / effCap) * 100);
+        const fill = document.querySelector('#bat-24h .bat-bar-fill');
+        const color = used24h < 10 ? '#4ade80' : used24h < 50 ? '#fb923c' : '#f87171';
+        fill.style.width = used24h + '%';
+        fill.style.background = color;
+        document.getElementById('bat-pct-24h').textContent = used24h.toFixed(1) + '% used';
+
+        // Warnings
+        const warnBox = document.getElementById('warn-box');
+        const warns = [];
+        if (avgI_mA > capMah / 2) warns.push('⚠ Very high current relative to capacity — consider a larger battery.');
+        if (eff < 60) warns.push('⚠ Very low efficiency (' + eff + '%). Check if a switching regulator would be more appropriate.');
+        if (hours < 1) warns.push('⚠ Runtime under 1 hour — verify your current estimate.');
+        warnBox.style.display = warns.length ? '' : 'none';
+        warnBox.innerHTML = warns.join('<br>');
+
+        document.getElementById('results-card').style.display = '';
+    }
+
+    init();
+    </script>
+</body>
+</html>

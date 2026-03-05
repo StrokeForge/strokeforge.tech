@@ -1,0 +1,8 @@
+{
+  "id": "elec-010",
+  "title": "LM317 Voltage Regulator Calculator",
+  "category": "power",
+  "description": "Calculate R1 and R2 resistors for the LM317 adjustable voltage regulator. Shows nearest E12/E24 values, actual output voltage, power dissipation, and a circuit diagram.",
+  "icon": "⚙️",
+  "difficulty": "beginner"
+}

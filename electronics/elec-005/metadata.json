@@ -1,0 +1,8 @@
+{
+  "id": "elec-005",
+  "title": "Resistor Power Dissipation",
+  "category": "basic",
+  "description": "Calculate power dissipated by a resistor. Enter any two of: voltage, current, resistance — get power, recommended wattage rating, and nearest standard resistor value.",
+  "icon": "🔥",
+  "difficulty": "beginner"
+}
