@@ -20,7 +20,11 @@
       "Bash(git push:*)",
       "Bash(git add:*)",
       "Bash(git rm:*)",
-      "WebFetch(domain:www.githubstatus.com)"
+      "WebFetch(domain:www.githubstatus.com)",
+      "Bash(for f in electronics/elec-*/index.html engineering/eng-*/index.html)",
+      "Bash(do sed -i 's|<div class=\"\"breadcrumb\"\"><a href=\"\"\\\\.\\\\./\\\\.\\\\./electronics\\\\.html\"\">&larr; Electronics</a></div>|<div class=\"\"tool-wrapper\"\" style=\"\"padding-top:1.5rem\"\"><a href=\"\"../../electronics.html\"\" class=\"\"back-button\"\">← Electronics</a></div>|g' \"$f\")",
+      "Bash(for f in engineering/eng-*/index.html)",
+      "Bash(do sed -i 's|<div class=\"\"breadcrumb\"\"><a href=\"\"\\\\.\\\\./\\\\.\\\\./engineering\\\\.html\"\">&larr; Engineering</a></div>|<div class=\"\"tool-wrapper\"\" style=\"\"padding-top:1.5rem\"\"><a href=\"\"../../engineering.html\"\" class=\"\"back-button\"\">← Engineering</a></div>|g' \"$f\")"
     ]
   }
 }

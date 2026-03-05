@@ -199,13 +199,50 @@
             margin-bottom: 1rem;
         }
         
+        /* Category navbar */
+        .category-navbar {
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 2px solid var(--primary-orange);
+            position: sticky;
+            top: 70px;
+            z-index: 90;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .category-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.5rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-orange) rgba(0,0,0,0.3);
+        }
+        .category-container::-webkit-scrollbar { height: 6px; }
+        .category-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        .category-container::-webkit-scrollbar-thumb { background: var(--primary-orange); border-radius: 3px; }
+        .category-link {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 0.15rem; padding: 0.4rem 1rem; min-width: 90px;
+            background: var(--card-bg); border: 2px solid var(--border-gray);
+            border-radius: 8px; color: var(--light-gray);
+            text-decoration: none; white-space: nowrap;
+            transition: all 0.3s ease; font-weight: 500;
+        }
+        .category-link:hover { border-color: var(--primary-orange); background: rgba(255,107,53,0.1); transform: translateY(-2px); }
+        .category-link.active { border-color: var(--primary-orange); background: var(--primary-orange); color: var(--dark-bg); box-shadow: 0 4px 10px rgba(255,107,53,0.3); }
+        .category-icon { font-size: 1.1rem; line-height: 1; }
+        .category-text { font-size: 0.75rem; line-height: 1; }
+
         /* Responsive */
         @media (max-width: 768px) {
             .nav-links {
                 gap: 1rem;
                 font-size: 0.9rem;
             }
-            
+
             .projects-grid {
                 grid-template-columns: 1fr;
             }
@@ -234,31 +271,26 @@
         <p>Miscellaneous builds and experiments</p>
     </header>
 
-    <!-- Projects Grid -->
-    <section class="projects-grid">
-        <a href="other/other-001/index.html" class="project-card">
-            <div class="project-image">🪵</div>
-            <div class="project-content">
-                <h2 class="project-title">Sheet Cutting Plan Optimizer</h2>
-                <div class="project-meta">
-                    <span>🔧 Web Tool</span>
-                    <span>&#127758; Browser-based</span>
-                </div>
-                <p class="project-description">Browser-based tool for optimizing 2D cutting plans for sheet material — plywood, MDF, sheet metal. Minimize waste with shelf-packing algorithm and optional piece rotation.</p>
-            </div>
-        </a>
-        <a href="other/other-002/index.html" class="project-card">
-            <div class="project-image">✂️</div>
-            <div class="project-content">
-                <h2 class="project-title">Cutting Plan Optimizer</h2>
-                <div class="project-meta">
-                    <span>🔧 Web Tool</span>
-                    <span>&#127758; Browser-based</span>
-                </div>
-                <p class="project-description">Browser-based tool for optimizing 1D cutting plans for bars, tubes, and profiles. Minimize waste using the First Fit Decreasing algorithm.</p>
-            </div>
-        </a>
-    </section>
+    <!-- Category Navigation -->
+    <nav class="category-navbar">
+        <div class="category-container">
+            <a href="#all" class="category-link active" data-category="all">
+                <span class="category-icon">📋</span>
+                <span class="category-text">All</span>
+            </a>
+            <a href="#tool" class="category-link" data-category="tool">
+                <span class="category-icon">🔧</span>
+                <span class="category-text">Web Tools</span>
+            </a>
+            <a href="#project" class="category-link" data-category="project">
+                <span class="category-icon">🛠️</span>
+                <span class="category-text">Projects</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Projects Grid (filled dynamically) -->
+    <section class="projects-grid"></section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -270,5 +302,6 @@
         </p>
     </footer>
     <script src="js/nav.js"></script>
+    <script src="js/other.js"></script>
 </body>
 </html>

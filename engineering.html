@@ -116,6 +116,50 @@
         .project-meta { display: flex; gap: 1rem; margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-gray); flex-wrap: wrap; }
         .project-description { color: var(--text-gray); font-size: 0.95rem; line-height: 1.6; }
 
+        /* Category navbar */
+        .category-navbar {
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 2px solid var(--primary-orange);
+            position: sticky;
+            top: 70px;
+            z-index: 90;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .category-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.5rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-orange) rgba(0,0,0,0.3);
+        }
+        .category-container::-webkit-scrollbar { height: 6px; }
+        .category-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        .category-container::-webkit-scrollbar-thumb { background: var(--primary-orange); border-radius: 3px; }
+        .category-link {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 0.15rem; padding: 0.4rem 1rem; min-width: 90px;
+            background: var(--card-bg); border: 2px solid var(--border-gray);
+            border-radius: 8px; color: var(--light-gray);
+            text-decoration: none; white-space: nowrap;
+            transition: all 0.3s ease; font-weight: 500;
+        }
+        .category-link:hover { border-color: var(--primary-orange); background: rgba(255,107,53,0.1); transform: translateY(-2px); }
+        .category-link.active { border-color: var(--primary-orange); background: var(--primary-orange); color: var(--dark-bg); box-shadow: 0 4px 10px rgba(255,107,53,0.3); }
+        .category-icon { font-size: 1.1rem; line-height: 1; }
+        .category-text { font-size: 0.75rem; line-height: 1; }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center; padding: 4rem 2rem;
+            color: var(--text-gray); grid-column: 1 / -1;
+        }
+        .empty-state h2 { color: var(--primary-orange); font-size: 2rem; margin-bottom: 1rem; }
+
         @media (max-width: 768px) {
             .nav-links { gap: 1rem; font-size: 0.9rem; }
             .projects-grid { grid-template-columns: 1fr; }
@@ -144,44 +188,26 @@
         <p>Browser-based calculators and reference tables for mechanical engineers</p>
     </header>
 
-    <!-- Projects Grid -->
-    <section class="projects-grid">
-        <a href="engineering/eng-001/index.html" class="project-card">
-            <div class="project-image">⚙️</div>
-            <div class="project-content">
-                <h2 class="project-title">ISO 286-1 Tolerance &amp; Fits Calculator</h2>
-                <div class="project-meta">
-                    <span>🔧 Web Tool</span>
-                    <span>🌐 Browser-based</span>
-                </div>
-                <p class="project-description">Calculate limit deviations and fit types according to ISO 286-1. Enter nominal diameter, select hole and shaft tolerances — get ES, EI, es, ei values, fit type (clearance / transition / interference), and a visual tolerance zone diagram.</p>
-            </div>
-        </a>
+    <!-- Category Navigation -->
+    <nav class="category-navbar">
+        <div class="category-container">
+            <a href="#all" class="category-link active" data-category="all">
+                <span class="category-icon">📋</span>
+                <span class="category-text">All</span>
+            </a>
+            <a href="#calculator" class="category-link" data-category="calculator">
+                <span class="category-icon">🔧</span>
+                <span class="category-text">Calculator</span>
+            </a>
+            <a href="#reference" class="category-link" data-category="reference">
+                <span class="category-icon">📊</span>
+                <span class="category-text">Reference</span>
+            </a>
+        </div>
+    </nav>
 
-        <a href="engineering/eng-002/index.html" class="project-card">
-            <div class="project-image">🔩</div>
-            <div class="project-content">
-                <h2 class="project-title">Bolt Tightening Torques (M3–M24)</h2>
-                <div class="project-meta">
-                    <span>🔧 Web Tool</span>
-                    <span>🌐 Browser-based</span>
-                </div>
-                <p class="project-description">Interactive tightening torque table for metric bolts M3–M24. Select strength class (4.6–12.9) and friction condition — get preload force (kN) and required torque (Nm) per ISO 898-1 / VDI 2230.</p>
-            </div>
-        </a>
-
-        <a href="engineering/eng-003/index.html" class="project-card">
-            <div class="project-image">📐</div>
-            <div class="project-content">
-                <h2 class="project-title">ISO Metric Thread Standards (M1–M68)</h2>
-                <div class="project-meta">
-                    <span>📋 Reference Table</span>
-                    <span>🌐 Browser-based</span>
-                </div>
-                <p class="project-description">Complete ISO metric thread dimensions per DIN 13 / ISO 261. Coarse and fine pitches, pitch diameter (d₂), minor diameter (d₁), stress area (Aₛ), hex and Allen wrench sizes. Filterable and searchable.</p>
-            </div>
-        </a>
-    </section>
+    <!-- Projects Grid (filled dynamically) -->
+    <section class="projects-grid"></section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -193,5 +219,6 @@
         </p>
     </footer>
     <script src="js/nav.js"></script>
+    <script src="js/engineering.js"></script>
 </body>
 </html>

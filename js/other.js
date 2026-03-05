@@ -1,37 +1,31 @@
 // Other Projects Page JavaScript
 let allProjects = [];
 
-// Load projects on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadProjects();
+    initCategoryNavigation();
 });
 
 async function loadProjects() {
     try {
-        // Load project list
         const response = await fetch('data/other-projects.json');
         const data = await response.json();
         const projectIds = data.projects;
-        
-        // Load metadata for each project
+
         const projectPromises = projectIds.map(async (id) => {
             try {
                 const metaResponse = await fetch(`other/${id}/metadata.json`);
                 const metadata = await metaResponse.json();
-                return {
-                    id: id,
-                    ...metadata
-                };
+                return { id, ...metadata };
             } catch (error) {
                 console.error(`Error loading metadata for ${id}:`, error);
                 return null;
             }
         });
-        
+
         allProjects = (await Promise.all(projectPromises)).filter(p => p !== null);
-        
         displayProjects(allProjects);
-        
+
     } catch (error) {
         console.error('Error loading projects:', error);
         showErrorMessage('Failed to load projects. Please try again later.');
@@ -40,79 +34,55 @@ async function loadProjects() {
 
 function displayProjects(projects) {
     const grid = document.querySelector('.projects-grid');
-    
-    if (!grid) {
-        console.error('Projects grid not found');
-        return;
-    }
-    
-    // Clear grid
+    if (!grid) return;
     grid.innerHTML = '';
-    
+
     if (projects.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-state">
-                <h2>No projects yet</h2>
-                <p>Check back soon for new other projects!</p>
-            </div>
-        `;
+        grid.innerHTML = '<div class="empty-state"><h2>No projects yet</h2><p>Check back soon!</p></div>';
         return;
     }
-    
-    // Generate project cards
-    projects.forEach(project => {
-        const card = createProjectCard(project);
-        grid.appendChild(card);
-    });
+
+    projects.forEach(project => grid.appendChild(createProjectCard(project)));
 }
 
 function createProjectCard(project) {
     const card = document.createElement('a');
     card.href = `other/${project.id}/`;
     card.className = 'project-card';
-    
-    // Difficulty class
-    let difficultyClass = 'difficulty-beginner';
-    if (project.difficulty === 'intermediate') {
-        difficultyClass = 'difficulty-intermediate';
-    } else if (project.difficulty === 'advanced') {
-        difficultyClass = 'difficulty-advanced';
-    }
-    
+
+    const icon = project.icon || '📦';
+    const typeLabel = project.type === 'tool' ? 'Web Tool' : 'Project';
+    const typeIcon = project.type === 'tool' ? '🔧' : '📦';
+
     card.innerHTML = `
-        <div class="project-image">
-            ${project.thumbnail ? 
-                `<img src="other/${project.id}/${project.thumbnail}" alt="${project.title}">` :
-                '📦'
-            }
-        </div>
+        <div class="project-image">${icon}</div>
         <div class="project-content">
             <h3 class="project-title">${project.title}</h3>
             <div class="project-meta">
-                <span class="${difficultyClass}">⭐ ${capitalizeFirst(project.difficulty)}</span>
-                <span>⏱️ ${project.time}</span>
+                <span>${typeIcon} ${typeLabel}</span>
+                <span>🌐 Browser-based</span>
             </div>
-            <p class="project-description">
-                ${project.description}
-            </p>
+            <p class="project-description">${project.description}</p>
         </div>
     `;
-    
+
     return card;
 }
 
-function capitalizeFirst(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+function initCategoryNavigation() {
+    const links = document.querySelectorAll('.category-link');
+    links.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            links.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            const cat = this.getAttribute('data-category');
+            displayProjects(cat === 'all' ? allProjects : allProjects.filter(p => p.type === cat));
+        });
+    });
 }
 
 function showErrorMessage(message) {
     const grid = document.querySelector('.projects-grid');
-    if (grid) {
-        grid.innerHTML = `
-            <div class="empty-state">
-                <h2>Error</h2>
-                <p>${message}</p>
-            </div>
-        `;
-    }
+    if (grid) grid.innerHTML = `<div class="empty-state"><h2>Error</h2><p>${message}</p></div>`;
 }

@@ -15,6 +15,23 @@
 }
 .breadcrumb a:hover { color: var(--primary-orange); }
 
+/* Back Button */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--card-bg);
+    color: var(--light-gray);
+    border: 2px solid var(--border-gray);
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+.back-button:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+
 /* Reset */
 * {
     margin: 0;

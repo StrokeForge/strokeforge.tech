@@ -1,6 +1,7 @@
 {
   "title": "Sheet Cutting Plan Optimizer",
   "type": "tool",
+  "icon": "🪵",
   "description": "Browser-based tool for optimizing 2D cutting plans for sheet material — plywood, MDF, sheet metal. Minimize waste with shelf-packing algorithm and optional piece rotation.",
   "thumbnail": "thumb.jpg"
 }
