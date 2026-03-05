@@ -57,7 +57,6 @@ function createCard(project) {
 
     const icon = project.icon || '⚡';
     const catLabel = categoryLabel(project.category);
-    const diff = project.difficulty || 'beginner';
 
     card.innerHTML = `
         <div class="project-image">${icon}</div>
@@ -65,7 +64,7 @@ function createCard(project) {
             <h3 class="project-title">${project.title}</h3>
             <div class="project-meta">
                 <span>⚡ ${catLabel}</span>
-                <span class="difficulty-${diff}">● ${capitalize(diff)}</span>
+                <span>🌐 Browser-based</span>
             </div>
             <p class="project-description">${project.description}</p>
         </div>
