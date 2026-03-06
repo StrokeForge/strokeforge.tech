@@ -1,0 +1,8 @@
+{
+  "id": "elec-019",
+  "title": "Voltage Divider for ADC Input",
+  "category": "basic",
+  "description": "Calculate voltage divider resistors for safe ADC input. Platform presets for Arduino, ESP32, ESP8266, Raspberry Pi Pico. Auto-calculates R1/R2, shows ADC count, resolution, divider current, and utilisation. Includes warnings for over-voltage conditions.",
+  "icon": "📊",
+  "difficulty": "beginner"
+}

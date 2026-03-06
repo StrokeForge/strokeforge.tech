@@ -1,0 +1,8 @@
+{
+  "id": "elec-013",
+  "title": "RC Time Constant Calculator",
+  "category": "basic",
+  "description": "Calculate RC circuit time constant τ = R × C. Three modes: R+C → τ, R+τ → C, C+τ → R. Charge and discharge tables with voltage at each multiple of τ, plus an interactive voltage vs time chart.",
+  "icon": "⏱️",
+  "difficulty": "beginner"
+}

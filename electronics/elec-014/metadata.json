@@ -1,0 +1,8 @@
+{
+  "id": "elec-014",
+  "title": "RC Filter Calculator — Low-Pass & High-Pass",
+  "category": "basic",
+  "description": "Calculate RC low-pass and high-pass filter cutoff frequency fc = 1/(2πRC). Get attenuation at any frequency, attenuation table across decades, Bode plot, and circuit diagram.",
+  "icon": "📉",
+  "difficulty": "beginner"
+}

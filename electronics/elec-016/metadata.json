@@ -1,0 +1,8 @@
+{
+  "id": "elec-016",
+  "title": "PWM Average Voltage Calculator",
+  "category": "basic",
+  "description": "Calculate average output voltage from PWM duty cycle, or find the duty cycle needed for a target voltage. Shows tH, tL, period, analogWrite value, RC smoothing filter recommendation, and PWM waveform diagram.",
+  "icon": "〰️",
+  "difficulty": "beginner"
+}

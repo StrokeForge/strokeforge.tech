@@ -1,0 +1,8 @@
+{
+  "id": "elec-012",
+  "title": "Fuse Selection Calculator",
+  "category": "power",
+  "description": "Select the right fuse for your circuit. Enter load current and application type (resistive, LED, motor, PSU) to get the recommended rating and type (fast/slow-blow). Includes IEC 60127 standard ratings table and housing reference.",
+  "icon": "🔧",
+  "difficulty": "beginner"
+}

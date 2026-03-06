@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWM Average Voltage Calculator | StrokeForge Electronics</title>
+    <meta name="description" content="Calculate average voltage from PWM duty cycle. Two modes: duty cycle → voltage, or target voltage → required duty cycle. Includes waveform, RC smoothing filter recommendation, and common use cases.">
+    <meta name="keywords" content="PWM calculator, average voltage, duty cycle, PWM to voltage, RC filter PWM, PWM smoothing, analogWrite">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-016/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 860px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .mode-toggle { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem; }
+        .mode-btn { flex: 1; padding: 0.6rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+        .mode-btn.active { background: var(--primary-orange); color: #000; }
+        .mode-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .hint { font-size: 0.72rem; color: var(--text-gray); }
+
+        /* Slider */
+        .slider-wrap { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
+        input[type=range] { flex: 1; accent-color: var(--primary-orange); height: 4px; }
+        .slider-val { font-size: 0.82rem; color: var(--primary-orange); font-weight: 700; min-width: 3.5rem; text-align: right; }
+
+        /* Presets */
+        .presets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+        .preset-btn { background: none; border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.28rem 0.65rem; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; }
+        .preset-btn:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+
+        /* Results */
+        .res-hero { background: var(--darker-bg); border: 2px solid var(--primary-orange); border-radius: 12px; padding: 1.25rem 1.5rem; text-align: center; margin-bottom: 1rem; }
+        .res-hero .lbl { font-size: 0.82rem; color: var(--text-gray); }
+        .res-hero .val { font-size: 2.8rem; font-weight: 900; color: var(--primary-orange); line-height: 1.1; }
+        .res-hero .sub { font-size: 0.85rem; color: var(--text-gray); margin-top: 0.3rem; }
+
+        .res-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 500px) { .res-grid { grid-template-columns: 1fr 1fr; } }
+        .rg { background: var(--darker-bg); border-radius: 8px; padding: 0.75rem 1rem; }
+        .rg .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .rg .val { font-size: 1rem; font-weight: 700; color: var(--light-gray); }
+
+        /* Arduino table */
+        .ard-table { width:100%; border-collapse:collapse; font-size:0.83rem; }
+        .ard-table th { padding:0.4rem 0.75rem; text-align:left; color:var(--text-gray); border-bottom:2px solid var(--border-gray); }
+        .ard-table td { padding:0.4rem 0.75rem; border-bottom:1px solid rgba(255,255,255,0.04); color:var(--light-gray); }
+        .ard-table tr:hover td { background:rgba(255,107,53,0.05); }
+        .ard-table td:first-child { color:var(--primary-orange); font-weight:700; font-family:monospace; }
+
+        .info-box { background:rgba(96,165,250,0.08); border:1px solid #60a5fa; border-radius:8px; padding:0.75rem 1rem; font-size:0.82rem; color:#93c5fd; margin-top:0.75rem; }
+
+        .svg-wrap { overflow-x:auto; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.88rem; line-height: 1.9; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../engineering.html">Engineering</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../other.html">Other</a>
+                <a href="../../3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>〰️ PWM → Average Voltage</h1>
+        <p>Calculate average output voltage from duty cycle, or find the duty cycle needed for a target voltage.</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="../../electronics.html" class="back-button">← Back to Electronics</a>
+
+        <!-- CALCULATOR -->
+        <div class="card">
+            <h2>Calculator</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn active" id="btn-dc" onclick="setMode('dc')">Duty cycle → Voltage</button>
+                <button class="mode-btn" id="btn-v" onclick="setMode('v')">Target voltage → Duty cycle</button>
+            </div>
+
+            <!-- Presets -->
+            <div style="font-size:0.78rem;color:var(--text-gray);margin-bottom:0.4rem">Common supply voltages:</div>
+            <div class="presets" id="vcc-presets"></div>
+
+            <div class="input-grid">
+                <div class="field">
+                    <label>Supply voltage (Vcc)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="vcc" placeholder="5" min="0" step="any" oninput="calculate()">
+                        <span style="background:var(--darker-bg);border:1px solid var(--border-gray);color:var(--text-gray);border-radius:7px;padding:0.5rem 0.6rem;font-size:0.82rem">V</span>
+                    </div>
+                </div>
+
+                <!-- Mode: duty cycle -->
+                <div class="field" id="field-dc">
+                    <label>Duty cycle</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="dc" placeholder="50" min="0" max="100" step="any" oninput="syncSlider(); calculate()">
+                        <span style="background:var(--darker-bg);border:1px solid var(--border-gray);color:var(--text-gray);border-radius:7px;padding:0.5rem 0.6rem;font-size:0.82rem">%</span>
+                    </div>
+                    <div class="slider-wrap">
+                        <input type="range" id="dc-slider" min="0" max="100" step="1" value="50" oninput="syncFromSlider()">
+                        <span class="slider-val" id="slider-lbl">50%</span>
+                    </div>
+                </div>
+
+                <!-- Mode: target voltage -->
+                <div class="field" id="field-v" style="display:none">
+                    <label>Target voltage</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="vtarget" placeholder="2.5" min="0" step="any" oninput="calculate()">
+                        <span style="background:var(--darker-bg);border:1px solid var(--border-gray);color:var(--text-gray);border-radius:7px;padding:0.5rem 0.6rem;font-size:0.82rem">V</span>
+                    </div>
+                    <div class="hint">Must be ≤ Vcc</div>
+                </div>
+
+                <div class="field">
+                    <label>PWM frequency (optional)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="freq" placeholder="1000" min="0" step="any" oninput="calculate()">
+                        <select class="sel" id="frequnit" onchange="calculate()">
+                            <option value="1">Hz</option>
+                            <option value="1e3" selected>kHz</option>
+                        </select>
+                    </div>
+                    <div class="hint">For period / RC filter calc</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card" id="results-card" style="display:none">
+            <h2>Results</h2>
+            <div class="res-hero">
+                <div class="lbl" id="res-main-lbl">Average output voltage</div>
+                <div class="val" id="res-main">—</div>
+                <div class="sub" id="res-main-sub">—</div>
+            </div>
+            <div class="res-grid" id="res-grid"></div>
+            <div id="rc-suggestion"></div>
+        </div>
+
+        <!-- WAVEFORM -->
+        <div class="card" id="wave-card" style="display:none">
+            <h2>PWM waveform</h2>
+            <div class="svg-wrap">
+                <svg id="wave-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+        </div>
+
+        <!-- ARDUINO TABLE -->
+        <div class="card">
+            <h2>Arduino analogWrite() reference</h2>
+            <p style="font-size:0.82rem;color:var(--text-gray);margin-bottom:1rem">
+                Arduino's <code style="color:#fb923c">analogWrite(pin, value)</code> takes a value 0–255 (8-bit).
+                The table below shows the mapping to duty cycle and average voltage for common Vcc values.
+            </p>
+            <div style="overflow-x:auto">
+            <table class="ard-table">
+                <thead><tr>
+                    <th>analogWrite value</th>
+                    <th>Duty cycle</th>
+                    <th>Avg @ 5 V</th>
+                    <th>Avg @ 3.3 V</th>
+                    <th>Common use</th>
+                </tr></thead>
+                <tbody id="ard-tbody"></tbody>
+            </table>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>PWM basics</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Formula</h3>
+                    <p class="mono">
+                        Vavg = Vcc × (DC / 100)<br>
+                        DC   = (Vavg / Vcc) × 100<br><br>
+                        tH = T × DC / 100<br>
+                        tL = T × (1 − DC/100)<br>
+                        T  = 1 / f
+                    </p>
+                </div>
+                <div class="info-block">
+                    <h3>Smoothing PWM to DC</h3>
+                    <ul>
+                        <li>Use an RC low-pass filter with fc ≪ PWM frequency</li>
+                        <li>Rule of thumb: fc = PWM freq / 10 to 100</li>
+                        <li>Higher ratio → less ripple, slower response</li>
+                        <li>For high current output, add an op-amp buffer after the RC filter</li>
+                        <li>For DAC replacement: use R = 10 kΩ, calculate C from fc</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Common applications</h3>
+                    <ul>
+                        <li><strong>LED dimming</strong> — 100 Hz+ is flicker-free to the eye</li>
+                        <li><strong>Motor speed control</strong> — 1–20 kHz typical (above audible range)</li>
+                        <li><strong>Servo control</strong> — 50 Hz, 1–2 ms pulse width</li>
+                        <li><strong>DAC substitute</strong> — RC filter + buffer for analog output</li>
+                        <li><strong>Voltage regulation</strong> — buck/boost converter core principle</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Arduino PWM pins</h3>
+                    <ul>
+                        <li><strong>Uno / Nano:</strong> pins 3, 5, 6, 9, 10, 11 — 490 Hz (5, 6: 980 Hz)</li>
+                        <li><strong>Mega:</strong> pins 2–13, 44–46 — 490 Hz</li>
+                        <li><strong>ESP32:</strong> any GPIO, configurable freq + resolution</li>
+                        <li><strong>Resolution:</strong> 8-bit (0–255) on AVR, up to 16-bit on ESP32</li>
+                        <li>Use <code style="color:#fb923c">analogWrite(pin, 0)</code> for 0% and <code style="color:#fb923c">analogWrite(pin, 255)</code> for 100%</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Part of <a href="../../electronics.html">StrokeForge Electronics</a> — free tools for makers</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    let mode = 'dc';
+
+    function setMode(m) {
+        mode = m;
+        ['dc','v'].forEach(x => {
+            document.getElementById('btn-'+x).classList.toggle('active', x===m);
+            document.getElementById('field-'+x).style.display = x===m?'':'none';
+        });
+        calculate();
+    }
+
+    function g(id) { const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+    function gu(id) { return parseFloat(document.getElementById(id).value); }
+
+    // Slider sync
+    function syncSlider() {
+        const v = g('dc');
+        if (v !== null) {
+            document.getElementById('dc-slider').value = Math.min(100, Math.max(0, v));
+            document.getElementById('slider-lbl').textContent = v.toFixed(1) + '%';
+        }
+    }
+    function syncFromSlider() {
+        const v = document.getElementById('dc-slider').value;
+        document.getElementById('dc').value = v;
+        document.getElementById('slider-lbl').textContent = parseFloat(v).toFixed(1) + '%';
+        calculate();
+    }
+
+    function fmtTime(s) {
+        if (!s || s<=0) return '—';
+        if (s>=1)    return s.toPrecision(4).replace(/\.?0+$/,'')+' s';
+        if (s>=1e-3) return (s*1e3).toPrecision(4).replace(/\.?0+$/,'')+' ms';
+        if (s>=1e-6) return (s*1e6).toPrecision(4).replace(/\.?0+$/,'')+' µs';
+        return (s*1e9).toPrecision(4).replace(/\.?0+$/,'')+' ns';
+    }
+    function fmtFreq(f) {
+        if (f>=1e6) return (f/1e6).toPrecision(4).replace(/\.?0+$/,'')+' MHz';
+        if (f>=1e3) return (f/1e3).toPrecision(4).replace(/\.?0+$/,'')+' kHz';
+        return f.toPrecision(4).replace(/\.?0+$/,'')+' Hz';
+    }
+
+    function calculate() {
+        const vcc = g('vcc');
+        const fv  = g('freq'); const fu = gu('frequnit');
+        const rc  = document.getElementById('results-card');
+        const wc  = document.getElementById('wave-card');
+
+        let dc = null, vavg = null;
+
+        if (mode === 'dc') {
+            dc = g('dc');
+            if (!vcc || dc === null) { rc.style.display='none'; wc.style.display='none'; return; }
+            dc = Math.min(100, Math.max(0, dc));
+            vavg = vcc * dc / 100;
+            document.getElementById('res-main-lbl').textContent = 'Average output voltage';
+            document.getElementById('res-main').textContent = vavg.toFixed(3) + ' V';
+            document.getElementById('res-main-sub').textContent = `${dc.toFixed(2)}% of ${vcc} V`;
+        } else {
+            const vt = g('vtarget');
+            if (!vcc || !vt) { rc.style.display='none'; wc.style.display='none'; return; }
+            if (vt > vcc) { rc.style.display='none'; wc.style.display='none'; return; }
+            dc = (vt / vcc) * 100;
+            vavg = vt;
+            document.getElementById('res-main-lbl').textContent = 'Required duty cycle';
+            document.getElementById('res-main').textContent = dc.toFixed(2) + '%';
+            document.getElementById('res-main-sub').textContent = `For ${vt} V from ${vcc} V supply`;
+        }
+
+        // Arduino value
+        const ardVal = Math.round(dc / 100 * 255);
+        const freq   = fv ? fv * fu : null;
+        const T      = freq ? 1 / freq : null;
+        const tH     = T ? T * dc / 100 : null;
+        const tL     = T ? T * (1 - dc/100) : null;
+
+        document.getElementById('res-grid').innerHTML = `
+            <div class="rg"><div class="lbl">Duty cycle</div><div class="val">${dc.toFixed(2)}%</div></div>
+            <div class="rg"><div class="lbl">Average voltage</div><div class="val" style="color:#4ade80">${vavg.toFixed(3)} V</div></div>
+            <div class="rg"><div class="lbl">analogWrite value</div><div class="val" style="color:#60a5fa">${ardVal} / 255</div></div>
+            ${T ? `<div class="rg"><div class="lbl">Period (T)</div><div class="val">${fmtTime(T)}</div></div>` : ''}
+            ${tH ? `<div class="rg"><div class="lbl">tH (HIGH time)</div><div class="val">${fmtTime(tH)}</div></div>` : ''}
+            ${tL ? `<div class="rg"><div class="lbl">tL (LOW time)</div><div class="val">${fmtTime(tL)}</div></div>` : ''}
+        `;
+
+        // RC smoothing suggestion
+        if (freq) {
+            const fc10  = freq / 10;
+            const fc100 = freq / 100;
+            const R = 10000; // 10 kΩ
+            const C10  = 1 / (2 * Math.PI * fc10 * R);
+            const C100 = 1 / (2 * Math.PI * fc100 * R);
+            function fmtC(c) {
+                if(c>=1e-3) return (c*1e3).toPrecision(3).replace(/\.?0+$/,'')+' mF';
+                if(c>=1e-6) return (c*1e6).toPrecision(3).replace(/\.?0+$/,'')+' µF';
+                if(c>=1e-9) return (c*1e9).toPrecision(3).replace(/\.?0+$/,'')+' nF';
+                return (c*1e12).toPrecision(3).replace(/\.?0+$/,'')+' pF';
+            }
+            document.getElementById('rc-suggestion').innerHTML = `
+                <div class="info-box">
+                    <strong>RC smoothing filter (R = 10 kΩ):</strong><br>
+                    Light filtering (fc = f/10 = ${fmtFreq(fc10)}): C ≈ ${fmtC(C10)} — some ripple, faster response<br>
+                    Heavy filtering (fc = f/100 = ${fmtFreq(fc100)}): C ≈ ${fmtC(C100)} — low ripple, slower response
+                </div>`;
+        } else {
+            document.getElementById('rc-suggestion').innerHTML = '';
+        }
+
+        rc.style.display='';
+        drawWave(dc, vcc, T);
+        wc.style.display='';
+    }
+
+    // ── Waveform ──────────────────────────────────────────────────────────
+    function drawWave(dc, vcc, T) {
+        const svg = document.getElementById('wave-svg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const ns = 'http://www.w3.org/2000/svg';
+        const W=760, H=170, PL=55, PR=20, PT=25, PB=35;
+        const CW=W-PL-PR, CH=H-PT-PB;
+        svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+        svg.setAttribute('width','100%');
+        svg.setAttribute('style','max-width:760px');
+
+        function el(tag,attrs,text){const e=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;return e;}
+        function line(x1,y1,x2,y2,col,w,dash){const a={x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'square'};if(dash)a['stroke-dasharray']=dash;return el('line',a);}
+        function txt(x,y,t,col,sz,anc){return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);}
+
+        const cycles = 3;
+        const yHigh = PT, yLow = PT+CH;
+        const yAvg  = yLow - (dc/100)*CH;
+        const dcFrac = dc/100;
+
+        // Axes
+        svg.appendChild(line(PL,PT-5,PL,yLow+5,'#4b5563',1));
+        svg.appendChild(line(PL,yLow,PL+CW,yLow,'#4b5563',1));
+
+        // Y labels
+        svg.appendChild(txt(PL-8,yHigh,vcc+'V','#facc15',9,'end'));
+        svg.appendChild(txt(PL-8,yLow,'0 V','#6b7280',9,'end'));
+
+        // Waveform (3 cycles)
+        const pts=[];
+        for(let c=0;c<cycles;c++){
+            const x0 = PL + (c/cycles)*CW;
+            const xH = PL + (c/cycles + dcFrac/cycles)*CW;
+            const x1 = PL + ((c+1)/cycles)*CW;
+            if(c===0) pts.push(`M${x0},${yLow}`);
+            pts.push(`L${x0},${yHigh} L${xH},${yHigh} L${xH},${yLow} L${x1},${yLow}`);
+        }
+        svg.appendChild(el('path',{d:pts.join(' '),fill:'none',stroke:'#fb923c','stroke-width':2.5,'stroke-linecap':'square'}));
+
+        // Average line
+        svg.appendChild(line(PL,yAvg,PL+CW,yAvg,'#4ade80',1.5,'6,3'));
+        const vavg = (vcc*dc/100).toFixed(2);
+        svg.appendChild(txt(PL+CW+3,yAvg,`${vavg}V avg`,'#4ade80',9,'start'));
+
+        // tH / tL labels on first cycle
+        const x0=PL, xH=PL+(dcFrac/cycles)*CW, x1=PL+(1/cycles)*CW;
+        const yMid=(yHigh+yLow)/2;
+        if(dc>5){
+            svg.appendChild(line(x0+2,yHigh+6,xH-2,yHigh+6,'#4ade80',1,'3,2'));
+            svg.appendChild(txt((x0+xH)/2,yHigh+16,'tH','#4ade80',8,'middle'));
+        }
+        if(dc<95){
+            svg.appendChild(line(xH+2,yHigh+6,x1-2,yHigh+6,'#60a5fa',1,'3,2'));
+            svg.appendChild(txt((xH+x1)/2,yHigh+16,'tL','#60a5fa',8,'middle'));
+        }
+
+        // Period bracket
+        svg.appendChild(line(x0,yLow+10,x1,yLow+10,'#6b7280',1));
+        svg.appendChild(txt((x0+x1)/2,yLow+20, T ? fmtTime(T)+' (T)' : 'T (1 period)','#6b7280',8,'middle'));
+
+        function fmtTime(s) {
+            if(!s||s<=0) return '—';
+            if(s>=1)    return s.toPrecision(3)+'s';
+            if(s>=1e-3) return (s*1e3).toPrecision(3)+'ms';
+            if(s>=1e-6) return (s*1e6).toPrecision(3)+'µs';
+            return (s*1e9).toPrecision(3)+'ns';
+        }
+    }
+
+    // ── Arduino table ─────────────────────────────────────────────────────
+    (function buildArdTable() {
+        const rows = [
+            {val:0,   use:'OFF (0%)'},
+            {val:26,  use:'~10%'},
+            {val:51,  use:'~20%'},
+            {val:64,  use:'25%'},
+            {val:128, use:'50% (half)'},
+            {val:191, use:'75%'},
+            {val:204, use:'80%'},
+            {val:230, use:'90%'},
+            {val:255, use:'100% (full ON)'},
+        ];
+        const tbody = document.getElementById('ard-tbody');
+        rows.forEach(r => {
+            const dc = r.val/255*100;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${r.val}</td>
+                <td>${dc.toFixed(1)}%</td>
+                <td>${(5*r.val/255).toFixed(2)} V</td>
+                <td>${(3.3*r.val/255).toFixed(2)} V</td>
+                <td style="color:var(--text-gray);font-size:0.78rem">${r.use}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    })();
+
+    // ── Presets ───────────────────────────────────────────────────────────
+    (function buildPresets() {
+        const presets = document.getElementById('vcc-presets');
+        [3.3, 5, 9, 12, 24].forEach(v => {
+            const btn = document.createElement('button');
+            btn.className = 'preset-btn';
+            btn.textContent = v + ' V';
+            btn.onclick = () => {
+                document.getElementById('vcc').value = v;
+                calculate();
+            };
+            presets.appendChild(btn);
+        });
+    })();
+
+    // ── Init ──────────────────────────────────────────────────────────────
+    calculate();
+    </script>
+</body>
+</html>

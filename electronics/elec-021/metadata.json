@@ -1,0 +1,8 @@
+{
+  "id": "elec-021",
+  "title": "Arduino & ESP32 Pinouts",
+  "category": "reference",
+  "description": "Complete pin function reference for Arduino Uno, Nano, Mega, ESP32, and ESP8266. Filterable by PWM, ADC, I2C, SPI, UART, and interrupt functions. Includes boot-sensitive and input-only pin warnings.",
+  "icon": "🔌",
+  "difficulty": "beginner"
+}

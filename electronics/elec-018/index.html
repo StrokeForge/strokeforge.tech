@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pull-up / Pull-down Resistor Calculator | StrokeForge Electronics</title>
+    <meta name="description" content="Calculate pull-up and pull-down resistors for buttons, open-drain outputs, and I/O pins. Covers 3.3V and 5V systems, current drain, and response time.">
+    <meta name="keywords" content="pull-up resistor, pull-down resistor, pull-up calculator, button debounce, open drain, I2C pull-up, Arduino pull-up">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-018/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 860px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .mode-toggle { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem; }
+        .mode-btn { flex: 1; padding: 0.6rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+        .mode-btn.active { background: var(--primary-orange); color: #000; }
+        .mode-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
+        .hint { font-size: 0.72rem; color: var(--text-gray); }
+
+        /* Presets */
+        .presets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+        .preset-btn { background: none; border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.28rem 0.65rem; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; }
+        .preset-btn:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+
+        .res-main { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        @media (max-width: 480px) { .res-main { grid-template-columns: 1fr; } }
+        .res-block { background: var(--darker-bg); border-radius: 10px; padding: 1.1rem 1.3rem; }
+        .res-block .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .res-block .val { font-size: 1.5rem; font-weight: 800; color: var(--primary-orange); }
+        .res-block .sub { font-size: 0.8rem; color: var(--text-gray); margin-top: 0.25rem; }
+        .res-block .e24 { font-size: 0.85rem; color: #60a5fa; margin-top: 0.3rem; }
+
+        .res-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 480px) { .res-grid { grid-template-columns: 1fr 1fr; } }
+        .rg { background: var(--darker-bg); border-radius: 8px; padding: 0.75rem 1rem; }
+        .rg .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .rg .val { font-size: 1rem; font-weight: 700; color: var(--light-gray); }
+        .rg .val.ok   { color: #4ade80; }
+        .rg .val.warn { color: #fb923c; }
+
+        .warn-box { background: rgba(251,146,60,0.1); border: 1px solid #fb923c; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #fb923c; margin-top: 0.75rem; }
+        .info-box  { background: rgba(96,165,250,0.08); border: 1px solid #60a5fa; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #93c5fd; margin-top: 0.75rem; }
+
+        .svg-wrap { overflow-x: auto; text-align: center; }
+
+        .ref-table { width:100%; border-collapse:collapse; font-size:0.83rem; }
+        .ref-table th { padding:0.4rem 0.75rem; text-align:left; color:var(--text-gray); border-bottom:2px solid var(--border-gray); }
+        .ref-table td { padding:0.4rem 0.75rem; border-bottom:1px solid rgba(255,255,255,0.04); color:var(--light-gray); }
+        .ref-table tr:hover td { background:rgba(255,107,53,0.05); }
+        .ref-table td:first-child { color:var(--primary-orange); font-weight:700; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.88rem; line-height: 1.9; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../engineering.html">Engineering</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../other.html">Other</a>
+                <a href="../../3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>🔼 Pull-up / Pull-down Resistor</h1>
+        <p>Calculate the right resistor value for buttons, open-drain signals, and GPIO inputs.</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="../../electronics.html" class="back-button">← Back to Electronics</a>
+
+        <!-- CALCULATOR -->
+        <div class="card">
+            <h2>Calculator</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn active" id="btn-pu" onclick="setMode('pu')">Pull-up</button>
+                <button class="mode-btn" id="btn-pd" onclick="setMode('pd')">Pull-down</button>
+            </div>
+
+            <div style="font-size:0.78rem;color:var(--text-gray);margin-bottom:0.4rem">Quick presets:</div>
+            <div class="presets" id="presets"></div>
+
+            <div class="input-grid">
+                <div class="field">
+                    <label>Supply voltage (Vcc)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="vcc" placeholder="3.3" min="0" step="0.1" oninput="calculate()">
+                        <span class="unit">V</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Pull resistor (R)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="R" placeholder="10" min="0" step="any" oninput="calculate()">
+                        <select class="sel" id="Runit" onchange="calculate()">
+                            <option value="1">Ω</option>
+                            <option value="1e3" selected>kΩ</option>
+                        </select>
+                    </div>
+                    <div class="hint">Typical: 1–100 kΩ</div>
+                </div>
+                <div class="field">
+                    <label>Stray capacitance (optional)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="Cstray" placeholder="20" min="0" step="any" oninput="calculate()">
+                        <select class="sel" id="Cunit" onchange="calculate()">
+                            <option value="1e-12" selected>pF</option>
+                            <option value="1e-9">nF</option>
+                        </select>
+                    </div>
+                    <div class="hint">PCB trace + pin: ~10–50 pF typical</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card" id="results-card" style="display:none">
+            <h2>Results</h2>
+            <div class="res-main">
+                <div class="res-block">
+                    <div class="lbl" id="res-state-lbl">Idle state (button open)</div>
+                    <div class="val" id="res-idle">—</div>
+                    <div class="sub" id="res-idle-sub">—</div>
+                </div>
+                <div class="res-block">
+                    <div class="lbl">Current drain (button pressed)</div>
+                    <div class="val" id="res-cur">—</div>
+                    <div class="sub" id="res-cur-sub">—</div>
+                    <div class="e24" id="res-power">—</div>
+                </div>
+            </div>
+            <div class="res-grid">
+                <div class="rg"><div class="lbl">RC time constant (τ)</div><div class="val" id="res-tau">—</div></div>
+                <div class="rg"><div class="lbl">Rise/fall time (10–90%)</div><div class="val" id="res-risetime">—</div></div>
+                <div class="rg"><div class="lbl">Max toggle freq</div><div class="val" id="res-maxfreq">—</div></div>
+            </div>
+            <div id="res-notes"></div>
+
+            <div class="svg-wrap" style="margin-top:1.25rem">
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 160" width="440" height="160"></svg>
+            </div>
+        </div>
+
+        <!-- REFERENCE TABLE -->
+        <div class="card">
+            <h2>Typical resistor values by application</h2>
+            <table class="ref-table">
+                <thead><tr><th>Application</th><th>Recommended R</th><th>Vcc</th><th>Reason</th></tr></thead>
+                <tbody>
+                    <tr><td>Push button (5V AVR)</td><td>10 kΩ</td><td>5 V</td><td>Low current draw, fast enough for buttons</td></tr>
+                    <tr><td>Push button (3.3V MCU)</td><td>10 kΩ</td><td>3.3 V</td><td>Standard — works for ESP32, STM32, RPi</td></tr>
+                    <tr><td>I²C SDA/SCL (100 kHz)</td><td>4.7 kΩ</td><td>3.3 / 5 V</td><td>Required pull-up for open-drain I²C bus</td></tr>
+                    <tr><td>I²C SDA/SCL (400 kHz)</td><td>2.2 kΩ</td><td>3.3 V</td><td>Faster speed needs lower R for rise time</td></tr>
+                    <tr><td>I²C SDA/SCL (1 MHz)</td><td>1 kΩ</td><td>3.3 V</td><td>Fast mode+ — low R needed</td></tr>
+                    <tr><td>Open-drain output</td><td>4.7–10 kΩ</td><td>any</td><td>Balance speed vs power consumption</td></tr>
+                    <tr><td>Reset pin (MCU)</td><td>10 kΩ</td><td>5 / 3.3 V</td><td>Weak pull-up to keep MCU running</td></tr>
+                    <tr><td>UART RX idle high</td><td>10 kΩ</td><td>3.3 / 5 V</td><td>Pull to idle state if line floats</td></tr>
+                    <tr><td>Long cable / noisy env.</td><td>1–4.7 kΩ</td><td>any</td><td>Lower R reduces noise sensitivity</td></tr>
+                    <tr><td>Battery-powered device</td><td>100–470 kΩ</td><td>3.3 V</td><td>Minimise leakage current</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Pull-up vs Pull-down</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Pull-up resistor</h3>
+                    <ul>
+                        <li>Connects GPIO pin to <strong>Vcc</strong> through R</li>
+                        <li>Idle state: GPIO reads <strong>HIGH</strong></li>
+                        <li>Button/switch connects pin to <strong>GND</strong></li>
+                        <li>When pressed: GPIO reads <strong>LOW</strong></li>
+                        <li>Required for open-drain/open-collector outputs (I²C, 1-Wire)</li>
+                        <li>Most common choice — less noise pickup</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Pull-down resistor</h3>
+                    <ul>
+                        <li>Connects GPIO pin to <strong>GND</strong> through R</li>
+                        <li>Idle state: GPIO reads <strong>LOW</strong></li>
+                        <li>Button/switch connects pin to <strong>Vcc</strong></li>
+                        <li>When pressed: GPIO reads <strong>HIGH</strong></li>
+                        <li>Used when active-HIGH input logic is needed</li>
+                        <li>More susceptible to picking up 50/60 Hz hum</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Choosing resistor value</h3>
+                    <ul>
+                        <li><strong>Too high</strong> (&gt;100 kΩ) — slow edges, noise sensitive, may not drive input reliably</li>
+                        <li><strong>Too low</strong> (&lt;1 kΩ) — high current when button pressed, wasted power</li>
+                        <li><strong>10 kΩ</strong> — good default for buttons at 3.3V and 5V</li>
+                        <li>For I²C: R × C_bus must allow fast enough rise time</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Internal pull-ups</h3>
+                    <ul>
+                        <li>Arduino/ESP32/STM32 all have built-in pull-ups (~20–50 kΩ)</li>
+                        <li>Enable with: <code style="color:#fb923c">pinMode(pin, INPUT_PULLUP)</code></li>
+                        <li>Internal pull-ups are usually sufficient for buttons</li>
+                        <li>For I²C or long cables, use external pull-up resistors</li>
+                        <li>Internal values vary — check your MCU datasheet for exact value</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Part of <a href="../../electronics.html">StrokeForge Electronics</a> — free tools for makers</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    let mode = 'pu';
+
+    function setMode(m) {
+        mode = m;
+        ['pu','pd'].forEach(x => document.getElementById('btn-'+x).classList.toggle('active', x===m));
+        calculate();
+    }
+
+    function g(id) { const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+    function gu(id) { return parseFloat(document.getElementById(id).value); }
+
+    function fmtR(r) {
+        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/\.?0+$/,'') + ' MΩ';
+        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/\.?0+$/,'') + ' kΩ';
+        return r.toPrecision(3).replace(/\.?0+$/,'') + ' Ω';
+    }
+    function fmtTime(s) {
+        if (!s) return '—';
+        if (s>=1)    return s.toPrecision(3)+' s';
+        if (s>=1e-3) return (s*1e3).toPrecision(3)+' ms';
+        if (s>=1e-6) return (s*1e6).toPrecision(3)+' µs';
+        return (s*1e9).toPrecision(3)+' ns';
+    }
+    function fmtFreq(f) {
+        if (f>=1e6) return (f/1e6).toPrecision(3)+' MHz';
+        if (f>=1e3) return (f/1e3).toPrecision(3)+' kHz';
+        return f.toPrecision(3)+' Hz';
+    }
+
+    function calculate() {
+        const vcc  = g('vcc');
+        const Rv   = g('R'); const Ru = gu('Runit');
+        const Cv   = g('Cstray'); const Cu = gu('Cunit');
+        const rc   = document.getElementById('results-card');
+
+        if (!vcc || !Rv) { rc.style.display='none'; return; }
+        const R = Rv * Ru;
+        const C = (Cv && Cv > 0) ? Cv * Cu : 20e-12; // default 20pF
+
+        const I   = vcc / R; // current when pressed (mA)
+        const P   = vcc * I;
+        const tau = R * C;
+        const tr  = 2.2 * tau; // 10–90% rise time
+        const fmax = 1 / (2 * tr * 5); // conservative max freq
+
+        if (mode === 'pu') {
+            document.getElementById('res-state-lbl').textContent = 'Idle state (button open)';
+            document.getElementById('res-idle').textContent = 'HIGH (' + vcc + ' V)';
+            document.getElementById('res-idle-sub').textContent = 'Pin pulled to Vcc — logic HIGH';
+            document.getElementById('res-cur').textContent = (I*1000).toFixed(2) + ' mA';
+            document.getElementById('res-cur-sub').textContent = 'When button pressed (short to GND)';
+        } else {
+            document.getElementById('res-state-lbl').textContent = 'Idle state (button open)';
+            document.getElementById('res-idle').textContent = 'LOW (0 V)';
+            document.getElementById('res-idle-sub').textContent = 'Pin pulled to GND — logic LOW';
+            document.getElementById('res-cur').textContent = (I*1000).toFixed(2) + ' mA';
+            document.getElementById('res-cur-sub').textContent = 'When button pressed (short to Vcc)';
+        }
+
+        document.getElementById('res-power').textContent = 'Power: ' + (P*1000).toFixed(2) + ' mW when pressed';
+        document.getElementById('res-tau').textContent   = fmtTime(tau);
+        document.getElementById('res-risetime').textContent = fmtTime(tr);
+        document.getElementById('res-maxfreq').textContent  = fmtFreq(fmax);
+
+        let notes = '';
+        if (R > 100e3) notes += '<div class="warn-box">Very high resistance (&gt;100 kΩ) — input may be noisy and slow to respond. Fine for low-speed buttons in quiet environments, but avoid for high-speed signals.</div>';
+        if (R < 1e3)   notes += '<div class="warn-box">Very low resistance (&lt;1 kΩ) — high current flows when button is pressed. This wastes power and may stress voltage rail. Consider increasing R.</div>';
+        if (I*1000 > 10) notes += '<div class="warn-box">Current when pressed: ' + (I*1000).toFixed(1) + ' mA. This is fine for momentary buttons but adds to continuous power draw if the switch stays closed.</div>';
+        if (!Cv || Cv === 0) notes += '<div class="info-box">Stray capacitance not set — using 20 pF default for timing calculations. Actual PCB traces may be 10–100 pF.</div>';
+        document.getElementById('res-notes').innerHTML = notes;
+
+        rc.style.display='';
+        drawCircuit(vcc, R, mode);
+    }
+
+    function drawCircuit(vcc, R, mode) {
+        const svg = document.getElementById('circuit-svg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const ns = 'http://www.w3.org/2000/svg';
+        function el(tag,attrs,text){const e=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;return e;}
+        function line(x1,y1,x2,y2,col,w){return el('line',{x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'round'});}
+        function txt(x,y,t,col,sz,anc){return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);}
+
+        if (mode === 'pu') {
+            // Pull-up: Vcc → R → node → button → GND; node → GPIO
+            txt(220,12,'Pull-up Resistor','#fb923c',11,'middle');
+
+            // Vcc rail top
+            svg.appendChild(line(160,30,280,30,'#facc15',1.5));
+            svg.appendChild(txt(140,30,'Vcc','#facc15',10,'middle'));
+            svg.appendChild(txt(300,30,vcc+'V','#facc15',9,'start'));
+
+            // R (vertical)
+            svg.appendChild(line(220,30,220,55));
+            svg.appendChild(el('rect',{x:200,y:55,width:40,height:30,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
+            svg.appendChild(txt(220,70,fmtR(R),'#4ade80',8,'middle'));
+            svg.appendChild(line(220,85,220,100));
+
+            // Node
+            svg.appendChild(el('circle',{cx:220,cy:100,r:4,fill:'#fb923c'}));
+
+            // GPIO output
+            svg.appendChild(line(220,100,320,100));
+            svg.appendChild(el('rect',{x:320,y:88,width:55,height:24,fill:'#1a2433',stroke:'#fb923c','stroke-width':1.5,rx:4}));
+            svg.appendChild(txt(347,100,'GPIO','#fb923c',10,'middle'));
+            svg.appendChild(txt(347,116,'reads HIGH','#4ade80',7,'middle'));
+
+            // Button to GND
+            svg.appendChild(line(220,100,220,118));
+            // Button symbol
+            svg.appendChild(line(205,118,235,118,'#60a5fa',2));
+            svg.appendChild(line(210,130,230,130,'#60a5fa',1));
+            svg.appendChild(line(220,130,220,148));
+            svg.appendChild(txt(248,124,'Button','#60a5fa',8,'start'));
+
+            // GND
+            svg.appendChild(line(160,148,280,148,'#6b7280',1));
+            svg.appendChild(line(160,30,160,148,'#6b7280',0.8));
+            svg.appendChild(line(280,30,280,148,'#6b7280',0.8));
+            svg.appendChild(txt(220,155,'GND','#6b7280',8,'middle'));
+
+            svg.appendChild(txt(220,12,'Pull-up — idle HIGH, active LOW','#fb923c',10,'middle'));
+        } else {
+            // Pull-down: GND → R → node → button → Vcc; node → GPIO
+            svg.appendChild(txt(220,12,'Pull-down — idle LOW, active HIGH','#fb923c',10,'middle'));
+
+            // GND rail bottom
+            svg.appendChild(line(160,148,280,148,'#6b7280',1.5));
+            svg.appendChild(txt(140,148,'GND','#6b7280',10,'middle'));
+
+            // R (vertical)
+            svg.appendChild(line(220,118,220,143));
+            svg.appendChild(el('rect',{x:200,y:88,width:40,height:30,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
+            svg.appendChild(txt(220,103,fmtR(R),'#4ade80',8,'middle'));
+            svg.appendChild(line(220,85,220,88));
+
+            // Node
+            svg.appendChild(el('circle',{cx:220,cy:85,r:4,fill:'#fb923c'}));
+
+            // GPIO output
+            svg.appendChild(line(220,85,320,85));
+            svg.appendChild(el('rect',{x:320,y:73,width:55,height:24,fill:'#1a2433',stroke:'#fb923c','stroke-width':1.5,rx:4}));
+            svg.appendChild(txt(347,85,'GPIO','#fb923c',10,'middle'));
+            svg.appendChild(txt(347,101,'reads LOW','#60a5fa',7,'middle'));
+
+            // Button to Vcc
+            svg.appendChild(line(220,85,220,68));
+            // Button symbol
+            svg.appendChild(line(205,68,235,68,'#60a5fa',1));
+            svg.appendChild(line(205,56,235,56,'#60a5fa',2));
+            svg.appendChild(line(220,56,220,36));
+            svg.appendChild(txt(248,62,'Button','#60a5fa',8,'start'));
+
+            // Vcc rail top
+            svg.appendChild(line(160,36,280,36,'#facc15',1.5));
+            svg.appendChild(txt(140,36,'Vcc','#facc15',10,'middle'));
+            svg.appendChild(txt(300,36,vcc+'V','#facc15',9,'start'));
+
+            svg.appendChild(line(160,36,160,148,'#6b7280',0.8));
+            svg.appendChild(line(280,36,280,148,'#6b7280',0.8));
+        }
+    }
+
+    // Presets
+    (function buildPresets() {
+        const wrap = document.getElementById('presets');
+        const items = [
+            { label:'Button 3.3V', vcc:3.3, r:10, ru:'1e3' },
+            { label:'Button 5V',   vcc:5.0, r:10, ru:'1e3' },
+            { label:'I²C 100kHz',  vcc:3.3, r:4.7,ru:'1e3' },
+            { label:'I²C 400kHz',  vcc:3.3, r:2.2,ru:'1e3' },
+            { label:'Battery save',vcc:3.3, r:100,ru:'1e3' },
+        ];
+        items.forEach(p => {
+            const btn = document.createElement('button');
+            btn.className = 'preset-btn';
+            btn.textContent = p.label;
+            btn.onclick = () => {
+                document.getElementById('vcc').value = p.vcc;
+                document.getElementById('R').value = p.r;
+                document.getElementById('Runit').value = p.ru;
+                calculate();
+            };
+            wrap.appendChild(btn);
+        });
+    })();
+
+    calculate();
+    </script>
+</body>
+</html>

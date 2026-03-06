@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zener Diode Calculator | StrokeForge Electronics</title>
+    <meta name="description" content="Calculate the series resistor for a zener diode voltage regulator. Shows resistor value, E12/E24 nearest, zener current, power dissipation in R and zener, and circuit diagram.">
+    <meta name="keywords" content="zener diode calculator, zener regulator, zener resistor, voltage regulator calculator, zener power dissipation">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-024/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 860px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-gray); text-decoration: none; font-size: 0.88rem; margin-bottom: 1.5rem; transition: color 0.2s; }
+        .back-btn:hover { color: var(--primary-orange); }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Inputs */
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 560px) { .input-grid { grid-template-columns: 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
+        .hint { font-size: 0.72rem; color: var(--text-gray); }
+
+        /* Presets */
+        .presets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+        .preset-btn { background: none; border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.28rem 0.65rem; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; }
+        .preset-btn:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+
+        /* Results */
+        .res-main { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        @media (max-width: 480px) { .res-main { grid-template-columns: 1fr; } }
+        .res-block { background: var(--darker-bg); border-radius: 10px; padding: 1.1rem 1.3rem; }
+        .res-block .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .res-block .val { font-size: 1.5rem; font-weight: 800; color: var(--primary-orange); }
+        .res-block .sub { font-size: 0.8rem; color: var(--text-gray); margin-top: 0.25rem; }
+        .res-block .e24 { font-size: 0.85rem; color: #60a5fa; margin-top: 0.3rem; }
+
+        .res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 480px) { .res-grid { grid-template-columns: 1fr 1fr; } }
+        .res-cell { background: var(--darker-bg); border-radius: 8px; padding: 0.8rem 1rem; }
+        .res-cell .lbl { font-size: 0.7rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .res-cell .val { font-size: 1.05rem; font-weight: 700; color: var(--light-gray); }
+        .res-cell .val.ok  { color: #4ade80; }
+        .res-cell .val.warn { color: #f59e0b; }
+        .res-cell .val.err  { color: #f87171; }
+
+        /* Warnings */
+        .warn-box { border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.83rem; margin-top: 0.75rem; display: none; }
+        .warn-box.show { display: block; }
+        .warn-box.err  { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #f87171; }
+        .warn-box.warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #f59e0b; }
+        .warn-box.info { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); color: #93c5fd; }
+
+        /* SVG diagram */
+        .diagram-wrap { display: flex; justify-content: center; padding: 1rem 0 0.5rem; }
+        svg text { font-family: inherit; }
+
+        /* Zener table */
+        .ztbl { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+        .ztbl th { background: var(--darker-bg); color: var(--text-gray); font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.5rem 0.7rem; border-bottom: 2px solid var(--border-gray); text-align: right; }
+        .ztbl th:first-child { text-align: left; }
+        .ztbl td { padding: 0.45rem 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--light-gray); text-align: right; }
+        .ztbl td:first-child { text-align: left; font-weight: 600; color: var(--primary-orange); }
+        .ztbl tr:hover { background: rgba(255,165,0,0.04); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html">Engineering</a>
+                <a href="/electronics.html" class="active">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Zener Diode Calculator</h1>
+        <p>Series resistor, current, and power dissipation for a zener voltage regulator</p>
+    </div>
+
+    <div class="tool-wrap">
+        <a href="/electronics.html" class="back-btn">← Back to Electronics</a>
+
+        <!-- Inputs -->
+        <div class="card">
+            <h2>Inputs</h2>
+
+            <p style="font-size:0.8rem;color:var(--text-gray);margin-bottom:1rem;">
+                Common zener voltages:
+            </p>
+            <div class="presets" id="zener-presets">
+                <button class="preset-btn" data-vz="2.4">2.4 V</button>
+                <button class="preset-btn" data-vz="2.7">2.7 V</button>
+                <button class="preset-btn" data-vz="3.3">3.3 V</button>
+                <button class="preset-btn" data-vz="3.6">3.6 V</button>
+                <button class="preset-btn" data-vz="3.9">3.9 V</button>
+                <button class="preset-btn" data-vz="4.3">4.3 V</button>
+                <button class="preset-btn" data-vz="4.7">4.7 V</button>
+                <button class="preset-btn" data-vz="5.1">5.1 V</button>
+                <button class="preset-btn" data-vz="5.6">5.6 V</button>
+                <button class="preset-btn" data-vz="6.2">6.2 V</button>
+                <button class="preset-btn" data-vz="6.8">6.8 V</button>
+                <button class="preset-btn" data-vz="7.5">7.5 V</button>
+                <button class="preset-btn" data-vz="8.2">8.2 V</button>
+                <button class="preset-btn" data-vz="9.1">9.1 V</button>
+                <button class="preset-btn" data-vz="10">10 V</button>
+                <button class="preset-btn" data-vz="12">12 V</button>
+                <button class="preset-btn" data-vz="15">15 V</button>
+            </div>
+
+            <div class="input-grid">
+                <div class="field">
+                    <label>Supply voltage (Vin)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="vin" value="12" min="0.1" step="0.1">
+                        <span class="unit">V</span>
+                    </div>
+                    <span class="hint">Must be greater than Vz</span>
+                </div>
+                <div class="field">
+                    <label>Zener voltage (Vz)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="vz" value="5.1" min="0.1" step="0.1">
+                        <span class="unit">V</span>
+                    </div>
+                    <span class="hint">Regulated output voltage</span>
+                </div>
+                <div class="field">
+                    <label>Load current (I<sub>L</sub>)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="il" value="10" min="0" step="0.1">
+                        <span class="unit">mA</span>
+                    </div>
+                    <span class="hint">Max current drawn by load</span>
+                </div>
+                <div class="field">
+                    <label>Min zener current (I<sub>Z min</sub>)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="iz_min" value="5" min="0.1" step="0.1">
+                        <span class="unit">mA</span>
+                    </div>
+                    <span class="hint">Keep &gt;1 mA for stable regulation</span>
+                </div>
+                <div class="field">
+                    <label>Zener max power (P<sub>Z max</sub>)</label>
+                    <div class="field-row">
+                        <select class="sel" id="pz_max">
+                            <option value="0.25">250 mW</option>
+                            <option value="0.5" selected>500 mW</option>
+                            <option value="1">1 W</option>
+                            <option value="1.3">1.3 W</option>
+                            <option value="2">2 W</option>
+                            <option value="5">5 W</option>
+                        </select>
+                    </div>
+                    <span class="hint">From zener datasheet</span>
+                </div>
+                <div class="field">
+                    <label>Resistor series</label>
+                    <div class="field-row">
+                        <select class="sel" id="series">
+                            <option value="E12">E12</option>
+                            <option value="E24" selected>E24</option>
+                        </select>
+                    </div>
+                    <span class="hint">Nearest standard resistor value</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="card" id="results-card">
+            <h2>Results</h2>
+
+            <div class="res-main">
+                <div class="res-block">
+                    <div class="lbl">Calculated R (exact)</div>
+                    <div class="val" id="r-exact">—</div>
+                    <div class="sub" id="r-formula">R = (Vin − Vz) / (IZ_min + IL)</div>
+                </div>
+                <div class="res-block">
+                    <div class="lbl">Nearest standard value</div>
+                    <div class="val" id="r-std">—</div>
+                    <div class="e24" id="r-std-series">E24</div>
+                    <div class="sub" id="r-std-power">Power rating needed: —</div>
+                </div>
+            </div>
+
+            <div class="res-grid">
+                <div class="res-cell">
+                    <div class="lbl">Current through R (full load)</div>
+                    <div class="val" id="ir-full">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Zener current (full load)</div>
+                    <div class="val" id="iz-full">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Zener current (no load)</div>
+                    <div class="val" id="iz-noload">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Power in R</div>
+                    <div class="val" id="pr">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Zener power (worst case)</div>
+                    <div class="val" id="pz">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Efficiency (full load)</div>
+                    <div class="val" id="eff">—</div>
+                </div>
+            </div>
+
+            <div class="warn-box err" id="w-vin">Vin must be greater than Vz.</div>
+            <div class="warn-box err" id="w-pz">Zener power exceeds rated maximum — use a higher wattage zener or reduce load current.</div>
+            <div class="warn-box warn" id="w-pz-close">Zener power is close to the rated maximum (&gt;70%) — consider a higher wattage device or add a heatsink.</div>
+            <div class="warn-box warn" id="w-iz-low">Zener current at full load is very low. Regulation may be unstable — reduce IL or increase IZ_min.</div>
+            <div class="warn-box info" id="w-efficiency">Low efficiency (&lt;50%) — zener regulators are inefficient by design. Consider a linear regulator (LM78xx) or switching regulator for better efficiency.</div>
+        </div>
+
+        <!-- SVG Circuit diagram -->
+        <div class="card">
+            <h2>Circuit Diagram</h2>
+            <div class="diagram-wrap">
+                <svg id="diagram" width="520" height="200" viewBox="0 0 520 200"></svg>
+            </div>
+        </div>
+
+        <!-- Zener series table -->
+        <div class="card">
+            <h2>Common Zener Diodes (E24 Vz series)</h2>
+            <div style="overflow-x:auto">
+            <table class="ztbl">
+                <thead>
+                    <tr>
+                        <th>Vz</th>
+                        <th>Package</th>
+                        <th>Pmax (typical)</th>
+                        <th>Iz test (mA)</th>
+                        <th>Typical parts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>2.4 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>5</td><td>BZX55C2V4, 1N4614</td></tr>
+                    <tr><td>2.7 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>5</td><td>BZX55C2V7, 1N4615</td></tr>
+                    <tr><td>3.3 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>20</td><td>BZX55C3V3, 1N5225B</td></tr>
+                    <tr><td>3.6 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>20</td><td>BZX55C3V6, 1N5226B</td></tr>
+                    <tr><td>3.9 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>20</td><td>BZX55C3V9, 1N5227B</td></tr>
+                    <tr><td>4.3 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>20</td><td>BZX55C4V3, 1N5228B</td></tr>
+                    <tr><td>4.7 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>20</td><td>BZX55C4V7, 1N4732A</td></tr>
+                    <tr><td>5.1 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>20</td><td>BZX55C5V1, 1N4733A</td></tr>
+                    <tr><td>5.6 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>20</td><td>BZX55C5V6, 1N4734A</td></tr>
+                    <tr><td>6.2 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>20</td><td>BZX55C6V2, 1N4735A</td></tr>
+                    <tr><td>6.8 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>20</td><td>BZX55C6V8, 1N4736A</td></tr>
+                    <tr><td>7.5 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>20</td><td>BZX55C7V5, 1N4737A</td></tr>
+                    <tr><td>8.2 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>20</td><td>BZX55C8V2, 1N4738A</td></tr>
+                    <tr><td>9.1 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>20</td><td>BZX55C9V1, 1N4739A</td></tr>
+                    <tr><td>10 V</td><td>DO-35 / DO-41</td><td>500 mW</td><td>20</td><td>BZX55C10, 1N4740A</td></tr>
+                    <tr><td>12 V</td><td>DO-41</td><td>1 W</td><td>20</td><td>1N4742A, BZX79C12</td></tr>
+                    <tr><td>15 V</td><td>DO-41</td><td>1 W</td><td>17</td><td>1N4744A, BZX79C15</td></tr>
+                    <tr><td>18 V</td><td>DO-41</td><td>1 W</td><td>14</td><td>1N4746A, BZX79C18</td></tr>
+                    <tr><td>24 V</td><td>DO-41</td><td>1 W</td><td>10.5</td><td>1N4749A, BZX79C24</td></tr>
+                    <tr><td>30 V</td><td>DO-41</td><td>1 W</td><td>8.5</td><td>1N4752A, BZX79C30</td></tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <!-- Info -->
+        <details class="card">
+            <summary>How a zener regulator works</summary>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:0.5rem">
+                <div style="background:var(--darker-bg);border-radius:8px;padding:1rem 1.2rem">
+                    <h3 style="font-size:0.85rem;color:var(--primary-orange);margin-bottom:0.5rem">Operating principle</h3>
+                    <p style="font-size:0.81rem;color:var(--text-gray);line-height:1.6">
+                        A zener diode conducts in reverse when voltage reaches its zener voltage (Vz), clamping the output. The series resistor R limits current and drops the excess voltage (Vin − Vz). The zener absorbs the difference between the current through R and the load current.
+                    </p>
+                </div>
+                <div style="background:var(--darker-bg);border-radius:8px;padding:1rem 1.2rem">
+                    <h3 style="font-size:0.85rem;color:var(--primary-orange);margin-bottom:0.5rem">Limitations</h3>
+                    <ul style="font-size:0.81rem;color:var(--text-gray);padding-left:1.1rem;margin:0;line-height:1.7">
+                        <li>Low efficiency — excess power wasted as heat in R and zener</li>
+                        <li>Output voltage varies slightly with load (zener impedance)</li>
+                        <li>Not suitable for high-current loads</li>
+                        <li>Use LM78xx / LM317 for better regulation; switching regulator for efficiency</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <script>
+    // E12 and E24 series
+    const E12 = [1.0,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2];
+    const E24 = [1.0,1.1,1.2,1.3,1.5,1.6,1.8,2.0,2.2,2.4,2.7,3.0,3.3,3.6,3.9,4.3,4.7,5.1,5.6,6.2,6.8,7.5,8.2,9.1];
+
+    function nearestStd(val, series) {
+        const s = series === 'E12' ? E12 : E24;
+        let best = null, bestDiff = Infinity;
+        for (let exp = -2; exp <= 6; exp++) {
+            for (const base of s) {
+                const v = base * Math.pow(10, exp);
+                const d = Math.abs(v - val);
+                if (d < bestDiff) { bestDiff = d; best = v; }
+            }
+        }
+        return best;
+    }
+
+    function fmtR(r) {
+        if (r >= 1e6) return (r/1e6).toPrecision(3) + ' MΩ';
+        if (r >= 1e3) return (r/1e3).toPrecision(3) + ' kΩ';
+        return r.toPrecision(3) + ' Ω';
+    }
+    function fmtW(w) {
+        if (w < 0.001) return (w*1000).toFixed(2) + ' μW';
+        if (w < 1)     return (w*1000).toFixed(1) + ' mW';
+        return w.toFixed(2) + ' W';
+    }
+    function fmtI(ma) {
+        if (ma < 1) return (ma*1000).toFixed(1) + ' μA';
+        return ma.toFixed(2) + ' mA';
+    }
+
+    function setClass(id, cls) {
+        const el = document.getElementById(id);
+        el.className = 'val ' + cls;
+    }
+
+    function calculate() {
+        const vin    = parseFloat(document.getElementById('vin').value)    || 0;
+        const vz     = parseFloat(document.getElementById('vz').value)     || 0;
+        const il_mA  = parseFloat(document.getElementById('il').value)     || 0;
+        const iz_min_mA = parseFloat(document.getElementById('iz_min').value) || 1;
+        const pz_max = parseFloat(document.getElementById('pz_max').value) || 0.5;
+        const series = document.getElementById('series').value;
+
+        // Hide all warnings
+        ['w-vin','w-pz','w-pz-close','w-iz-low','w-efficiency'].forEach(id => {
+            document.getElementById(id).classList.remove('show');
+        });
+
+        if (vin <= vz) {
+            document.getElementById('w-vin').classList.add('show');
+            ['r-exact','r-std','ir-full','iz-full','iz-noload','pr','pz','eff'].forEach(id => {
+                document.getElementById(id).textContent = '—';
+            });
+            drawDiagram(null);
+            return;
+        }
+
+        const il  = il_mA  / 1000;  // A
+        const iz_min = iz_min_mA / 1000;  // A
+
+        // R = (Vin - Vz) / (IZ_min + IL_max)
+        const r_exact = (vin - vz) / (iz_min + il);
+
+        const r_std = nearestStd(r_exact, series);
+
+        // With standard resistor:
+        const ir_full    = (vin - vz) / r_std;           // A, at full load
+        const iz_full    = ir_full - il;                   // A
+        const ir_noload  = (vin - vz) / r_std;           // same (no load current)
+        const iz_noload  = ir_noload;                     // all current through zener
+        const pr         = ir_full * ir_full * r_std;     // W, worst case = full load (highest IR)
+        const pz_worst   = vz * iz_noload;                // W, worst case = no load
+        const eff        = (vz * il) / (vin * ir_full) * 100;
+
+        // R power rating
+        const rPowerRating = pr < 0.125 ? '1/8 W' : pr < 0.25 ? '1/4 W' : pr < 0.5 ? '1/2 W' : pr < 1 ? '1 W' : pr < 2 ? '2 W' : '5 W+';
+
+        document.getElementById('r-exact').textContent = fmtR(r_exact);
+        document.getElementById('r-std').textContent   = fmtR(r_std);
+        document.getElementById('r-std-series').textContent = series;
+        document.getElementById('r-std-power').textContent  = 'Power rating needed: ' + rPowerRating;
+        document.getElementById('r-formula').textContent    = `R = (${vin}V − ${vz}V) / (${iz_min_mA}mA + ${il_mA}mA)`;
+        document.getElementById('ir-full').textContent  = fmtI(ir_full * 1000);
+        document.getElementById('iz-full').textContent  = iz_full >= 0 ? fmtI(iz_full * 1000) : '— (invalid)';
+        document.getElementById('iz-noload').textContent = fmtI(iz_noload * 1000);
+        document.getElementById('pr').textContent  = fmtW(pr);
+        document.getElementById('pz').textContent  = fmtW(pz_worst);
+
+        // Color efficiency
+        const effEl = document.getElementById('eff');
+        effEl.textContent = eff.toFixed(1) + ' %';
+        setClass('eff', eff >= 60 ? 'ok' : eff >= 40 ? 'warn' : 'err');
+
+        // Color pz
+        const pzRatio = pz_worst / pz_max;
+        setClass('pz', pzRatio > 1 ? 'err' : pzRatio > 0.7 ? 'warn' : 'ok');
+
+        // Color iz-full
+        setClass('iz-full', iz_full < 0.001 ? 'err' : iz_full < 0.002 ? 'warn' : '');
+
+        // Warnings
+        if (pz_worst > pz_max)       document.getElementById('w-pz').classList.add('show');
+        else if (pzRatio > 0.7)      document.getElementById('w-pz-close').classList.add('show');
+        if (iz_full < 0.001)         document.getElementById('w-iz-low').classList.add('show');
+        if (eff < 50)                document.getElementById('w-efficiency').classList.add('show');
+
+        drawDiagram({ vin, vz, r_std, iz_noload_mA: iz_noload*1000, il_mA });
+    }
+
+    // --- SVG Circuit Diagram ---
+    function drawDiagram(d) {
+        const svg = document.getElementById('diagram');
+        svg.innerHTML = '';
+        const ns = 'http://www.w3.org/2000/svg';
+        const W = 520, H = 200;
+        const orange = '#f97316', gray = '#9ca3af', light = '#e5e7eb', blue = '#60a5fa';
+
+        function line(x1,y1,x2,y2,col,w=1.8) {
+            const el = document.createElementNS(ns,'line');
+            el.setAttribute('x1',x1); el.setAttribute('y1',y1);
+            el.setAttribute('x2',x2); el.setAttribute('y2',y2);
+            el.setAttribute('stroke',col||gray); el.setAttribute('stroke-width',w);
+            svg.appendChild(el); return el;
+        }
+        function txt(x,y,t,col,size,anchor) {
+            const el = document.createElementNS(ns,'text');
+            el.setAttribute('x',x); el.setAttribute('y',y);
+            el.setAttribute('fill',col||light); el.setAttribute('font-size',size||11);
+            el.setAttribute('text-anchor',anchor||'middle'); el.setAttribute('dominant-baseline','middle');
+            el.textContent = t; svg.appendChild(el);
+        }
+        function rect(x,y,w,h,col,fill) {
+            const el = document.createElementNS(ns,'rect');
+            el.setAttribute('x',x); el.setAttribute('y',y); el.setAttribute('width',w); el.setAttribute('height',h);
+            el.setAttribute('stroke',col); el.setAttribute('fill',fill||'none'); el.setAttribute('stroke-width',1.8); el.setAttribute('rx',3);
+            svg.appendChild(el);
+        }
+
+        // Layout: Vin(left) → wire → R → wire → node → wire right → Load
+        //                                              ↓ Zener → GND
+        const vin_x = 40, top_y = 70, bot_y = 150;
+        const r_x1 = 90, r_x2 = 170;   // resistor box
+        const node_x = 240;
+        const load_x1 = 340, load_x2 = 420;
+        const right_x = 480;
+
+        // Top wire: Vin → R
+        line(vin_x, top_y, r_x1, top_y, orange);
+        // R box
+        rect(r_x1, top_y-12, r_x2-r_x1, 24, orange, '#1c1917');
+        txt((r_x1+r_x2)/2, top_y, d ? fmtR(d.r_std) : 'R', orange, 11);
+
+        // Wire R → node
+        line(r_x2, top_y, node_x, top_y, orange);
+        // Wire node → load box
+        line(node_x, top_y, load_x1, top_y, orange);
+        // Load box
+        rect(load_x1, top_y-12, load_x2-load_x1, 24, blue, '#0c1a2e');
+        txt((load_x1+load_x2)/2, top_y, 'Load', blue, 11);
+        // Wire load → right
+        line(load_x2, top_y, right_x, top_y, gray);
+        // Right vertical down
+        line(right_x, top_y, right_x, bot_y, gray);
+        // Bottom wire right→node
+        line(vin_x, bot_y, right_x, bot_y, gray);
+
+        // Zener from node down
+        const zen_top = top_y + 10, zen_bot = bot_y - 10;
+        const zen_mid = (zen_top + zen_bot) / 2;
+        line(node_x, top_y, node_x, zen_top, orange);
+        line(node_x, zen_bot, node_x, bot_y, gray);
+
+        // Zener symbol: triangle + bar
+        const tz = 14;
+        // Triangle (pointing down — cathode at top)
+        const poly = document.createElementNS(ns, 'polygon');
+        poly.setAttribute('points', `${node_x-tz},${zen_mid-tz} ${node_x+tz},${zen_mid-tz} ${node_x},${zen_mid+tz}`);
+        poly.setAttribute('fill', '#2a1a05'); poly.setAttribute('stroke', orange); poly.setAttribute('stroke-width', 1.8);
+        svg.appendChild(poly);
+        // Cathode bar with zener "wings"
+        line(node_x-tz, zen_mid-tz, node_x+tz, zen_mid-tz, orange, 2.5);
+        // Zener wings
+        line(node_x-tz, zen_mid-tz, node_x-tz-5, zen_mid-tz-5, orange, 2);
+        line(node_x+tz, zen_mid-tz, node_x+tz+5, zen_mid-tz+5, orange, 2);
+
+        // Vin label
+        txt(vin_x, top_y - 18, d ? `Vin = ${d.vin}V` : 'Vin', orange, 11);
+        // Vout label at node
+        txt(node_x, top_y - 18, d ? `Vout = ${d.vz}V` : 'Vz', '#4ade80', 11);
+        // Vz label
+        txt(node_x + 28, zen_mid, d ? `${d.vz}V` : 'Vz', orange, 10, 'start');
+
+        // GND symbol at bottom of zener
+        const gx = node_x, gy = bot_y;
+        line(gx-10,gy,gx+10,gy,gray,2);
+        line(gx-6,gy+4,gx+6,gy+4,gray,2);
+        line(gx-2,gy+8,gx+2,gy+8,gray,2);
+
+        // Current labels
+        if (d) {
+            const ir = d.iz_noload_mA + d.il_mA;
+            txt((r_x1+r_x2)/2, top_y - 32, `IR = ${ir.toFixed(1)} mA`, gray, 10);
+            txt(node_x - 30, (zen_top+zen_bot)/2, `IZ=${d.iz_noload_mA.toFixed(1)}mA`, gray, 9, 'end');
+            txt((load_x1+load_x2)/2, top_y + 28, `IL = ${d.il_mA} mA`, blue, 10);
+        }
+
+        // Vin source symbol (circle)
+        const circ = document.createElementNS(ns, 'circle');
+        circ.setAttribute('cx', vin_x); circ.setAttribute('cy', (top_y+bot_y)/2);
+        circ.setAttribute('r', 18); circ.setAttribute('stroke', gray); circ.setAttribute('fill', '#111'); circ.setAttribute('stroke-width', 1.5);
+        svg.appendChild(circ);
+        txt(vin_x, (top_y+bot_y)/2 - 6, '+', '#4ade80', 12);
+        txt(vin_x, (top_y+bot_y)/2 + 7, '−', '#f87171', 12);
+        line(vin_x, top_y, vin_x, (top_y+bot_y)/2 - 18, orange);
+        line(vin_x, bot_y, vin_x, (top_y+bot_y)/2 + 18, gray);
+    }
+
+    // Presets
+    document.getElementById('zener-presets').addEventListener('click', e => {
+        const btn = e.target.closest('.preset-btn');
+        if (!btn) return;
+        document.getElementById('vz').value = btn.dataset.vz;
+        calculate();
+    });
+
+    // All inputs trigger calculate
+    ['vin','vz','il','iz_min','pz_max','series'].forEach(id => {
+        document.getElementById(id).addEventListener('input', calculate);
+    });
+
+    drawDiagram(null);
+    calculate();
+    </script>
+</body>
+</html>

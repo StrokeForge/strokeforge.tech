@@ -1,0 +1,8 @@
+{
+  "id": "elec-011",
+  "title": "78xx / 79xx Voltage Regulator Reference",
+  "category": "power",
+  "description": "Reference table for 78xx (positive) and 79xx (negative) fixed linear voltage regulators. Covers output voltages 3.3–24 V, current ratings, input range, dropout voltage, packages, and typical wiring diagrams.",
+  "icon": "🔌",
+  "difficulty": "beginner"
+}

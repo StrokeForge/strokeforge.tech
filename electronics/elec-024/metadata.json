@@ -1,0 +1,8 @@
+{
+  "id": "elec-024",
+  "title": "Zener Diode Calculator",
+  "category": "basic",
+  "description": "Calculate the series resistor for a zener diode voltage regulator. Shows exact and nearest E12/E24 resistor value, zener current at full load and no load, power dissipation in R and zener, efficiency, and circuit diagram. Includes common zener diode reference table.",
+  "icon": "⚡",
+  "difficulty": "beginner"
+}

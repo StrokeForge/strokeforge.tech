@@ -1,0 +1,8 @@
+{
+  "id": "elec-025",
+  "title": "LED Colors & Forward Voltage",
+  "category": "reference",
+  "description": "LED forward voltage (Vf) reference by color and wavelength. Covers standard, high-brightness, IR, UV, white, and RGB LEDs. Includes semiconductor material, max current, Vf range bar, and resistor calculation guide.",
+  "icon": "💡",
+  "difficulty": "beginner"
+}

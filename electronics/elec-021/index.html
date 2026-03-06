@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino &amp; ESP32 Pinouts | StrokeForge Electronics</title>
+    <meta name="description" content="Complete pinout reference for Arduino Uno, Nano, Mega, ESP32, and ESP8266. Pin functions, PWM, I2C, SPI, UART, ADC — filterable and searchable.">
+    <meta name="keywords" content="Arduino pinout, ESP32 pinout, ESP8266 pinout, Arduino Mega pins, GPIO functions, SPI pins, I2C pins, PWM pins">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-021/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 1060px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-gray); text-decoration: none; font-size: 0.88rem; margin-bottom: 1.5rem; transition: color 0.2s; }
+        .back-btn:hover { color: var(--primary-orange); }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Platform tabs */
+        .plat-tabs { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 10px; overflow: hidden; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .plat-tab { flex: 1; min-width: 100px; padding: 0.65rem 0.5rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.84rem; font-weight: 600; transition: all 0.2s; text-align: center; border-right: 1px solid var(--border-gray); }
+        .plat-tab:last-child { border-right: none; }
+        .plat-tab.active { background: var(--primary-orange); color: #000; }
+        .plat-tab:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        /* Controls */
+        .controls { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.1rem; }
+        .search-wrap { position: relative; flex: 1; min-width: 180px; }
+        .search-wrap input { width: 100%; box-sizing: border-box; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem 0.5rem 2rem; font-size: 0.9rem; outline: none; }
+        .search-wrap input:focus { border-color: var(--primary-orange); }
+        .search-icon { position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; pointer-events: none; }
+        .filter-group { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; flex-wrap: wrap; }
+        .flt-btn { padding: 0.5rem 0.75rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.78rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; border-right: 1px solid var(--border-gray); }
+        .flt-btn:last-child { border-right: none; }
+        .flt-btn.active { background: var(--primary-orange); color: #000; }
+        .flt-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        /* Table */
+        .tbl-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+        thead th { background: var(--darker-bg); color: var(--text-gray); font-weight: 600; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.6rem 0.75rem; border-bottom: 2px solid var(--border-gray); text-align: left; white-space: nowrap; }
+        tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
+        tbody tr:hover { background: rgba(255,165,0,0.04); }
+        tbody td { padding: 0.52rem 0.75rem; color: var(--light-gray); vertical-align: middle; }
+        td.pin-num { font-weight: 700; color: var(--primary-orange); text-align: center; font-variant-numeric: tabular-nums; min-width: 50px; }
+        td.pin-name { font-weight: 600; font-family: monospace; font-size: 0.9rem; }
+        td.notes { font-size: 0.79rem; color: var(--text-gray); }
+
+        /* Function badges */
+        .fn { display: inline-block; font-size: 0.68rem; font-weight: 700; padding: 0.12rem 0.38rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.03em; margin: 0.1rem 0.1rem 0.1rem 0; }
+        .fn-dig  { background: #1e3a5f; color: #60a5fa; }
+        .fn-pwm  { background: #3b2a00; color: #fcd34d; }
+        .fn-adc  { background: #2d1b69; color: #c4b5fd; }
+        .fn-i2c  { background: #052e16; color: #86efac; }
+        .fn-spi  { background: #3b0764; color: #e879f9; }
+        .fn-uart { background: #450a0a; color: #fca5a5; }
+        .fn-int  { background: #1c1917; color: #a8a29e; border: 1px solid #57534e; }
+        .fn-pwr  { background: #431407; color: #fb923c; }
+        .fn-led  { background: #365314; color: #bef264; }
+        .fn-touch { background: #0c4a6e; color: #7dd3fc; }
+        .fn-dac  { background: #134e4a; color: #5eead4; }
+        .fn-rtc  { background: #1e1b4b; color: #a5b4fc; }
+        .fn-only-in  { background: #1c1917; color: #a8a29e; border: 1px solid #ef4444; }
+        .fn-warn { background: #7f1d1d; color: #fca5a5; }
+
+        .row-count { font-size: 0.78rem; color: var(--text-gray); margin-top: 0.6rem; }
+        .no-results { text-align: center; color: var(--text-gray); padding: 2rem; font-size: 0.9rem; }
+
+        /* Legend */
+        .legend { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1.2rem; }
+        .legend span { font-size: 0.72rem; }
+
+        /* Notes box */
+        .notes-box { background: var(--darker-bg); border-radius: 8px; padding: 0.9rem 1.1rem; margin-top: 1rem; }
+        .notes-box h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .notes-box ul { padding-left: 1.1rem; margin: 0; }
+        .notes-box li { font-size: 0.8rem; color: var(--text-gray); line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html">Engineering</a>
+                <a href="/electronics.html" class="active">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Arduino &amp; ESP32 Pinouts</h1>
+        <p>Complete pin function reference — filterable by function type</p>
+    </div>
+
+    <div class="tool-wrap">
+        <a href="/electronics.html" class="back-btn">← Back to Electronics</a>
+
+        <div class="card">
+            <div class="plat-tabs" id="plat-tabs">
+                <button class="plat-tab active" data-plat="uno">Arduino Uno</button>
+                <button class="plat-tab" data-plat="nano">Arduino Nano</button>
+                <button class="plat-tab" data-plat="mega">Arduino Mega</button>
+                <button class="plat-tab" data-plat="esp32">ESP32</button>
+                <button class="plat-tab" data-plat="esp8266">ESP8266</button>
+            </div>
+
+            <div class="legend" id="legend">
+                <span class="fn fn-dig">Digital</span>
+                <span class="fn fn-pwm">PWM</span>
+                <span class="fn fn-adc">ADC</span>
+                <span class="fn fn-i2c">I²C</span>
+                <span class="fn fn-spi">SPI</span>
+                <span class="fn fn-uart">UART</span>
+                <span class="fn fn-int">INT</span>
+                <span class="fn fn-touch">Touch</span>
+                <span class="fn fn-dac">DAC</span>
+                <span class="fn fn-pwr">Power</span>
+                <span class="fn fn-led">LED</span>
+                <span class="fn fn-only-in">Input-only</span>
+                <span class="fn fn-warn">Boot-sensitive</span>
+            </div>
+
+            <div class="controls">
+                <div class="search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search" placeholder="Search pin or function…">
+                </div>
+                <div class="filter-group" id="flt-group">
+                    <button class="flt-btn active" data-fn="all">All</button>
+                    <button class="flt-btn" data-fn="pwm">PWM</button>
+                    <button class="flt-btn" data-fn="adc">ADC</button>
+                    <button class="flt-btn" data-fn="i2c">I²C</button>
+                    <button class="flt-btn" data-fn="spi">SPI</button>
+                    <button class="flt-btn" data-fn="uart">UART</button>
+                    <button class="flt-btn" data-fn="int">INT</button>
+                </div>
+            </div>
+
+            <div class="tbl-wrap">
+                <table id="pin-table">
+                    <thead id="thead">
+                        <tr>
+                            <th>Pin</th>
+                            <th>Name</th>
+                            <th>Functions</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+                <div class="row-count" id="row-count"></div>
+            </div>
+
+            <div class="notes-box" id="plat-notes"></div>
+        </div>
+    </div>
+
+    <script>
+    // Functions helper
+    const F = {
+        dig: (n) => `<span class="fn fn-dig">D${n}</span>`,
+        pwm: () => `<span class="fn fn-pwm">PWM</span>`,
+        adc: (ch) => `<span class="fn fn-adc">ADC${ch !== undefined ? ch : ''}</span>`,
+        i2c: (role) => `<span class="fn fn-i2c">I²C ${role}</span>`,
+        spi: (role) => `<span class="fn fn-spi">SPI ${role}</span>`,
+        uart: (n, role) => `<span class="fn fn-uart">UART${n || ''} ${role}</span>`,
+        int: (n) => `<span class="fn fn-int">INT${n !== undefined ? n : ''}</span>`,
+        pwr: (v) => `<span class="fn fn-pwr">${v}</span>`,
+        led: () => `<span class="fn fn-led">LED</span>`,
+        touch: (n) => `<span class="fn fn-touch">Touch${n !== undefined ? n : ''}</span>`,
+        dac: (n) => `<span class="fn fn-dac">DAC${n !== undefined ? n : ''}</span>`,
+        rtc: () => `<span class="fn fn-rtc">RTC</span>`,
+        onlyIn: () => `<span class="fn fn-only-in">Input only</span>`,
+        warn: (t) => `<span class="fn fn-warn">${t}</span>`,
+    };
+
+    const PLATFORMS = {
+
+        uno: {
+            notes: `<h3>Arduino Uno (ATmega328P) — Key Points</h3><ul>
+                <li>5 V I/O; max 40 mA per pin, 200 mA total</li>
+                <li>D0/D1 shared with USB serial — avoid during programming</li>
+                <li>PWM at ~490 Hz (D5/D6 ~980 Hz)</li>
+                <li>analogWrite() range: 0–255 (8-bit)</li>
+                <li>I²C uses A4 (SDA) + A5 (SCL); 5 V levels, add 4.7 kΩ pull-ups</li>
+                <li>SPI: D10 (SS), D11 (MOSI), D12 (MISO), D13 (SCK)</li>
+            </ul>`,
+            rows: [
+                { pin: 'D0',  name: 'RX',   fns: [F.dig(0), F.uart(0,'RX')],              tags: ['uart'], notes: 'Serial RX — shared with USB; avoid in projects using Serial' },
+                { pin: 'D1',  name: 'TX',   fns: [F.dig(1), F.uart(0,'TX')],              tags: ['uart'], notes: 'Serial TX — shared with USB' },
+                { pin: 'D2',  name: 'D2',   fns: [F.dig(2), F.int(0)],                    tags: ['int'],  notes: 'External interrupt INT0' },
+                { pin: 'D3',  name: 'D3',   fns: [F.dig(3), F.pwm(), F.int(1)],           tags: ['pwm','int'], notes: 'PWM + External interrupt INT1' },
+                { pin: 'D4',  name: 'D4',   fns: [F.dig(4)],                              tags: [], notes: 'General purpose digital' },
+                { pin: 'D5',  name: 'D5',   fns: [F.dig(5), F.pwm()],                     tags: ['pwm'], notes: 'PWM ~980 Hz (Timer0)' },
+                { pin: 'D6',  name: 'D6',   fns: [F.dig(6), F.pwm()],                     tags: ['pwm'], notes: 'PWM ~980 Hz (Timer0)' },
+                { pin: 'D7',  name: 'D7',   fns: [F.dig(7)],                              tags: [], notes: 'General purpose digital' },
+                { pin: 'D8',  name: 'D8',   fns: [F.dig(8)],                              tags: [], notes: 'General purpose digital' },
+                { pin: 'D9',  name: 'D9',   fns: [F.dig(9), F.pwm()],                     tags: ['pwm'], notes: 'PWM ~490 Hz (Timer1)' },
+                { pin: 'D10', name: 'SS',   fns: [F.dig(10), F.pwm(), F.spi('SS')],       tags: ['pwm','spi'], notes: 'SPI Slave Select; PWM ~490 Hz' },
+                { pin: 'D11', name: 'MOSI', fns: [F.dig(11), F.pwm(), F.spi('MOSI')],     tags: ['pwm','spi'], notes: 'SPI MOSI; PWM ~490 Hz' },
+                { pin: 'D12', name: 'MISO', fns: [F.dig(12), F.spi('MISO')],              tags: ['spi'], notes: 'SPI MISO' },
+                { pin: 'D13', name: 'SCK',  fns: [F.dig(13), F.spi('SCK'), F.led()],      tags: ['spi'], notes: 'SPI Clock; onboard LED (active HIGH)' },
+                { pin: 'A0',  name: 'A0',   fns: [F.adc(0), F.dig(14)],                   tags: ['adc'], notes: '10-bit ADC; usable as digital D14' },
+                { pin: 'A1',  name: 'A1',   fns: [F.adc(1), F.dig(15)],                   tags: ['adc'], notes: '10-bit ADC; usable as D15' },
+                { pin: 'A2',  name: 'A2',   fns: [F.adc(2), F.dig(16)],                   tags: ['adc'], notes: '10-bit ADC; usable as D16' },
+                { pin: 'A3',  name: 'A3',   fns: [F.adc(3), F.dig(17)],                   tags: ['adc'], notes: '10-bit ADC; usable as D17' },
+                { pin: 'A4',  name: 'SDA',  fns: [F.adc(4), F.dig(18), F.i2c('SDA')],     tags: ['adc','i2c'], notes: 'I²C Data + ADC channel 4' },
+                { pin: 'A5',  name: 'SCL',  fns: [F.adc(5), F.dig(19), F.i2c('SCL')],     tags: ['adc','i2c'], notes: 'I²C Clock + ADC channel 5' },
+                { pin: '5V',  name: '5V',   fns: [F.pwr('5 V out')],                       tags: [], notes: 'Regulated 5 V output (~500 mA via USB)' },
+                { pin: '3V3', name: '3.3V', fns: [F.pwr('3.3 V out')],                     tags: [], notes: '3.3 V output from on-board regulator (~50 mA)' },
+                { pin: 'GND', name: 'GND',  fns: [F.pwr('GND')],                           tags: [], notes: 'Ground' },
+                { pin: 'VIN', name: 'VIN',  fns: [F.pwr('VIN')],                           tags: [], notes: '7–12 V input to on-board regulator' },
+                { pin: 'RST', name: 'RESET',fns: [F.pwr('RESET')],                         tags: [], notes: 'Pull LOW to reset the microcontroller' },
+            ]
+        },
+
+        nano: {
+            notes: `<h3>Arduino Nano (ATmega328P) — Key Points</h3><ul>
+                <li>Same MCU as Uno — identical pin functions, smaller package</li>
+                <li>Mini-USB or USB-C (newer revision) for programming</li>
+                <li>A6 and A7 are <strong>analog-input only</strong> — cannot be used as digital</li>
+                <li>No dedicated ICSP header; SPI accessible on D10–D13</li>
+                <li>5 V I/O; 40 mA per pin, 200 mA total</li>
+            </ul>`,
+            rows: [
+                { pin: 'D0',  name: 'RX',   fns: [F.dig(0), F.uart(0,'RX')],          tags: ['uart'], notes: 'Serial RX — shared with USB' },
+                { pin: 'D1',  name: 'TX',   fns: [F.dig(1), F.uart(0,'TX')],          tags: ['uart'], notes: 'Serial TX — shared with USB' },
+                { pin: 'D2',  name: 'D2',   fns: [F.dig(2), F.int(0)],                tags: ['int'],  notes: 'INT0' },
+                { pin: 'D3',  name: 'D3',   fns: [F.dig(3), F.pwm(), F.int(1)],       tags: ['pwm','int'], notes: 'PWM + INT1' },
+                { pin: 'D4',  name: 'D4',   fns: [F.dig(4)],                          tags: [], notes: '' },
+                { pin: 'D5',  name: 'D5',   fns: [F.dig(5), F.pwm()],                 tags: ['pwm'], notes: 'PWM ~980 Hz' },
+                { pin: 'D6',  name: 'D6',   fns: [F.dig(6), F.pwm()],                 tags: ['pwm'], notes: 'PWM ~980 Hz' },
+                { pin: 'D7',  name: 'D7',   fns: [F.dig(7)],                          tags: [], notes: '' },
+                { pin: 'D8',  name: 'D8',   fns: [F.dig(8)],                          tags: [], notes: '' },
+                { pin: 'D9',  name: 'D9',   fns: [F.dig(9), F.pwm()],                 tags: ['pwm'], notes: 'PWM ~490 Hz' },
+                { pin: 'D10', name: 'SS',   fns: [F.dig(10), F.pwm(), F.spi('SS')],   tags: ['pwm','spi'], notes: 'SPI SS; PWM' },
+                { pin: 'D11', name: 'MOSI', fns: [F.dig(11), F.pwm(), F.spi('MOSI')], tags: ['pwm','spi'], notes: 'SPI MOSI; PWM' },
+                { pin: 'D12', name: 'MISO', fns: [F.dig(12), F.spi('MISO')],          tags: ['spi'], notes: 'SPI MISO' },
+                { pin: 'D13', name: 'SCK',  fns: [F.dig(13), F.spi('SCK'), F.led()],  tags: ['spi'], notes: 'SPI CLK; onboard LED' },
+                { pin: 'A0',  name: 'A0',   fns: [F.adc(0), F.dig(14)],               tags: ['adc'], notes: '10-bit ADC / digital D14' },
+                { pin: 'A1',  name: 'A1',   fns: [F.adc(1), F.dig(15)],               tags: ['adc'], notes: '' },
+                { pin: 'A2',  name: 'A2',   fns: [F.adc(2), F.dig(16)],               tags: ['adc'], notes: '' },
+                { pin: 'A3',  name: 'A3',   fns: [F.adc(3), F.dig(17)],               tags: ['adc'], notes: '' },
+                { pin: 'A4',  name: 'SDA',  fns: [F.adc(4), F.dig(18), F.i2c('SDA')], tags: ['adc','i2c'], notes: 'I²C SDA + ADC4' },
+                { pin: 'A5',  name: 'SCL',  fns: [F.adc(5), F.dig(19), F.i2c('SCL')], tags: ['adc','i2c'], notes: 'I²C SCL + ADC5' },
+                { pin: 'A6',  name: 'A6',   fns: [F.adc(6), F.onlyIn()],              tags: ['adc'], notes: 'Analog input ONLY — no digital use' },
+                { pin: 'A7',  name: 'A7',   fns: [F.adc(7), F.onlyIn()],              tags: ['adc'], notes: 'Analog input ONLY — no digital use' },
+                { pin: '5V',  name: '5V',   fns: [F.pwr('5 V out')],                   tags: [], notes: '' },
+                { pin: '3V3', name: '3.3V', fns: [F.pwr('3.3 V out')],                 tags: [], notes: '' },
+                { pin: 'GND', name: 'GND',  fns: [F.pwr('GND')],                       tags: [], notes: '' },
+                { pin: 'VIN', name: 'VIN',  fns: [F.pwr('VIN')],                       tags: [], notes: '7–12 V input' },
+            ]
+        },
+
+        mega: {
+            notes: `<h3>Arduino Mega 2560 (ATmega2560) — Key Points</h3><ul>
+                <li>5 V I/O; 40 mA per pin, 200 mA total</li>
+                <li>54 digital I/O pins, 16 analog inputs, 15 PWM outputs</li>
+                <li>4× UART hardware serial ports: Serial (D0/1), Serial1 (D18/19), Serial2 (D16/17), Serial3 (D14/15)</li>
+                <li>I²C: D20 (SDA) + D21 (SCL)</li>
+                <li>SPI (ICSP header): D50 (MISO), D51 (MOSI), D52 (SCK), D53 (SS)</li>
+            </ul>`,
+            rows: [
+                { pin: 'D0',  name: 'RX0',  fns: [F.dig(0), F.uart(0,'RX')],           tags: ['uart'], notes: 'Serial0 RX — USB' },
+                { pin: 'D1',  name: 'TX0',  fns: [F.dig(1), F.uart(0,'TX')],           tags: ['uart'], notes: 'Serial0 TX — USB' },
+                { pin: 'D2',  name: 'D2',   fns: [F.dig(2), F.pwm(), F.int(4)],        tags: ['pwm','int'], notes: 'PWM; INT4' },
+                { pin: 'D3',  name: 'D3',   fns: [F.dig(3), F.pwm(), F.int(5)],        tags: ['pwm','int'], notes: 'PWM; INT5' },
+                { pin: 'D4',  name: 'D4',   fns: [F.dig(4), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D5',  name: 'D5',   fns: [F.dig(5), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D6',  name: 'D6',   fns: [F.dig(6), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D7',  name: 'D7',   fns: [F.dig(7), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D8',  name: 'D8',   fns: [F.dig(8), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D9',  name: 'D9',   fns: [F.dig(9), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D10', name: 'D10',  fns: [F.dig(10), F.pwm()],                 tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D11', name: 'D11',  fns: [F.dig(11), F.pwm()],                 tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D12', name: 'D12',  fns: [F.dig(12), F.pwm()],                 tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D13', name: 'D13',  fns: [F.dig(13), F.pwm(), F.led()],        tags: ['pwm'], notes: 'PWM; onboard LED' },
+                { pin: 'D14', name: 'TX3',  fns: [F.dig(14), F.uart(3,'TX')],          tags: ['uart'], notes: 'Serial3 TX' },
+                { pin: 'D15', name: 'RX3',  fns: [F.dig(15), F.uart(3,'RX')],          tags: ['uart'], notes: 'Serial3 RX' },
+                { pin: 'D16', name: 'TX2',  fns: [F.dig(16), F.uart(2,'TX')],          tags: ['uart'], notes: 'Serial2 TX' },
+                { pin: 'D17', name: 'RX2',  fns: [F.dig(17), F.uart(2,'RX')],          tags: ['uart'], notes: 'Serial2 RX' },
+                { pin: 'D18', name: 'TX1',  fns: [F.dig(18), F.uart(1,'TX'), F.int(5)],tags: ['uart','int'], notes: 'Serial1 TX; INT5' },
+                { pin: 'D19', name: 'RX1',  fns: [F.dig(19), F.uart(1,'RX'), F.int(4)],tags: ['uart','int'], notes: 'Serial1 RX; INT4' },
+                { pin: 'D20', name: 'SDA',  fns: [F.dig(20), F.i2c('SDA'), F.int(3)],  tags: ['i2c','int'], notes: 'I²C SDA; INT3' },
+                { pin: 'D21', name: 'SCL',  fns: [F.dig(21), F.i2c('SCL'), F.int(2)],  tags: ['i2c','int'], notes: 'I²C SCL; INT2' },
+                { pin: 'D22–D53', name: 'D22–D53', fns: [F.dig('22–53')],              tags: [], notes: 'General purpose digital I/O' },
+                { pin: 'D50', name: 'MISO', fns: [F.dig(50), F.spi('MISO')],           tags: ['spi'], notes: 'SPI MISO' },
+                { pin: 'D51', name: 'MOSI', fns: [F.dig(51), F.spi('MOSI')],           tags: ['spi'], notes: 'SPI MOSI' },
+                { pin: 'D52', name: 'SCK',  fns: [F.dig(52), F.spi('SCK')],            tags: ['spi'], notes: 'SPI Clock' },
+                { pin: 'D53', name: 'SS',   fns: [F.dig(53), F.spi('SS')],             tags: ['spi'], notes: 'SPI Slave Select' },
+                { pin: 'A0–A7',  name: 'A0–A7',  fns: [F.adc('0–7')],                  tags: ['adc'], notes: '10-bit ADC; can be used as D54–D61' },
+                { pin: 'A8–A15', name: 'A8–A15', fns: [F.adc('8–15')],                 tags: ['adc'], notes: '10-bit ADC; D62–D69' },
+                { pin: '5V',  name: '5V',   fns: [F.pwr('5 V out')],                    tags: [], notes: '' },
+                { pin: '3V3', name: '3.3V', fns: [F.pwr('3.3 V out')],                  tags: [], notes: '' },
+                { pin: 'GND', name: 'GND',  fns: [F.pwr('GND')],                        tags: [], notes: '' },
+                { pin: 'VIN', name: 'VIN',  fns: [F.pwr('VIN')],                        tags: [], notes: '7–12 V' },
+            ]
+        },
+
+        esp32: {
+            notes: `<h3>ESP32 (WROOM-32 / DevKit) — Key Points</h3><ul>
+                <li>3.3 V I/O — NOT 5 V tolerant; max 40 mA per pin</li>
+                <li>GPIO34–39: <strong>input only</strong>, no pull-up/pull-down, no output</li>
+                <li>GPIO6–11: connected to internal flash — <strong>do not use</strong></li>
+                <li>GPIO0, GPIO2, GPIO15 affect boot mode — avoid pulling during reset</li>
+                <li>ADC2 pins (GPIO0,2,4,12–15,25–27) <strong>cannot be used while WiFi is active</strong></li>
+                <li>Touch, DAC, RTC pins are additional multiplexed functions</li>
+            </ul>`,
+            rows: [
+                { pin: 'GPIO0',  name: 'GPIO0',  fns: [F.adc('2-ch1'), F.touch(1), F.warn('Boot pin')], tags: ['adc'], notes: 'Must be HIGH at boot for normal start; LOW = flash mode' },
+                { pin: 'GPIO1',  name: 'TXD0',   fns: [F.uart(0,'TX')],                   tags: ['uart'], notes: 'Serial0 TX — USB/debug output' },
+                { pin: 'GPIO2',  name: 'GPIO2',   fns: [F.adc('2-ch2'), F.touch(2), F.led(), F.warn('Boot pin')], tags: ['adc'], notes: 'Must be LOW or floating at boot; onboard LED on DevKit' },
+                { pin: 'GPIO3',  name: 'RXD0',   fns: [F.uart(0,'RX')],                   tags: ['uart'], notes: 'Serial0 RX — USB/debug' },
+                { pin: 'GPIO4',  name: 'GPIO4',   fns: [F.adc('2-ch0'), F.touch(0)],       tags: ['adc','touch'], notes: 'ADC2 — no WiFi use' },
+                { pin: 'GPIO5',  name: 'GPIO5',   fns: [F.spi('SS'), F.warn('Boot pin')],  tags: ['spi'], notes: 'SPI SS (VSPI); HIGH at boot required' },
+                { pin: 'GPIO12', name: 'GPIO12',  fns: [F.adc('2-ch5'), F.touch(5), F.spi('MISO'), F.warn('Boot pin')], tags: ['adc','spi'], notes: 'HSPI MISO; must be LOW at boot' },
+                { pin: 'GPIO13', name: 'GPIO13',  fns: [F.adc('2-ch4'), F.touch(4), F.spi('MOSI')], tags: ['adc','spi'], notes: 'HSPI MOSI' },
+                { pin: 'GPIO14', name: 'GPIO14',  fns: [F.adc('2-ch6'), F.touch(6), F.spi('SCK'), F.pwm()], tags: ['adc','spi','pwm'], notes: 'HSPI SCK; PWM output' },
+                { pin: 'GPIO15', name: 'GPIO15',  fns: [F.adc('2-ch3'), F.touch(3), F.spi('SS'), F.warn('Boot pin')], tags: ['adc','spi'], notes: 'HSPI SS; must be HIGH at boot' },
+                { pin: 'GPIO16', name: 'GPIO16',  fns: [F.uart(2,'RX')],                  tags: ['uart'], notes: 'UART2 RX; also PSRAM CS on some modules' },
+                { pin: 'GPIO17', name: 'GPIO17',  fns: [F.uart(2,'TX')],                  tags: ['uart'], notes: 'UART2 TX' },
+                { pin: 'GPIO18', name: 'GPIO18',  fns: [F.spi('SCK')],                    tags: ['spi'], notes: 'VSPI SCK (default SPI clock)' },
+                { pin: 'GPIO19', name: 'GPIO19',  fns: [F.spi('MISO')],                   tags: ['spi'], notes: 'VSPI MISO' },
+                { pin: 'GPIO21', name: 'SDA',     fns: [F.i2c('SDA')],                    tags: ['i2c'], notes: 'Default I²C SDA (Wire library)' },
+                { pin: 'GPIO22', name: 'SCL',     fns: [F.i2c('SCL')],                    tags: ['i2c'], notes: 'Default I²C SCL (Wire library)' },
+                { pin: 'GPIO23', name: 'GPIO23',  fns: [F.spi('MOSI')],                   tags: ['spi'], notes: 'VSPI MOSI' },
+                { pin: 'GPIO25', name: 'GPIO25',  fns: [F.adc('2-ch8'), F.dac(1)],        tags: ['adc','dac'], notes: 'DAC1 — analog voltage output; ADC2' },
+                { pin: 'GPIO26', name: 'GPIO26',  fns: [F.adc('2-ch9'), F.dac(2)],        tags: ['adc','dac'], notes: 'DAC2 — analog voltage output; ADC2' },
+                { pin: 'GPIO27', name: 'GPIO27',  fns: [F.adc('2-ch7'), F.touch(7)],      tags: ['adc'], notes: 'ADC2 — no WiFi use' },
+                { pin: 'GPIO32', name: 'GPIO32',  fns: [F.adc('1-ch4'), F.touch(9), F.rtc()], tags: ['adc'], notes: 'ADC1 — safe during WiFi' },
+                { pin: 'GPIO33', name: 'GPIO33',  fns: [F.adc('1-ch5'), F.touch(8), F.rtc()], tags: ['adc'], notes: 'ADC1 — safe during WiFi' },
+                { pin: 'GPIO34', name: 'GPIO34',  fns: [F.adc('1-ch6'), F.onlyIn()],      tags: ['adc'], notes: 'Input only — no output, no pull-up' },
+                { pin: 'GPIO35', name: 'GPIO35',  fns: [F.adc('1-ch7'), F.onlyIn()],      tags: ['adc'], notes: 'Input only — no output, no pull-up' },
+                { pin: 'GPIO36', name: 'VP',      fns: [F.adc('1-ch0'), F.onlyIn()],      tags: ['adc'], notes: 'Input only (VP); ADC1_CH0' },
+                { pin: 'GPIO39', name: 'VN',      fns: [F.adc('1-ch3'), F.onlyIn()],      tags: ['adc'], notes: 'Input only (VN); ADC1_CH3' },
+                { pin: 'GPIO6–11', name: 'FLASH', fns: [F.warn('FLASH — DO NOT USE')],    tags: [], notes: 'Connected to SPI flash — using these will crash the chip' },
+                { pin: 'EN',     name: 'EN',      fns: [F.pwr('ENABLE')],                  tags: [], notes: 'Pull LOW to reset / disable chip' },
+                { pin: '3V3',    name: '3.3V',    fns: [F.pwr('3.3 V out')],               tags: [], notes: 'Up to 600 mA from LDO on DevKit' },
+                { pin: 'GND',    name: 'GND',     fns: [F.pwr('GND')],                     tags: [], notes: '' },
+                { pin: 'VIN',    name: 'VIN',     fns: [F.pwr('VIN')],                     tags: [], notes: '5 V input to on-board LDO' },
+            ]
+        },
+
+        esp8266: {
+            notes: `<h3>ESP8266 (NodeMCU v3 / ESP-12E) — Key Points</h3><ul>
+                <li>3.3 V I/O — NOT 5 V tolerant; max 12 mA per pin</li>
+                <li>Only <strong>1 ADC pin</strong> (A0) — max input 1.0 V (NodeMCU has on-board divider to 3.3 V)</li>
+                <li>GPIO6–11: internal flash — <strong>do not use</strong></li>
+                <li>GPIO0, GPIO2, GPIO15 control boot mode — avoid external pull-downs on GPIO15, GPIO2 must be HIGH</li>
+                <li>GPIO16: special — no PWM, no I²C, no SPI; wake from deep sleep using RST</li>
+            </ul>`,
+            rows: [
+                { pin: 'GPIO0',  name: 'D3',  fns: [F.warn('Boot pin'), F.pwm()],             tags: ['pwm'], notes: 'Must be HIGH for normal boot; LOW = flash mode; has internal pull-up' },
+                { pin: 'GPIO1',  name: 'TXD', fns: [F.uart(0,'TX'), F.warn('Boot pin')],      tags: ['uart'], notes: 'Serial TX; also outputs debug on boot' },
+                { pin: 'GPIO2',  name: 'D4',  fns: [F.uart(1,'TX'), F.pwm(), F.led(), F.warn('Boot pin')], tags: ['pwm','uart'], notes: 'Must be HIGH at boot; onboard LED active LOW; UART1 TX' },
+                { pin: 'GPIO3',  name: 'RXD', fns: [F.uart(0,'RX')],                          tags: ['uart'], notes: 'Serial RX' },
+                { pin: 'GPIO4',  name: 'D2',  fns: [F.i2c('SDA'), F.pwm()],                   tags: ['i2c','pwm'], notes: 'Default I²C SDA' },
+                { pin: 'GPIO5',  name: 'D1',  fns: [F.i2c('SCL'), F.pwm()],                   tags: ['i2c','pwm'], notes: 'Default I²C SCL' },
+                { pin: 'GPIO6–11', name: 'FLASH', fns: [F.warn('FLASH — DO NOT USE')],        tags: [], notes: 'Internal SPI flash — do not use' },
+                { pin: 'GPIO12', name: 'D6',  fns: [F.spi('MISO'), F.pwm()],                  tags: ['spi','pwm'], notes: 'HSPI MISO' },
+                { pin: 'GPIO13', name: 'D7',  fns: [F.spi('MOSI'), F.uart(0,'RX'), F.pwm()],  tags: ['spi','pwm','uart'], notes: 'HSPI MOSI; UART0 RX (alt)' },
+                { pin: 'GPIO14', name: 'D5',  fns: [F.spi('SCK'), F.pwm()],                   tags: ['spi','pwm'], notes: 'HSPI SCK' },
+                { pin: 'GPIO15', name: 'D8',  fns: [F.spi('SS'), F.uart(0,'TX'), F.warn('Boot pin')], tags: ['spi','uart'], notes: 'Must be LOW at boot; HSPI SS; has internal pull-down' },
+                { pin: 'GPIO16', name: 'D0',  fns: [F.rtc()],                                 tags: [], notes: 'Wake from deep sleep (connect to RST); no PWM/I²C/SPI; no interrupt' },
+                { pin: 'A0',     name: 'A0',  fns: [F.adc(), F.onlyIn()],                     tags: ['adc'], notes: '10-bit ADC; max 1.0 V direct on chip; NodeMCU divider → 3.3 V range' },
+                { pin: '3V3',    name: '3.3V',fns: [F.pwr('3.3 V out')],                      tags: [], notes: '~500 mA from NodeMCU regulator' },
+                { pin: 'GND',    name: 'GND', fns: [F.pwr('GND')],                            tags: [], notes: '' },
+                { pin: 'VIN',    name: 'VIN', fns: [F.pwr('5 V in')],                         tags: [], notes: 'NodeMCU on-board regulator input (5 V via USB or pin)' },
+                { pin: 'RST',    name: 'RST', fns: [F.pwr('RESET')],                          tags: [], notes: 'Pull LOW to reset; connect to GPIO16 for deep sleep wake' },
+            ]
+        }
+    };
+
+    let activePlat = 'uno';
+    let activeFn   = 'all';
+
+    function render() {
+        const plat = PLATFORMS[activePlat];
+        const q    = document.getElementById('search').value.toLowerCase();
+
+        const rows = plat.rows.filter(r => {
+            const matchFn  = activeFn === 'all' || r.tags.includes(activeFn);
+            const text     = (r.pin + ' ' + r.name + ' ' + r.notes).toLowerCase();
+            const matchQ   = !q || text.includes(q);
+            return matchFn && matchQ;
+        });
+
+        const tbody = document.getElementById('table-body');
+        if (rows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="no-results">No pins match filter</td></tr>';
+        } else {
+            tbody.innerHTML = rows.map(r =>
+                `<tr>
+                    <td class="pin-num">${r.pin}</td>
+                    <td class="pin-name">${r.name}</td>
+                    <td>${r.fns.join('')}</td>
+                    <td class="notes">${r.notes}</td>
+                </tr>`
+            ).join('');
+        }
+
+        document.getElementById('row-count').textContent = `Showing ${rows.length} of ${plat.rows.length} pins`;
+        document.getElementById('plat-notes').innerHTML = plat.notes;
+    }
+
+    // Platform tabs
+    document.getElementById('plat-tabs').addEventListener('click', e => {
+        const btn = e.target.closest('.plat-tab');
+        if (!btn) return;
+        document.querySelectorAll('.plat-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activePlat = btn.dataset.plat;
+        document.getElementById('search').value = '';
+        activeFn = 'all';
+        document.querySelectorAll('.flt-btn').forEach(b => b.classList.toggle('active', b.dataset.fn === 'all'));
+        render();
+    });
+
+    // Function filter
+    document.getElementById('flt-group').addEventListener('click', e => {
+        const btn = e.target.closest('.flt-btn');
+        if (!btn) return;
+        document.querySelectorAll('.flt-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFn = btn.dataset.fn;
+        render();
+    });
+
+    // Search
+    document.getElementById('search').addEventListener('input', render);
+
+    render();
+    </script>
+</body>
+</html>

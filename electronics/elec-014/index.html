@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RC Filter Calculator — Low-Pass & High-Pass | StrokeForge Electronics</title>
+    <meta name="description" content="Calculate RC low-pass and high-pass filter cutoff frequency fc = 1/(2πRC). Get attenuation at any frequency, Bode plot, and phase response.">
+    <meta name="keywords" content="RC filter, low pass filter, high pass filter, cutoff frequency, RC calculator, Bode plot, fc = 1/2piRC">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-014/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 860px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .mode-toggle { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem; }
+        .mode-btn { flex: 1; padding: 0.6rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+        .mode-btn.active { background: var(--primary-orange); color: #000; }
+        .mode-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .hint { font-size: 0.72rem; color: var(--text-gray); }
+
+        .res-hero { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        @media (max-width: 500px) { .res-hero { grid-template-columns: 1fr 1fr; } }
+        .rh { background: var(--darker-bg); border-radius: 10px; padding: 1rem 1.2rem; }
+        .rh .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .rh .val { font-size: 1.4rem; font-weight: 800; color: var(--primary-orange); }
+        .rh .sub { font-size: 0.75rem; color: var(--text-gray); margin-top: 0.2rem; }
+
+        .freq-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-top: 1rem; }
+        .freq-table th { padding: 0.45rem 0.75rem; text-align: left; color: var(--text-gray); border-bottom: 2px solid var(--border-gray); }
+        .freq-table td { padding: 0.4rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .freq-table tr:hover td { background: rgba(255,107,53,0.05); }
+        .freq-table tr.fc-row td { background: rgba(255,107,53,0.1); }
+        .freq-table tr.fc-row td:first-child { color: var(--primary-orange); font-weight: 700; }
+
+        .svg-wrap { overflow-x: auto; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.88rem; line-height: 1.9; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../engineering.html">Engineering</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../other.html">Other</a>
+                <a href="../../3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>📉 RC Filter Calculator</h1>
+        <p>Low-pass and high-pass filter — cutoff frequency, attenuation table, and Bode plot.</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="../../electronics.html" class="back-button">← Back to Electronics</a>
+
+        <!-- CALCULATOR -->
+        <div class="card">
+            <h2>Calculator</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn active" id="btn-lp" onclick="setMode('lp')">Low-pass filter</button>
+                <button class="mode-btn" id="btn-hp" onclick="setMode('hp')">High-pass filter</button>
+            </div>
+            <div class="input-grid">
+                <div class="field">
+                    <label>Resistance (R)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="R" placeholder="10" min="0" step="any" oninput="calculate()">
+                        <select class="sel" id="Runit" onchange="calculate()">
+                            <option value="1">Ω</option>
+                            <option value="1e3" selected>kΩ</option>
+                            <option value="1e6">MΩ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Capacitance (C)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="C" placeholder="100" min="0" step="any" oninput="calculate()">
+                        <select class="sel" id="Cunit" onchange="calculate()">
+                            <option value="1e-12">pF</option>
+                            <option value="1e-9">nF</option>
+                            <option value="1e-6" selected>µF</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Check frequency (optional)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="fcheck" placeholder="1000" min="0" step="any" oninput="calculate()">
+                        <select class="sel" id="fcheckunit" onchange="calculate()">
+                            <option value="1">Hz</option>
+                            <option value="1e3" selected>kHz</option>
+                            <option value="1e6">MHz</option>
+                        </select>
+                    </div>
+                    <div class="hint">Get attenuation at this frequency</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card" id="results-card" style="display:none">
+            <h2>Results</h2>
+            <div class="res-hero">
+                <div class="rh">
+                    <div class="lbl">Cutoff frequency (fc)</div>
+                    <div class="val" id="res-fc">—</div>
+                    <div class="sub">−3 dB point</div>
+                </div>
+                <div class="rh">
+                    <div class="lbl">Time constant (τ)</div>
+                    <div class="val" style="color:#4ade80" id="res-tau">—</div>
+                    <div class="sub">τ = R × C = 1 / (2π × fc)</div>
+                </div>
+                <div class="rh" id="check-block" style="display:none">
+                    <div class="lbl" id="check-lbl">At f check</div>
+                    <div class="val" style="color:#60a5fa" id="res-atten">—</div>
+                    <div class="sub" id="res-atten-sub">—</div>
+                </div>
+            </div>
+
+            <!-- Attenuation table -->
+            <div style="overflow-x:auto">
+            <table class="freq-table">
+                <thead><tr><th>Frequency</th><th>f / fc ratio</th><th>Attenuation</th><th>Phase shift</th><th>Passes?</th></tr></thead>
+                <tbody id="freq-tbody"></tbody>
+            </table>
+            </div>
+        </div>
+
+        <!-- BODE PLOT -->
+        <div class="card" id="chart-card" style="display:none">
+            <h2 id="chart-title">Bode plot — Low-pass</h2>
+            <div class="svg-wrap">
+                <svg id="bode-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+        </div>
+
+        <!-- CIRCUIT -->
+        <div class="card">
+            <h2>Circuit diagram</h2>
+            <div class="svg-wrap">
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 160" width="640" height="160"></svg>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>RC filter basics</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Key formulas</h3>
+                    <p class="mono">
+                        fc = 1 / (2π × R × C)<br>
+                        τ  = R × C = 1 / (2π × fc)<br>
+                        Gain (LP): H = 1 / √(1+(f/fc)²)<br>
+                        Gain (HP): H = (f/fc) / √(1+(f/fc)²)<br>
+                        Rolloff: −20 dB/decade (1st order)
+                    </p>
+                </div>
+                <div class="info-block">
+                    <h3>Low-pass filter</h3>
+                    <ul>
+                        <li>Passes frequencies <strong>below fc</strong>, attenuates above</li>
+                        <li>At fc: signal is −3 dB (70.7% of input)</li>
+                        <li>At 10×fc: −20 dB (10% of input)</li>
+                        <li>Uses: audio treble cut, ADC anti-aliasing, PWM smoothing, noise reduction</li>
+                        <li>Output taken across <strong>C</strong></li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>High-pass filter</h3>
+                    <ul>
+                        <li>Passes frequencies <strong>above fc</strong>, attenuates below</li>
+                        <li>At fc: −3 dB (same as low-pass)</li>
+                        <li>At fc/10: −20 dB</li>
+                        <li>Uses: AC coupling, bass cut, DC blocking, differentiation</li>
+                        <li>Output taken across <strong>R</strong></li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Practical tips</h3>
+                    <ul>
+                        <li>Load resistance forms a divider with R — use a buffer (op-amp) after the filter</li>
+                        <li>For steeper rolloff, cascade multiple RC stages (adds −20 dB/decade per stage)</li>
+                        <li>Preferred R values: 1 kΩ – 100 kΩ for audio/signal work</li>
+                        <li>Use NP0/C0G ceramic caps for accurate, stable fc</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Part of <a href="../../electronics.html">StrokeForge Electronics</a> — free tools for makers</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    let mode = 'lp';
+
+    function setMode(m) {
+        mode = m;
+        ['lp','hp'].forEach(x => {
+            document.getElementById('btn-' + x).classList.toggle('active', x === m);
+        });
+        document.getElementById('chart-title').textContent = 'Bode plot — ' + (m === 'lp' ? 'Low-pass' : 'High-pass');
+        calculate();
+        drawCircuit();
+    }
+
+    function g(id) { const v = parseFloat(document.getElementById(id).value); return isNaN(v) ? null : v; }
+    function gu(id) { return parseFloat(document.getElementById(id).value); }
+
+    function fmtFreq(f) {
+        if (f >= 1e6) return (f/1e6).toPrecision(4).replace(/\.?0+$/,'') + ' MHz';
+        if (f >= 1e3) return (f/1e3).toPrecision(4).replace(/\.?0+$/,'') + ' kHz';
+        return f.toPrecision(4).replace(/\.?0+$/,'') + ' Hz';
+    }
+    function fmtTime(s) {
+        if (s >= 1)    return s.toPrecision(4).replace(/\.?0+$/,'') + ' s';
+        if (s >= 1e-3) return (s*1e3).toPrecision(4).replace(/\.?0+$/,'') + ' ms';
+        if (s >= 1e-6) return (s*1e6).toPrecision(4).replace(/\.?0+$/,'') + ' µs';
+        return (s*1e9).toPrecision(4).replace(/\.?0+$/,'') + ' ns';
+    }
+
+    function gainLP(ratio) { return 1 / Math.sqrt(1 + ratio * ratio); }
+    function gainHP(ratio) { return ratio / Math.sqrt(1 + ratio * ratio); }
+    function phaseLP(ratio) { return -Math.atan(ratio) * 180 / Math.PI; }
+    function phaseHP(ratio) { return 90 - Math.atan(ratio) * 180 / Math.PI; }
+
+    function calculate() {
+        const Rv = g('R'); const Ru = gu('Runit');
+        const Cv = g('C'); const Cu = gu('Cunit');
+        const rc = document.getElementById('results-card');
+        const cc = document.getElementById('chart-card');
+
+        if (!Rv || !Cv) { rc.style.display='none'; cc.style.display='none'; return; }
+
+        const R = Rv * Ru, C = Cv * Cu;
+        const tau = R * C;
+        const fc  = 1 / (2 * Math.PI * tau);
+
+        document.getElementById('res-fc').textContent  = fmtFreq(fc);
+        document.getElementById('res-tau').textContent = fmtTime(tau);
+
+        // Optional check frequency
+        const fchv = g('fcheck'); const fchu = gu('fcheckunit');
+        const checkBlock = document.getElementById('check-block');
+        if (fchv && fchv > 0) {
+            const fch = fchv * fchu;
+            const ratio = fch / fc;
+            const gain = mode === 'lp' ? gainLP(ratio) : gainHP(ratio);
+            const dB   = 20 * Math.log10(gain);
+            const ph   = mode === 'lp' ? phaseLP(ratio) : phaseHP(ratio);
+            document.getElementById('check-lbl').textContent = 'At ' + fmtFreq(fch);
+            document.getElementById('res-atten').textContent = dB.toFixed(2) + ' dB';
+            document.getElementById('res-atten-sub').textContent =
+                (gain * 100).toFixed(1) + '% amplitude, ' + ph.toFixed(1) + '° phase';
+            checkBlock.style.display = '';
+        } else {
+            checkBlock.style.display = 'none';
+        }
+
+        // Attenuation table
+        const tbody = document.getElementById('freq-tbody');
+        tbody.innerHTML = '';
+        const points = [0.01, 0.1, 0.5, 1, 2, 5, 10, 100];
+        points.forEach(ratio => {
+            const f    = fc * ratio;
+            const gain = mode === 'lp' ? gainLP(ratio) : gainHP(ratio);
+            const dB   = 20 * Math.log10(gain);
+            const ph   = mode === 'lp' ? phaseLP(ratio) : phaseHP(ratio);
+            const passes = mode === 'lp' ? ratio <= 1 : ratio >= 1;
+            const tr = document.createElement('tr');
+            if (ratio === 1) tr.className = 'fc-row';
+            tr.innerHTML = `
+                <td>${fmtFreq(f)}</td>
+                <td style="color:var(--text-gray)">f = ${ratio}×fc${ratio===1?' ← fc':''}</td>
+                <td style="color:${Math.abs(dB)<3?'#4ade80':'#fb923c'}">${dB.toFixed(2)} dB</td>
+                <td style="color:var(--text-gray)">${ph.toFixed(1)}°</td>
+                <td style="color:${passes?'#4ade80':'#f87171'}">${passes?'✓ Pass':'✗ Stop'}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        rc.style.display = '';
+        cc.style.display = '';
+        drawBode(fc);
+    }
+
+    // ── Bode Plot ─────────────────────────────────────────────────────────
+    function drawBode(fc) {
+        const svg = document.getElementById('bode-svg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const ns = 'http://www.w3.org/2000/svg';
+        const W=760, H=220, PL=55, PR=20, PT=20, PB=40;
+        const CW = W-PL-PR, CH = H-PT-PB;
+        svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+        svg.setAttribute('width','100%');
+        svg.setAttribute('style','max-width:760px');
+
+        function el(tag,attrs,text) {
+            const e = document.createElementNS(ns,tag);
+            Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
+            if(text!==undefined) e.textContent=text;
+            return e;
+        }
+        function line(x1,y1,x2,y2,col,w,dash) {
+            const a={x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1,'stroke-linecap':'round'};
+            if(dash) a['stroke-dasharray']=dash;
+            return el('line',a);
+        }
+        function txt(x,y,t,col,sz,anc) {
+            return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);
+        }
+
+        // dB range: 0 to -60
+        const dbMin=-60, dbMax=0;
+        // freq range: fc/100 to fc*100 (4 decades)
+        const fMin = fc/100, fMax = fc*100;
+        const logMin=Math.log10(fMin), logMax=Math.log10(fMax);
+
+        function xOf(f)  { return PL + (Math.log10(f)-logMin)/(logMax-logMin)*CW; }
+        function yOf(db) { return PT + (1-(db-dbMin)/(dbMax-dbMin))*CH; }
+
+        // Axes
+        svg.appendChild(line(PL,PT,PL,PT+CH,'#4b5563',1.5));
+        svg.appendChild(line(PL,PT+CH,PL+CW,PT+CH,'#4b5563',1.5));
+
+        // Y grid (dB)
+        [-60,-40,-20,-10,-3,0].forEach(db => {
+            const y = yOf(db);
+            svg.appendChild(line(PL,y,PL+CW,y,'#374151',0.8,'4,3'));
+            svg.appendChild(txt(PL-8,y,db+'dB','#6b7280',9,'end'));
+        });
+
+        // X grid (decade markers)
+        for (let d = Math.ceil(logMin); d <= Math.floor(logMax); d++) {
+            const x = xOf(Math.pow(10,d));
+            if (x < PL || x > PL+CW) continue;
+            svg.appendChild(line(x,PT,x,PT+CH,'#374151',0.8,'4,3'));
+            const f = Math.pow(10,d);
+            svg.appendChild(txt(x,PT+CH+12,fmtFreq(f),'#6b7280',8,'middle'));
+        }
+
+        // fc marker
+        const xfc = xOf(fc);
+        svg.appendChild(line(xfc,PT,xfc,PT+CH,'#fb923c',1.5,'5,3'));
+        svg.appendChild(txt(xfc,PT-8,'fc','#fb923c',9,'middle'));
+
+        // −3 dB line
+        const y3 = yOf(-3);
+        svg.appendChild(line(PL,y3,PL+CW,y3,'#fb923c',1,'4,3'));
+        svg.appendChild(txt(PL+8,y3-6,'−3 dB','#fb923c',8,'start'));
+
+        // Curve
+        const pts=[];
+        for(let i=0;i<=300;i++){
+            const f = fMin * Math.pow(fMax/fMin, i/300);
+            const ratio = f/fc;
+            const gain = mode==='lp' ? gainLP(ratio) : gainHP(ratio);
+            const db = 20*Math.log10(gain);
+            const x = xOf(f), y = yOf(Math.max(dbMin, db));
+            pts.push(`${i===0?'M':'L'}${x.toFixed(1)},${y.toFixed(1)}`);
+        }
+        svg.appendChild(el('path',{d:pts.join(' '),fill:'none',stroke:'#fb923c','stroke-width':2.5,'stroke-linecap':'round'}));
+
+        // fc dot
+        svg.appendChild(el('circle',{cx:xfc,cy:y3,r:4,fill:'#fb923c'}));
+
+        // Labels
+        svg.appendChild(txt(PL+CW/2,H-5,'Frequency',  '#6b7280',10,'middle'));
+        svg.appendChild(txt(12,PT+CH/2,'Gain (dB)','#6b7280',10,'middle'));
+    }
+
+    // ── Circuit SVG ───────────────────────────────────────────────────────
+    function drawCircuit() {
+        const svg = document.getElementById('circuit-svg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const ns = 'http://www.w3.org/2000/svg';
+        function el(tag,attrs,text) {
+            const e=document.createElementNS(ns,tag);
+            Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
+            if(text!==undefined) e.textContent=text;
+            return e;
+        }
+        function line(x1,y1,x2,y2,col,w) {
+            return el('line',{x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'round'});
+        }
+        function txt(x,y,t,col,sz,anc) {
+            return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);
+        }
+
+        if (mode === 'lp') {
+            // Low-pass: R series, C to GND, output across C
+            svg.appendChild(txt(320,14,'Low-Pass Filter — output across C','#fb923c',11,'middle'));
+            svg.appendChild(line(40,60,110,60));
+            svg.appendChild(txt(40,48,'Vin','#facc15',10,'middle'));
+            // R box
+            svg.appendChild(el('rect',{x:110,y:48,width:70,height:24,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
+            svg.appendChild(txt(145,60,'R','#4ade80',11,'middle'));
+            svg.appendChild(line(180,60,290,60));
+            // C to GND
+            svg.appendChild(line(235,60,235,78));
+            svg.appendChild(line(220,78,250,78,  '#60a5fa',2));
+            svg.appendChild(line(222,83,248,83,  '#60a5fa',2));
+            svg.appendChild(line(235,83,235,105));
+            svg.appendChild(txt(262,80,'C','#60a5fa',11,'start'));
+            // GND
+            svg.appendChild(line(40,105,400,105,'#6b7280',1));
+            svg.appendChild(line(40,60,40,105));
+            // Output
+            svg.appendChild(line(290,60,370,60));
+            svg.appendChild(txt(385,60,'Vout','#facc15',10,'middle'));
+            svg.appendChild(line(370,60,370,105));
+            // Output label
+            svg.appendChild(txt(235,125,'Output across C (low freq pass)','#60a5fa',9,'middle'));
+        } else {
+            // High-pass: C series, R to GND, output across R
+            svg.appendChild(txt(320,14,'High-Pass Filter — output across R','#fb923c',11,'middle'));
+            svg.appendChild(line(40,60,110,60));
+            svg.appendChild(txt(40,48,'Vin','#facc15',10,'middle'));
+            // C series
+            svg.appendChild(line(110,48,110,83));
+            svg.appendChild(line(95,78,125,78,   '#60a5fa',2));
+            svg.appendChild(line(95,83,125,83,   '#60a5fa',2));
+            svg.appendChild(line(110,83,110,105));
+            svg.appendChild(line(40,60,40,105));
+            // wait, redo - C in series horizontally
+            // Vin → C (horizontal plates) → node → R to GND → Vout at node
+            while(svg.firstChild) svg.removeChild(svg.firstChild);
+            svg.appendChild(txt(320,14,'High-Pass Filter — output across R','#fb923c',11,'middle'));
+            svg.appendChild(line(40,70,120,70));
+            svg.appendChild(txt(40,58,'Vin','#facc15',10,'middle'));
+            // C plates
+            svg.appendChild(line(120,56,120,84,'#60a5fa',2));
+            svg.appendChild(line(130,56,130,84,'#60a5fa',2));
+            svg.appendChild(line(130,70,220,70));
+            svg.appendChild(txt(125,45,'C','#60a5fa',11,'middle'));
+            // R box (vertical, to GND)
+            svg.appendChild(el('rect',{x:208,y:70,width:24,height:60,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
+            svg.appendChild(txt(220,100,'R','#4ade80',11,'middle'));
+            svg.appendChild(line(220,130,220,145));
+            // GND symbol
+            svg.appendChild(line(206,145,234,145,'#6b7280',1.5));
+            svg.appendChild(line(209,149,231,149,'#6b7280',1));
+            svg.appendChild(line(213,153,227,153,'#6b7280',0.8));
+            // Output from node
+            svg.appendChild(line(220,70,330,70));
+            svg.appendChild(txt(345,70,'Vout','#facc15',10,'middle'));
+            // Vin GND
+            svg.appendChild(line(40,70,40,145));
+            svg.appendChild(line(40,145,220,145,'#6b7280',1));
+            svg.appendChild(txt(220,118,'Output across R (high freq pass)','#4ade80',9,'middle'));
+        }
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────
+    drawCircuit();
+    calculate();
+    </script>
+</body>
+</html>

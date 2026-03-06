@@ -1,0 +1,8 @@
+{
+  "id": "elec-020",
+  "title": "Max GPIO Current Reference",
+  "category": "reference",
+  "description": "Maximum GPIO current limits for Arduino, ESP32, ESP8266, Raspberry Pi, STM32, Teensy, and more. Per-pin absolute max, recommended safe current, and total package budget. Filterable and searchable.",
+  "icon": "⚡",
+  "difficulty": "beginner"
+}

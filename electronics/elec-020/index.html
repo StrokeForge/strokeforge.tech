@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Max GPIO Current Reference | StrokeForge Electronics</title>
+    <meta name="description" content="Maximum GPIO current limits for Arduino, ESP32, ESP8266, Raspberry Pi, STM32, and other microcontrollers. Per-pin and total package limits, recommended safe current levels.">
+    <meta name="keywords" content="GPIO current limit, Arduino current, ESP32 GPIO current, STM32 GPIO, microcontroller pin current, GPIO safe current">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-020/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 980px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-gray); text-decoration: none; font-size: 0.88rem; margin-bottom: 1.5rem; transition: color 0.2s; }
+        .back-btn:hover { color: var(--primary-orange); }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Controls */
+        .controls { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.25rem; }
+        .search-wrap { position: relative; flex: 1; min-width: 180px; }
+        .search-wrap input { width: 100%; box-sizing: border-box; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem 0.5rem 2rem; font-size: 0.9rem; outline: none; }
+        .search-wrap input:focus { border-color: var(--primary-orange); }
+        .search-icon { position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; pointer-events: none; }
+        .filter-group { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; }
+        .flt-btn { padding: 0.5rem 0.9rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
+        .flt-btn.active { background: var(--primary-orange); color: #000; }
+        .flt-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        /* Table */
+        .tbl-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        thead th { background: var(--darker-bg); color: var(--text-gray); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.6rem 0.8rem; border-bottom: 2px solid var(--border-gray); text-align: left; white-space: nowrap; cursor: pointer; user-select: none; }
+        thead th:hover { color: var(--primary-orange); }
+        thead th .sort-arrow { margin-left: 0.3rem; opacity: 0.4; }
+        thead th.sorted .sort-arrow { opacity: 1; color: var(--primary-orange); }
+        tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
+        tbody tr:hover { background: rgba(255,165,0,0.04); }
+        tbody td { padding: 0.6rem 0.8rem; color: var(--light-gray); vertical-align: middle; }
+        td.platform { font-weight: 600; color: var(--primary-orange); }
+        td.chip { color: var(--text-gray); font-size: 0.82rem; }
+        td.num { text-align: right; font-variant-numeric: tabular-nums; }
+        td.rec { color: #4ade80; font-weight: 600; }
+        td.warn { color: #f59e0b; }
+        td.danger { color: #f87171; font-weight: 700; }
+        td.notes { font-size: 0.8rem; color: var(--text-gray); }
+
+        /* Badge */
+        .badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .badge-5v { background: #1d4ed8; color: #93c5fd; }
+        .badge-33v { background: #166534; color: #86efac; }
+        .badge-18v { background: #7c3aed; color: #c4b5fd; }
+        .badge-12v { background: #92400e; color: #fcd34d; }
+
+        /* Info rows */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.6rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.55; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+
+        .row-count { font-size: 0.78rem; color: var(--text-gray); margin-top: 0.6rem; }
+        .no-results { text-align: center; color: var(--text-gray); padding: 2rem; font-size: 0.9rem; }
+
+        /* Footer info */
+        .info-section { margin-top: 1rem; }
+        .info-section summary { cursor: pointer; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; padding: 0.5rem 0; }
+        .info-section summary:hover { opacity: 0.85; }
+        .info-section[open] summary { margin-bottom: 0.75rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html">Engineering</a>
+                <a href="/electronics.html" class="active">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Max GPIO Current Reference</h1>
+        <p>Per-pin and total package GPIO current limits for popular microcontrollers</p>
+    </div>
+
+    <div class="tool-wrap">
+        <a href="/electronics.html" class="back-btn">← Back to Electronics</a>
+
+        <div class="card">
+            <h2>GPIO Current Limits</h2>
+
+            <div class="controls">
+                <div class="search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search" placeholder="Search platform or chip…">
+                </div>
+                <div class="filter-group">
+                    <button class="flt-btn active" data-flt="all">All</button>
+                    <button class="flt-btn" data-flt="5v">5 V</button>
+                    <button class="flt-btn" data-flt="3.3v">3.3 V</button>
+                    <button class="flt-btn" data-flt="other">Other</button>
+                </div>
+            </div>
+
+            <div class="tbl-wrap">
+                <table id="gpio-table">
+                    <thead>
+                        <tr>
+                            <th data-col="platform">Platform <span class="sort-arrow">↕</span></th>
+                            <th data-col="chip">Chip <span class="sort-arrow">↕</span></th>
+                            <th data-col="vcc">Vcc <span class="sort-arrow">↕</span></th>
+                            <th data-col="maxPin" title="Absolute maximum per GPIO pin">Max/Pin (mA) <span class="sort-arrow">↕</span></th>
+                            <th data-col="recPin" title="Recommended safe current per pin">Rec/Pin (mA) <span class="sort-arrow">↕</span></th>
+                            <th data-col="totalPkg" title="Total current from all GPIO pins combined">Total Pkg (mA) <span class="sort-arrow">↕</span></th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+                <div class="row-count" id="row-count"></div>
+            </div>
+        </div>
+
+        <div class="card info-section-card">
+            <h2>Important Notes</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Max vs. Recommended</h3>
+                    <p>The <strong>max per-pin</strong> value is the absolute limit from the datasheet — exceeding it will damage the pin. The <strong>recommended</strong> value is the safe working current for long-term reliability (typically 60–70% of max).</p>
+                </div>
+                <div class="info-block">
+                    <h3>Total Package Budget</h3>
+                    <p>Even if individual pins are within limits, the <strong>total current</strong> drawn from all GPIO pins combined must stay below the package limit. Overloading the total budget causes chip overheating and resets.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Drive LEDs Safely</h3>
+                    <ul>
+                        <li>Always use a series resistor</li>
+                        <li>Keep LED current ≤ 10 mA per GPIO pin</li>
+                        <li>For multiple LEDs, use a transistor or MOSFET</li>
+                        <li>For higher loads, use a driver IC (ULN2003, L293D)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Special Pins</h3>
+                    <p>Some platforms have pins with different current ratings — e.g. ESP8266 GPIO16 differs from others, RPi GPIO2/3 are shared I²C pins. Always check the specific datasheet for your pin.</p>
+                </div>
+            </div>
+        </div>
+
+        <details class="card info-section">
+            <summary>When to use a transistor or MOSFET?</summary>
+            <div class="info-grid" style="margin-top:0.5rem;">
+                <div class="info-block">
+                    <h3>Use a NPN transistor when…</h3>
+                    <ul>
+                        <li>Load current &gt; 20 mA</li>
+                        <li>Load is DC (motor, relay, LED array)</li>
+                        <li>Low-side switching (ground-side)</li>
+                        <li>Example: BC547, 2N2222, PN2222</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Use a N-channel MOSFET when…</h3>
+                    <ul>
+                        <li>Load current &gt; 100 mA</li>
+                        <li>High efficiency needed (low Rds(on))</li>
+                        <li>Switching motors, heaters, solenoids</li>
+                        <li>Example: IRLZ44N, 2N7000, AO3400</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <script>
+    const ROWS = [
+        // platform, chip, vcc, vcc_class, maxPin, recPin, totalPkg, notes
+        { platform: 'Arduino Uno', chip: 'ATmega328P', vcc: '5 V', vcc_class: '5v', maxPin: 40, recPin: 20, totalPkg: 200, notes: '40 mA per pin absolute max; 200 mA total for all I/O combined' },
+        { platform: 'Arduino Mega', chip: 'ATmega2560', vcc: '5 V', vcc_class: '5v', maxPin: 40, recPin: 20, totalPkg: 200, notes: 'Same ratings as Uno; spread load across multiple ports' },
+        { platform: 'Arduino Nano', chip: 'ATmega328P', vcc: '5 V', vcc_class: '5v', maxPin: 40, recPin: 20, totalPkg: 200, notes: 'Identical to Uno internally' },
+        { platform: 'Arduino Pro Mini', chip: 'ATmega328P', vcc: '5 V / 3.3 V', vcc_class: '5v', maxPin: 40, recPin: 20, totalPkg: 200, notes: '3.3 V variant runs at 8 MHz; same current limits' },
+        { platform: 'Arduino Leonardo', chip: 'ATmega32U4', vcc: '5 V', vcc_class: '5v', maxPin: 40, recPin: 20, totalPkg: 150, notes: '150 mA total; integrated USB reduces headroom' },
+        { platform: 'Arduino Due', chip: 'ATSAM3X8E', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 15, recPin: 8, totalPkg: 130, notes: 'Lower per-pin limit — 3.3 V device; NOT 5 V tolerant' },
+        { platform: 'ESP8266 (NodeMCU)', chip: 'ESP8266EX', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 12, recPin: 8, totalPkg: 60, notes: 'GPIO16 max 12 mA; GPIO15 has internal pull-down; limited total budget' },
+        { platform: 'ESP32 (DevKit)', chip: 'ESP32-D0WDQ6', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 40, recPin: 20, totalPkg: 1200, notes: 'High per-pin limit; total pkg very generous; some pins input-only' },
+        { platform: 'ESP32-S2', chip: 'ESP32-S2', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 40, recPin: 20, totalPkg: 1200, notes: 'Same ratings as ESP32; no Bluetooth; USB OTG' },
+        { platform: 'ESP32-S3', chip: 'ESP32-S3', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 40, recPin: 20, totalPkg: 1200, notes: 'Same ratings; AI accelerator; USB OTG' },
+        { platform: 'ESP32-C3', chip: 'ESP32-C3', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 40, recPin: 20, totalPkg: 1200, notes: 'RISC-V core; same I/O ratings' },
+        { platform: 'Raspberry Pi Pico', chip: 'RP2040', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 12, recPin: 8, totalPkg: 50, notes: 'Max 12 mA per GPIO; total across all GPIO ≤ 50 mA' },
+        { platform: 'Raspberry Pi Pico W', chip: 'RP2040', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 12, recPin: 8, totalPkg: 50, notes: 'Same I/O as Pico; CYW43439 WiFi on separate pins' },
+        { platform: 'Raspberry Pi 4 / 5', chip: 'BCM2711 / BCM2712', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 16, recPin: 8, totalPkg: 50, notes: 'GPIO max 16 mA; total ≤ 50 mA; NOT 5 V tolerant' },
+        { platform: 'Raspberry Pi Zero 2 W', chip: 'BCM2710A1', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 16, recPin: 8, totalPkg: 50, notes: 'Same GPIO spec as Pi 4' },
+        { platform: 'STM32F103 (Blue Pill)', chip: 'STM32F103C8T6', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 25, recPin: 15, totalPkg: 150, notes: '5 V tolerant on most pins; check pinout; max 25 mA per pin' },
+        { platform: 'STM32F4 (Black Pill)', chip: 'STM32F401CCU6', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 25, recPin: 15, totalPkg: 120, notes: 'High-performance Cortex-M4; 5 V tolerant on selected pins' },
+        { platform: 'STM32G0 (Nucleo-G031)', chip: 'STM32G031K8T6', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 20, recPin: 12, totalPkg: 80, notes: 'Low-power Cortex-M0+; reduced package limit' },
+        { platform: 'Teensy 4.0', chip: 'iMXRT1062', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 25, recPin: 15, totalPkg: 250, notes: 'Very capable; total limit generous for its size' },
+        { platform: 'Teensy 3.2', chip: 'MK20DX256', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 25, recPin: 15, totalPkg: 100, notes: '5 V tolerant inputs on most pins' },
+        { platform: 'ATtiny85 (Digispark)', chip: 'ATtiny85', vcc: '5 V', vcc_class: '5v', maxPin: 40, recPin: 20, totalPkg: 200, notes: 'Only 6 GPIO; P0/P1 also used for USB; keep total well under limit' },
+        { platform: 'ATmega32U4 (Pro Micro)', chip: 'ATmega32U4', vcc: '5 V / 3.3 V', vcc_class: '5v', maxPin: 40, recPin: 20, totalPkg: 150, notes: 'Integrated USB; 3.3 V variant: check regulator headroom' },
+        { platform: 'SAMD21 (Arduino Zero)', chip: 'ATSAMD21G18', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 7, recPin: 4, totalPkg: 70, notes: 'Very low per-pin limit — 7 mA max; use buffer/driver for anything significant' },
+        { platform: 'nRF52840 (Feather)', chip: 'nRF52840', vcc: '3.3 V', vcc_class: '3.3v', maxPin: 15, recPin: 10, totalPkg: 30, notes: 'BLE SoC; conservative total budget; use MOSFETs for loads' },
+        { platform: 'CH32V003 (WCH)', chip: 'CH32V003', vcc: '3.3 V / 5 V', vcc_class: '3.3v', maxPin: 20, recPin: 10, totalPkg: 60, notes: 'RISC-V; budget chip; 5 V supply possible; verify per datasheet revision' },
+    ];
+
+    let sortCol = null;
+    let sortDir = 1;
+    let activeFilter = 'all';
+
+    function formatNum(n) { return n === null ? '—' : n.toString(); }
+
+    function getVccBadge(row) {
+        const cls = row.vcc_class === '5v' ? 'badge-5v' : row.vcc_class === '3.3v' ? 'badge-33v' : 'badge-18v';
+        return `<span class="badge ${cls}">${row.vcc}</span>`;
+    }
+
+    function render() {
+        const q = document.getElementById('search').value.toLowerCase();
+        let data = ROWS.filter(r => {
+            const matchFilter = activeFilter === 'all' || r.vcc_class === activeFilter;
+            const matchSearch = !q || r.platform.toLowerCase().includes(q) || r.chip.toLowerCase().includes(q) || r.notes.toLowerCase().includes(q);
+            return matchFilter && matchSearch;
+        });
+
+        if (sortCol) {
+            data.sort((a, b) => {
+                let av = a[sortCol], bv = b[sortCol];
+                if (typeof av === 'number') return (av - bv) * sortDir;
+                return String(av).localeCompare(String(bv)) * sortDir;
+            });
+        }
+
+        const tbody = document.getElementById('table-body');
+        if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="no-results">No results found</td></tr>';
+        } else {
+            tbody.innerHTML = data.map(r => {
+                const recClass = r.recPin >= 15 ? 'rec' : '';
+                const maxClass = r.maxPin <= 12 ? 'warn' : '';
+                return `<tr>
+                    <td class="platform">${r.platform}</td>
+                    <td class="chip">${r.chip}</td>
+                    <td>${getVccBadge(r)}</td>
+                    <td class="num ${maxClass}">${r.maxPin}</td>
+                    <td class="num ${recClass}">${r.recPin}</td>
+                    <td class="num">${formatNum(r.totalPkg)}</td>
+                    <td class="notes">${r.notes}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        document.getElementById('row-count').textContent = `Showing ${data.length} of ${ROWS.length} platforms`;
+    }
+
+    // Sort
+    document.querySelectorAll('thead th[data-col]').forEach(th => {
+        th.addEventListener('click', () => {
+            const col = th.dataset.col;
+            if (sortCol === col) { sortDir *= -1; }
+            else { sortCol = col; sortDir = 1; }
+            document.querySelectorAll('thead th').forEach(t => t.classList.remove('sorted'));
+            th.classList.add('sorted');
+            th.querySelector('.sort-arrow').textContent = sortDir === 1 ? '↑' : '↓';
+            render();
+        });
+    });
+
+    // Filter
+    document.querySelectorAll('.flt-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.flt-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeFilter = btn.dataset.flt;
+            render();
+        });
+    });
+
+    // Search
+    document.getElementById('search').addEventListener('input', render);
+
+    render();
+    </script>
+</body>
+</html>

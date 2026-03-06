@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voltage Divider for ADC Input | StrokeForge Electronics</title>
+    <meta name="description" content="Design a voltage divider to scale any voltage down to an ADC input range. Platform presets for Arduino (5V), ESP32 (3.3V), and custom. Get R1/R2 values, actual output voltage, and ADC resolution.">
+    <meta name="keywords" content="voltage divider ADC, Arduino ADC, ESP32 ADC, voltage scaling, analog input, ADC input protection, R1 R2 divider">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-019/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 860px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .platform-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 0.5rem; margin-bottom: 1.5rem; }
+        @media (max-width: 500px) { .platform-grid { grid-template-columns: 1fr 1fr 1fr; } }
+        .plat-btn { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 8px; padding: 0.5rem 0.4rem; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .plat-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .plat-btn.active { border-color: var(--primary-orange); background: rgba(255,107,53,0.15); color: var(--primary-orange); }
+        .plat-btn .plat-sub { font-size: 0.67rem; color: var(--text-gray); margin-top: 0.15rem; }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
+        .hint { font-size: 0.72rem; color: var(--text-gray); }
+
+        .res-main { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        @media (max-width: 480px) { .res-main { grid-template-columns: 1fr; } }
+        .res-block { background: var(--darker-bg); border-radius: 10px; padding: 1.1rem 1.3rem; }
+        .res-block .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .res-block .val { font-size: 1.5rem; font-weight: 800; color: var(--primary-orange); }
+        .res-block .sub { font-size: 0.78rem; color: var(--text-gray); margin-top: 0.25rem; }
+        .res-block .e24 { font-size: 0.83rem; color: #60a5fa; margin-top: 0.3rem; }
+
+        .res-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 480px) { .res-grid { grid-template-columns: 1fr 1fr; } }
+        .rg { background: var(--darker-bg); border-radius: 8px; padding: 0.75rem 1rem; }
+        .rg .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .rg .val { font-size: 1rem; font-weight: 700; color: var(--light-gray); }
+        .rg .val.ok   { color: #4ade80; }
+        .rg .val.warn { color: #fb923c; }
+        .rg .val.err  { color: #f87171; }
+
+        .warn-box { background: rgba(251,146,60,0.1); border: 1px solid #fb923c; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #fb923c; margin-top: 0.75rem; }
+        .err-box  { background: rgba(248,113,113,0.1); border: 1px solid #f87171; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #f87171; margin-top: 0.75rem; }
+        .info-box { background: rgba(96,165,250,0.08); border: 1px solid #60a5fa; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #93c5fd; margin-top: 0.75rem; }
+
+        .adc-bar-wrap { margin: 1rem 0 0.5rem; }
+        .adc-bar-label { font-size: 0.75rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .adc-bar-bg { background: var(--darker-bg); border-radius: 6px; height: 18px; overflow: hidden; position: relative; }
+        .adc-bar-fill { height: 100%; background: linear-gradient(90deg, #fb923c, #f97316); border-radius: 6px; transition: width 0.3s; }
+        .adc-bar-pct { position: absolute; right: 6px; top: 0; bottom: 0; display: flex; align-items: center; font-size: 0.72rem; color: var(--light-gray); }
+
+        .svg-wrap { overflow-x: auto; text-align: center; }
+
+        .adc-table { width:100%; border-collapse:collapse; font-size:0.83rem; margin-top:0.5rem; }
+        .adc-table th { padding:0.4rem 0.75rem; text-align:left; color:var(--text-gray); border-bottom:2px solid var(--border-gray); }
+        .adc-table td { padding:0.4rem 0.75rem; border-bottom:1px solid rgba(255,255,255,0.04); color:var(--light-gray); }
+        .adc-table tr:hover td { background:rgba(255,107,53,0.05); }
+        .adc-table td:first-child { color:var(--primary-orange); font-weight:700; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.88rem; line-height: 1.9; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../engineering.html">Engineering</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../other.html">Other</a>
+                <a href="../../3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>📊 Voltage Divider for ADC Input</h1>
+        <p>Scale any voltage down to your microcontroller's ADC range. Get R1/R2 values, ADC counts, and resolution.</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="../../electronics.html" class="back-button">← Back to Electronics</a>
+
+        <!-- CALCULATOR -->
+        <div class="card">
+            <h2>Calculator</h2>
+
+            <div style="font-size:0.78rem;color:var(--text-gray);margin-bottom:0.5rem">Platform / ADC reference:</div>
+            <div class="platform-grid" id="plat-grid"></div>
+
+            <div class="input-grid">
+                <div class="field">
+                    <label>Input voltage to measure (Vin)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="vin" placeholder="12" min="0" step="any" oninput="calculate()">
+                        <span class="unit">V</span>
+                    </div>
+                    <div class="hint">Max voltage on the divider input</div>
+                </div>
+                <div class="field">
+                    <label>ADC reference voltage (Vref)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="vref" placeholder="3.3" min="0" step="0.1" oninput="calculate()">
+                        <span class="unit">V</span>
+                    </div>
+                    <div class="hint">ADC full-scale input voltage</div>
+                </div>
+                <div class="field">
+                    <label>ADC resolution</label>
+                    <div class="field-row">
+                        <select class="sel" id="bits" onchange="calculate()">
+                            <option value="8">8-bit (0–255)</option>
+                            <option value="10" selected>10-bit (0–1023)</option>
+                            <option value="12">12-bit (0–4095)</option>
+                            <option value="16">16-bit (0–65535)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>R1 (top, series)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="r1" placeholder="30" min="0" step="any" oninput="onR1change()">
+                        <select class="sel" id="r1unit" onchange="onR1change()" style="width:auto">
+                            <option value="1">Ω</option>
+                            <option value="1e3" selected>kΩ</option>
+                        </select>
+                    </div>
+                    <div class="hint">Leave blank to auto-calculate</div>
+                </div>
+                <div class="field">
+                    <label>R2 (bottom, to GND)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="r2" placeholder="10" min="0" step="any" oninput="onR2change()">
+                        <select class="sel" id="r2unit" onchange="onR2change()" style="width:auto">
+                            <option value="1">Ω</option>
+                            <option value="1e3" selected>kΩ</option>
+                        </select>
+                    </div>
+                    <div class="hint">Leave blank to auto-calculate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card" id="results-card" style="display:none">
+            <h2>Results</h2>
+            <div class="res-main">
+                <div class="res-block">
+                    <div class="lbl">R1 (series, top)</div>
+                    <div class="val" id="res-r1">—</div>
+                    <div class="sub">Connects Vin to divider mid-point</div>
+                    <div class="e24" id="res-r1-e24">—</div>
+                </div>
+                <div class="res-block">
+                    <div class="lbl">R2 (shunt, to GND)</div>
+                    <div class="val" id="res-r2">—</div>
+                    <div class="sub">Connects mid-point to GND → ADC pin</div>
+                    <div class="e24" id="res-r2-e24">—</div>
+                </div>
+            </div>
+            <div class="res-grid">
+                <div class="rg"><div class="lbl">Actual Vout (at Vin max)</div><div class="val ok" id="res-vout">—</div></div>
+                <div class="rg"><div class="lbl">ADC count (at Vin max)</div><div class="val" id="res-adc">—</div></div>
+                <div class="rg"><div class="lbl">Resolution (mV/count)</div><div class="val" id="res-res">—</div></div>
+                <div class="rg"><div class="lbl">Divider ratio</div><div class="val" id="res-ratio">—</div></div>
+                <div class="rg"><div class="lbl">Current through divider</div><div class="val" id="res-cur">—</div></div>
+                <div class="rg"><div class="lbl">ADC utilisation</div><div class="val ok" id="res-util">—</div></div>
+            </div>
+
+            <!-- ADC bar -->
+            <div class="adc-bar-wrap">
+                <div class="adc-bar-label">ADC range usage</div>
+                <div class="adc-bar-bg">
+                    <div class="adc-bar-fill" id="adc-bar" style="width:0%"></div>
+                    <div class="adc-bar-pct" id="adc-bar-pct"></div>
+                </div>
+            </div>
+
+            <div id="res-notes"></div>
+
+            <div class="svg-wrap" style="margin-top:1.25rem">
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 200" width="380" height="200"></svg>
+            </div>
+        </div>
+
+        <!-- ADC PLATFORM TABLE -->
+        <div class="card">
+            <h2>ADC reference — common platforms</h2>
+            <table class="adc-table">
+                <thead><tr><th>Platform</th><th>ADC ref</th><th>Resolution</th><th>Max counts</th><th>Notes</th></tr></thead>
+                <tbody>
+                    <tr><td>Arduino Uno / Nano</td><td>5.0 V</td><td>10-bit</td><td>1023</td><td>analogRead() returns 0–1023</td></tr>
+                    <tr><td>Arduino Mega</td><td>5.0 V</td><td>10-bit</td><td>1023</td><td>Same as Uno</td></tr>
+                    <tr><td>Arduino Due</td><td>3.3 V</td><td>12-bit</td><td>4095</td><td>analogReadResolution(12) needed</td></tr>
+                    <tr><td>ESP32</td><td>3.3 V</td><td>12-bit</td><td>4095</td><td>Effective ~11-bit due to non-linearity. Max safe input: 3.3 V</td></tr>
+                    <tr><td>ESP8266</td><td>1.0 V</td><td>10-bit</td><td>1023</td><td>NodeMCU has on-board 220k/100k divider → max 3.3 V</td></tr>
+                    <tr><td>Raspberry Pi Pico</td><td>3.3 V</td><td>12-bit</td><td>4095</td><td>ADC pins: GP26, GP27, GP28</td></tr>
+                    <tr><td>STM32 (typical)</td><td>3.3 V</td><td>12-bit</td><td>4095</td><td>Configurable 8/10/12-bit</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Design guide</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Formula</h3>
+                    <p class="mono">
+                        Vout = Vin × R2/(R1+R2)<br>
+                        R1/R2 = Vin/Vout − 1<br><br>
+                        ADC = Vout / Vref × (2ⁿ−1)<br>
+                        Vin  = ADC × Vref / (2ⁿ−1)<br>
+                             × (R1+R2)/R2
+                    </p>
+                </div>
+                <div class="info-block">
+                    <h3>Choosing R values</h3>
+                    <ul>
+                        <li><strong>Too low</strong> (≪1 kΩ) — high current, heats up, loads source</li>
+                        <li><strong>Too high</strong> (≫100 kΩ) — ADC input impedance causes error</li>
+                        <li><strong>Sweet spot</strong>: 10–100 kΩ for most MCU ADCs</li>
+                        <li>ESP32 ADC input impedance ~80 kΩ — keep R2 ≤ 10 kΩ</li>
+                        <li>Add small cap (100 nF) across R2 to reduce noise</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Protection</h3>
+                    <ul>
+                        <li>Always ensure Vout ≤ Vref under all conditions</li>
+                        <li>Add a Zener diode across R2 for overvoltage protection</li>
+                        <li>Add series resistor (1 kΩ) between divider and ADC pin to limit fault current</li>
+                        <li>For automotive (up to 40V): use 100 kΩ / 10 kΩ divider</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Reading in code</h3>
+                    <p class="mono">
+                        // Arduino (10-bit, 5V)<br>
+                        int raw = analogRead(A0);<br>
+                        float v = raw * (5.0/1023.0);<br>
+                        float vin = v * (R1+R2)/R2;<br><br>
+                        // ESP32 (12-bit, 3.3V)<br>
+                        int raw = analogRead(34);<br>
+                        float v = raw * (3.3/4095.0);<br>
+                        float vin = v * (R1+R2)/R2;
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Part of <a href="../../electronics.html">StrokeForge Electronics</a> — free tools for makers</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    const E24 = [1.0,1.1,1.2,1.3,1.5,1.6,1.8,2.0,2.2,2.4,2.7,3.0,3.3,3.6,3.9,4.3,4.7,5.1,5.6,6.2,6.8,7.5,8.2,9.1];
+
+    function nearestE24(val) {
+        if (!val || val <= 0) return null;
+        const exp = Math.floor(Math.log10(val));
+        let best = null, bestDiff = Infinity;
+        [-1,0,1].forEach(e => E24.forEach(s => {
+            const c = s * Math.pow(10, exp+e);
+            const d = Math.abs(c-val);
+            if (d < bestDiff) { bestDiff = d; best = c; }
+        }));
+        return best;
+    }
+
+    function fmtR(r) {
+        if (!r || r <= 0) return '—';
+        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/\.?0+$/,'') + ' MΩ';
+        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/\.?0+$/,'') + ' kΩ';
+        return r.toPrecision(3).replace(/\.?0+$/,'') + ' Ω';
+    }
+
+    const PLATFORMS = [
+        { name:'Arduino Uno', vref:5.0, bits:10 },
+        { name:'Arduino Due', vref:3.3, bits:12 },
+        { name:'ESP32',       vref:3.3, bits:12 },
+        { name:'ESP8266',     vref:1.0, bits:10, note:'NodeMCU has built-in divider' },
+        { name:'RPi Pico',   vref:3.3, bits:12 },
+    ];
+
+    let r1Locked = false, r2Locked = false;
+
+    function g(id) { const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+    function gu(id) { return parseFloat(document.getElementById(id).value); }
+
+    function buildPlatforms() {
+        const grid = document.getElementById('plat-grid');
+        PLATFORMS.forEach((p,i) => {
+            const btn = document.createElement('button');
+            btn.className = 'plat-btn' + (i===0?' active':'');
+            btn.innerHTML = `<div>${p.name}</div><div class="plat-sub">${p.vref}V / ${p.bits}-bit</div>`;
+            btn.onclick = () => {
+                document.querySelectorAll('.plat-btn').forEach(b=>b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('vref').value = p.vref;
+                document.getElementById('bits').value = p.bits;
+                r1Locked = false; r2Locked = false;
+                document.getElementById('r1').value = '';
+                document.getElementById('r2').value = '';
+                calculate();
+            };
+            grid.appendChild(btn);
+        });
+    }
+
+    function onR1change() { r1Locked = !!document.getElementById('r1').value; calculate(); }
+    function onR2change() { r2Locked = !!document.getElementById('r2').value; calculate(); }
+
+    function calculate() {
+        const vin  = g('vin');
+        const vref = g('vref');
+        const bits = parseInt(document.getElementById('bits').value);
+        const maxCounts = Math.pow(2, bits) - 1;
+        const rc = document.getElementById('results-card');
+
+        if (!vin || !vref || vin <= 0 || vref <= 0) { rc.style.display='none'; return; }
+
+        // Target ratio: Vout/Vin = vref/vin (use 95% of vref for safety margin)
+        const targetVout = vref * 0.95;
+        const ratio = targetVout / vin; // R2/(R1+R2)
+
+        let R1, R2;
+        const R1v = g('r1'), R1u = gu('r1unit');
+        const R2v = g('r2'), R2u = gu('r2unit');
+
+        if (r1Locked && R1v) {
+            R1 = R1v * R1u;
+            R2 = R1 * ratio / (1 - ratio);
+        } else if (r2Locked && R2v) {
+            R2 = R2v * R2u;
+            R1 = R2 * (1 - ratio) / ratio;
+        } else {
+            // Auto: use R2=10kΩ as base
+            R2 = 10e3;
+            R1 = R2 * (1 - ratio) / ratio;
+        }
+
+        if (R1 <= 0 || R2 <= 0 || !isFinite(R1) || !isFinite(R2)) { rc.style.display='none'; return; }
+
+        const R1e24 = nearestE24(R1);
+        const R2e24 = nearestE24(R2);
+        const Vout  = vin * R2 / (R1 + R2);
+        const VoutE24 = vin * R2e24 / (R1e24 + R2e24);
+        const adcCount = Math.round(VoutE24 / vref * maxCounts);
+        const resolution = vin / adcCount * 1000; // mV per count
+        const divCurrent = vin / (R1 + R2) * 1000; // mA
+        const utilPct = (VoutE24 / vref * 100);
+
+        document.getElementById('res-r1').textContent    = fmtR(R1);
+        document.getElementById('res-r1-e24').textContent = R1e24 ? 'E24: ' + fmtR(R1e24) : '';
+        document.getElementById('res-r2').textContent    = fmtR(R2);
+        document.getElementById('res-r2-e24').textContent = R2e24 ? 'E24: ' + fmtR(R2e24) : '';
+        document.getElementById('res-vout').textContent  = VoutE24.toFixed(3) + ' V';
+        document.getElementById('res-adc').textContent   = adcCount + ' / ' + maxCounts;
+        document.getElementById('res-res').textContent   = resolution.toFixed(2) + ' mV/count';
+        document.getElementById('res-ratio').textContent = (R2/(R1+R2)).toFixed(4) + ' (' + vin.toFixed(1) + '→' + VoutE24.toFixed(2) + 'V)';
+        document.getElementById('res-cur').textContent   = divCurrent.toFixed(2) + ' mA';
+
+        const utilEl = document.getElementById('res-util');
+        utilEl.textContent = utilPct.toFixed(1) + '%';
+        utilEl.className = 'val ' + (utilPct > 100 ? 'err' : utilPct > 95 ? 'warn' : utilPct < 60 ? 'warn' : 'ok');
+
+        document.getElementById('adc-bar').style.width = Math.min(100, utilPct) + '%';
+        document.getElementById('adc-bar-pct').textContent = utilPct.toFixed(1) + '%';
+
+        let notes = '';
+        if (VoutE24 > vref) notes += `<div class="err-box">Vout (${VoutE24.toFixed(2)}V) exceeds ADC reference (${vref}V) — this will damage the ADC input! Increase R1 or reduce Vin.</div>`;
+        if (VoutE24 > vref * 0.98) notes += `<div class="warn-box">Vout is very close to Vref — a small overvoltage could damage the ADC. Add a Zener or reduce the divider ratio slightly.</div>`;
+        if (utilPct < 60) notes += `<div class="warn-box">ADC utilisation is low (${utilPct.toFixed(0)}%). Consider adjusting R1/R2 to use more of the ADC range for better resolution.</div>`;
+        if (R2 > 100e3) notes += `<div class="warn-box">R2 is very high (${fmtR(R2)}). ADC input impedance may cause reading errors. Keep R2 ≤ 10–100 kΩ depending on platform.</div>`;
+        if (vin < vref) notes += `<div class="info-box">Vin (${vin}V) is already within ADC range (${vref}V) — a voltage divider is not needed. Connect directly to ADC (with a small series resistor for protection).</div>`;
+        document.getElementById('res-notes').innerHTML = notes;
+
+        rc.style.display='';
+        drawCircuit(R1, R2, vin, VoutE24);
+    }
+
+    function drawCircuit(R1, R2, vin, vout) {
+        const svg = document.getElementById('circuit-svg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const ns = 'http://www.w3.org/2000/svg';
+        function el(tag,attrs,text){const e=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;return e;}
+        function line(x1,y1,x2,y2,col,w){return el('line',{x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'round'});}
+        function txt(x,y,t,col,sz,anc){return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);}
+
+        // Vin top
+        svg.appendChild(line(120,20,120,45));
+        svg.appendChild(txt(120,14,'Vin = '+vin.toFixed(1)+'V','#facc15',9,'middle'));
+
+        // R1
+        svg.appendChild(el('rect',{x:100,y:45,width:40,height:30,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
+        svg.appendChild(txt(120,57,'R1','#4ade80',9,'middle'));
+        svg.appendChild(txt(120,66,fmtR(R1),'#4ade80',7,'middle'));
+        svg.appendChild(line(120,75,120,100));
+
+        // Node (mid-point)
+        svg.appendChild(el('circle',{cx:120,cy:100,r:4,fill:'#fb923c'}));
+        svg.appendChild(txt(90,100,'Vout='+vout.toFixed(2)+'V','#fb923c',8,'end'));
+
+        // R2
+        svg.appendChild(line(120,100,120,125));
+        svg.appendChild(el('rect',{x:100,y:125,width:40,height:30,fill:'#1f2937',stroke:'#60a5fa','stroke-width':1.5,rx:4}));
+        svg.appendChild(txt(120,137,'R2','#60a5fa',9,'middle'));
+        svg.appendChild(txt(120,146,fmtR(R2),'#60a5fa',7,'middle'));
+        svg.appendChild(line(120,155,120,175));
+
+        // GND
+        svg.appendChild(line(95,175,145,175,'#6b7280',1.5));
+        svg.appendChild(line(101,179,139,179,'#6b7280',1));
+        svg.appendChild(line(107,183,133,183,'#6b7280',0.8));
+
+        // ADC output arrow
+        svg.appendChild(line(124,100,200,100));
+        svg.appendChild(el('rect',{x:200,y:88,width:55,height:24,fill:'#1a2433',stroke:'#fb923c','stroke-width':1.5,rx:4}));
+        svg.appendChild(txt(227,100,'ADC pin','#fb923c',9,'middle'));
+        svg.appendChild(txt(155,88,'→ to ADC','#6b7280',8,'middle'));
+    }
+
+    buildPlatforms();
+    document.getElementById('vref').value = 5.0;
+    calculate();
+    </script>
+</body>
+</html>

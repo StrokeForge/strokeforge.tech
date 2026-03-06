@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wire Color Codes ČSN / IEC / DIN / US | StrokeForge Electronics</title>
+    <meta name="description" content="Wire color code reference for AC mains, DC power, automotive, and data wiring. Covers IEC 60446, ČSN (Czech), old DIN, and US NEC standards with color swatches.">
+    <meta name="keywords" content="wire color code, IEC 60446, NEC wire colors, Czech wire standard, automotive wire colors, CAN bus colors, phase color, neutral color, earth color">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-023/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 1020px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-gray); text-decoration: none; font-size: 0.88rem; margin-bottom: 1.5rem; transition: color 0.2s; }
+        .back-btn:hover { color: var(--primary-orange); }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Category tabs */
+        .cat-tabs { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 10px; overflow: hidden; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .cat-tab { flex: 1; min-width: 90px; padding: 0.65rem 0.5rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.83rem; font-weight: 600; transition: all 0.2s; text-align: center; border-right: 1px solid var(--border-gray); }
+        .cat-tab:last-child { border-right: none; }
+        .cat-tab.active { background: var(--primary-orange); color: #000; }
+        .cat-tab:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        /* Search */
+        .controls { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.1rem; }
+        .search-wrap { position: relative; flex: 1; min-width: 200px; }
+        .search-wrap input { width: 100%; box-sizing: border-box; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem 0.5rem 2rem; font-size: 0.9rem; outline: none; }
+        .search-wrap input:focus { border-color: var(--primary-orange); }
+        .search-icon { position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; pointer-events: none; }
+
+        /* Table */
+        .tbl-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+        thead th { background: var(--darker-bg); color: var(--text-gray); font-weight: 600; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.65rem 0.75rem; border-bottom: 2px solid var(--border-gray); text-align: left; white-space: nowrap; }
+        tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
+        tbody tr:hover { background: rgba(255,165,0,0.04); }
+        tbody td { padding: 0.6rem 0.75rem; color: var(--light-gray); vertical-align: middle; }
+        td.func { font-weight: 600; min-width: 160px; }
+        td.notes { font-size: 0.79rem; color: var(--text-gray); }
+        .no-results { text-align: center; color: var(--text-gray); padding: 2rem; }
+        .row-count { font-size: 0.78rem; color: var(--text-gray); margin-top: 0.6rem; }
+
+        /* Color swatch cell */
+        .color-cell { display: flex; align-items: center; gap: 0.55rem; white-space: nowrap; }
+        .swatch { display: inline-block; width: 18px; height: 18px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0; }
+        .swatch-stripe { position: relative; overflow: hidden; }
+        .swatch-stripe::after { content: ''; position: absolute; top: 0; right: 0; width: 7px; height: 100%; }
+        .color-label { font-size: 0.82rem; }
+        .na { color: var(--text-gray); font-style: italic; font-size: 0.8rem; }
+        .warn-cell { color: #f59e0b; font-size: 0.8rem; }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.6; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+        .info-block strong { color: var(--light-gray); }
+
+        details.card summary { cursor: pointer; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; }
+        details.card[open] summary { margin-bottom: 1rem; }
+
+        /* Color swatch helpers */
+        .sw-brown       { background: #92400e; }
+        .sw-black       { background: #111; border-color: #555 !important; }
+        .sw-grey        { background: #6b7280; }
+        .sw-blue        { background: #1d4ed8; }
+        .sw-light-blue  { background: #38bdf8; }
+        .sw-green-yellow{ background: linear-gradient(135deg, #16a34a 50%, #eab308 50%); }
+        .sw-green       { background: #15803d; }
+        .sw-yellow      { background: #ca8a04; }
+        .sw-yellow-bright { background: #fde047; border-color: #a16207 !important; }
+        .sw-red         { background: #b91c1c; }
+        .sw-white       { background: #e5e7eb; border-color: #9ca3af !important; }
+        .sw-orange      { background: #ea580c; }
+        .sw-violet      { background: #7c3aed; }
+        .sw-pink        { background: #db2777; }
+        .sw-red-black   { background: linear-gradient(135deg, #b91c1c 50%, #111 50%); }
+        .sw-red-white   { background: linear-gradient(135deg, #b91c1c 50%, #e5e7eb 50%); }
+        .sw-black-red   { background: linear-gradient(135deg, #111 50%, #b91c1c 50%); }
+        .sw-bare        { background: repeating-linear-gradient(45deg, #b45309, #b45309 3px, #111 3px, #111 6px); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html">Engineering</a>
+                <a href="/electronics.html" class="active">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Wire Color Codes</h1>
+        <p>IEC 60446 / ČSN, old DIN, and US NEC — AC mains, DC, automotive, and data</p>
+    </div>
+
+    <div class="tool-wrap">
+        <a href="/electronics.html" class="back-btn">← Back to Electronics</a>
+
+        <div class="card">
+            <h2>Wire Color Reference</h2>
+
+            <div class="cat-tabs" id="cat-tabs">
+                <button class="cat-tab active" data-cat="ac">AC Mains</button>
+                <button class="cat-tab" data-cat="dc">DC Power</button>
+                <button class="cat-tab" data-cat="auto">Automotive</button>
+                <button class="cat-tab" data-cat="data">Data / Bus</button>
+            </div>
+
+            <div class="controls">
+                <div class="search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search" placeholder="Search function or color…">
+                </div>
+            </div>
+
+            <div class="tbl-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Function</th>
+                            <th>IEC 60446 / ČSN (current)</th>
+                            <th>Old ČSN / DIN (pre-2004)</th>
+                            <th>US NEC</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+                <div class="row-count" id="row-count"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Standards Overview</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>IEC 60446 / ČSN 33 0165 (current)</h3>
+                    <p>Valid in EU since 2004. Czech installations must follow this standard. Key change: <strong>old black phase → brown/black/grey</strong> for L1/L2/L3. Green-yellow for PE has been mandatory throughout.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Old ČSN / DIN (pre-2004)</h3>
+                    <p>Still encountered in older Czech and German installations. Phase was often <strong>black or red</strong>, neutral <strong>light blue</strong>. Do not mix old and new color coding in the same installation — always label and verify with a tester.</p>
+                </div>
+                <div class="info-block">
+                    <h3>US NEC (National Electrical Code)</h3>
+                    <p>Standard for North America. <strong>Hot = Black</strong> (or Red for second phase), <strong>Neutral = White/Grey</strong>, <strong>Ground = Green or bare</strong>. 3-phase uses Black/Red/Blue for phases L1/L2/L3.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Safety warning</h3>
+                    <p style="color:#f87171"><strong>Never assume wire function from color alone.</strong> Always verify with a multimeter or voltage tester, especially in older installations or when working with unknown wiring. Incorrect assumptions can be fatal.</p>
+                </div>
+            </div>
+        </div>
+
+        <details class="card">
+            <summary>ČSN vs. IEC — Key changes after 2004</summary>
+            <div class="info-grid" style="margin-top:0">
+                <div class="info-block">
+                    <h3>What changed</h3>
+                    <ul>
+                        <li>Phase L1: <strong>Black → Brown</strong></li>
+                        <li>Phase L2: new <strong>Black</strong> (was shared with L1)</li>
+                        <li>Phase L3: new <strong>Grey</strong></li>
+                        <li>Neutral: unchanged — <strong>Blue</strong></li>
+                        <li>PE: unchanged — <strong>Green-Yellow</strong></li>
+                        <li>Red was previously common for phase in CZ/SK</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>What stayed the same</h3>
+                    <ul>
+                        <li>Green-Yellow exclusively for PE (protective earth) — never use for any other purpose</li>
+                        <li>Blue for neutral — was already the standard</li>
+                        <li>PEN conductor: Green-Yellow with Blue end markers</li>
+                        <li>Single-phase: Brown (L) + Blue (N) + Green-Yellow (PE)</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <script>
+    // Swatch helper
+    function sw(cssClass, label) {
+        return `<div class="color-cell"><span class="swatch ${cssClass}"></span><span class="color-label">${label}</span></div>`;
+    }
+    function na() { return '<span class="na">—</span>'; }
+    function varies() { return '<span class="warn-cell">Varies</span>'; }
+
+    const CATS = {
+        ac: [
+            {
+                func: 'Phase L1',
+                iec: sw('sw-brown','Brown'),
+                old: sw('sw-black','Black (or Red)'),
+                us:  sw('sw-black','Black'),
+                notes: 'EU single-phase: always Brown for live/hot',
+            },
+            {
+                func: 'Phase L2',
+                iec: sw('sw-black','Black'),
+                old: sw('sw-brown','Brown (or Black)'),
+                us:  sw('sw-red','Red'),
+                notes: '3-phase only; US 240 V split-phase second hot = Red',
+            },
+            {
+                func: 'Phase L3',
+                iec: sw('sw-grey','Grey'),
+                old: sw('sw-brown','Brown (or Black)'),
+                us:  sw('sw-blue','Blue'),
+                notes: '3-phase only; US 3-phase L3 = Blue (not neutral!)',
+            },
+            {
+                func: 'Neutral (N)',
+                iec: sw('sw-blue','Blue'),
+                old: sw('sw-light-blue','Light Blue'),
+                us:  sw('sw-white','White or Grey'),
+                notes: 'EU: Blue; US: White (120/240 V), Grey (277/480 V)',
+            },
+            {
+                func: 'Protective Earth (PE)',
+                iec: sw('sw-green-yellow','Green-Yellow'),
+                old: sw('sw-green-yellow','Green-Yellow'),
+                us:  `<div class="color-cell" style="flex-direction:column;align-items:flex-start;gap:0.3rem">${sw('sw-green','Green')}${sw('sw-bare','Bare copper')}</div>`,
+                notes: 'NEVER use green-yellow for any other purpose (EU); US allows bare copper ground',
+            },
+            {
+                func: 'PEN (combined PE+N)',
+                iec: sw('sw-green-yellow','Green-Yellow + Blue ends'),
+                old: sw('sw-green-yellow','Green-Yellow + Blue ends'),
+                us:  na(),
+                notes: 'Used in TN-C systems; only in fixed installations, not flexible cables',
+            },
+            {
+                func: 'Single-phase (L)',
+                iec: sw('sw-brown','Brown'),
+                old: sw('sw-black','Black (or Red)'),
+                us:  sw('sw-black','Black'),
+                notes: 'Standard domestic wiring: Brown + Blue + Green-Yellow (EU)',
+            },
+            {
+                func: 'Switch wire / loop',
+                iec: sw('sw-brown','Brown (sleeved)'),
+                old: sw('sw-black','Black (old)'),
+                us:  sw('sw-white','White (taped black)'),
+                notes: 'Return from switch back to light; must be sleeved/marked as live',
+            },
+        ],
+
+        dc: [
+            {
+                func: 'Positive (+)',
+                iec: sw('sw-red','Red'),
+                old: sw('sw-red','Red'),
+                us:  sw('sw-red','Red'),
+                notes: 'Universal convention; red = positive in DC systems',
+            },
+            {
+                func: 'Negative (−) / Return',
+                iec: sw('sw-blue','Blue'),
+                old: sw('sw-black','Black'),
+                us:  sw('sw-black','Black'),
+                notes: 'EU DC: Blue for negative; US: Black; both common in practice',
+            },
+            {
+                func: 'Ground / GND',
+                iec: sw('sw-green-yellow','Green-Yellow'),
+                old: sw('sw-black','Black'),
+                us:  `<div class="color-cell" style="flex-direction:column;align-items:flex-start;gap:0.3rem">${sw('sw-green','Green')}${sw('sw-bare','Bare copper')}</div>`,
+                notes: 'Chassis ground; in simple DC circuits often same as negative',
+            },
+            {
+                func: 'Second positive (dual supply)',
+                iec: sw('sw-orange','Orange'),
+                old: sw('sw-red','Red (marked)'),
+                us:  sw('sw-red','Red'),
+                notes: '+V2 in dual-supply circuits (e.g. +5V/+12V); label clearly',
+            },
+            {
+                func: 'Negative supply rail (dual)',
+                iec: sw('sw-blue','Blue (marked)'),
+                old: sw('sw-black','Black (marked)'),
+                us:  sw('sw-blue','Blue'),
+                notes: '−V in dual supply (e.g. ±12 V op-amp); label clearly',
+            },
+            {
+                func: '3.3 V (MCU boards)',
+                iec: varies(),
+                old: varies(),
+                us:  varies(),
+                notes: 'No standard; Red common; some use Orange. Always label.',
+            },
+            {
+                func: '5 V rail',
+                iec: varies(),
+                old: varies(),
+                us:  varies(),
+                notes: 'No standard; Red common. Always label on PCB or harness.',
+            },
+            {
+                func: '12 V rail',
+                iec: varies(),
+                old: varies(),
+                us:  varies(),
+                notes: 'No standard; Yellow used in ATX PSU (12 V), Red = 5 V in ATX',
+            },
+            {
+                func: 'ATX 12 V',
+                iec: sw('sw-yellow-bright','Yellow'),
+                old: sw('sw-yellow-bright','Yellow'),
+                us:  sw('sw-yellow-bright','Yellow'),
+                notes: 'ATX PC power supply: Yellow = 12 V (standard across all regions)',
+            },
+            {
+                func: 'ATX 5 V',
+                iec: sw('sw-red','Red'),
+                old: sw('sw-red','Red'),
+                us:  sw('sw-red','Red'),
+                notes: 'ATX: Red = 5 V',
+            },
+            {
+                func: 'ATX 3.3 V',
+                iec: sw('sw-orange','Orange'),
+                old: sw('sw-orange','Orange'),
+                us:  sw('sw-orange','Orange'),
+                notes: 'ATX: Orange = 3.3 V',
+            },
+            {
+                func: 'ATX Ground',
+                iec: sw('sw-black','Black'),
+                old: sw('sw-black','Black'),
+                us:  sw('sw-black','Black'),
+                notes: 'ATX: Black = GND (common across all standards)',
+            },
+        ],
+
+        auto: [
+            {
+                func: 'Battery + (permanent)',
+                iec: sw('sw-red','Red'),
+                old: sw('sw-red','Red'),
+                us:  sw('sw-red','Red'),
+                notes: 'Always live from battery; fuse this line close to battery',
+            },
+            {
+                func: 'Battery − / Chassis GND',
+                iec: sw('sw-brown','Brown'),
+                old: sw('sw-black','Black'),
+                us:  sw('sw-black','Black'),
+                notes: 'EU cars (ISO 6722): Brown for negative/ground; US: Black',
+            },
+            {
+                func: 'Ignition / ACC switched +12V',
+                iec: sw('sw-red-white','Red/White stripe'),
+                old: varies(),
+                us:  sw('sw-red','Red (thin, fused)'),
+                notes: 'Live only with ignition on; used for car audio, accessories',
+            },
+            {
+                func: 'Starter motor',
+                iec: sw('sw-red','Thick Red'),
+                old: sw('sw-red','Thick Red'),
+                us:  sw('sw-red','Thick Red'),
+                notes: 'High-current; always the heaviest red cable in engine bay',
+            },
+            {
+                func: 'Illumination / lighting control',
+                iec: sw('sw-grey','Grey'),
+                old: sw('sw-grey','Grey'),
+                us:  varies(),
+                notes: 'ISO 6722: Grey for instrument/panel lighting signal',
+            },
+            {
+                func: 'Left speaker (+)',
+                iec: sw('sw-white','White'),
+                old: sw('sw-white','White'),
+                us:  sw('sw-white','White'),
+                notes: 'Car audio standard (ISO 10487): White = Front Left +',
+            },
+            {
+                func: 'Left speaker (−)',
+                iec: sw('sw-black-red','White/Black stripe'),
+                old: sw('sw-black-red','White/Black stripe'),
+                us:  sw('sw-black-red','White/Black stripe'),
+                notes: 'Front Left −',
+            },
+            {
+                func: 'Right speaker (+)',
+                iec: sw('sw-grey','Grey'),
+                old: sw('sw-grey','Grey'),
+                us:  sw('sw-grey','Grey'),
+                notes: 'ISO 10487: Grey = Front Right +',
+            },
+            {
+                func: 'Right speaker (−)',
+                iec: sw('sw-black','Grey/Black stripe'),
+                old: sw('sw-black','Grey/Black stripe'),
+                us:  sw('sw-black','Grey/Black stripe'),
+                notes: 'Front Right −',
+            },
+            {
+                func: 'OBD-II Pin 16 (Bat+)',
+                iec: sw('sw-red','Red'),
+                old: sw('sw-red','Red'),
+                us:  sw('sw-red','Red'),
+                notes: 'OBD-II always: Pin 16 = permanent 12 V, Pin 4/5 = GND',
+            },
+            {
+                func: 'CAN High (CAN-H)',
+                iec: sw('sw-yellow-bright','Yellow'),
+                old: sw('sw-yellow-bright','Yellow'),
+                us:  sw('sw-yellow-bright','Yellow'),
+                notes: 'ISO 11898: CAN-H = Yellow in automotive CAN bus',
+            },
+            {
+                func: 'CAN Low (CAN-L)',
+                iec: sw('sw-green','Green'),
+                old: sw('sw-green','Green'),
+                us:  sw('sw-green','Green'),
+                notes: 'ISO 11898: CAN-L = Green',
+            },
+        ],
+
+        data: [
+            {
+                func: 'USB VBUS (+5V)',
+                iec: sw('sw-red','Red'),
+                old: sw('sw-red','Red'),
+                us:  sw('sw-red','Red'),
+                notes: 'USB standard; Pin 1 = VBUS = Red across all USB types',
+            },
+            {
+                func: 'USB Data− (D−)',
+                iec: sw('sw-white','White'),
+                old: sw('sw-white','White'),
+                us:  sw('sw-white','White'),
+                notes: 'USB: D− = White',
+            },
+            {
+                func: 'USB Data+ (D+)',
+                iec: sw('sw-green','Green'),
+                old: sw('sw-green','Green'),
+                us:  sw('sw-green','Green'),
+                notes: 'USB: D+ = Green',
+            },
+            {
+                func: 'USB GND',
+                iec: sw('sw-black','Black'),
+                old: sw('sw-black','Black'),
+                us:  sw('sw-black','Black'),
+                notes: 'USB: GND = Black; Pin 4 on USB-A/B',
+            },
+            {
+                func: 'RS-232 TX',
+                iec: varies(),
+                old: varies(),
+                us:  varies(),
+                notes: 'No strict color standard; Orange and Yellow common; always label',
+            },
+            {
+                func: 'RS-485 A (non-inverting)',
+                iec: sw('sw-yellow-bright','Yellow'),
+                old: sw('sw-yellow-bright','Yellow'),
+                us:  sw('sw-yellow-bright','Yellow'),
+                notes: 'Common convention; A(+) = Yellow or twisted pair; no fixed standard',
+            },
+            {
+                func: 'RS-485 B (inverting)',
+                iec: sw('sw-blue','Blue'),
+                old: sw('sw-blue','Blue'),
+                us:  sw('sw-blue','Blue'),
+                notes: 'B(−) = Blue; common convention, not mandatory',
+            },
+            {
+                func: 'CAN High (CAN-H)',
+                iec: sw('sw-yellow-bright','Yellow'),
+                old: sw('sw-yellow-bright','Yellow'),
+                us:  sw('sw-yellow-bright','Yellow'),
+                notes: 'ISO 11898: Yellow for CAN-H in industrial and automotive',
+            },
+            {
+                func: 'CAN Low (CAN-L)',
+                iec: sw('sw-green','Green'),
+                old: sw('sw-green','Green'),
+                us:  sw('sw-green','Green'),
+                notes: 'ISO 11898: Green for CAN-L',
+            },
+            {
+                func: 'I²C SDA',
+                iec: varies(),
+                old: varies(),
+                us:  varies(),
+                notes: 'No standard; Blue and Yellow common on many breakout boards',
+            },
+            {
+                func: 'I²C SCL',
+                iec: varies(),
+                old: varies(),
+                us:  varies(),
+                notes: 'No standard; Yellow and Orange common',
+            },
+            {
+                func: 'Ethernet TX+ (T568B Pin 1)',
+                iec: sw('sw-orange','Orange/White stripe'),
+                old: sw('sw-orange','Orange/White stripe'),
+                us:  sw('sw-orange','Orange/White stripe'),
+                notes: 'T568B (most common): Pin 1 = Orange/White, Pin 2 = Orange',
+            },
+            {
+                func: 'Ethernet RX+ (T568B Pin 3)',
+                iec: sw('sw-green','Green/White stripe'),
+                old: sw('sw-green','Green/White stripe'),
+                us:  sw('sw-green','Green/White stripe'),
+                notes: 'T568B: Pin 3 = Green/White, Pin 6 = Green',
+            },
+            {
+                func: 'Thermocouple + (Type K)',
+                iec: sw('sw-green','Green'),
+                old: sw('sw-green','Green'),
+                us:  sw('sw-yellow-bright','Yellow'),
+                notes: 'IEC: K-type + = Green; US ANSI: K-type + = Yellow. Check standard!',
+            },
+            {
+                func: 'Thermocouple − (Type K)',
+                iec: sw('sw-white','White'),
+                old: sw('sw-white','White'),
+                us:  sw('sw-red','Red'),
+                notes: 'IEC: K-type − = White; US ANSI: K-type − = Red',
+            },
+        ],
+    };
+
+    let activeCat = 'ac';
+
+    function render() {
+        const q = document.getElementById('search').value.toLowerCase();
+        const rows = CATS[activeCat].filter(r => {
+            if (!q) return true;
+            return r.func.toLowerCase().includes(q) || r.notes.toLowerCase().includes(q);
+        });
+
+        const tbody = document.getElementById('table-body');
+        if (rows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="no-results">No results found</td></tr>';
+        } else {
+            tbody.innerHTML = rows.map(r => `<tr>
+                <td class="func">${r.func}</td>
+                <td>${r.iec}</td>
+                <td>${r.old}</td>
+                <td>${r.us}</td>
+                <td class="notes">${r.notes}</td>
+            </tr>`).join('');
+        }
+        document.getElementById('row-count').textContent =
+            `Showing ${rows.length} of ${CATS[activeCat].length} entries`;
+    }
+
+    document.getElementById('cat-tabs').addEventListener('click', e => {
+        const btn = e.target.closest('.cat-tab');
+        if (!btn) return;
+        document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeCat = btn.dataset.cat;
+        document.getElementById('search').value = '';
+        render();
+    });
+
+    document.getElementById('search').addEventListener('input', render);
+
+    render();
+    </script>
+</body>
+</html>

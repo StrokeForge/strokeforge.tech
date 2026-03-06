@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LED Colors &amp; Forward Voltage Table | StrokeForge Electronics</title>
+    <meta name="description" content="LED forward voltage (Vf) reference table by color and wavelength. Typical Vf ranges, semiconductor materials, and current ratings for standard, high-brightness, and IR/UV LEDs.">
+    <meta name="keywords" content="LED forward voltage, LED Vf, LED color wavelength, LED current, infrared LED voltage, UV LED voltage, white LED voltage, RGB LED">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-025/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 980px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-gray); text-decoration: none; font-size: 0.88rem; margin-bottom: 1.5rem; transition: color 0.2s; }
+        .back-btn:hover { color: var(--primary-orange); }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Controls */
+        .controls { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.2rem; }
+        .search-wrap { position: relative; flex: 1; min-width: 180px; }
+        .search-wrap input { width: 100%; box-sizing: border-box; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem 0.5rem 2rem; font-size: 0.9rem; outline: none; }
+        .search-wrap input:focus { border-color: var(--primary-orange); }
+        .search-icon { position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; pointer-events: none; }
+        .filter-group { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; }
+        .flt-btn { padding: 0.5rem 0.85rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; border-right: 1px solid var(--border-gray); }
+        .flt-btn:last-child { border-right: none; }
+        .flt-btn.active { background: var(--primary-orange); color: #000; }
+        .flt-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        /* Table */
+        .tbl-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+        thead th { background: var(--darker-bg); color: var(--text-gray); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.65rem 0.75rem; border-bottom: 2px solid var(--border-gray); text-align: left; white-space: nowrap; cursor: pointer; user-select: none; }
+        thead th:hover { color: var(--primary-orange); }
+        thead th .sa { margin-left: 0.25rem; opacity: 0.4; }
+        thead th.sorted .sa { opacity: 1; color: var(--primary-orange); }
+        tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
+        tbody tr:hover { background: rgba(255,165,0,0.04); }
+        tbody td { padding: 0.6rem 0.75rem; color: var(--light-gray); vertical-align: middle; }
+        td.color-name { font-weight: 600; }
+        td.vf-typical { font-weight: 700; color: var(--primary-orange); font-variant-numeric: tabular-nums; }
+        td.notes { font-size: 0.79rem; color: var(--text-gray); }
+        td.material { font-size: 0.8rem; color: var(--text-gray); font-family: monospace; }
+
+        /* Color dot */
+        .color-cell { display: flex; align-items: center; gap: 0.6rem; }
+        .dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0; box-shadow: 0 0 8px 1px currentColor; }
+
+        .row-count { font-size: 0.78rem; color: var(--text-gray); margin-top: 0.6rem; }
+        .no-results { text-align: center; color: var(--text-gray); padding: 2rem; }
+
+        /* Vf bar */
+        .vf-bar-wrap { position: relative; height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; width: 80px; display: inline-block; vertical-align: middle; margin-left: 0.5rem; }
+        .vf-bar { height: 100%; border-radius: 3px; background: var(--primary-orange); }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.6; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+        .info-block strong { color: var(--light-gray); }
+
+        details.card summary { cursor: pointer; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; }
+        details.card[open] summary { margin-bottom: 1rem; }
+
+        /* Spectrum bar decoration */
+        .spectrum-bar { height: 6px; border-radius: 3px; background: linear-gradient(to right,
+            #7b2be2 0%, #4444ff 12%, #0099ff 22%, #00cc88 35%,
+            #00ee00 45%, #aaee00 55%, #ffee00 63%, #ffaa00 72%,
+            #ff6600 80%, #ff2200 90%, #aa0000 100%);
+            margin-bottom: 1.2rem; opacity: 0.7; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html">Engineering</a>
+                <a href="/electronics.html" class="active">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>LED Colors &amp; Forward Voltage</h1>
+        <p>Vf ranges, wavelengths, semiconductor materials, and current ratings for all common LED types</p>
+    </div>
+
+    <div class="tool-wrap">
+        <a href="/electronics.html" class="back-btn">← Back to Electronics</a>
+
+        <div class="card">
+            <h2>LED Forward Voltage Reference</h2>
+            <div class="spectrum-bar"></div>
+
+            <div class="controls">
+                <div class="search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search" placeholder="Search color or material…">
+                </div>
+                <div class="filter-group">
+                    <button class="flt-btn active" data-flt="all">All</button>
+                    <button class="flt-btn" data-flt="visible">Visible</button>
+                    <button class="flt-btn" data-flt="ir">IR</button>
+                    <button class="flt-btn" data-flt="uv">UV</button>
+                    <button class="flt-btn" data-flt="white">White</button>
+                    <button class="flt-btn" data-flt="rgb">RGB</button>
+                </div>
+            </div>
+
+            <div class="tbl-wrap">
+                <table id="led-table">
+                    <thead>
+                        <tr>
+                            <th data-col="order">Color <span class="sa">↕</span></th>
+                            <th data-col="wavelength">λ (nm) <span class="sa">↕</span></th>
+                            <th data-col="vf_min">Vf min (V) <span class="sa">↕</span></th>
+                            <th data-col="vf_typ">Vf typ @ 20 mA <span class="sa">↕</span></th>
+                            <th data-col="vf_max">Vf max (V) <span class="sa">↕</span></th>
+                            <th>Semiconductor</th>
+                            <th data-col="if_max">If max (mA) <span class="sa">↕</span></th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+                <div class="row-count" id="row-count"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Key Facts</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Forward voltage basics</h3>
+                    <p>LEDs require a minimum forward voltage (Vf) to conduct and emit light. Unlike resistors, they do <strong>not</strong> self-limit current — always use a series resistor or constant-current driver. Vf varies with color (semiconductor material) and increases slightly at lower temperatures.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Standard vs. high-brightness</h3>
+                    <p>Standard LEDs (5 mm, ~20 mA) have Vf values listed here. <strong>High-power LEDs</strong> (1 W, 3 W, 5 W) typically have similar Vf but run at 350 mA–1 A — use a constant-current driver. SMD LEDs (0402–5050) have similar Vf, check the datasheet for If_max.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Resistor formula</h3>
+                    <p style="font-family:monospace;font-size:0.88rem;color:var(--light-gray);margin-bottom:0.5rem">R = (Vcc − Vf) / If</p>
+                    <p>Example: Vcc = 5 V, red LED Vf = 2.0 V, If = 20 mA:<br>
+                    R = (5 − 2.0) / 0.020 = <strong>150 Ω</strong> → use 150 Ω (E24)</p>
+                </div>
+                <div class="info-block">
+                    <h3>White LED note</h3>
+                    <p>White LEDs use a <strong>blue or UV GaN die</strong> with a phosphor coating. Their Vf is therefore similar to blue LEDs (~2.9–3.5 V), not 2 V. Using a 2 V resistor calculation for white LEDs will over-drive them.</p>
+                </div>
+            </div>
+        </div>
+
+        <details class="card">
+            <summary>RGB LED — wiring and Vf per channel</summary>
+            <div class="info-grid" style="margin-top:0">
+                <div class="info-block">
+                    <h3>Common cathode vs. common anode</h3>
+                    <ul>
+                        <li><strong>Common cathode</strong>: all cathodes share GND; each anode gets its own resistor to Vcc — easier with GPIO HIGH = ON</li>
+                        <li><strong>Common anode</strong>: all anodes share Vcc; each cathode gets its own resistor to GND — GPIO LOW = ON (inverted logic)</li>
+                        <li>5 mm RGB through-hole: 4 pins (R, G, B, common)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Calculate resistors per channel</h3>
+                    <ul>
+                        <li>Red: Vf ≈ 2.0 V → R = (5−2.0)/0.020 = <strong>150 Ω</strong></li>
+                        <li>Green: Vf ≈ 3.2 V → R = (5−3.2)/0.020 = <strong>91 Ω</strong></li>
+                        <li>Blue: Vf ≈ 3.2 V → R = (5−3.2)/0.020 = <strong>91 Ω</strong></li>
+                        <li>Each channel needs its own resistor — never share one</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+
+        <details class="card">
+            <summary>IR &amp; UV LEDs — safety and usage</summary>
+            <div class="info-grid" style="margin-top:0">
+                <div class="info-block">
+                    <h3>Infrared LEDs</h3>
+                    <ul>
+                        <li>850 nm / 940 nm most common (remote controls, sensors)</li>
+                        <li>Invisible to naked eye — use a camera/phone to verify emission</li>
+                        <li>Vf lower than visible LEDs (~1.2–1.5 V); calculate resistor carefully</li>
+                        <li>Often pulsed at high currents (up to 1 A peak) in burst mode</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>UV LEDs</h3>
+                    <ul>
+                        <li>365–405 nm: resin curing, banknote verification, fluorescence</li>
+                        <li><strong>Do not look directly into UV LED</strong> — eye damage risk</li>
+                        <li>High Vf (3.0–4.5 V) — similar to blue/violet GaN</li>
+                        <li>395–405 nm "near UV" is safer for general use than 365 nm</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <script>
+    // order, color_label, dot_css, wavelength (nm or null), vf_min, vf_typ, vf_max, material, if_max, notes, filter_tags
+    const LEDS = [
+        [0,  'Infrared 940 nm', '#3d0000', 940, 1.0, 1.2, 1.6, 'GaAs / GaAlAs', 100, 'Remote controls (RC5, NEC), TSOP receivers, most common IR wavelength', ['ir']],
+        [1,  'Infrared 850 nm', '#550000', 850, 1.2, 1.4, 1.7, 'GaAlAs',         100, 'Security cameras, night-vision illuminators, shorter range than 940 nm', ['ir']],
+        [2,  'Infrared 780 nm', '#660000', 780, 1.5, 1.7, 2.0, 'GaAlAs',          50, 'CD laser diode region; proximity sensors', ['ir']],
+        [3,  'Deep Red 660 nm', '#aa1100', 660, 1.6, 1.8, 2.2, 'GaAlAs / GaAsP',  30, 'Plant grow lights (chlorophyll-A peak), medical phototherapy', ['visible']],
+        [4,  'Red 620–645 nm',  '#dd2200', 632, 1.8, 2.0, 2.4, 'GaAsP / AlGaInP', 30, 'Standard indicator LED; most common in hobbyist use', ['visible','rgb']],
+        [5,  'Orange 605–625 nm','#ff6600',615, 1.8, 2.1, 2.4, 'GaAsP / AlGaInP', 30, 'Panel indicators, traffic signals', ['visible']],
+        [6,  'Amber 590–605 nm', '#ffaa00',597, 1.8, 2.1, 2.5, 'AlGaInP',          30, 'Warning indicators, automotive turn signals', ['visible']],
+        [7,  'Yellow 570–590 nm','#ffdd00',580, 1.8, 2.1, 2.5, 'GaAsP / AlGaInP', 30, 'Status/power indicators, 7-segment displays', ['visible']],
+        [8,  'Yellow-Green 560 nm','#aaee00',560,1.9, 2.2, 2.6, 'GaP',             25, 'Older "green" LEDs; dimmer than modern GaN green', ['visible']],
+        [9,  'Green 520–535 nm', '#00cc44',527, 2.9, 3.2, 3.6, 'InGaN / GaN',     30, 'Modern bright green; higher Vf than old GaP green', ['visible','rgb']],
+        [10, 'Cyan 490–510 nm',  '#00ddcc',500, 2.9, 3.2, 3.6, 'InGaN',            30, 'Indicator, decorative; same material as green', ['visible']],
+        [11, 'Blue 460–480 nm',  '#2255ff',470, 2.8, 3.2, 3.6, 'InGaN',            30, 'Indicators, backlights; base for white LEDs', ['visible','rgb']],
+        [12, 'Violet 400–420 nm','#7722dd',410, 3.0, 3.4, 4.0, 'InGaN',            20, 'Near-UV; decorative, resin curing at 405 nm', ['visible','uv']],
+        [13, 'UV 395–405 nm',    '#5500aa',400, 3.0, 3.4, 4.2, 'InGaN',            20, '"Black light" effect; resin curing; banknote verification; safer than 365 nm', ['uv']],
+        [14, 'UV 365 nm',        '#330066',365, 3.5, 4.0, 4.5, 'InGaN (special)',  20, 'Photolithography, strong fluorescence; hazardous — avoid eye exposure', ['uv']],
+        [15, 'White (cool)',      '#e8f4ff', null,2.9, 3.2, 3.6, 'InGaN + YAG phosphor',30,'6000–7000 K; blue die + yellow phosphor; Vf same as blue', ['white']],
+        [16, 'White (neutral)',   '#f5f0e8', null,2.9, 3.2, 3.6, 'InGaN + phosphor', 30,'4000–5000 K; balanced white, most versatile', ['white']],
+        [17, 'White (warm)',      '#ffe8c0', null,2.9, 3.2, 3.6, 'InGaN + phosphor', 30,'2700–3500 K; warm white for ambient lighting', ['white']],
+        [18, 'RGB (Red channel)', '#cc2200', 632,1.8, 2.0, 2.4, 'AlGaInP',          20, 'R channel of RGB LED; each channel independent — use separate resistors', ['rgb']],
+        [19, 'RGB (Green channel)','#00cc44',527,2.9, 3.2, 3.6, 'InGaN',            20, 'G channel of RGB LED', ['rgb']],
+        [20, 'RGB (Blue channel)', '#2255ff',470,2.8, 3.2, 3.6, 'InGaN',            20, 'B channel of RGB LED', ['rgb']],
+        [21, 'NeoPixel / WS2812B','#ffffff',null,4.7,5.0, 5.5, 'RGB integrated driver',60,'5 V addressable; built-in WS2811 driver IC; data signal at 3.3V or 5V', ['rgb','white']],
+        [22, 'High-power 1W White','#fffaf0',null,2.9,3.2, 3.8, 'InGaN + phosphor', 350,'350 mA nominal; requires heatsink and CC driver', ['white']],
+        [23, 'High-power 3W White','#fffaf0',null,3.0,3.4, 4.0, 'InGaN + phosphor', 700,'700 mA nominal; significant heat — heatsink mandatory', ['white']],
+    ];
+
+    let sortCol = null, sortDir = 1, activeFlt = 'all';
+
+    const COL_IDX = { order:0, wavelength:3, vf_min:4, vf_typ:5, vf_max:6, if_max:8 };
+
+    function fmtVf(v) { return v.toFixed(1); }
+
+    // Vf bar: min 0.8 V, max 5.5 V
+    function vfBar(vf_min, vf_max) {
+        const lo = 0.8, hi = 5.5, range = hi - lo;
+        const left  = ((vf_min - lo) / range * 100).toFixed(1);
+        const width = ((vf_max - vf_min) / range * 100).toFixed(1);
+        return `<div class="vf-bar-wrap" title="Vf ${vf_min}–${vf_max} V"><div class="vf-bar" style="margin-left:${left}%;width:${width}%"></div></div>`;
+    }
+
+    function render() {
+        const q = document.getElementById('search').value.toLowerCase();
+        let rows = LEDS.filter(r => {
+            const matchFlt = activeFlt === 'all' || r[10].includes(activeFlt);
+            const matchQ   = !q || r[1].toLowerCase().includes(q) || r[7].toLowerCase().includes(q) || r[9].toLowerCase().includes(q);
+            return matchFlt && matchQ;
+        });
+
+        if (sortCol) {
+            const idx = COL_IDX[sortCol];
+            rows.sort((a, b) => {
+                const av = a[idx] ?? -Infinity, bv = b[idx] ?? -Infinity;
+                return (typeof av === 'number' ? av - bv : String(av).localeCompare(String(bv))) * sortDir;
+            });
+        }
+
+        const tbody = document.getElementById('table-body');
+        if (rows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="no-results">No results found</td></tr>';
+        } else {
+            tbody.innerHTML = rows.map(r => {
+                const wl   = r[3] ? r[3] + ' nm' : '—';
+                const dot  = `<div class="dot" style="background:${r[2]};color:${r[2]}"></div>`;
+                return `<tr>
+                    <td class="color-name"><div class="color-cell">${dot}${r[1]}</div></td>
+                    <td>${wl}</td>
+                    <td>${fmtVf(r[4])}</td>
+                    <td class="vf-typical">${fmtVf(r[5])} V ${vfBar(r[4],r[6])}</td>
+                    <td>${fmtVf(r[6])}</td>
+                    <td class="material">${r[7]}</td>
+                    <td>${r[8]}</td>
+                    <td class="notes">${r[9]}</td>
+                </tr>`;
+            }).join('');
+        }
+        document.getElementById('row-count').textContent = `Showing ${rows.length} of ${LEDS.length} LED types`;
+    }
+
+    // Sort
+    document.querySelectorAll('thead th[data-col]').forEach(th => {
+        th.addEventListener('click', () => {
+            const col = th.dataset.col;
+            sortDir = sortCol === col ? sortDir * -1 : 1;
+            sortCol = col;
+            document.querySelectorAll('thead th').forEach(t => t.classList.remove('sorted'));
+            th.classList.add('sorted');
+            th.querySelector('.sa').textContent = sortDir === 1 ? '↑' : '↓';
+            render();
+        });
+    });
+
+    // Filter
+    document.querySelectorAll('.flt-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.flt-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeFlt = btn.dataset.flt;
+            render();
+        });
+    });
+
+    document.getElementById('search').addEventListener('input', render);
+
+    render();
+    </script>
+</body>
+</html>

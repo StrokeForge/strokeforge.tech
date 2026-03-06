@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LED Resistor for GPIO Pin | StrokeForge Electronics</title>
+    <meta name="description" content="Calculate the series resistor for an LED connected to a GPIO pin on Arduino, ESP32, or Raspberry Pi. Includes GPIO current limits, platform presets, and E12/E24 nearest values.">
+    <meta name="keywords" content="LED resistor GPIO, Arduino LED resistor, ESP32 LED, GPIO current limit, LED series resistor, digitalWrite LED">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-017/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 860px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .platform-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.5rem; margin-bottom: 1.5rem; }
+        @media (max-width: 500px) { .platform-grid { grid-template-columns: 1fr 1fr; } }
+        .plat-btn { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 8px; padding: 0.55rem 0.5rem; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .plat-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .plat-btn.active { border-color: var(--primary-orange); background: rgba(255,107,53,0.15); color: var(--primary-orange); }
+        .plat-btn .plat-v { font-size: 0.7rem; color: var(--text-gray); margin-top: 0.15rem; }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
+        .hint { font-size: 0.72rem; color: var(--text-gray); }
+
+        .res-main { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        @media (max-width: 480px) { .res-main { grid-template-columns: 1fr; } }
+        .res-block { background: var(--darker-bg); border-radius: 10px; padding: 1.1rem 1.3rem; }
+        .res-block .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .res-block .val { font-size: 1.5rem; font-weight: 800; color: var(--primary-orange); }
+        .res-block .e24 { font-size: 0.85rem; color: #60a5fa; margin-top: 0.35rem; }
+        .res-block .e12 { font-size: 0.8rem; color: #4ade80; }
+
+        .res-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 480px) { .res-grid { grid-template-columns: 1fr 1fr; } }
+        .rg { background: var(--darker-bg); border-radius: 8px; padding: 0.75rem 1rem; }
+        .rg .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .rg .val { font-size: 1rem; font-weight: 700; }
+        .rg .val.ok   { color: #4ade80; }
+        .rg .val.warn { color: #fb923c; }
+        .rg .val.err  { color: #f87171; }
+
+        .warn-box { background: rgba(251,146,60,0.1); border: 1px solid #fb923c; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #fb923c; margin-top: 0.75rem; }
+        .err-box  { background: rgba(248,113,113,0.1); border: 1px solid #f87171; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #f87171; margin-top: 0.75rem; }
+
+        /* LED color selector */
+        .led-colors { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.75rem; }
+        .led-btn { border: 1px solid var(--border-gray); border-radius: 6px; padding: 0.28rem 0.7rem; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; background: none; }
+        .led-btn:hover { opacity: 0.85; }
+        .led-btn.active { border-width: 2px; font-weight: 700; }
+
+        .svg-wrap { overflow-x: auto; text-align: center; }
+
+        .gpio-table { width:100%; border-collapse:collapse; font-size:0.83rem; }
+        .gpio-table th { padding:0.4rem 0.75rem; text-align:left; color:var(--text-gray); border-bottom:2px solid var(--border-gray); }
+        .gpio-table td { padding:0.4rem 0.75rem; border-bottom:1px solid rgba(255,255,255,0.04); }
+        .gpio-table tr:hover td { background:rgba(255,107,53,0.05); }
+        .gpio-table td:first-child { color:var(--primary-orange); font-weight:700; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.88rem; line-height: 1.9; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../engineering.html">Engineering</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../other.html">Other</a>
+                <a href="../../3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>💡 LED Resistor for GPIO Pin</h1>
+        <p>Calculate the correct series resistor for an LED driven directly from a microcontroller GPIO pin.</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="../../electronics.html" class="back-button">← Back to Electronics</a>
+
+        <!-- CALCULATOR -->
+        <div class="card">
+            <h2>Calculator</h2>
+
+            <!-- Platform presets -->
+            <div style="font-size:0.78rem;color:var(--text-gray);margin-bottom:0.5rem">Select platform:</div>
+            <div class="platform-grid" id="plat-grid"></div>
+
+            <!-- LED color -->
+            <div style="font-size:0.78rem;color:var(--text-gray);margin-bottom:0.5rem">LED colour (sets typical Uf):</div>
+            <div class="led-colors" id="led-colors"></div>
+
+            <div class="input-grid">
+                <div class="field">
+                    <label>GPIO voltage (Vgpio)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="vgpio" placeholder="5" min="0" step="0.1" oninput="calculate()">
+                        <span class="unit">V</span>
+                    </div>
+                    <div class="hint">HIGH output voltage of the GPIO pin</div>
+                </div>
+                <div class="field">
+                    <label>LED forward voltage (Uf)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="uf" placeholder="2.0" min="0" step="0.1" oninput="calculate()">
+                        <span class="unit">V</span>
+                    </div>
+                    <div class="hint">Check LED datasheet</div>
+                </div>
+                <div class="field">
+                    <label>Desired LED current (If)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="iLed" placeholder="10" min="0" step="any" oninput="calculate()">
+                        <span class="unit">mA</span>
+                    </div>
+                    <div class="hint">5–20 mA typical. Check GPIO limit!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card" id="results-card" style="display:none">
+            <h2>Results</h2>
+            <div class="res-main">
+                <div class="res-block">
+                    <div class="lbl">Series resistor (exact)</div>
+                    <div class="val" id="res-exact">—</div>
+                    <div class="e24" id="res-e24">—</div>
+                    <div class="e12" id="res-e12">—</div>
+                </div>
+                <div class="res-block">
+                    <div class="lbl">Power on resistor</div>
+                    <div class="val" id="res-p">—</div>
+                    <div class="e24" style="color:var(--text-gray)" id="res-prating">—</div>
+                </div>
+            </div>
+            <div class="res-grid">
+                <div class="rg"><div class="lbl">LED current (If)</div><div class="val ok" id="res-if">—</div></div>
+                <div class="rg"><div class="lbl">GPIO current</div><div class="val" id="res-gpio-cur">—</div></div>
+                <div class="rg"><div class="lbl">GPIO load</div><div class="val" id="res-gpio-pct">—</div></div>
+            </div>
+            <div id="res-warnings"></div>
+
+            <!-- SVG circuit -->
+            <div class="svg-wrap" style="margin-top:1.25rem">
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 130" width="440" height="130"></svg>
+            </div>
+        </div>
+
+        <!-- GPIO CURRENT TABLE -->
+        <div class="card">
+            <h2>GPIO current limits — quick reference</h2>
+            <table class="gpio-table">
+                <thead><tr><th>Platform</th><th>GPIO voltage</th><th>Max per pin</th><th>Max total</th><th>Notes</th></tr></thead>
+                <tbody>
+                    <tr><td>Arduino Uno / Nano</td><td>5 V</td><td>40 mA</td><td>200 mA</td><td>Safe limit: 20 mA per pin to avoid damage</td></tr>
+                    <tr><td>Arduino Mega</td><td>5 V</td><td>40 mA</td><td>200 mA</td><td>Same ATmega family limits</td></tr>
+                    <tr><td>ESP32</td><td>3.3 V</td><td>40 mA</td><td>~1200 mA total chip</td><td>Recommended ≤ 12 mA per GPIO for reliability</td></tr>
+                    <tr><td>ESP8266 (NodeMCU)</td><td>3.3 V</td><td>12 mA</td><td>—</td><td>Strictly 12 mA max per pin</td></tr>
+                    <tr><td>Raspberry Pi (all)</td><td>3.3 V</td><td>16 mA</td><td>50 mA</td><td>Very sensitive — use a transistor for higher currents</td></tr>
+                    <tr><td>STM32</td><td>3.3 V</td><td>25 mA</td><td>—</td><td>Depends on package; check datasheet</td></tr>
+                    <tr><td>Arduino Pro Mini 3.3V</td><td>3.3 V</td><td>40 mA</td><td>—</td><td>Same ATmega328 but 3.3 V supply</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Good to know</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Formula</h3>
+                    <p class="mono">
+                        R = (Vgpio − Uf) / If<br><br>
+                        P = (Vgpio − Uf) × If<br>
+                           = If² × R
+                    </p>
+                </div>
+                <div class="info-block">
+                    <h3>Current recommendations</h3>
+                    <ul>
+                        <li><strong>5 mA</strong> — dim status indicator, minimal GPIO load</li>
+                        <li><strong>10 mA</strong> — standard indicator, safe for all platforms</li>
+                        <li><strong>15–20 mA</strong> — bright; only for Arduino 5V, with care</li>
+                        <li>Modern high-efficiency LEDs are bright at 5–10 mA</li>
+                        <li>Never connect LED directly to GPIO without a resistor!</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Driving multiple LEDs</h3>
+                    <ul>
+                        <li>Each LED needs its own series resistor</li>
+                        <li>Total GPIO current = sum of all LED currents</li>
+                        <li>If total &gt; 50 mA, use a transistor or MOSFET driver</li>
+                        <li>For many LEDs: use a shift register (74HC595) or LED driver (MAX7219)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Active HIGH vs active LOW</h3>
+                    <ul>
+                        <li><strong>Active HIGH</strong> — LED anode to GPIO, cathode via R to GND (common)</li>
+                        <li><strong>Active LOW</strong> — LED cathode to GPIO, anode via R to Vcc (LED ON when GPIO = LOW)</li>
+                        <li>Active LOW slightly reduces GPIO source current — sometimes preferred</li>
+                        <li>Built-in LED on most boards is active LOW (connected to GND through LED)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Part of <a href="../../electronics.html">StrokeForge Electronics</a> — free tools for makers</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    const E12 = [1.0,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2];
+    const E24 = [1.0,1.1,1.2,1.3,1.5,1.6,1.8,2.0,2.2,2.4,2.7,3.0,3.3,3.6,3.9,4.3,4.7,5.1,5.6,6.2,6.8,7.5,8.2,9.1];
+
+    function nearestE(series, val, roundUp) {
+        if (!val || val <= 0) return null;
+        const exp = Math.floor(Math.log10(val));
+        let best = null, bestDiff = Infinity;
+        [-1,0,1].forEach(e => {
+            series.forEach(s => {
+                const c = s * Math.pow(10, exp+e);
+                if (roundUp && c < val * 0.99) return;
+                const d = Math.abs(c - val);
+                if (d < bestDiff) { bestDiff = d; best = c; }
+            });
+        });
+        return best;
+    }
+
+    function fmtR(r) {
+        if (!r) return '—';
+        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/\.?0+$/,'') + ' MΩ';
+        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/\.?0+$/,'') + ' kΩ';
+        return r.toPrecision(3).replace(/\.?0+$/,'') + ' Ω';
+    }
+    function fmtP(p) {
+        if (p >= 1) return p.toPrecision(3) + ' W';
+        return (p*1000).toPrecision(3) + ' mW';
+    }
+
+    // Platforms
+    const PLATFORMS = [
+        { name:'Arduino Uno/Nano', v:5.0,  maxPin:40, recPin:20 },
+        { name:'Arduino Mega',     v:5.0,  maxPin:40, recPin:20 },
+        { name:'ESP32',            v:3.3,  maxPin:40, recPin:12 },
+        { name:'ESP8266',          v:3.3,  maxPin:12, recPin:10 },
+        { name:'Raspberry Pi',     v:3.3,  maxPin:16, recPin:10 },
+        { name:'STM32',            v:3.3,  maxPin:25, recPin:20 },
+        { name:'Pro Mini 3.3V',    v:3.3,  maxPin:40, recPin:20 },
+        { name:'Custom',           v:null, maxPin:null, recPin:null },
+    ];
+
+    let activePlatform = 0;
+
+    // LED colours
+    const LED_COLORS = [
+        { name:'Red',    uf:1.8, color:'#f87171', tc:'#000' },
+        { name:'Yellow', uf:2.1, color:'#fde047', tc:'#000' },
+        { name:'Green',  uf:2.1, color:'#4ade80', tc:'#000' },
+        { name:'Blue',   uf:3.2, color:'#60a5fa', tc:'#000' },
+        { name:'White',  uf:3.2, color:'#f1f5f9', tc:'#000' },
+        { name:'IR',     uf:1.2, color:'#6b7280', tc:'#fff' },
+        { name:'UV',     uf:3.5, color:'#a78bfa', tc:'#fff' },
+    ];
+
+    let activeLed = 0;
+
+    function g(id) { const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+
+    function buildPlatforms() {
+        const grid = document.getElementById('plat-grid');
+        PLATFORMS.forEach((p,i) => {
+            const btn = document.createElement('button');
+            btn.className = 'plat-btn' + (i===0?' active':'');
+            btn.innerHTML = `<div>${p.name}</div><div class="plat-v">${p.v ? p.v+'V' : 'custom'}</div>`;
+            btn.onclick = () => {
+                document.querySelectorAll('.plat-btn').forEach(b=>b.classList.remove('active'));
+                btn.classList.add('active');
+                activePlatform = i;
+                if (p.v) document.getElementById('vgpio').value = p.v;
+                calculate();
+            };
+            grid.appendChild(btn);
+        });
+    }
+
+    function buildLedColors() {
+        const wrap = document.getElementById('led-colors');
+        LED_COLORS.forEach((c,i) => {
+            const btn = document.createElement('button');
+            btn.className = 'led-btn' + (i===0?' active':'');
+            btn.textContent = c.name + ' (' + c.uf + 'V)';
+            btn.style.background = c.color;
+            btn.style.color = c.tc;
+            btn.style.borderColor = c.color;
+            btn.onclick = () => {
+                document.querySelectorAll('.led-btn').forEach(b=>b.classList.remove('active'));
+                btn.classList.add('active');
+                activeLed = i;
+                document.getElementById('uf').value = c.uf;
+                calculate();
+            };
+            wrap.appendChild(btn);
+        });
+    }
+
+    function calculate() {
+        const vgpio = g('vgpio');
+        const uf    = g('uf');
+        const iLed  = g('iLed'); // mA
+        const rc    = document.getElementById('results-card');
+
+        if (!vgpio || !uf || !iLed || iLed <= 0) { rc.style.display='none'; return; }
+        if (uf >= vgpio) {
+            rc.style.display='none';
+            return;
+        }
+
+        const iA   = iLed / 1000;
+        const Rexact = (vgpio - uf) / iA;
+        const Re24   = nearestE(E24, Rexact, true);
+        const Re12   = nearestE(E12, Rexact, true);
+        const P      = (vgpio - uf) * iA;
+
+        document.getElementById('res-exact').textContent = fmtR(Rexact);
+        document.getElementById('res-e24').textContent   = Re24 ? 'E24 nearest ↑: ' + fmtR(Re24) + ' (If = ' + ((vgpio-uf)/Re24*1000).toFixed(1) + ' mA)' : '—';
+        document.getElementById('res-e12').textContent   = Re12 ? 'E12 nearest ↑: ' + fmtR(Re12) + ' (If = ' + ((vgpio-uf)/Re12*1000).toFixed(1) + ' mA)' : '—';
+        document.getElementById('res-p').textContent     = fmtP(P);
+        document.getElementById('res-prating').textContent = P < 0.05 ? 'Use 1/8W or 1/4W resistor' : P < 0.15 ? 'Use 1/4W resistor' : 'Use 1/2W or higher';
+        document.getElementById('res-if').textContent    = iLed.toFixed(1) + ' mA';
+
+        const plat = PLATFORMS[activePlatform];
+        const gpioEl = document.getElementById('res-gpio-cur');
+        const gpioP  = document.getElementById('res-gpio-pct');
+        gpioEl.textContent = iLed.toFixed(1) + ' mA';
+
+        let warns = '', errs = '';
+        if (plat.maxPin) {
+            const pct = (iLed / plat.maxPin * 100).toFixed(0);
+            gpioP.textContent = pct + '% of max (' + plat.maxPin + ' mA)';
+            gpioEl.className = 'val ' + (iLed > plat.maxPin ? 'err' : iLed > plat.recPin ? 'warn' : 'ok');
+            gpioP.className  = 'val ' + (iLed > plat.maxPin ? 'err' : iLed > plat.recPin ? 'warn' : 'ok');
+            if (iLed > plat.maxPin) errs  += `<div class="err-box">⚠ ${iLed} mA exceeds the absolute maximum for ${plat.name} (${plat.maxPin} mA). This will damage the GPIO pin!</div>`;
+            else if (iLed > plat.recPin) warns += `<div class="warn-box">Current (${iLed} mA) is above the recommended safe limit for ${plat.name} (${plat.recPin} mA). Use a transistor or MOSFET driver for longevity.</div>`;
+        } else {
+            gpioP.textContent = '—';
+            gpioEl.className = 'val';
+            gpioP.className = 'val';
+        }
+        if (uf >= vgpio) errs += `<div class="err-box">LED forward voltage (${uf}V) must be less than GPIO voltage (${vgpio}V).</div>`;
+        document.getElementById('res-warnings').innerHTML = errs + warns;
+
+        rc.style.display='';
+        drawCircuit(vgpio, uf, iLed, Re24 || Rexact);
+    }
+
+    function drawCircuit(vgpio, uf, iLed, R) {
+        const svg = document.getElementById('circuit-svg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const ns = 'http://www.w3.org/2000/svg';
+        function el(tag,attrs,text){const e=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;return e;}
+        function line(x1,y1,x2,y2,col,w){return el('line',{x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'round'});}
+        function txt(x,y,t,col,sz,anc){return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);}
+
+        // GPIO pin
+        svg.appendChild(el('rect',{x:10,y:48,width:55,height:24,fill:'#1a2433',stroke:'#fb923c','stroke-width':1.5,rx:4}));
+        svg.appendChild(txt(37,60,'GPIO','#fb923c',10,'middle'));
+        svg.appendChild(line(65,60,110,60));
+        svg.appendChild(txt(37,80,vgpio+'V','#facc15',8,'middle'));
+
+        // Resistor
+        svg.appendChild(el('rect',{x:110,y:48,width:60,height:24,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
+        svg.appendChild(txt(140,57,fmtR(R),'#4ade80',9,'middle'));
+        svg.appendChild(txt(140,68,'resistor','#6b7280',7,'middle'));
+        svg.appendChild(line(170,60,220,60));
+
+        // LED symbol
+        const lx=220, ly=60;
+        // Triangle (anode→cathode)
+        svg.appendChild(el('polygon',{points:`${lx},${ly-12} ${lx},${ly+12} ${lx+22},${ly}`,fill:'rgba(255,107,53,0.2)',stroke:'#fb923c','stroke-width':1.5}));
+        // Cathode bar
+        svg.appendChild(line(lx+22,ly-12,lx+22,ly+12,'#fb923c',2));
+        // LED rays
+        svg.appendChild(line(lx+28,ly-10,lx+38,ly-18,'#fde047',1));
+        svg.appendChild(line(lx+28,ly-5, lx+38,ly-13,'#fde047',1));
+        // LED labels
+        svg.appendChild(txt(lx+11,ly+20,'LED','#6b7280',8,'middle'));
+        svg.appendChild(txt(lx+11,ly+29,uf+'V','#fb923c',7,'middle'));
+
+        svg.appendChild(line(lx+22,ly,290,ly));
+        svg.appendChild(line(290,ly,290,110));
+
+        // GND rail
+        svg.appendChild(line(10,110,380,110,'#6b7280',1));
+        svg.appendChild(line(10,60,10,110,'#6b7280'));
+
+        // GND symbol
+        svg.appendChild(line(150,110,150,120));
+        svg.appendChild(line(136,120,164,120,'#6b7280',1.5));
+        svg.appendChild(line(140,124,160,124,'#6b7280',1));
+        svg.appendChild(line(144,128,156,128,'#6b7280',0.8));
+
+        // Current annotation
+        svg.appendChild(txt(190,45,iLed.toFixed(1)+' mA →','#60a5fa',8,'middle'));
+    }
+
+    buildPlatforms();
+    buildLedColors();
+    document.getElementById('vgpio').value = 5;
+    document.getElementById('uf').value = LED_COLORS[0].uf;
+    document.getElementById('iLed').value = 10;
+    calculate();
+    </script>
+</body>
+</html>

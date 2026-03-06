@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuse Selection Calculator | StrokeForge Electronics</title>
+    <meta name="description" content="Select the right fuse for your circuit. Enter load current and application type to get the recommended fuse rating, type (fast/slow), and housing. Includes standard fuse ratings reference table.">
+    <meta name="keywords" content="fuse selection, fuse calculator, fast blow fuse, slow blow fuse, fuse rating, 5x20mm fuse, SMD fuse, blade fuse">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-012/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 900px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Inputs */
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.88rem; outline: none; cursor: pointer; transition: border-color 0.2s; width: 100%; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
+        .hint { font-size: 0.72rem; color: var(--text-gray); }
+
+        /* Results */
+        .res-hero { background: var(--darker-bg); border: 2px solid var(--primary-orange); border-radius: 12px; padding: 1.5rem; text-align: center; margin-bottom: 1rem; }
+        .res-hero .main-val { font-size: 2.5rem; font-weight: 900; color: var(--primary-orange); }
+        .res-hero .main-lbl { font-size: 0.85rem; color: var(--text-gray); margin-top: 0.2rem; }
+        .res-hero .sub-val { font-size: 1rem; color: var(--light-gray); margin-top: 0.5rem; }
+
+        .res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 500px) { .res-grid { grid-template-columns: 1fr 1fr; } }
+        .rg { background: var(--darker-bg); border-radius: 8px; padding: 0.75rem 1rem; }
+        .rg .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .rg .val { font-size: 1rem; font-weight: 700; color: var(--light-gray); }
+        .rg .val.ok   { color: #4ade80; }
+        .rg .val.warn { color: #fb923c; }
+
+        .warn-box { background: rgba(251,146,60,0.1); border: 1px solid #fb923c; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #fb923c; margin-top: 0.75rem; }
+        .info-box  { background: rgba(96,165,250,0.08); border: 1px solid #60a5fa; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #93c5fd; margin-top: 0.75rem; }
+
+        /* Table */
+        .filter-bar { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.25rem; }
+        .filter-group { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; }
+        .filter-btn { padding: 0.4rem 0.9rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.83rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
+        .filter-btn.active { background: var(--primary-orange); color: #000; }
+        .filter-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+        .count-label { font-size: 0.78rem; color: var(--text-gray); margin-left: auto; }
+
+        .tbl-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+        th { padding: 0.5rem 0.75rem; text-align: left; color: var(--text-gray); border-bottom: 2px solid var(--border-gray); white-space: nowrap; }
+        td { padding: 0.45rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--light-gray); white-space: nowrap; }
+        tr:hover td { background: rgba(255,107,53,0.05); }
+        tr.highlight td { background: rgba(255,107,53,0.12); }
+        tr.highlight td:first-child { color: var(--primary-orange); font-weight: 700; }
+
+        .badge { display: inline-block; border-radius: 4px; padding: 0.1rem 0.45rem; font-size: 0.72rem; font-weight: 700; }
+        .badge-F  { background: rgba(248,113,113,0.15); color: #f87171; }
+        .badge-T  { background: rgba(96,165,250,0.15); color: #60a5fa; }
+        .badge-M  { background: rgba(251,191,36,0.15); color: #fbbf24; }
+
+        /* Info */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../engineering.html">Engineering</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../other.html">Other</a>
+                <a href="../../3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>🔧 Fuse Selection</h1>
+        <p>Choose the right fuse rating and type for your circuit — calculator and standard values reference.</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="../../electronics.html" class="back-button">← Back to Electronics</a>
+
+        <!-- CALCULATOR -->
+        <div class="card">
+            <h2>Calculator</h2>
+            <div class="input-grid">
+                <div class="field">
+                    <label>Normal operating current</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="iload" placeholder="2.5" min="0" step="any" oninput="calculate()">
+                        <span class="unit">A</span>
+                    </div>
+                    <div class="hint">Steady-state current draw of your circuit</div>
+                </div>
+                <div class="field">
+                    <label>Application type</label>
+                    <select class="sel" id="apptype" onchange="calculate()">
+                        <option value="resistive">Resistive load (heater, lamp)</option>
+                        <option value="led">LED / logic / general</option>
+                        <option value="motor">Motor / transformer</option>
+                        <option value="psu">Switching PSU / converter</option>
+                        <option value="motor_large">Large motor / compressor</option>
+                    </select>
+                    <div class="hint">Determines inrush factor and fuse type</div>
+                </div>
+                <div class="field">
+                    <label>Supply voltage</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="vsupply" placeholder="12" min="0" step="any" oninput="calculate()">
+                        <span class="unit">V</span>
+                    </div>
+                    <div class="hint">For voltage rating check</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card" id="results-card" style="display:none">
+            <h2>Recommended fuse</h2>
+            <div class="res-hero">
+                <div class="main-val" id="res-rating">—</div>
+                <div class="main-lbl">Recommended fuse rating</div>
+                <div class="sub-val" id="res-type">—</div>
+            </div>
+            <div class="res-grid">
+                <div class="rg"><div class="lbl">Min fuse current</div><div class="val" id="res-min">—</div></div>
+                <div class="rg"><div class="lbl">Safety factor</div><div class="val ok" id="res-factor">—</div></div>
+                <div class="rg"><div class="lbl">Inrush estimate</div><div class="val warn" id="res-inrush">—</div></div>
+            </div>
+            <div id="res-notes"></div>
+        </div>
+
+        <!-- REFERENCE TABLE -->
+        <div class="card">
+            <h2>Standard fuse ratings — IEC 60127</h2>
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-type="all">All types</button>
+                    <button class="filter-btn" data-type="F">Fast (F)</button>
+                    <button class="filter-btn" data-type="T">Slow (T)</button>
+                    <button class="filter-btn" data-type="M">Medium (M)</button>
+                </div>
+                <span class="count-label" id="count"></span>
+            </div>
+            <div class="tbl-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rating</th>
+                            <th>Type</th>
+                            <th>Breaking capacity</th>
+                            <th>Common housings</th>
+                            <th>Typical use</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- HOUSING TABLE -->
+        <div class="card">
+            <h2>Fuse housing types</h2>
+            <div class="tbl-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Housing</th><th>Size</th><th>Max voltage</th><th>Max current</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>5×20 mm glass</td><td>5 × 20 mm</td><td>250 V AC</td><td>20 A</td><td>Most common in Europe. Transparent — condition visible</td></tr>
+                        <tr><td>5×20 mm ceramic</td><td>5 × 20 mm</td><td>250 V AC</td><td>20 A</td><td>Higher breaking capacity than glass. Opaque body</td></tr>
+                        <tr><td>6.3×32 mm</td><td>6.3 × 32 mm</td><td>250 V AC</td><td>25 A</td><td>Older US / industrial standard. Still common in Europe</td></tr>
+                        <tr><td>Micro blade (ATM)</td><td>10.9 × 3.8 mm</td><td>32 V DC</td><td>30 A</td><td>Automotive — compact. Colour-coded by rating</td></tr>
+                        <tr><td>Mini blade (ATO)</td><td>16.3 × 10.9 mm</td><td>32 V DC</td><td>40 A</td><td>Automotive standard. Colour-coded by rating</td></tr>
+                        <tr><td>Maxi blade (APX)</td><td>29 × 8.5 mm</td><td>32 V DC</td><td>100 A</td><td>Automotive — high current. Main fuse box</td></tr>
+                        <tr><td>SMD 1206</td><td>3.2 × 1.6 mm</td><td>125 V</td><td>5 A</td><td>PCB mount. Replaceable or one-shot (non-resettable)</td></tr>
+                        <tr><td>SMD 0805</td><td>2.0 × 1.25 mm</td><td>125 V</td><td>3 A</td><td>PCB mount. Compact low-current protection</td></tr>
+                        <tr><td>PTC resettable</td><td>various</td><td>30–60 V</td><td>0.1–6 A</td><td>Resets after fault clears. Good for USB / battery protection</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Selection guide</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Fast (F) vs Slow-blow (T)</h3>
+                    <ul>
+                        <li><strong>Fast (F)</strong> — blows quickly on any overcurrent. Use for sensitive electronics, semiconductors, PCB protection</li>
+                        <li><strong>Slow (T)</strong> — tolerates short inrush surges. Use for motors, transformers, switching supplies</li>
+                        <li><strong>Medium (M)</strong> — compromise. General purpose, lamps, heaters</li>
+                        <li>When in doubt with motors: choose T (slow-blow)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Rating rule of thumb</h3>
+                    <ul>
+                        <li>Fuse rating = 125–150 % of max operating current</li>
+                        <li>Always round <strong>up</strong> to the next standard value</li>
+                        <li>Motor inrush can be 6–10× normal current for 50–200 ms</li>
+                        <li>Switching PSU inrush: 3–5× for a few milliseconds</li>
+                        <li>Fuse must blow before any component is damaged</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Voltage rating</h3>
+                    <ul>
+                        <li>Fuse voltage rating must be ≥ supply voltage</li>
+                        <li>Do NOT use a 32 V automotive fuse on 230 V AC</li>
+                        <li>DC fuses are different from AC fuses — arc quenching differs</li>
+                        <li>Glass fuses: typically rated 250 V AC</li>
+                        <li>Blade fuses: typically 32 V DC (automotive)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Automotive colour codes (blade)</h3>
+                    <ul>
+                        <li style="color:#f87171">■ Red — 10 A</li>
+                        <li style="color:#60a5fa">■ Blue — 15 A</li>
+                        <li style="color:#facc15">■ Yellow — 20 A</li>
+                        <li style="color:#a78bfa">■ Violet — 3 A</li>
+                        <li style="color:#fb923c">■ Orange — 5 A (mini) / 40 A (maxi)</li>
+                        <li style="color:#4ade80">■ Green — 30 A</li>
+                        <li style="color:#f9a8d4">■ Pink — 4 A</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Part of <a href="../../electronics.html">StrokeForge Electronics</a> — free tools for makers</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ── Fuse data ──────────────────────────────────────────────────────────
+    const FUSES = [
+        { rating:0.1,   type:'F', bc:'35 A',  housings:'5×20 glass, SMD 0805', use:'Signal lines, low-power sensors' },
+        { rating:0.125, type:'F', bc:'35 A',  housings:'5×20 glass',           use:'Measurement circuits' },
+        { rating:0.16,  type:'F', bc:'35 A',  housings:'5×20 glass',           use:'Low-power electronics' },
+        { rating:0.2,   type:'F', bc:'35 A',  housings:'5×20 glass, SMD 0805', use:'Logic circuits, I/O protection' },
+        { rating:0.25,  type:'F', bc:'35 A',  housings:'5×20 glass',           use:'General electronics' },
+        { rating:0.315, type:'F', bc:'35 A',  housings:'5×20 glass',           use:'General electronics' },
+        { rating:0.4,   type:'F', bc:'35 A',  housings:'5×20 glass',           use:'General electronics' },
+        { rating:0.5,   type:'F', bc:'35 A',  housings:'5×20 glass, SMD 1206', use:'LED strips, small PCBs' },
+        { rating:0.5,   type:'T', bc:'150 A', housings:'5×20 ceramic',         use:'Small transformers' },
+        { rating:0.63,  type:'F', bc:'35 A',  housings:'5×20 glass',           use:'General electronics' },
+        { rating:0.63,  type:'T', bc:'150 A', housings:'5×20 ceramic',         use:'Transformers, motors' },
+        { rating:0.8,   type:'T', bc:'150 A', housings:'5×20 ceramic',         use:'Transformers' },
+        { rating:1.0,   type:'F', bc:'35 A',  housings:'5×20 glass, SMD 1206', use:'General electronics, Arduino projects' },
+        { rating:1.0,   type:'T', bc:'150 A', housings:'5×20 ceramic',         use:'Transformers, motors' },
+        { rating:1.0,   type:'M', bc:'100 A', housings:'5×20 glass/ceramic',   use:'Lamps, heaters' },
+        { rating:1.25,  type:'F', bc:'35 A',  housings:'5×20 glass',           use:'General electronics' },
+        { rating:1.25,  type:'T', bc:'150 A', housings:'5×20 ceramic',         use:'Transformers' },
+        { rating:1.6,   type:'F', bc:'35 A',  housings:'5×20 glass',           use:'General electronics' },
+        { rating:1.6,   type:'T', bc:'150 A', housings:'5×20 ceramic',         use:'Motors, transformers' },
+        { rating:2.0,   type:'F', bc:'35 A',  housings:'5×20 glass, SMD 1206', use:'Power boards, LM317 circuits' },
+        { rating:2.0,   type:'T', bc:'150 A', housings:'5×20 ceramic',         use:'PSU, motor control' },
+        { rating:2.0,   type:'M', bc:'100 A', housings:'5×20 glass/ceramic',   use:'General power circuits' },
+        { rating:2.5,   type:'F', bc:'35 A',  housings:'5×20 glass',           use:'Power electronics' },
+        { rating:2.5,   type:'T', bc:'150 A', housings:'5×20 ceramic',         use:'Transformers, motors' },
+        { rating:3.15,  type:'F', bc:'35 A',  housings:'5×20 glass',           use:'Power electronics' },
+        { rating:3.15,  type:'T', bc:'150 A', housings:'5×20 ceramic',         use:'Motor control' },
+        { rating:4.0,   type:'F', bc:'35 A',  housings:'5×20 glass',           use:'Power electronics' },
+        { rating:4.0,   type:'T', bc:'150 A', housings:'5×20 ceramic',         use:'Motor control, PSU' },
+        { rating:5.0,   type:'F', bc:'35 A',  housings:'5×20 glass, 6.3×32',   use:'Power supplies' },
+        { rating:5.0,   type:'T', bc:'150 A', housings:'5×20 ceramic, 6.3×32', use:'Large transformers, motors' },
+        { rating:6.3,   type:'F', bc:'35 A',  housings:'5×20 glass, 6.3×32',   use:'Power amplifiers' },
+        { rating:6.3,   type:'T', bc:'150 A', housings:'5×20 ceramic, 6.3×32', use:'Large motors' },
+        { rating:8.0,   type:'F', bc:'35 A',  housings:'6.3×32',               use:'High-power electronics' },
+        { rating:8.0,   type:'T', bc:'150 A', housings:'6.3×32',               use:'Large motors' },
+        { rating:10.0,  type:'F', bc:'35 A',  housings:'6.3×32',               use:'High-power electronics' },
+        { rating:10.0,  type:'T', bc:'150 A', housings:'6.3×32',               use:'Large motors, compressors' },
+        { rating:12.5,  type:'T', bc:'150 A', housings:'6.3×32',               use:'Industrial motors' },
+        { rating:16.0,  type:'T', bc:'150 A', housings:'6.3×32',               use:'Industrial motors' },
+        { rating:20.0,  type:'T', bc:'150 A', housings:'6.3×32',               use:'High-power industrial' },
+    ];
+
+    // Application type config: { inrushFactor, fuseType, note }
+    const APP_CONFIG = {
+        resistive:   { factor: 1.25, type: 'F', note: 'Resistive loads have minimal inrush. Fast fuse is fine.' },
+        led:         { factor: 1.35, type: 'F', note: 'LEDs and logic have a small capacitive inrush. Fast fuse is safe.' },
+        motor:       { factor: 1.50, type: 'T', note: 'Motors draw 3–6× rated current on startup. Use slow-blow (T) fuse.' },
+        psu:         { factor: 1.50, type: 'T', note: 'Switching PSUs have capacitive inrush (3–5×). Use slow-blow (T) fuse.' },
+        motor_large: { factor: 1.75, type: 'T', note: 'Large motors draw up to 10× rated current on startup. Slow-blow (T) is required.' },
+    };
+
+    const INRUSH_FACTOR = {
+        resistive: 1.5, led: 2, motor: 6, psu: 4, motor_large: 10
+    };
+
+    const TYPE_LABEL = { F: 'Fast (F)', T: 'Slow-blow (T)', M: 'Medium (M)' };
+
+    // ── Find nearest standard fuse ≥ target ──────────────────────────────
+    function nearestFuse(minA, preferType) {
+        const candidates = FUSES
+            .filter(f => f.rating >= minA && (f.type === preferType || f.type === 'M'))
+            .sort((a,b) => a.rating - b.rating || (a.type === preferType ? -1 : 1));
+        if (candidates.length) return candidates[0];
+        // fallback: any type
+        return FUSES.filter(f => f.rating >= minA).sort((a,b) => a.rating - b.rating)[0] || null;
+    }
+
+    function fmtA(a) {
+        return a >= 1 ? a + ' A' : (a * 1000).toFixed(0) + ' mA';
+    }
+
+    // ── Calculate ─────────────────────────────────────────────────────────
+    function calculate() {
+        const iload  = parseFloat(document.getElementById('iload').value);
+        const vsupply = parseFloat(document.getElementById('vsupply').value);
+        const apptype = document.getElementById('apptype').value;
+        const rc = document.getElementById('results-card');
+
+        if (!iload || iload <= 0) { rc.style.display = 'none'; highlightRow(null); return; }
+
+        const cfg = APP_CONFIG[apptype];
+        const minFuse = iload * cfg.factor;
+        const inrush  = iload * INRUSH_FACTOR[apptype];
+        const fuse    = nearestFuse(minFuse, cfg.type);
+
+        document.getElementById('res-rating').textContent = fuse ? fmtA(fuse.rating) : '—';
+        document.getElementById('res-type').textContent   = fuse ? TYPE_LABEL[fuse.type] + ' fuse' : '—';
+        document.getElementById('res-min').textContent    = fmtA(minFuse);
+        document.getElementById('res-factor').textContent = (cfg.factor * 100).toFixed(0) + '%';
+        document.getElementById('res-inrush').textContent = '~' + fmtA(inrush);
+
+        let notes = `<div class="info-box">${cfg.note}</div>`;
+        if (fuse && vsupply && vsupply > 32) {
+            notes += `<div class="warn-box">Your supply is ${vsupply} V. Make sure the fuse is rated for this voltage — automotive blade fuses are only rated 32 V DC!</div>`;
+        }
+        if (fuse && fuse.rating >= iload * 3) {
+            notes += `<div class="warn-box">Selected fuse (${fmtA(fuse.rating)}) is more than 3× your operating current. Protection may be too loose — check if a lower-rated type is available.</div>`;
+        }
+        document.getElementById('res-notes').innerHTML = notes;
+        rc.style.display = '';
+
+        highlightRow(fuse);
+    }
+
+    // ── Table ─────────────────────────────────────────────────────────────
+    let typeFilter = 'all';
+    let highlightRating = null;
+    let highlightType = null;
+
+    function highlightRow(fuse) {
+        highlightRating = fuse ? fuse.rating : null;
+        highlightType   = fuse ? fuse.type   : null;
+        renderTable();
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('tbody');
+        tbody.innerHTML = '';
+        let count = 0;
+        FUSES.forEach(f => {
+            if (typeFilter !== 'all' && f.type !== typeFilter) return;
+            count++;
+            const isHL = f.rating === highlightRating && f.type === highlightType;
+            const tr = document.createElement('tr');
+            if (isHL) tr.className = 'highlight';
+            const badge = `<span class="badge badge-${f.type}">${f.type}</span>`;
+            tr.innerHTML = `
+                <td>${fmtA(f.rating)}${isHL ? ' ← recommended' : ''}</td>
+                <td>${badge} ${TYPE_LABEL[f.type]}</td>
+                <td>${f.bc}</td>
+                <td style="color:var(--text-gray)">${f.housings}</td>
+                <td style="color:var(--text-gray);font-size:0.78rem">${f.use}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+        document.getElementById('count').textContent = count + ' ratings';
+    }
+
+    document.querySelectorAll('[data-type]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            typeFilter = btn.dataset.type;
+            renderTable();
+        });
+    });
+
+    // ── Init ──────────────────────────────────────────────────────────────
+    renderTable();
+    </script>
+</body>
+</html>

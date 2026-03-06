@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>78xx / 79xx Voltage Regulator Reference | StrokeForge Electronics</title>
+    <meta name="description" content="Complete reference table for 78xx and 79xx fixed linear voltage regulators. Output voltages, max current, input range, packages, dropout voltage, and capacitor requirements.">
+    <meta name="keywords" content="78xx voltage regulator, 79xx voltage regulator, 7805, 7812, 7905, 7912, linear regulator table, fixed voltage regulator">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-011/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 1000px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Filter bar */
+        .filter-bar { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.25rem; }
+        .filter-group { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; }
+        .filter-btn { padding: 0.45rem 1rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
+        .filter-btn.active { background: var(--primary-orange); color: #000; }
+        .filter-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        .search-inp { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 8px; padding: 0.45rem 0.9rem; font-size: 0.88rem; outline: none; width: 160px; transition: border-color 0.2s; }
+        .search-inp:focus { border-color: var(--primary-orange); }
+        .search-inp::placeholder { color: var(--text-gray); }
+
+        /* Table */
+        .tbl-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+        th { padding: 0.5rem 0.75rem; text-align: left; color: var(--text-gray); border-bottom: 2px solid var(--border-gray); white-space: nowrap; cursor: pointer; user-select: none; }
+        th:hover { color: var(--light-gray); }
+        th.sorted { color: var(--primary-orange); }
+        th .sort-arrow { font-size: 0.65rem; margin-left: 0.2rem; }
+        td { padding: 0.45rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--light-gray); white-space: nowrap; }
+        tr:hover td { background: rgba(255,107,53,0.05); }
+        td.part { color: var(--primary-orange); font-weight: 700; font-family: monospace; font-size: 0.9rem; }
+        td.neg { color: #60a5fa; }
+        td.pos { color: #4ade80; }
+        .pkg { display: inline-block; background: rgba(255,255,255,0.07); border-radius: 4px; padding: 0.1rem 0.4rem; font-size: 0.75rem; margin: 0.1rem 0.15rem 0.1rem 0; }
+
+        .badge-78 { background: rgba(74,222,128,0.15); color: #4ade80; border-radius: 4px; padding: 0.1rem 0.45rem; font-size: 0.72rem; font-weight: 700; }
+        .badge-79 { background: rgba(96,165,250,0.15); color: #60a5fa; border-radius: 4px; padding: 0.1rem 0.45rem; font-size: 0.72rem; font-weight: 700; }
+
+        .count-label { font-size: 0.78rem; color: var(--text-gray); margin-left: auto; }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.88rem; line-height: 1.8; }
+
+        /* Circuit diagram */
+        .svg-wrap { text-align: center; overflow-x: auto; padding: 0.5rem 0; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+
+        @media (max-width: 600px) {
+            .filter-bar { gap: 0.5rem; }
+            .search-inp { width: 130px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../engineering.html">Engineering</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../other.html">Other</a>
+                <a href="../../3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>🔌 78xx / 79xx Voltage Regulators</h1>
+        <p>Complete reference for fixed linear voltage regulators — output voltages, current ratings, packages, and wiring.</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="../../electronics.html" class="back-button">← Back to Electronics</a>
+
+        <!-- TABLE CARD -->
+        <div class="card">
+            <h2>Reference table</h2>
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-series="all">All</button>
+                    <button class="filter-btn" data-series="78">78xx (+)</button>
+                    <button class="filter-btn" data-series="79">79xx (−)</button>
+                </div>
+                <input class="search-inp" type="text" id="search" placeholder="Search part…" oninput="render()">
+                <span class="count-label" id="count"></span>
+            </div>
+            <div class="tbl-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th onclick="sort('part')">Part <span class="sort-arrow" id="arr-part"></span></th>
+                            <th onclick="sort('series')">Series <span class="sort-arrow" id="arr-series"></span></th>
+                            <th onclick="sort('vout')">Vout <span class="sort-arrow" id="arr-vout">▲</span></th>
+                            <th onclick="sort('imax')">Imax <span class="sort-arrow" id="arr-imax"></span></th>
+                            <th onclick="sort('vin_min')">Vin min <span class="sort-arrow" id="arr-vin_min"></span></th>
+                            <th onclick="sort('vin_max')">Vin max <span class="sort-arrow" id="arr-vin_max"></span></th>
+                            <th onclick="sort('dropout')">Dropout <span class="sort-arrow" id="arr-dropout"></span></th>
+                            <th>Packages</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CIRCUIT -->
+        <div class="card">
+            <h2>Typical wiring</h2>
+            <div class="svg-wrap">
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" width="640" height="200"></svg>
+            </div>
+            <p style="font-size:0.78rem;color:var(--text-gray);margin-top:0.75rem;text-align:center">
+                Cin = 0.33µF (if regulator is far from filter cap) &nbsp;|&nbsp; Cout = 0.1µF minimum &nbsp;|&nbsp; 79xx: same circuit, GND pin is common, polarity reversed
+            </p>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>How to use</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Current variants (suffix)</h3>
+                    <ul>
+                        <li><strong>78Lxx</strong> — 100 mA, TO-92 package</li>
+                        <li><strong>78Mxx</strong> — 500 mA, D-PAK / TO-252</li>
+                        <li><strong>78xx / L78xx</strong> — 1–1.5 A, TO-220</li>
+                        <li><strong>78Hxx</strong> — 5 A, TO-3 (older designs)</li>
+                        <li>Same applies to 79xx series (negative)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Minimum input voltage</h3>
+                    <ul>
+                        <li>Vin must exceed Vout by the <strong>dropout voltage</strong></li>
+                        <li>Typical dropout: <strong>2–2.5 V</strong> at rated current</li>
+                        <li>Example: 7805 needs Vin ≥ 7–8 V for stable 5 V out</li>
+                        <li>For lower dropout, use an LDO regulator instead</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Capacitor recommendations</h3>
+                    <p class="mono">
+                        Cin:  0.33 µF ceramic (near IN pin)<br>
+                        Cout: 0.1 µF ceramic (near OUT pin)<br>
+                        Optional: 10–100 µF electrolytic<br>
+                        for better transient response
+                    </p>
+                </div>
+                <div class="info-block">
+                    <h3>Thermal considerations</h3>
+                    <ul>
+                        <li>P<sub>diss</sub> = (Vin − Vout) × Iout</li>
+                        <li>TO-220: max ~1 W without heatsink</li>
+                        <li>At higher power, heatsink + thermal paste required</li>
+                        <li>Max junction temp: 125°C</li>
+                        <li>Consider a buck converter for Vin/Vout ratio &gt; 2×</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>78xx pin order (TO-220)</h3>
+                    <p class="mono">
+                        Pin 1 — INPUT<br>
+                        Pin 2 — GND<br>
+                        Pin 3 — OUTPUT<br><br>
+                        Flat face toward you,<br>
+                        pins pointing down: 1–2–3 left to right
+                    </p>
+                </div>
+                <div class="info-block">
+                    <h3>79xx pin order (TO-220)</h3>
+                    <p class="mono">
+                        Pin 1 — GND<br>
+                        Pin 2 — INPUT<br>
+                        Pin 3 — OUTPUT<br><br>
+                        Different from 78xx!<br>
+                        Always verify with datasheet
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Part of <a href="../../electronics.html">StrokeForge Electronics</a> — free tools for makers</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ── Data ──────────────────────────────────────────────────────────────
+    const DATA = [
+        // 78xx positive regulators
+        { part:'LM7803', series:'78', vout:3.3,  imax:1.0, vin_min:5.5,  vin_max:35, dropout:2.0, pkgs:['TO-220','TO-92'], notes:'3.3 V variant (some brands)' },
+        { part:'LM7805', series:'78', vout:5.0,  imax:1.5, vin_min:7.5,  vin_max:35, dropout:2.5, pkgs:['TO-220','TO-92','D2PAK','SOT-223'], notes:'Most common. USB / logic supply' },
+        { part:'LM7806', series:'78', vout:6.0,  imax:1.5, vin_min:8.5,  vin_max:35, dropout:2.5, pkgs:['TO-220'], notes:'6 V supply' },
+        { part:'LM7808', series:'78', vout:8.0,  imax:1.5, vin_min:10.5, vin_max:35, dropout:2.5, pkgs:['TO-220'], notes:'8 V supply' },
+        { part:'LM7809', series:'78', vout:9.0,  imax:1.5, vin_min:11.5, vin_max:35, dropout:2.5, pkgs:['TO-220'], notes:'9 V supply' },
+        { part:'LM7810', series:'78', vout:10.0, imax:1.5, vin_min:12.5, vin_max:35, dropout:2.5, pkgs:['TO-220'], notes:'10 V supply' },
+        { part:'LM7812', series:'78', vout:12.0, imax:1.5, vin_min:14.5, vin_max:35, dropout:2.5, pkgs:['TO-220','D2PAK'], notes:'Very common. 12 V for motors, relays' },
+        { part:'LM7815', series:'78', vout:15.0, imax:1.5, vin_min:17.5, vin_max:35, dropout:2.5, pkgs:['TO-220'], notes:'15 V — op-amps, audio' },
+        { part:'LM7818', series:'78', vout:18.0, imax:1.5, vin_min:21.0, vin_max:35, dropout:3.0, pkgs:['TO-220'], notes:'18 V supply' },
+        { part:'LM7824', series:'78', vout:24.0, imax:1.5, vin_min:27.0, vin_max:40, dropout:3.0, pkgs:['TO-220'], notes:'24 V — industrial, solenoids' },
+        // 79xx negative regulators
+        { part:'LM7905', series:'79', vout:-5.0,  imax:1.5, vin_min:-7.5,  vin_max:-35, dropout:2.5, pkgs:['TO-220'], notes:'Negative rail — dual supply' },
+        { part:'LM7906', series:'79', vout:-6.0,  imax:1.5, vin_min:-8.5,  vin_max:-35, dropout:2.5, pkgs:['TO-220'], notes:'Negative 6 V' },
+        { part:'LM7908', series:'79', vout:-8.0,  imax:1.5, vin_min:-10.5, vin_max:-35, dropout:2.5, pkgs:['TO-220'], notes:'Negative 8 V' },
+        { part:'LM7909', series:'79', vout:-9.0,  imax:1.5, vin_min:-11.5, vin_max:-35, dropout:2.5, pkgs:['TO-220'], notes:'Negative 9 V' },
+        { part:'LM7912', series:'79', vout:-12.0, imax:1.5, vin_min:-14.5, vin_max:-35, dropout:2.5, pkgs:['TO-220','D2PAK'], notes:'Negative 12 V — dual supply with 7812' },
+        { part:'LM7915', series:'79', vout:-15.0, imax:1.5, vin_min:-17.5, vin_max:-35, dropout:2.5, pkgs:['TO-220'], notes:'Negative 15 V — op-amps, audio' },
+        { part:'LM7918', series:'79', vout:-18.0, imax:1.5, vin_min:-21.0, vin_max:-35, dropout:3.0, pkgs:['TO-220'], notes:'Negative 18 V' },
+        { part:'LM7924', series:'79', vout:-24.0, imax:1.5, vin_min:-27.0, vin_max:-40, dropout:3.0, pkgs:['TO-220'], notes:'Negative 24 V' },
+    ];
+
+    // ── State ─────────────────────────────────────────────────────────────
+    let sortKey = 'vout';
+    let sortAsc = true;
+    let seriesFilter = 'all';
+
+    // ── Sort ──────────────────────────────────────────────────────────────
+    function sort(key) {
+        if (sortKey === key) sortAsc = !sortAsc;
+        else { sortKey = key; sortAsc = true; }
+        render();
+    }
+
+    function updateArrows() {
+        ['part','series','vout','imax','vin_min','vin_max','dropout'].forEach(k => {
+            const el = document.getElementById('arr-' + k);
+            if (!el) return;
+            el.textContent = sortKey === k ? (sortAsc ? '▲' : '▼') : '';
+            el.closest('th').classList.toggle('sorted', sortKey === k);
+        });
+    }
+
+    // ── Render ────────────────────────────────────────────────────────────
+    function render() {
+        const q = document.getElementById('search').value.toLowerCase();
+        let rows = DATA.filter(r => {
+            if (seriesFilter !== 'all' && r.series !== seriesFilter) return false;
+            if (q && !r.part.toLowerCase().includes(q) && !r.notes.toLowerCase().includes(q)) return false;
+            return true;
+        });
+
+        rows.sort((a, b) => {
+            let va = a[sortKey], vb = b[sortKey];
+            if (typeof va === 'string') va = va.toLowerCase();
+            if (typeof vb === 'string') vb = vb.toLowerCase();
+            if (va < vb) return sortAsc ? -1 : 1;
+            if (va > vb) return sortAsc ? 1 : -1;
+            return 0;
+        });
+
+        const tbody = document.getElementById('tbody');
+        tbody.innerHTML = '';
+        rows.forEach(r => {
+            const isPos = r.series === '78';
+            const voutStr = isPos ? `+${r.vout} V` : `${r.vout} V`;
+            const vinMinStr = isPos ? `${r.vin_min} V` : `${r.vin_min} V`;
+            const vinMaxStr = isPos ? `${r.vin_max} V` : `${r.vin_max} V`;
+            const pkgsHtml = r.pkgs.map(p => `<span class="pkg">${p}</span>`).join('');
+            const badge = isPos
+                ? `<span class="badge-78">78xx</span>`
+                : `<span class="badge-79">79xx</span>`;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="part">${r.part}</td>
+                <td>${badge}</td>
+                <td class="${isPos ? 'pos' : 'neg'}">${voutStr}</td>
+                <td>${r.imax} A</td>
+                <td>${vinMinStr}</td>
+                <td>${vinMaxStr}</td>
+                <td>${r.dropout} V</td>
+                <td>${pkgsHtml}</td>
+                <td style="color:var(--text-gray);font-size:0.78rem">${r.notes}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('count').textContent = `${rows.length} regulators`;
+        updateArrows();
+    }
+
+    // ── Filter buttons ────────────────────────────────────────────────────
+    document.querySelectorAll('[data-series]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-series]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            seriesFilter = btn.dataset.series;
+            render();
+        });
+    });
+
+    // ── SVG Circuit ───────────────────────────────────────────────────────
+    (function drawCircuit() {
+        const svg = document.getElementById('circuit-svg');
+        const ns = 'http://www.w3.org/2000/svg';
+        function el(tag, attrs, text) {
+            const e = document.createElementNS(ns, tag);
+            Object.entries(attrs).forEach(([k,v]) => e.setAttribute(k,v));
+            if (text !== undefined) e.textContent = text;
+            return e;
+        }
+        function line(x1,y1,x2,y2,col,w) {
+            return el('line',{x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'round'});
+        }
+        function txt(x,y,t,col,sz,anc) {
+            return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);
+        }
+        function cap(cx,cy,col) {
+            const g = document.createElementNS(ns,'g');
+            g.appendChild(line(cx-10,cy-3,cx+10,cy-3,col||'#60a5fa',2));
+            g.appendChild(line(cx-10,cy+3,cx+10,cy+3,col||'#60a5fa',2));
+            return g;
+        }
+
+        // 78xx circuit
+        const ox = 30;
+        svg.appendChild(txt(ox+120, 16, '78xx — Positive Regulator', '#4ade80', 11, 'middle'));
+
+        // Vin line
+        svg.appendChild(line(ox,50,ox+60,50,'#6b7280'));
+        svg.appendChild(txt(ox,38,'Vin','#facc15',10,'middle'));
+
+        // Cin
+        svg.appendChild(cap(ox+35,67,'#4ade80'));
+        svg.appendChild(line(ox+35,50,ox+35,64,'#6b7280'));
+        svg.appendChild(line(ox+35,70,ox+35,120,'#6b7280'));
+        svg.appendChild(txt(ox+52,67,'Cin','#4ade80',8,'start'));
+        svg.appendChild(txt(ox+52,78,'0.33µF','#6b7280',7,'start'));
+
+        // IC block
+        svg.appendChild(el('rect',{x:ox+60,y:32,width:80,height:40,fill:'#1a2433',stroke:'#fb923c','stroke-width':2,rx:6}));
+        svg.appendChild(txt(ox+100,46,'78xx','#fb923c',12,'middle'));
+        svg.appendChild(txt(ox+60,58,'IN','#6b7280',8,'start'));
+        svg.appendChild(txt(ox+60,42,'GND','#6b7280',8,'start'));
+        svg.appendChild(txt(ox+136,58,'OUT','#6b7280',8,'end'));
+
+        // GND pin down
+        svg.appendChild(line(ox+80,32,ox+80,22,'#6b7280'));
+        svg.appendChild(line(ox+80,22,ox+100,22,'#6b7280'));
+        svg.appendChild(line(ox+100,22,ox+100,18,'#6b7280'));
+        // GND symbol
+        svg.appendChild(line(ox+93,18,ox+107,18,'#6b7280',1.5));
+        svg.appendChild(line(ox+96,21,ox+104,21,'#6b7280',1));
+        svg.appendChild(line(ox+99,24,ox+101,24,'#6b7280',0.8));
+
+        // Out line
+        svg.appendChild(line(ox+140,50,ox+200,50,'#6b7280'));
+        svg.appendChild(txt(ox+210,38,'Vout','#facc15',10,'middle'));
+
+        // Cout
+        svg.appendChild(cap(ox+175,67,'#60a5fa'));
+        svg.appendChild(line(ox+175,50,ox+175,64,'#6b7280'));
+        svg.appendChild(line(ox+175,70,ox+175,120,'#6b7280'));
+        svg.appendChild(txt(ox+192,67,'Cout','#60a5fa',8,'start'));
+        svg.appendChild(txt(ox+192,78,'0.1µF','#6b7280',7,'start'));
+
+        // GND rail
+        svg.appendChild(line(ox,120,ox+240,120,'#6b7280',1));
+        svg.appendChild(line(ox,50,ox,120,'#6b7280'));
+        svg.appendChild(line(ox+240,50,ox+240,120,'#6b7280'));
+        svg.appendChild(txt(ox,132,'GND','#6b7280',8,'middle'));
+
+        // Load
+        svg.appendChild(el('rect',{x:ox+200,y:38,width:40,height:24,fill:'#1f2937',stroke:'#6b7280','stroke-width':1.5,rx:4}));
+        svg.appendChild(txt(ox+220,50,'Load','#6b7280',9,'middle'));
+
+        // 79xx circuit (right side)
+        const ox2 = 370;
+        svg.appendChild(txt(ox2+120, 16, '79xx — Negative Regulator', '#60a5fa', 11, 'middle'));
+
+        // Vin- line
+        svg.appendChild(line(ox2,50,ox2+60,50,'#6b7280'));
+        svg.appendChild(txt(ox2,38,'Vin−','#facc15',10,'middle'));
+
+        // Cin
+        svg.appendChild(cap(ox2+35,67,'#4ade80'));
+        svg.appendChild(line(ox2+35,50,ox2+35,64,'#6b7280'));
+        svg.appendChild(line(ox2+35,70,ox2+35,120,'#6b7280'));
+        svg.appendChild(txt(ox2+52,67,'Cin','#4ade80',8,'start'));
+        svg.appendChild(txt(ox2+52,78,'0.33µF','#6b7280',7,'start'));
+
+        // IC block
+        svg.appendChild(el('rect',{x:ox2+60,y:32,width:80,height:40,fill:'#1a2433',stroke:'#fb923c','stroke-width':2,rx:6}));
+        svg.appendChild(txt(ox2+100,46,'79xx','#fb923c',12,'middle'));
+        svg.appendChild(txt(ox2+60,58,'IN','#6b7280',8,'start'));
+        svg.appendChild(txt(ox2+60,42,'GND','#6b7280',8,'start'));
+        svg.appendChild(txt(ox2+136,58,'OUT','#6b7280',8,'end'));
+
+        // GND pin up (79xx GND is pin 1)
+        svg.appendChild(line(ox2+80,32,ox2+80,22,'#6b7280'));
+        svg.appendChild(line(ox2+80,22,ox2+100,22,'#6b7280'));
+        svg.appendChild(line(ox2+100,22,ox2+100,18,'#6b7280'));
+        svg.appendChild(line(ox2+93,18,ox2+107,18,'#6b7280',1.5));
+        svg.appendChild(line(ox2+96,21,ox2+104,21,'#6b7280',1));
+        svg.appendChild(line(ox2+99,24,ox2+101,24,'#6b7280',0.8));
+
+        // Out line
+        svg.appendChild(line(ox2+140,50,ox2+200,50,'#6b7280'));
+        svg.appendChild(txt(ox2+210,38,'Vout−','#facc15',10,'middle'));
+
+        // Cout
+        svg.appendChild(cap(ox2+175,67,'#60a5fa'));
+        svg.appendChild(line(ox2+175,50,ox2+175,64,'#6b7280'));
+        svg.appendChild(line(ox2+175,70,ox2+175,120,'#6b7280'));
+        svg.appendChild(txt(ox2+192,67,'Cout','#60a5fa',8,'start'));
+        svg.appendChild(txt(ox2+192,78,'0.1µF','#6b7280',7,'start'));
+
+        // GND rail
+        svg.appendChild(line(ox2,120,ox2+240,120,'#6b7280',1));
+        svg.appendChild(line(ox2,50,ox2,120,'#6b7280'));
+        svg.appendChild(line(ox2+240,50,ox2+240,120,'#6b7280'));
+        svg.appendChild(txt(ox2,132,'GND','#6b7280',8,'middle'));
+
+        // Load
+        svg.appendChild(el('rect',{x:ox2+200,y:38,width:40,height:24,fill:'#1f2937',stroke:'#6b7280','stroke-width':1.5,rx:4}));
+        svg.appendChild(txt(ox2+220,50,'Load','#6b7280',9,'middle'));
+    })();
+
+    // ── Init ──────────────────────────────────────────────────────────────
+    render();
+    </script>
+</body>
+</html>

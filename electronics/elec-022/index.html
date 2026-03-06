@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWG Wire Reference Table | StrokeForge Electronics</title>
+    <meta name="description" content="Complete AWG wire gauge reference: diameter in mm and inches, cross-section in mm², resistance per metre, maximum current for chassis and power wiring. Sortable and searchable.">
+    <meta name="keywords" content="AWG wire table, AWG to mm, wire gauge current, AWG resistance, wire cross section, American Wire Gauge">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-022/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 1020px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-gray); text-decoration: none; font-size: 0.88rem; margin-bottom: 1.5rem; transition: color 0.2s; }
+        .back-btn:hover { color: var(--primary-orange); }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Controls */
+        .controls { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.2rem; }
+        .search-wrap { position: relative; flex: 1; min-width: 180px; }
+        .search-wrap input { width: 100%; box-sizing: border-box; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem 0.5rem 2rem; font-size: 0.9rem; outline: none; }
+        .search-wrap input:focus { border-color: var(--primary-orange); }
+        .search-icon { position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; pointer-events: none; }
+        .filter-group { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; }
+        .flt-btn { padding: 0.5rem 0.85rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; border-right: 1px solid var(--border-gray); }
+        .flt-btn:last-child { border-right: none; }
+        .flt-btn.active { background: var(--primary-orange); color: #000; }
+        .flt-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        /* AWG highlight input */
+        .highlight-row { display: flex; align-items: center; gap: 0.6rem; }
+        .highlight-row label { font-size: 0.8rem; color: var(--text-gray); white-space: nowrap; }
+        .highlight-row input { width: 70px; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.45rem 0.6rem; font-size: 0.9rem; outline: none; text-align: center; }
+        .highlight-row input:focus { border-color: var(--primary-orange); }
+
+        /* Table */
+        .tbl-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+        thead th { background: var(--darker-bg); color: var(--text-gray); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.6rem 0.7rem; border-bottom: 2px solid var(--border-gray); text-align: right; white-space: nowrap; cursor: pointer; user-select: none; }
+        thead th:first-child, thead th:last-child { text-align: left; }
+        thead th:hover { color: var(--primary-orange); }
+        thead th .sa { margin-left: 0.25rem; opacity: 0.4; }
+        thead th.sorted .sa { opacity: 1; color: var(--primary-orange); }
+        tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
+        tbody tr:hover { background: rgba(255,165,0,0.04); }
+        tbody tr.hl { background: rgba(255,165,0,0.10); }
+        tbody tr.hl td.awg { color: var(--primary-orange); font-weight: 800; }
+        tbody td { padding: 0.55rem 0.7rem; color: var(--light-gray); vertical-align: middle; text-align: right; }
+        tbody td:first-child, tbody td:last-child { text-align: left; }
+        td.awg { font-weight: 700; color: var(--primary-orange); text-align: center; }
+        td.use { font-size: 0.79rem; color: var(--text-gray); }
+        td.cur-ok  { color: #4ade80; font-weight: 600; }
+        td.cur-mid { color: #facc15; }
+        td.cur-lo  { color: var(--text-gray); }
+
+        .row-count { font-size: 0.78rem; color: var(--text-gray); margin-top: 0.6rem; }
+        .no-results { text-align: center; color: var(--text-gray); padding: 2rem; }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.6; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+
+        details.card summary { cursor: pointer; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; }
+        details.card[open] summary { margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html">Engineering</a>
+                <a href="/electronics.html" class="active">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>AWG Wire Reference Table</h1>
+        <p>Diameter, cross-section, resistance, and current ratings for AWG 0000 to AWG 40</p>
+    </div>
+
+    <div class="tool-wrap">
+        <a href="/electronics.html" class="back-btn">← Back to Electronics</a>
+
+        <div class="card">
+            <h2>AWG Wire Data</h2>
+
+            <div class="controls">
+                <div class="search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search" placeholder="Search AWG, mm, or use…">
+                </div>
+                <div class="filter-group">
+                    <button class="flt-btn active" data-flt="all">All</button>
+                    <button class="flt-btn" data-flt="power">Power (&gt;10 A)</button>
+                    <button class="flt-btn" data-flt="medium">Medium (1–10 A)</button>
+                    <button class="flt-btn" data-flt="signal">Signal (&lt;1 A)</button>
+                </div>
+                <div class="highlight-row">
+                    <label>Jump to AWG:</label>
+                    <input type="number" id="jump-awg" min="-3" max="40" placeholder="e.g. 22">
+                </div>
+            </div>
+
+            <div class="tbl-wrap">
+                <table id="awg-table">
+                    <thead>
+                        <tr>
+                            <th data-col="awg" style="text-align:center">AWG <span class="sa">↕</span></th>
+                            <th data-col="diam_mm">Ø mm <span class="sa">↕</span></th>
+                            <th data-col="diam_in">Ø inch <span class="sa">↕</span></th>
+                            <th data-col="area_mm2">mm² <span class="sa">↕</span></th>
+                            <th data-col="res_ohm_m">Ω/m <span class="sa">↕</span></th>
+                            <th data-col="res_ohm_ft">Ω/ft <span class="sa">↕</span></th>
+                            <th data-col="cur_chassis">Max A (chassis) <span class="sa">↕</span></th>
+                            <th data-col="cur_power">Max A (power) <span class="sa">↕</span></th>
+                            <th>Typical use</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+                <div class="row-count" id="row-count"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Notes &amp; Guidelines</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Current ratings</h3>
+                    <p><strong>Chassis wiring</strong> — wire routed in open air or loose bundles (NEC / UL). <strong>Power wiring</strong> — wire inside panels, conduits, or tight bundles (more conservative, higher temp rise limit). Always use the lower (power) rating when in doubt.</p>
+                </div>
+                <div class="info-block">
+                    <h3>AWG numbering</h3>
+                    <p>Counterintuitively, <strong>lower AWG = thicker wire</strong>. AWG 0000 (4/0) is the thickest listed. Each 6 AWG steps ≈ halves the cross-section. Resistance values are for annealed copper at 20 °C.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Metric equivalents</h3>
+                    <ul>
+                        <li>AWG 22 ≈ 0.34 mm²</li>
+                        <li>AWG 20 ≈ 0.52 mm²</li>
+                        <li>AWG 18 ≈ 0.82 mm²</li>
+                        <li>AWG 16 ≈ 1.31 mm²</li>
+                        <li>AWG 14 ≈ 2.08 mm²</li>
+                        <li>AWG 12 ≈ 3.31 mm²</li>
+                        <li>AWG 10 ≈ 5.26 mm²</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Quick selection guide</h3>
+                    <ul>
+                        <li>Microcontroller signals: AWG 28–24</li>
+                        <li>LED strips, small motors: AWG 22–20</li>
+                        <li>Arduino/ESP32 power: AWG 22–18</li>
+                        <li>12 V car/RC wiring: AWG 18–14</li>
+                        <li>Mains / high-power: AWG 14–10</li>
+                        <li>Battery/inverter cables: AWG 8–0</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <details class="card">
+            <summary>AWG vs. EU metric wire sizes (mm²)</summary>
+            <div class="info-grid" style="margin-top:0">
+                <div class="info-block">
+                    <h3>Closest metric equivalents</h3>
+                    <ul>
+                        <li>AWG 28 → 0.08 mm²</li>
+                        <li>AWG 26 → 0.14 mm²</li>
+                        <li>AWG 24 → 0.20 mm²</li>
+                        <li>AWG 22 → 0.34 mm²</li>
+                        <li>AWG 20 → 0.50 mm²</li>
+                        <li>AWG 18 → 0.75 mm²</li>
+                        <li>AWG 17 → 1.00 mm²</li>
+                        <li>AWG 16 → 1.50 mm²</li>
+                        <li>AWG 14 → 2.50 mm²</li>
+                        <li>AWG 12 → 4.00 mm²</li>
+                        <li>AWG 10 → 6.00 mm²</li>
+                        <li>AWG 8  → 10.0 mm²</li>
+                        <li>AWG 6  → 16.0 mm²</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Important differences</h3>
+                    <p>EU metric cables (H05V-K, CYKY, CYKFY) are specified in mm². AWG and metric sizes are <strong>not exact equivalents</strong> — always verify the actual cross-section area (mm²) when mixing standards. Stranded wire of the same AWG may have slightly different outer diameter than solid wire.</p>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <script>
+    // AWG data: [awg_label, awg_sort, diam_mm, diam_in, area_mm2, res_ohm_m, res_ohm_ft, cur_chassis, cur_power, typical_use, category]
+    // Current ratings based on NEC Table 310.15 / standard chassis wiring references
+    const DATA = [
+        ['0000',  -3, 11.684, 0.46,  107.22, 0.000161, 0.0000490, 380, 195, 'Heavy battery cables, inverters, bus bars', 'power'],
+        ['000',   -2, 10.405, 0.40,  85.03,  0.000203, 0.0000618, 328, 165, 'Large inverter cables, main distribution', 'power'],
+        ['00',    -1, 9.266,  0.365, 67.43,  0.000256, 0.0000780, 283, 145, 'Large battery/solar cables', 'power'],
+        ['0',      0, 8.251,  0.325, 53.48,  0.000322, 0.0000981, 245, 125, 'Heavy power wiring, automotive mains', 'power'],
+        ['1',      1, 7.348,  0.289, 42.41,  0.000407, 0.000124,  211, 110, 'Sub-panel feeds, heavy automotive', 'power'],
+        ['2',      2, 6.544,  0.258, 33.63,  0.000513, 0.000156,  181, 95,  'High-current runs, EV wiring', 'power'],
+        ['3',      3, 5.827,  0.229, 26.67,  0.000647, 0.000197,  158, 85,  'High-current wiring', 'power'],
+        ['4',      4, 5.189,  0.204, 21.15,  0.000815, 0.000249,  135, 70,  'Sub-panel, large motors, welders', 'power'],
+        ['6',      6, 4.115,  0.162, 13.30,  0.001296, 0.000395,  101, 55,  'Dryer, EV charging, heavy AC', 'power'],
+        ['8',      8, 3.264,  0.128, 8.37,   0.002061, 0.000628,  73,  40,  'Range/oven, large motor wiring', 'power'],
+        ['10',    10, 2.588,  0.102, 5.26,   0.003277, 0.000999,  55,  30,  '15 A branch circuits, electric heating', 'power'],
+        ['12',    12, 2.053,  0.0808,3.31,   0.005211, 0.001588,  41,  20,  '20 A circuit, household appliances', 'power'],
+        ['14',    14, 1.628,  0.0641,2.08,   0.008286, 0.002525,  32,  15,  '15 A circuit, lighting, general outlet', 'power'],
+        ['16',    16, 1.291,  0.0508,1.31,   0.01318,  0.004016,  22,  13,  'Extension cords, lamp cord', 'medium'],
+        ['18',    18, 1.024,  0.0403,0.823,  0.02093,  0.006381,  16,  10,  'Low-voltage lighting, thermostat wire', 'medium'],
+        ['20',    20, 0.812,  0.0320,0.518,  0.03325,  0.010133,  11,  7.5, 'Internal wiring, Arduino power leads', 'medium'],
+        ['22',    22, 0.644,  0.0253,0.326,  0.05282,  0.016100,  7,   5,   'Signal & sensor wiring, jumper wire', 'medium'],
+        ['24',    24, 0.511,  0.0201,0.205,  0.08398,  0.02559,   3.5, 2,   'Low-current sensors, serial bus', 'signal'],
+        ['26',    26, 0.405,  0.0159,0.129,  0.13352,  0.04069,   2.2, 1,   'Breadboard jumpers, SPI/I²C', 'signal'],
+        ['28',    28, 0.321,  0.0126,0.0810, 0.21224,  0.06468,   0.83,0.5, 'PCB trace-level wiring, keyboard cables', 'signal'],
+        ['30',    30, 0.255,  0.0100,0.0509, 0.33746,  0.10285,   0.52,0.3, 'Fine wiring, magnet wire, headphones', 'signal'],
+        ['32',    32, 0.202,  0.0080,0.0320, 0.5363,   0.1634,    0.32,0.2, 'Fine gauge magnet wire, RF coils', 'signal'],
+        ['34',    34, 0.160,  0.0063,0.0201, 0.8534,   0.2601,    0.18,0.1, 'Precision winding wire', 'signal'],
+        ['36',    36, 0.127,  0.0050,0.0127, 1.3543,   0.4127,    0.10,0.05,'Hair-fine wire, precision coils', 'signal'],
+        ['38',    38, 0.101,  0.0040,0.00797,2.153,    0.6561,    0.06,0.03,'Ultra-fine, specialty applications', 'signal'],
+        ['40',    40, 0.0799, 0.00314,0.00501,3.423,   1.0433,    0.04,0.02,'Finest practical wire, micro coils', 'signal'],
+    ];
+
+    let sortCol = null;
+    let sortDir = 1;
+    let activeFlt = 'all';
+
+    const COLS = ['awg','diam_mm','diam_in','area_mm2','res_ohm_m','res_ohm_ft','cur_chassis','cur_power'];
+
+    function fmt(n, d) { return n.toFixed(d); }
+
+    function curClass(a) {
+        if (a >= 10) return 'cur-ok';
+        if (a >= 1)  return 'cur-mid';
+        return 'cur-lo';
+    }
+
+    function render() {
+        const q = document.getElementById('search').value.toLowerCase();
+        let rows = DATA.filter(r => {
+            const matchFlt = activeFlt === 'all' || r[10] === activeFlt;
+            const matchQ   = !q || r[0].includes(q) || r[8].toString().includes(q) || r[9].toLowerCase().includes(q) || r[2].toString().includes(q);
+            return matchFlt && matchQ;
+        });
+
+        if (sortCol !== null) {
+            const idx = COLS.indexOf(sortCol);
+            if (idx >= 0) {
+                rows.sort((a, b) => {
+                    let av, bv;
+                    if (sortCol === 'awg') { av = a[1]; bv = b[1]; }
+                    else {
+                        const dataIdx = [1,2,3,4,5,6,7,8];
+                        av = a[idx+1]; bv = b[idx+1];
+                    }
+                    return (av - bv) * sortDir;
+                });
+            }
+        }
+
+        const jumpVal = document.getElementById('jump-awg').value;
+
+        const tbody = document.getElementById('table-body');
+        if (rows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" class="no-results">No results found</td></tr>';
+        } else {
+            tbody.innerHTML = rows.map(r => {
+                const hl = jumpVal !== '' && r[0] === jumpVal ? ' hl' : '';
+                return `<tr class="${hl}">
+                    <td class="awg">${r[0]}</td>
+                    <td>${fmt(r[2],3)}</td>
+                    <td>${fmt(r[3],4)}</td>
+                    <td>${r[4] >= 1 ? fmt(r[4],2) : r[4].toFixed(4)}</td>
+                    <td>${r[5] < 0.001 ? r[5].toExponential(3) : fmt(r[5],5)}</td>
+                    <td>${r[6] < 0.001 ? r[6].toExponential(3) : fmt(r[6],5)}</td>
+                    <td class="${curClass(r[7])}">${r[7]}</td>
+                    <td class="${curClass(r[8])}">${r[8]}</td>
+                    <td class="use">${r[9]}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        document.getElementById('row-count').textContent = `Showing ${rows.length} of ${DATA.length} gauges`;
+
+        // Scroll to highlighted row
+        if (jumpVal !== '') {
+            const hlRow = document.querySelector('tbody tr.hl');
+            if (hlRow) hlRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    // Sort headers
+    document.querySelectorAll('thead th[data-col]').forEach(th => {
+        th.addEventListener('click', () => {
+            const col = th.dataset.col;
+            if (sortCol === col) { sortDir *= -1; }
+            else { sortCol = col; sortDir = col === 'awg' ? 1 : -1; }
+            document.querySelectorAll('thead th').forEach(t => t.classList.remove('sorted'));
+            th.classList.add('sorted');
+            th.querySelector('.sa').textContent = sortDir === 1 ? '↑' : '↓';
+            render();
+        });
+    });
+
+    // Filter
+    document.querySelectorAll('.flt-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.flt-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeFlt = btn.dataset.flt;
+            render();
+        });
+    });
+
+    // Search
+    document.getElementById('search').addEventListener('input', render);
+
+    // Jump to AWG
+    document.getElementById('jump-awg').addEventListener('input', render);
+
+    render();
+    </script>
+</body>
+</html>

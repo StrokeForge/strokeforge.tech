@@ -1,0 +1,8 @@
+{
+  "id": "elec-022",
+  "title": "AWG Wire Reference Table",
+  "category": "reference",
+  "description": "Complete AWG wire gauge reference from 0000 to AWG 40. Diameter in mm and inches, cross-section in mm², resistance per metre and per foot, max current for chassis and power wiring. Includes EU metric equivalents and selection guide.",
+  "icon": "🔧",
+  "difficulty": "beginner"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "elec-017",
+  "title": "LED Resistor for GPIO Pin",
+  "category": "basic",
+  "description": "Calculate the series resistor for an LED driven from a microcontroller GPIO pin. Platform presets for Arduino, ESP32, ESP8266, Raspberry Pi. LED colour selector, E12/E24 nearest values, GPIO current limit warnings, and circuit diagram.",
+  "icon": "💡",
+  "difficulty": "beginner"
+}

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>555 Timer Calculator — Astable & Monostable | StrokeForge Electronics</title>
+    <meta name="description" content="555 timer calculator for astable (oscillator) and monostable (one-shot) modes. Get frequency, period, duty cycle, tH, tL and pulse width. Includes waveform diagram and pin reference.">
+    <meta name="keywords" content="555 timer calculator, 555 astable, 555 monostable, NE555, frequency calculator, duty cycle, pulse width, timer circuit">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-015/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 860px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .mode-toggle { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem; }
+        .mode-btn { flex: 1; padding: 0.6rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+        .mode-btn.active { background: var(--primary-orange); color: #000; }
+        .mode-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .hint { font-size: 0.72rem; color: var(--text-gray); }
+
+        .res-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 500px) { .res-grid { grid-template-columns: 1fr 1fr; } }
+        .rg { background: var(--darker-bg); border-radius: 8px; padding: 0.75rem 1rem; }
+        .rg .lbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .rg .val { font-size: 1.1rem; font-weight: 700; color: var(--primary-orange); }
+        .rg .val.blue { color: #60a5fa; }
+        .rg .val.green { color: #4ade80; }
+
+        .warn-box { background: rgba(251,146,60,0.1); border: 1px solid #fb923c; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.82rem; color: #fb923c; margin-top: 0.75rem; }
+
+        .svg-wrap { overflow-x: auto; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.88rem; line-height: 1.9; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../engineering.html">Engineering</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../other.html">Other</a>
+                <a href="../../3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>⏲️ 555 Timer Calculator</h1>
+        <p>Astable oscillator and monostable one-shot — frequency, duty cycle, pulse width, and waveform.</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="../../electronics.html" class="back-button">← Back to Electronics</a>
+
+        <!-- CALCULATOR -->
+        <div class="card">
+            <h2>Calculator</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn active" id="btn-astable" onclick="setMode('astable')">Astable (oscillator)</button>
+                <button class="mode-btn" id="btn-mono" onclick="setMode('mono')">Monostable (one-shot)</button>
+            </div>
+
+            <!-- Astable inputs -->
+            <div id="mode-astable">
+                <p style="font-size:0.82rem;color:var(--text-gray);margin-bottom:1rem">
+                    Capacitor charges through R1+R2, discharges through R2 only.
+                    Minimum duty cycle ≈ 50% (R1 ≪ R2). For &lt;50% duty cycle, add a diode across R2.
+                </p>
+                <div class="input-grid">
+                    <div class="field">
+                        <label>R1</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="a-R1" placeholder="1" min="0" step="any" oninput="calculate()">
+                            <select class="sel" id="a-R1unit" onchange="calculate()">
+                                <option value="1">Ω</option>
+                                <option value="1e3" selected>kΩ</option>
+                                <option value="1e6">MΩ</option>
+                            </select>
+                        </div>
+                        <div class="hint">Charge path only. Keep ≥ 1 kΩ</div>
+                    </div>
+                    <div class="field">
+                        <label>R2</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="a-R2" placeholder="10" min="0" step="any" oninput="calculate()">
+                            <select class="sel" id="a-R2unit" onchange="calculate()">
+                                <option value="1">Ω</option>
+                                <option value="1e3" selected>kΩ</option>
+                                <option value="1e6">MΩ</option>
+                            </select>
+                        </div>
+                        <div class="hint">Charge and discharge path</div>
+                    </div>
+                    <div class="field">
+                        <label>C</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="a-C" placeholder="100" min="0" step="any" oninput="calculate()">
+                            <select class="sel" id="a-Cunit" onchange="calculate()">
+                                <option value="1e-12">pF</option>
+                                <option value="1e-9">nF</option>
+                                <option value="1e-6" selected>µF</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monostable inputs -->
+            <div id="mode-mono" style="display:none">
+                <p style="font-size:0.82rem;color:var(--text-gray);margin-bottom:1rem">
+                    Output goes HIGH for t = 1.1 × R × C after a trigger pulse (LOW on pin 2).
+                    Re-triggering during the pulse extends it. Output stays HIGH until fully timed out.
+                </p>
+                <div class="input-grid">
+                    <div class="field">
+                        <label>R</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="m-R" placeholder="100" min="0" step="any" oninput="calculate()">
+                            <select class="sel" id="m-Runit" onchange="calculate()">
+                                <option value="1">Ω</option>
+                                <option value="1e3" selected>kΩ</option>
+                                <option value="1e6">MΩ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>C</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="m-C" placeholder="10" min="0" step="any" oninput="calculate()">
+                            <select class="sel" id="m-Cunit" onchange="calculate()">
+                                <option value="1e-12">pF</option>
+                                <option value="1e-9">nF</option>
+                                <option value="1e-6" selected>µF</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card" id="results-card" style="display:none">
+            <h2>Results</h2>
+            <div class="res-grid" id="res-grid"></div>
+            <div id="res-warn"></div>
+        </div>
+
+        <!-- WAVEFORM -->
+        <div class="card" id="wave-card" style="display:none">
+            <h2>Output waveform</h2>
+            <div class="svg-wrap">
+                <svg id="wave-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+        </div>
+
+        <!-- PIN DIAGRAM + INFO -->
+        <div class="card">
+            <h2>555 pin reference (DIP-8)</h2>
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start">
+                <div class="svg-wrap">
+                    <svg id="pin-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 200" width="220" height="200"></svg>
+                </div>
+                <div>
+                    <table style="width:100%;border-collapse:collapse;font-size:0.82rem">
+                        <thead><tr>
+                            <th style="padding:0.35rem 0.6rem;text-align:left;color:var(--text-gray);border-bottom:1px solid var(--border-gray)">Pin</th>
+                            <th style="padding:0.35rem 0.6rem;text-align:left;color:var(--text-gray);border-bottom:1px solid var(--border-gray)">Name</th>
+                            <th style="padding:0.35rem 0.6rem;text-align:left;color:var(--text-gray);border-bottom:1px solid var(--border-gray)">Function</th>
+                        </tr></thead>
+                        <tbody id="pin-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>How it works</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Astable formulas</h3>
+                    <p class="mono">
+                        tH = 0.693 × (R1+R2) × C<br>
+                        tL = 0.693 × R2 × C<br>
+                        T  = tH + tL<br>
+                        f  = 1.44 / ((R1+2×R2) × C)<br>
+                        DC = (R1+R2) / (R1+2×R2) × 100%
+                    </p>
+                </div>
+                <div class="info-block">
+                    <h3>Monostable formula</h3>
+                    <p class="mono">
+                        t = 1.1 × R × C<br><br>
+                        Output HIGH for time t<br>
+                        after trigger on pin 2<br><br>
+                        Trigger: brief LOW pulse<br>
+                        (must be shorter than t)
+                    </p>
+                </div>
+                <div class="info-block">
+                    <h3>Astable tips</h3>
+                    <ul>
+                        <li>Minimum duty cycle is ~50% (when R1 ≪ R2)</li>
+                        <li>For 50% exactly: add diode in parallel with R2 (cathode to pin 7)</li>
+                        <li>Max frequency: ~300 kHz (NE555), ~1 MHz (CMOS 555)</li>
+                        <li>Add 0.01 µF from pin 5 to GND to reduce noise on control voltage</li>
+                        <li>Keep R1 ≥ 1 kΩ to protect discharge transistor</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Applications</h3>
+                    <ul>
+                        <li><strong>Astable:</strong> LED blinker, tone generator, clock signal, PWM, motor speed control</li>
+                        <li><strong>Monostable:</strong> Debounce, delay relay, missing pulse detector, one-shot timer</li>
+                        <li>Variants: NE555 (bipolar), CMOS TLC555 / LMC555 (lower power, higher freq)</li>
+                        <li>Supply: 5–15 V (NE555), 2–15 V (CMOS)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Part of <a href="../../electronics.html">StrokeForge Electronics</a> — free tools for makers</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    let mode = 'astable';
+
+    const PINS = [
+        { n:1, name:'GND',     color:'#6b7280', fn:'Ground. Connect to negative supply.' },
+        { n:2, name:'TRIGGER', color:'#4ade80', fn:'Astable: connects to pin 6. Mono: trigger input (active LOW).' },
+        { n:3, name:'OUTPUT',  color:'#fb923c', fn:'Output. HIGH or LOW depending on state. Max 200 mA.' },
+        { n:4, name:'RESET',   color:'#f87171', fn:'Active LOW reset. Connect to VCC if unused.' },
+        { n:5, name:'CTRL V',  color:'#a78bfa', fn:'Control voltage (2/3 VCC). Add 0.01 µF to GND to reduce noise.' },
+        { n:6, name:'THRESH',  color:'#60a5fa', fn:'Threshold. When > 2/3 VCC, output goes LOW.' },
+        { n:7, name:'DISCH',   color:'#fbbf24', fn:'Discharge. Connects to capacitor junction. Pulled low when output is LOW.' },
+        { n:8, name:'VCC',     color:'#4ade80', fn:'Positive supply. 5–15 V (NE555), 2–15 V (CMOS 555).' },
+    ];
+
+    function setMode(m) {
+        mode = m;
+        ['astable','mono'].forEach(x => {
+            document.getElementById('mode-'+x).style.display = x===m?'':'none';
+            document.getElementById('btn-'+x).classList.toggle('active', x===m);
+        });
+        calculate();
+    }
+
+    function g(id) { const v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+    function gu(id) { return parseFloat(document.getElementById(id).value); }
+
+    function fmtTime(s) {
+        if (s===null) return '—';
+        if (s>=1)    return s.toPrecision(4).replace(/\.?0+$/,'')+' s';
+        if (s>=1e-3) return (s*1e3).toPrecision(4).replace(/\.?0+$/,'')+' ms';
+        if (s>=1e-6) return (s*1e6).toPrecision(4).replace(/\.?0+$/,'')+' µs';
+        return (s*1e9).toPrecision(4).replace(/\.?0+$/,'')+' ns';
+    }
+    function fmtFreq(f) {
+        if (f>=1e6) return (f/1e6).toPrecision(4).replace(/\.?0+$/,'')+' MHz';
+        if (f>=1e3) return (f/1e3).toPrecision(4).replace(/\.?0+$/,'')+' kHz';
+        return f.toPrecision(4).replace(/\.?0+$/,'')+' Hz';
+    }
+
+    function calculate() {
+        const rc = document.getElementById('results-card');
+        const wc = document.getElementById('wave-card');
+
+        if (mode === 'astable') {
+            const R1v=g('a-R1'), R1u=gu('a-R1unit');
+            const R2v=g('a-R2'), R2u=gu('a-R2unit');
+            const Cv=g('a-C'),   Cu=gu('a-Cunit');
+            if (!R1v||!R2v||!Cv) { rc.style.display='none'; wc.style.display='none'; return; }
+            const R1=R1v*R1u, R2=R2v*R2u, C=Cv*Cu;
+            const tH = 0.693*(R1+R2)*C;
+            const tL = 0.693*R2*C;
+            const T  = tH+tL;
+            const f  = 1/T;
+            const dc = (R1+R2)/(R1+2*R2)*100;
+
+            document.getElementById('res-grid').innerHTML = `
+                <div class="rg"><div class="lbl">Frequency</div><div class="val">${fmtFreq(f)}</div></div>
+                <div class="rg"><div class="lbl">Period (T)</div><div class="val blue">${fmtTime(T)}</div></div>
+                <div class="rg"><div class="lbl">Duty cycle</div><div class="val green">${dc.toFixed(2)}%</div></div>
+                <div class="rg"><div class="lbl">tH (output HIGH)</div><div class="val">${fmtTime(tH)}</div></div>
+                <div class="rg"><div class="lbl">tL (output LOW)</div><div class="val blue">${fmtTime(tL)}</div></div>
+                <div class="rg"><div class="lbl">τ = (R1+2×R2)×C</div><div class="val green">${fmtTime((R1+2*R2)*C)}</div></div>
+            `;
+            let warn = '';
+            if (R1 < 1e3) warn += '<div class="warn-box">R1 should be ≥ 1 kΩ to protect the internal discharge transistor.</div>';
+            if (f > 300e3) warn += '<div class="warn-box">Frequency above 300 kHz — consider a CMOS 555 (TLC555, LMC555) for better performance.</div>';
+            if (dc < 51) warn += '<div class="warn-box">Duty cycle is very close to 50%. For exactly 50%, add a diode in parallel with R2 (cathode toward pin 7).</div>';
+            document.getElementById('res-warn').innerHTML = warn;
+            rc.style.display='';
+            drawWaveAstable(tH, tL, T, f);
+        } else {
+            const Rv=g('m-R'), Ru=gu('m-Runit');
+            const Cv=g('m-C'), Cu=gu('m-Cunit');
+            if (!Rv||!Cv) { rc.style.display='none'; wc.style.display='none'; return; }
+            const R=Rv*Ru, C=Cv*Cu;
+            const t = 1.1*R*C;
+            document.getElementById('res-grid').innerHTML = `
+                <div class="rg"><div class="lbl">Pulse width (t)</div><div class="val">${fmtTime(t)}</div></div>
+                <div class="rg"><div class="lbl">R × C</div><div class="val blue">${fmtTime(R*C)}</div></div>
+                <div class="rg"><div class="lbl">Formula</div><div class="val green" style="font-size:0.85rem">1.1 × R × C</div></div>
+            `;
+            document.getElementById('res-warn').innerHTML = '';
+            rc.style.display='';
+            drawWaveMono(t);
+        }
+        wc.style.display='';
+    }
+
+    // ── Waveforms ─────────────────────────────────────────────────────────
+    function drawWaveAstable(tH, tL, T, f) {
+        const svg = document.getElementById('wave-svg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const ns = 'http://www.w3.org/2000/svg';
+        const W=760, H=140, PL=60, PR=20, PT=20, PB=30;
+        const CW=W-PL-PR, CH=H-PT-PB;
+        svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+        svg.setAttribute('width','100%');
+        svg.setAttribute('style','max-width:760px');
+
+        function el(tag,attrs,text){const e=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;return e;}
+        function line(x1,y1,x2,y2,col,w,dash){const a={x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'square'};if(dash)a['stroke-dasharray']=dash;return el('line',a);}
+        function txt(x,y,t,col,sz,anc){return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);}
+
+        const cycles = 3;
+        const totalT = T * cycles;
+        function xOf(t){ return PL + (t/totalT)*CW; }
+        const yHigh = PT, yLow = PT+CH;
+
+        // Axes
+        svg.appendChild(line(PL,PT,PL,yLow+5,'#4b5563',1));
+        svg.appendChild(line(PL,yLow,PL+CW,yLow,'#4b5563',1));
+        svg.appendChild(txt(PL-10,yHigh,'H','#4ade80',9,'end'));
+        svg.appendChild(txt(PL-10,yLow,'L','#6b7280',9,'end'));
+
+        // Waveform
+        const pts=[];
+        for(let c=0;c<cycles;c++){
+            const tStart = c*T;
+            const x0=xOf(tStart), xH=xOf(tStart+tH), xT=xOf(tStart+T);
+            if(c===0) pts.push(`M${x0},${yLow}`);
+            pts.push(`L${x0},${yHigh} L${xH},${yHigh} L${xH},${yLow} L${xT},${yLow}`);
+        }
+        svg.appendChild(el('path',{d:pts.join(' '),fill:'none',stroke:'#fb923c','stroke-width':2.5,'stroke-linecap':'square'}));
+
+        // tH / tL labels on first cycle
+        const x0=xOf(0), xH=xOf(tH), xT=xOf(T);
+        const yMid = (PT+yLow)/2;
+        svg.appendChild(line(x0,yMid,xH,yMid,'#4ade80',1,'3,2'));
+        svg.appendChild(txt((x0+xH)/2,yMid-8,'tH','#4ade80',9,'middle'));
+        svg.appendChild(line(xH,yMid,xT,yMid,'#60a5fa',1,'3,2'));
+        svg.appendChild(txt((xH+xT)/2,yMid-8,'tL','#60a5fa',9,'middle'));
+        // Period arrow
+        svg.appendChild(line(x0,yLow+12,xT,yLow+12,'#6b7280',1));
+        svg.appendChild(txt((x0+xT)/2,yLow+20,'T','#6b7280',9,'middle'));
+    }
+
+    function drawWaveMono(t) {
+        const svg = document.getElementById('wave-svg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const ns = 'http://www.w3.org/2000/svg';
+        const W=760, H=160, PL=60, PR=20, PT=30, PB=35;
+        const CW=W-PL-PR, CH=H-PT-PB;
+        svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+        svg.setAttribute('width','100%');
+        svg.setAttribute('style','max-width:760px');
+
+        function el(tag,attrs,text){const e=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;return e;}
+        function line(x1,y1,x2,y2,col,w,dash){const a={x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'square'};if(dash)a['stroke-dasharray']=dash;return el('line',a);}
+        function txt(x,y,t2,col,sz,anc){return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t2);}
+
+        const total = t * 3;
+        const trigAt = t * 0.4;
+        function xOf(v){ return PL + (v/total)*CW; }
+        const yHigh=PT, yLow=PT+CH/2-5, yTrigHigh=PT+CH/2+5, yTrigLow=PT+CH;
+        const yMidOut = (yHigh+yLow)/2;
+        const yMidTrig = (yTrigHigh+yTrigLow)/2;
+
+        // Output waveform
+        svg.appendChild(txt(PL-8,yMidOut,'OUT','#fb923c',8,'end'));
+        svg.appendChild(line(PL,yLow,xOf(trigAt),yLow,'#fb923c',2.5,''));
+        svg.appendChild(line(xOf(trigAt),yLow,xOf(trigAt),yHigh,'#fb923c',2.5,''));
+        svg.appendChild(line(xOf(trigAt),yHigh,xOf(trigAt+t),yHigh,'#fb923c',2.5,''));
+        svg.appendChild(line(xOf(trigAt+t),yHigh,xOf(trigAt+t),yLow,'#fb923c',2.5,''));
+        svg.appendChild(line(xOf(trigAt+t),yLow,PL+CW,yLow,'#fb923c',2.5,''));
+
+        // Trigger waveform
+        svg.appendChild(txt(PL-8,yMidTrig,'TRIG','#60a5fa',8,'end'));
+        svg.appendChild(line(PL,yTrigHigh,xOf(trigAt),yTrigHigh,'#60a5fa',1.5,''));
+        svg.appendChild(line(xOf(trigAt),yTrigHigh,xOf(trigAt),yTrigLow,'#60a5fa',1.5,''));
+        svg.appendChild(line(xOf(trigAt),yTrigLow,xOf(trigAt+t*0.1),yTrigLow,'#60a5fa',1.5,''));
+        svg.appendChild(line(xOf(trigAt+t*0.1),yTrigLow,xOf(trigAt+t*0.1),yTrigHigh,'#60a5fa',1.5,''));
+        svg.appendChild(line(xOf(trigAt+t*0.1),yTrigHigh,PL+CW,yTrigHigh,'#60a5fa',1.5,''));
+
+        // Labels
+        const xPulse = (xOf(trigAt)+xOf(trigAt+t))/2;
+        svg.appendChild(line(xOf(trigAt),yHigh-8,xOf(trigAt+t),yHigh-8,'#fb923c',1,'3,2'));
+        svg.appendChild(txt(xPulse,yHigh-17,'t = 1.1 × R × C','#fb923c',9,'middle'));
+
+        // Axis
+        svg.appendChild(line(PL,PT,PL,PT+CH,'#4b5563',1));
+        svg.appendChild(line(PL,PT+CH,PL+CW,PT+CH,'#4b5563',1));
+        svg.appendChild(txt(PL-8,yHigh,'H','#4ade80',9,'end'));
+        svg.appendChild(txt(PL-8,yLow,'L','#6b7280',9,'end'));
+        svg.appendChild(txt(PL-8,yTrigHigh,'H','#4ade80',9,'end'));
+        svg.appendChild(txt(PL-8,yTrigLow,'L','#6b7280',9,'end'));
+    }
+
+    // ── Pin diagram ───────────────────────────────────────────────────────
+    (function drawPins() {
+        const svg = document.getElementById('pin-svg');
+        const ns = 'http://www.w3.org/2000/svg';
+        function el(tag,attrs,text){const e=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;return e;}
+        function txt(x,y,t,col,sz,anc){return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);}
+
+        // IC body
+        svg.appendChild(el('rect',{x:70,y:25,width:80,height:150,fill:'#1a2433',stroke:'#fb923c','stroke-width':2,rx:4}));
+        svg.appendChild(el('path',{d:'M100,25 A10,10 0 0,1 120,25',fill:'none',stroke:'#fb923c','stroke-width':1.5}));
+        svg.appendChild(txt(110,10,'555','#fb923c',13,'middle'));
+
+        // Pins left (1-4)
+        [1,2,3,4].forEach((p,i) => {
+            const y = 40 + i*35;
+            const pin = PINS[p-1];
+            svg.appendChild(el('line',{x1:50,y1:y,x2:70,y2:y,stroke:pin.color,'stroke-width':1.5}));
+            svg.appendChild(txt(45,y,p,'#6b7280',9,'end'));
+            svg.appendChild(txt(75,y,pin.name,pin.color,8,'start'));
+        });
+        // Pins right (8-5)
+        [8,7,6,5].forEach((p,i) => {
+            const y = 40 + i*35;
+            const pin = PINS[p-1];
+            svg.appendChild(el('line',{x1:150,y1:y,x2:170,y2:y,stroke:pin.color,'stroke-width':1.5}));
+            svg.appendChild(txt(175,y,p,'#6b7280',9,'start'));
+            svg.appendChild(txt(145,y,pin.name,pin.color,8,'end'));
+        });
+
+        // Pin table
+        const tbody = document.getElementById('pin-tbody');
+        PINS.forEach(p => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="padding:0.3rem 0.6rem;font-weight:700;color:${p.color};font-family:monospace">${p.n}</td>
+                <td style="padding:0.3rem 0.6rem;color:${p.color}">${p.name}</td>
+                <td style="padding:0.3rem 0.6rem;color:var(--text-gray);font-size:0.78rem">${p.fn}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    })();
+
+    // ── Init ──────────────────────────────────────────────────────────────
+    calculate();
+    </script>
+</body>
+</html>

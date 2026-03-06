@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RC Circuit Time Constant Calculator | StrokeForge Electronics</title>
+    <meta name="description" content="Calculate RC circuit time constant τ = R×C. Get charge and discharge times to 63%, 90%, 95%, 99%, and 99.9%. Includes voltage vs time chart and charge/discharge table.">
+    <meta name="keywords" content="RC circuit, time constant tau, RC calculator, capacitor charge time, RC filter, resistor capacitor">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-013/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 860px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Mode tabs */
+        .mode-toggle { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem; }
+        .mode-btn { flex: 1; padding: 0.6rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+        .mode-btn.active { background: var(--primary-orange); color: #000; }
+        .mode-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        /* Inputs */
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .hint { font-size: 0.72rem; color: var(--text-gray); }
+
+        /* Results */
+        .tau-hero { background: var(--darker-bg); border: 2px solid var(--primary-orange); border-radius: 12px; padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: center; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .tau-hero .lbl { font-size: 0.78rem; color: var(--text-gray); }
+        .tau-hero .val { font-size: 2rem; font-weight: 900; color: var(--primary-orange); }
+        .tau-hero .sub { font-size: 0.8rem; color: var(--text-gray); margin-top: 0.15rem; }
+
+        /* Time table */
+        .time-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .time-table th { padding: 0.45rem 0.75rem; text-align: left; color: var(--text-gray); border-bottom: 2px solid var(--border-gray); }
+        .time-table td { padding: 0.45rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .time-table td:first-child { color: var(--text-gray); font-family: monospace; }
+        .time-table td:nth-child(2) { color: var(--primary-orange); font-weight: 700; }
+        .time-table td:nth-child(3) { color: #4ade80; }
+        .time-table td:nth-child(4) { color: #60a5fa; }
+        .time-table tr:hover td { background: rgba(255,107,53,0.05); }
+        .time-table tr.tau-row td { background: rgba(255,107,53,0.08); }
+
+        /* SVG chart */
+        .svg-wrap { overflow-x: auto; }
+
+        /* Info */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.88rem; line-height: 1.9; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); }
+        footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="../../index.html" class="nav-logo">StrokeForge</a>
+            <div class="nav-links">
+                <a href="../../index.html">Home</a>
+                <a href="../../engineering.html">Engineering</a>
+                <a href="../../electronics.html" class="active">Electronics</a>
+                <a href="../../other.html">Other</a>
+                <a href="../../3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>⏱️ RC Time Constant</h1>
+        <p>Calculate τ = R × C — charge and discharge times, voltage curve, and multiples of τ.</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="../../electronics.html" class="back-button">← Back to Electronics</a>
+
+        <!-- CALCULATOR -->
+        <div class="card">
+            <h2>Calculator</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn active" id="btn-rc" onclick="setMode('rc')">R + C → τ</button>
+                <button class="mode-btn" id="btn-rt" onclick="setMode('rt')">R + τ → C</button>
+                <button class="mode-btn" id="btn-ct" onclick="setMode('ct')">C + τ → R</button>
+            </div>
+
+            <!-- R + C → τ -->
+            <div id="mode-rc">
+                <div class="input-grid">
+                    <div class="field">
+                        <label>Resistance (R)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="rc-R" placeholder="10" min="0" step="any" oninput="calculate()">
+                            <select class="sel" id="rc-Runit" onchange="calculate()">
+                                <option value="1">Ω</option>
+                                <option value="1e3" selected>kΩ</option>
+                                <option value="1e6">MΩ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Capacitance (C)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="rc-C" placeholder="100" min="0" step="any" oninput="calculate()">
+                            <select class="sel" id="rc-Cunit" onchange="calculate()">
+                                <option value="1e-12">pF</option>
+                                <option value="1e-9">nF</option>
+                                <option value="1e-6" selected>µF</option>
+                                <option value="1e-3">mF</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Supply voltage (optional)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="rc-Vcc" placeholder="5" min="0" step="any" oninput="calculate()">
+                            <span style="background:var(--darker-bg);border:1px solid var(--border-gray);color:var(--text-gray);border-radius:7px;padding:0.5rem 0.6rem;font-size:0.82rem">V</span>
+                        </div>
+                        <div class="hint">For voltage column in table</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- R + τ → C -->
+            <div id="mode-rt" style="display:none">
+                <div class="input-grid">
+                    <div class="field">
+                        <label>Resistance (R)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="rt-R" placeholder="10" min="0" step="any" oninput="calculate()">
+                            <select class="sel" id="rt-Runit" onchange="calculate()">
+                                <option value="1">Ω</option>
+                                <option value="1e3" selected>kΩ</option>
+                                <option value="1e6">MΩ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Desired τ</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="rt-tau" placeholder="1" min="0" step="any" oninput="calculate()">
+                            <select class="sel" id="rt-tauunit" onchange="calculate()">
+                                <option value="1e-6">µs</option>
+                                <option value="1e-3">ms</option>
+                                <option value="1" selected>s</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- C + τ → R -->
+            <div id="mode-ct" style="display:none">
+                <div class="input-grid">
+                    <div class="field">
+                        <label>Capacitance (C)</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="ct-C" placeholder="100" min="0" step="any" oninput="calculate()">
+                            <select class="sel" id="ct-Cunit" onchange="calculate()">
+                                <option value="1e-12">pF</option>
+                                <option value="1e-9">nF</option>
+                                <option value="1e-6" selected>µF</option>
+                                <option value="1e-3">mF</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Desired τ</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="ct-tau" placeholder="1" min="0" step="any" oninput="calculate()">
+                            <select class="sel" id="ct-tauunit" onchange="calculate()">
+                                <option value="1e-6">µs</option>
+                                <option value="1e-3">ms</option>
+                                <option value="1" selected>s</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card" id="results-card" style="display:none">
+            <h2>Results</h2>
+            <div class="tau-hero">
+                <div>
+                    <div class="lbl">Time constant τ</div>
+                    <div class="val" id="res-tau">—</div>
+                </div>
+                <div>
+                    <div class="lbl" id="res-secondary-lbl">Capacitance C</div>
+                    <div class="val" style="color:#4ade80" id="res-secondary">—</div>
+                </div>
+                <div>
+                    <div class="lbl">Time to 99% (≈ 5τ)</div>
+                    <div class="val" style="color:#60a5fa;font-size:1.4rem" id="res-99">—</div>
+                </div>
+            </div>
+
+            <!-- Charge / discharge table -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+                <div>
+                    <div style="font-size:0.8rem;color:var(--text-gray);margin-bottom:0.5rem;font-weight:600">Charging</div>
+                    <table class="time-table">
+                        <thead><tr><th>Time</th><th>%</th><th id="charge-v-head">V</th></tr></thead>
+                        <tbody id="charge-tbody"></tbody>
+                    </table>
+                </div>
+                <div>
+                    <div style="font-size:0.8rem;color:var(--text-gray);margin-bottom:0.5rem;font-weight:600">Discharging</div>
+                    <table class="time-table">
+                        <thead><tr><th>Time</th><th>%</th><th id="discharge-v-head">V</th></tr></thead>
+                        <tbody id="discharge-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHART -->
+        <div class="card" id="chart-card" style="display:none">
+            <h2>Voltage vs time</h2>
+            <div class="svg-wrap">
+                <svg id="chart-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>RC circuit basics</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Formulas</h3>
+                    <p class="mono">
+                        τ = R × C<br>
+                        Charge:   V(t) = Vcc × (1 − e<sup>−t/τ</sup>)<br>
+                        Discharge: V(t) = V₀ × e<sup>−t/τ</sup><br>
+                        Time to V: t = −τ × ln(1 − V/Vcc)
+                    </p>
+                </div>
+                <div class="info-block">
+                    <h3>Multiples of τ</h3>
+                    <ul>
+                        <li><strong>1τ</strong> — 63.2% of Vcc (1 time constant)</li>
+                        <li><strong>2τ</strong> — 86.5%</li>
+                        <li><strong>3τ</strong> — 95.0% — often considered "charged"</li>
+                        <li><strong>4τ</strong> — 98.2%</li>
+                        <li><strong>5τ</strong> — 99.3% — fully charged in practice</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Common applications</h3>
+                    <ul>
+                        <li><strong>Debounce</strong> — RC + Schmitt trigger on button input</li>
+                        <li><strong>Delay circuit</strong> — charge cap to trigger threshold</li>
+                        <li><strong>Low-pass filter</strong> — fc = 1 / (2π × R × C)</li>
+                        <li><strong>Integrator</strong> — op-amp with RC in feedback</li>
+                        <li><strong>Reset circuit</strong> — RC on microcontroller RESET pin</li>
+                        <li><strong>555 timer</strong> — charging time sets frequency/pulse</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Practical notes</h3>
+                    <ul>
+                        <li>Capacitor ESR and leakage affect actual charge time</li>
+                        <li>Load resistance changes effective R — use a buffer (op-amp) if needed</li>
+                        <li>Electrolytic caps: observe polarity</li>
+                        <li>Ceramic caps (X5R/X7R) have less voltage-dependent capacitance variation than Y5V</li>
+                        <li>For precision timing, use film capacitors</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Part of <a href="../../electronics.html">StrokeForge Electronics</a> — free tools for makers</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    let mode = 'rc';
+    let tauSec = null;
+    let vcc = null;
+
+    function setMode(m) {
+        mode = m;
+        ['rc','rt','ct'].forEach(x => {
+            document.getElementById('mode-' + x).style.display = x === m ? '' : 'none';
+            document.getElementById('btn-' + x).classList.toggle('active', x === m);
+        });
+        calculate();
+    }
+
+    function g(id) { const v = parseFloat(document.getElementById(id).value); return isNaN(v) ? null : v; }
+    function gu(id) { return parseFloat(document.getElementById(id).value); }
+
+    // ── Format time ───────────────────────────────────────────────────────
+    function fmtTime(s) {
+        if (s === null || s <= 0) return '—';
+        if (s >= 1)      return s.toPrecision(4).replace(/\.?0+$/, '') + ' s';
+        if (s >= 1e-3)   return (s * 1e3).toPrecision(4).replace(/\.?0+$/, '') + ' ms';
+        if (s >= 1e-6)   return (s * 1e6).toPrecision(4).replace(/\.?0+$/, '') + ' µs';
+        return (s * 1e9).toPrecision(4).replace(/\.?0+$/, '') + ' ns';
+    }
+
+    function fmtR(r) {
+        if (r >= 1e6) return (r / 1e6).toPrecision(4).replace(/\.?0+$/, '') + ' MΩ';
+        if (r >= 1e3) return (r / 1e3).toPrecision(4).replace(/\.?0+$/, '') + ' kΩ';
+        return r.toPrecision(4).replace(/\.?0+$/, '') + ' Ω';
+    }
+
+    function fmtC(c) {
+        if (c >= 1e-3) return (c * 1e3).toPrecision(4).replace(/\.?0+$/, '') + ' mF';
+        if (c >= 1e-6) return (c * 1e6).toPrecision(4).replace(/\.?0+$/, '') + ' µF';
+        if (c >= 1e-9) return (c * 1e9).toPrecision(4).replace(/\.?0+$/, '') + ' nF';
+        return (c * 1e12).toPrecision(4).replace(/\.?0+$/, '') + ' pF';
+    }
+
+    // ── Calculate ─────────────────────────────────────────────────────────
+    function calculate() {
+        const rc = document.getElementById('results-card');
+        const cc = document.getElementById('chart-card');
+
+        let tau = null, R = null, C = null;
+
+        if (mode === 'rc') {
+            const rv = g('rc-R'); const ru = gu('rc-Runit');
+            const cv = g('rc-C'); const cu = gu('rc-Cunit');
+            if (!rv || !cv) { rc.style.display = 'none'; cc.style.display = 'none'; return; }
+            R = rv * ru;
+            C = cv * cu;
+            tau = R * C;
+            vcc = g('rc-Vcc');
+            document.getElementById('res-secondary-lbl').textContent = 'Resistance R';
+            document.getElementById('res-secondary').textContent = fmtR(R);
+        } else if (mode === 'rt') {
+            const rv = g('rt-R'); const ru = gu('rt-Runit');
+            const tv = g('rt-tau'); const tu = gu('rt-tauunit');
+            if (!rv || !tv) { rc.style.display = 'none'; cc.style.display = 'none'; return; }
+            R = rv * ru;
+            tau = tv * tu;
+            C = tau / R;
+            vcc = null;
+            document.getElementById('res-secondary-lbl').textContent = 'Required C';
+            document.getElementById('res-secondary').textContent = fmtC(C);
+        } else {
+            const cv = g('ct-C'); const cu = gu('ct-Cunit');
+            const tv = g('ct-tau'); const tu = gu('ct-tauunit');
+            if (!cv || !tv) { rc.style.display = 'none'; cc.style.display = 'none'; return; }
+            C = cv * cu;
+            tau = tv * tu;
+            R = tau / C;
+            vcc = null;
+            document.getElementById('res-secondary-lbl').textContent = 'Required R';
+            document.getElementById('res-secondary').textContent = fmtR(R);
+        }
+
+        tauSec = tau;
+
+        document.getElementById('res-tau').textContent = fmtTime(tau);
+        document.getElementById('res-99').textContent  = fmtTime(tau * 4.605);
+
+        buildTables(tau, vcc);
+        drawChart(tau, vcc);
+        rc.style.display = '';
+        cc.style.display = '';
+    }
+
+    // ── Tables ────────────────────────────────────────────────────────────
+    const MILESTONES = [
+        { mult: 0.5,  charge: 39.35, label: '0.5τ' },
+        { mult: 1.0,  charge: 63.21, label: '1τ', tau: true },
+        { mult: 2.0,  charge: 86.47, label: '2τ' },
+        { mult: 3.0,  charge: 95.02, label: '3τ' },
+        { mult: 4.0,  charge: 98.17, label: '4τ' },
+        { mult: 4.605,charge: 99.00, label: '≈4.6τ' },
+        { mult: 5.0,  charge: 99.33, label: '5τ' },
+    ];
+
+    function buildTables(tau, vcc) {
+        const chHead = document.getElementById('charge-v-head');
+        const disHead = document.getElementById('discharge-v-head');
+        chHead.textContent  = vcc ? `V (Vcc=${vcc}V)` : 'V %';
+        disHead.textContent = vcc ? `V (V₀=${vcc}V)` : 'V %';
+
+        const ctbody = document.getElementById('charge-tbody');
+        const dtbody = document.getElementById('discharge-tbody');
+        ctbody.innerHTML = '';
+        dtbody.innerHTML = '';
+
+        MILESTONES.forEach(m => {
+            const t = tau * m.mult;
+            const chPct  = (1 - Math.exp(-m.mult)) * 100;
+            const disPct = Math.exp(-m.mult) * 100;
+            const chV    = vcc ? (vcc * (1 - Math.exp(-m.mult))).toFixed(3) + ' V' : chPct.toFixed(2) + '%';
+            const disV   = vcc ? (vcc * Math.exp(-m.mult)).toFixed(3) + ' V'        : disPct.toFixed(2) + '%';
+
+            const ctr = document.createElement('tr');
+            if (m.tau) ctr.className = 'tau-row';
+            ctr.innerHTML = `<td>${m.label}</td><td>${fmtTime(t)}</td><td>${chPct.toFixed(2)}%</td><td>${chV}</td>`;
+            ctbody.appendChild(ctr);
+
+            const dtr = document.createElement('tr');
+            if (m.tau) dtr.className = 'tau-row';
+            dtr.innerHTML = `<td>${m.label}</td><td>${fmtTime(t)}</td><td>${disPct.toFixed(2)}%</td><td>${disV}</td>`;
+            dtbody.appendChild(dtr);
+        });
+    }
+
+    // ── Chart ─────────────────────────────────────────────────────────────
+    function drawChart(tau, vcc) {
+        const svg = document.getElementById('chart-svg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const ns = 'http://www.w3.org/2000/svg';
+
+        const W = 760, H = 240;
+        const PL = 55, PR = 20, PT = 20, PB = 40;
+        const CW = W - PL - PR, CH = H - PT - PB;
+
+        svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('style', 'max-width:760px');
+
+        function el(tag, attrs, text) {
+            const e = document.createElementNS(ns, tag);
+            Object.entries(attrs).forEach(([k,v]) => e.setAttribute(k,v));
+            if (text !== undefined) e.textContent = text;
+            return e;
+        }
+        function line(x1,y1,x2,y2,col,w,dash) {
+            const a = {x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1,'stroke-linecap':'round'};
+            if (dash) a['stroke-dasharray'] = dash;
+            return el('line', a);
+        }
+        function txt(x,y,t,col,sz,anc) {
+            return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);
+        }
+
+        // Axes
+        svg.appendChild(line(PL,PT,PL,PT+CH,'#4b5563',1.5));
+        svg.appendChild(line(PL,PT+CH,PL+CW,PT+CH,'#4b5563',1.5));
+
+        // Y axis labels (0%, 25%, 50%, 75%, 100%)
+        [0,25,50,75,100].forEach(pct => {
+            const y = PT + CH - (pct / 100) * CH;
+            svg.appendChild(line(PL-4, y, PL+CW, y, '#374151', 0.8, '4,3'));
+            svg.appendChild(txt(PL-8, y, pct+'%', '#6b7280', 9, 'end'));
+        });
+
+        // X axis: 0 to 5τ
+        const tauSteps = [0,1,2,3,4,5];
+        tauSteps.forEach(n => {
+            const x = PL + (n / 5) * CW;
+            svg.appendChild(line(x, PT+CH, x, PT+CH+4, '#4b5563', 1));
+            svg.appendChild(txt(x, PT+CH+12, n+'τ', '#6b7280', 9, 'middle'));
+        });
+
+        // Axis labels
+        svg.appendChild(txt(PL + CW/2, H-5, 'Time', '#6b7280', 10, 'middle'));
+        svg.appendChild(txt(12, PT + CH/2, 'Voltage', '#6b7280', 10, 'middle'));
+
+        // Draw curves
+        function makePath(fn, col) {
+            const pts = [];
+            for (let i = 0; i <= 200; i++) {
+                const t = (i / 200) * 5;
+                const v = fn(t);
+                const x = PL + (t / 5) * CW;
+                const y = PT + CH - v * CH;
+                pts.push(`${i===0?'M':'L'}${x.toFixed(1)},${y.toFixed(1)}`);
+            }
+            return el('path', { d: pts.join(' '), fill: 'none', stroke: col, 'stroke-width': 2.5, 'stroke-linecap': 'round' });
+        }
+        svg.appendChild(makePath(t => 1 - Math.exp(-t), '#fb923c')); // charge
+        svg.appendChild(makePath(t => Math.exp(-t),     '#60a5fa')); // discharge
+
+        // τ marker
+        const tauX = PL + (1/5) * CW;
+        const tauY = PT + CH - (1-Math.exp(-1)) * CH;
+        svg.appendChild(line(tauX, PT, tauX, PT+CH, '#fb923c', 1, '5,3'));
+        svg.appendChild(line(PL, tauY, PL+CW, tauY, '#fb923c', 1, '5,3'));
+        svg.appendChild(el('circle', {cx:tauX, cy:tauY, r:4, fill:'#fb923c'}));
+        svg.appendChild(txt(tauX+3, tauY-10, '63.2%', '#fb923c', 9, 'start'));
+
+        // Legend
+        svg.appendChild(line(PL+CW-90, PT+10, PL+CW-70, PT+10, '#fb923c', 2.5));
+        svg.appendChild(txt(PL+CW-65, PT+10, 'Charging', '#fb923c', 9, 'start'));
+        svg.appendChild(line(PL+CW-90, PT+24, PL+CW-70, PT+24, '#60a5fa', 2.5));
+        svg.appendChild(txt(PL+CW-65, PT+24, 'Discharging', '#60a5fa', 9, 'start'));
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────
+    calculate();
+    </script>
+</body>
+</html>

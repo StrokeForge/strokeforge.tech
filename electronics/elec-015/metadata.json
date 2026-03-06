@@ -1,0 +1,8 @@
+{
+  "id": "elec-015",
+  "title": "555 Timer Calculator",
+  "category": "basic",
+  "description": "555 timer calculator for astable (oscillator) and monostable (one-shot) modes. Astable: R1, R2, C → frequency, period, duty cycle, tH, tL. Monostable: R, C → pulse width. Includes output waveform and pin reference.",
+  "icon": "⏲️",
+  "difficulty": "beginner"
+}

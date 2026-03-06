@@ -1,0 +1,8 @@
+{
+  "id": "elec-018",
+  "title": "Pull-up / Pull-down Resistor Calculator",
+  "category": "basic",
+  "description": "Calculate pull-up and pull-down resistors for buttons, open-drain outputs, and GPIO inputs. Shows idle state, current drain, RC time constant, rise time, and max toggle frequency. Includes application reference table and circuit diagram.",
+  "icon": "🔼",
+  "difficulty": "beginner"
+}
