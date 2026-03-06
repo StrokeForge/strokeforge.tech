@@ -84,10 +84,6 @@ function categoryLabel(cat) {
     return labels[cat] || 'Electronics';
 }
 
-function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
 function showError(msg) {
     const grid = document.querySelector('.projects-grid');
     if (grid) grid.innerHTML = `<div class="empty-state"><h2>Error</h2><p>${msg}</p></div>`;
