@@ -46,6 +46,17 @@
 .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
 .page-header p { font-size: 0.95rem; color: var(--text-gray); }
 
+/* ---- Listing page intro text ---- */
+.page-intro {
+    max-width: 700px;
+    margin: 1rem auto 0;
+    padding: 0 2rem 1.25rem;
+    text-align: center;
+    color: var(--text-gray);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
 /* ---- Tool content wrapper (subpages) ---- */
 .tool-wrap {
     max-width: 960px;
