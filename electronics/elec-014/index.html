@@ -166,7 +166,7 @@
         <div class="card">
             <h2>Circuit diagram</h2>
             <div class="svg-wrap">
-                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 160" width="640" height="160"></svg>
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 175" width="640" height="175"></svg>
             </div>
         </div>
 
@@ -451,18 +451,6 @@
         } else {
             // High-pass: C series, R to GND, output across R
             svg.appendChild(txt(320,14,'High-Pass Filter — output across R','#fb923c',11,'middle'));
-            svg.appendChild(line(40,60,110,60));
-            svg.appendChild(txt(40,48,'Vin','#facc15',10,'middle'));
-            // C series
-            svg.appendChild(line(110,48,110,83));
-            svg.appendChild(line(95,78,125,78,   '#60a5fa',2));
-            svg.appendChild(line(95,83,125,83,   '#60a5fa',2));
-            svg.appendChild(line(110,83,110,105));
-            svg.appendChild(line(40,60,40,105));
-            // wait, redo - C in series horizontally
-            // Vin → C (horizontal plates) → node → R to GND → Vout at node
-            while(svg.firstChild) svg.removeChild(svg.firstChild);
-            svg.appendChild(txt(320,14,'High-Pass Filter — output across R','#fb923c',11,'middle'));
             svg.appendChild(line(40,70,120,70));
             svg.appendChild(txt(40,58,'Vin','#facc15',10,'middle'));
             // C plates
@@ -484,7 +472,7 @@
             // Vin GND
             svg.appendChild(line(40,70,40,145));
             svg.appendChild(line(40,145,220,145,'#6b7280',1));
-            svg.appendChild(txt(220,118,'Output across R (high freq pass)','#4ade80',9,'middle'));
+            svg.appendChild(txt(220,163,'Output across R (high freq pass)','#4ade80',9,'middle'));
         }
     }
 
