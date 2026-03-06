@@ -196,7 +196,7 @@
 
             <!-- Triangle -->
             <div class="triangle-wrap">
-                <svg id="triangle-svg" viewBox="0 0 280 205" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px;"></svg>
+                <svg id="triangle-svg" viewBox="0 0 280 225" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px;"></svg>
             </div>
         </div>
 
@@ -444,10 +444,10 @@
         // P label below triangle
         var pFmt = result ? fmtSmart(result.p,'p') : null;
         var pKnown = known.p !== null && known.p !== undefined;
-        el('text', { x:140, y:174, fill:'#6b7280', 'font-size':9, 'font-family':'monospace', 'text-anchor':'middle' }, 'P = U × I');
+        el('text', { x:140, y:188, fill:'#6b7280', 'font-size':9, 'font-family':'monospace', 'text-anchor':'middle' }, 'P = U × I');
         if (pFmt) {
-            el('rect', { x:95, y:176, width:90, height:18, rx:4, fill: pKnown ? 'rgba(244,114,182,0.2)' : 'rgba(244,114,182,0.1)', stroke:'#f472b6', 'stroke-width':1 });
-            el('text', { x:140, y:189, fill:'#f472b6', 'font-size':11, 'font-family':'monospace', 'font-weight':'bold', 'text-anchor':'middle' }, 'P = '+pFmt.str+' '+pFmt.unit);
+            el('rect', { x:95, y:192, width:90, height:18, rx:4, fill: pKnown ? 'rgba(244,114,182,0.2)' : 'rgba(244,114,182,0.1)', stroke:'#f472b6', 'stroke-width':1 });
+            el('text', { x:140, y:205, fill:'#f472b6', 'font-size':11, 'font-family':'monospace', 'font-weight':'bold', 'text-anchor':'middle' }, 'P = '+pFmt.str+' '+pFmt.unit);
         }
     }
 
