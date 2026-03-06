@@ -35,57 +35,12 @@
     <link rel="stylesheet" href="../../css/style.css">
     <style>
         /* ===== NAVBAR ===== */
-        .navbar {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 1rem 2rem;
-            border-bottom: 1px solid var(--border-gray);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-        .navbar-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .nav-logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-orange);
-            text-decoration: none;
-        }
-        .nav-links { display: flex; gap: 2rem; }
-        .nav-links a {
-            color: var(--light-gray);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .nav-links a:hover { color: var(--primary-orange); }
-
-        /* ===== PAGE LAYOUT ===== */
+/* ===== PAGE LAYOUT ===== */
         .tool-header {
             max-width: 1200px;
             margin: 2.5rem auto 0;
             padding: 0 2rem;
         }
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--card-bg);
-            color: var(--light-gray);
-            border: 2px solid var(--border-gray);
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.3s;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-        }
-        .back-button:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
         .tool-title {
             font-size: 2.5rem;
             color: var(--primary-orange);
@@ -359,8 +314,7 @@
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .tool-title { font-size: 1.8rem; }
-            .nav-links  { display: none; }
-            .action-bar { flex-direction: column; align-items: stretch; }
+.action-bar { flex-direction: column; align-items: stretch; }
             .btn-calculate, .btn-export { text-align: center; }
         }
 
@@ -377,11 +331,11 @@
     <div class="navbar-content">
             <a href="/" class="nav-logo">⚡ StrokeForge</a>
         <div class="nav-links">
-            <a href="../../index.html">Home</a>
-            <a href="../../engineering.html">Engineering</a>
-            <a href="../../electronics.html">Electronics</a>
-            <a href="../../other.html" class="active">Other</a>
-            <a href="../../3d-printing.html">3D Printing</a>
+            <a href="/">Home</a>
+            <a href="/engineering.html">Engineering</a>
+            <a href="/electronics.html">Electronics</a>
+            <a href="/other.html" class="active">Other</a>
+            <a href="/3d-printing.html">3D Printing</a>
 </div>
         <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
     </div>
@@ -389,7 +343,7 @@
 
 <!-- Tool Header -->
 <div class="tool-header">
-    <a href="../../other.html" class="back-button">← Back to Other Projects</a>
+    <a href="/other.html" class="back-button">← Back to Other Projects</a>
     <h1 class="tool-title">Cutting Plan Optimizer</h1>
     <p class="tool-subtitle">1D stock optimization for bars, tubes, and profiles — minimize waste, maximize efficiency.</p>
 </div>

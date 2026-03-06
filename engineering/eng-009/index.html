@@ -9,20 +9,7 @@
     <link rel="stylesheet" href="../../css/colors.css">
     <link rel="stylesheet" href="../../css/style.css">
     <style>
-        body { max-width: 1000px; margin: 0 auto; padding: 0 1rem 3rem; }
-
-        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); margin: 0 -1rem; }
-        .navbar-content { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .nav-logo { font-size: 1.4rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
-        .nav-links { display: flex; gap: 1.5rem; }
-        .nav-links a { color: var(--light-gray); text-decoration: none; font-size: 0.95rem; transition: color 0.3s; }
-        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
-
-        .page-header { text-align: center; padding: 1.5rem 0 1rem; border-bottom: 1px solid var(--border-gray); margin-bottom: 1.5rem; }
-        .page-header h1 { font-size: 1.7rem; color: var(--primary-orange); margin: 0 0 0.4rem; }
-        .page-header p { color: var(--text-gray); margin: 0; font-size: 0.95rem; }
-        .back-button { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--primary-orange); text-decoration: none; font-size: 0.9rem; margin: 1rem 0; }
-        .back-button:hover { text-decoration: underline; }
+        .tool-wrap { max-width: 1000px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
 
         /* Layout */
         .calc-layout { display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; align-items: start; }
@@ -87,9 +74,7 @@
             .result-cards { grid-template-columns: 1fr 1fr; }
         }
 
-        .footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); margin: 2rem -1rem 0; }
-        .footer a { color: var(--primary-orange); text-decoration: none; }
-    </style>
+</style>
 </head>
 <body>
     <nav class="navbar">
@@ -106,12 +91,13 @@
         </div>
     </nav>
 
-    <a href="/engineering.html" class="back-button">← Engineering Tools</a>
-
-    <div class="page-header">
+    <header class="page-header">
         <h1>📐 Simple Beam Deflection</h1>
         <p>Simply supported beam — reactions, shear, bending moment and deflection</p>
-    </div>
+    </header>
+
+    <div class="tool-wrap">
+    <a href="/engineering.html" class="back-button">← Back to Engineering</a>
 
     <div class="calc-layout">
         <!-- Inputs -->
@@ -230,6 +216,8 @@
             <div class="placeholder">Enter parameters and press <strong>Calculate</strong></div>
         </div>
     </div>
+
+    </div><!-- /tool-wrap -->
 
     <footer class="footer">
         <p>Designs from concept to reality | 2026</p>

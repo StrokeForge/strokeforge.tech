@@ -8,47 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <style>
         /* Projects specific styles */
-        .navbar {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 1rem 2rem;
-            border-bottom: 1px solid var(--border-gray);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-        
-        .navbar-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .nav-logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-orange);
-            text-decoration: none;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-        
-        .nav-links a {
-            color: var(--light-gray);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .nav-links a:hover {
-            color: var(--primary-orange);
-        }
-        
-        .projects-header {
+.projects-header {
             text-align: center;
             padding: 3rem 2rem;
             background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
@@ -200,11 +160,7 @@
         
         /* Responsive */
         @media (max-width: 768px) {
-            .nav-links {
-                gap: 1rem;
-            }
-            
-            .projects-grid {
+.projects-grid {
                 grid-template-columns: 1fr;
             }
         }

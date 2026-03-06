@@ -11,18 +11,7 @@
     <link rel="stylesheet" href="../../css/colors.css">
     <link rel="stylesheet" href="../../css/style.css">
     <style>
-        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
-        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
-        .nav-links { display: flex; gap: 2rem; }
-        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
-        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
-
-        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
-        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
-        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
-
-        .tool-wrap { max-width: 1000px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+.tool-wrap { max-width: 1000px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
 
         .ctrl-card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 1.5rem; }
         .ctrl-card h2 { color: var(--primary-orange); font-size: 1.1rem; margin-bottom: 1.1rem; }
@@ -53,13 +42,13 @@
 <body>
     <nav class="navbar">
         <div class="navbar-content">
-            <a href="../../index.html" class="nav-logo">⚡ StrokeForge</a>
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
             <div class="nav-links">
-                <a href="../../index.html">Home</a>
-                <a href="../../engineering.html" class="active">Engineering</a>
-                <a href="../../electronics.html">Electronics</a>
-                <a href="../../other.html">Other</a>
-                <a href="../../3d-printing.html">3D Printing</a>
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
 </div>
             <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
@@ -71,7 +60,7 @@
     </header>
 
     <div class="tool-wrap">
-        <a href="../../engineering.html" class="back-button">← Back to Engineering</a>
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
 
         <div class="ctrl-card">
             <h2>Parameters</h2>

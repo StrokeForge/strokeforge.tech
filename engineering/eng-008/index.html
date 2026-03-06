@@ -9,23 +9,7 @@
     <link rel="stylesheet" href="../../css/colors.css">
     <link rel="stylesheet" href="../../css/style.css">
     <style>
-        body { max-width: 1100px; margin: 0 auto; padding: 0 1rem 3rem; }
-
-        /* Nav */
-        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); margin: 0 -1rem; }
-        .navbar-content { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .nav-logo { font-size: 1.4rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
-        .nav-links { display: flex; gap: 1.5rem; }
-        .nav-links a { color: var(--light-gray); text-decoration: none; font-size: 0.95rem; transition: color 0.3s; }
-        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
-
-        /* Header */
-        .page-header { text-align: center; padding: 1.5rem 0 1rem; border-bottom: 1px solid var(--border-gray); margin-bottom: 1.5rem; }
-        .page-header h1 { font-size: 1.7rem; color: var(--primary-orange); margin: 0 0 0.4rem; }
-        .page-header p { color: var(--text-gray); margin: 0; font-size: 0.95rem; }
-
-        .back-button { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--primary-orange); text-decoration: none; font-size: 0.9rem; margin: 1rem 0; }
-        .back-button:hover { text-decoration: underline; }
+        .tool-wrap { max-width: 1100px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
 
         /* Filter tabs */
         .filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
@@ -91,9 +75,7 @@
         }
 
         /* Footer */
-        .footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); margin: 0 -1rem; }
-        .footer a { color: var(--primary-orange); text-decoration: none; }
-    </style>
+</style>
 </head>
 <body>
     <nav class="navbar">
@@ -110,12 +92,13 @@
         </div>
     </nav>
 
-    <a href="/engineering.html" class="back-button">← Engineering Tools</a>
-
-    <div class="page-header">
+    <header class="page-header">
         <h1>🔩 Bolt Strength Classes 4.6–12.9</h1>
         <p>Mechanical properties, tightening torques, head markings — per ČSN EN ISO 898-1 / EC3</p>
-    </div>
+    </header>
+
+    <div class="tool-wrap">
+    <a href="/engineering.html" class="back-button">← Back to Engineering</a>
 
     <!-- Filter -->
     <div class="filter-bar">
@@ -366,6 +349,8 @@
             </ul>
         </div>
     </div>
+
+    </div><!-- /tool-wrap -->
 
     <footer class="footer">
         <p>Designs from concept to reality | 2026</p>

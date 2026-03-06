@@ -34,48 +34,7 @@
     <link rel="stylesheet" href="../../css/colors.css">
     <link rel="stylesheet" href="../../css/style.css">
     <style>
-        /* Project Detail Styles */
-        .navbar {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 1rem 2rem;
-            border-bottom: 1px solid var(--border-gray);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-        
-        .navbar-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .nav-logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-orange);
-            text-decoration: none;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-        
-        .nav-links a {
-            color: var(--light-gray);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .nav-links a:hover {
-            color: var(--primary-orange);
-        }
-        
-        .project-header {
+.project-header {
             max-width: 1200px;
             margin: 3rem auto;
             padding: 0 2rem;
@@ -326,26 +285,6 @@
             color: var(--text-gray);
         }
         
-        /* Back Button */
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--card-bg);
-            color: var(--light-gray);
-            border: 2px solid var(--border-gray);
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.3s;
-            margin-bottom: 2rem;
-        }
-        
-        .back-button:hover {
-            border-color: var(--primary-orange);
-            color: var(--primary-orange);
-        }
-        
         /* Module List */
         .module-list {
             background: var(--card-bg);
@@ -400,13 +339,13 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-content">
-            <a href="../../index.html" class="nav-logo">⚡ StrokeForge</a>
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
             <div class="nav-links">
-                <a href="../../index.html">Home</a>
-                <a href="../../engineering.html">Engineering</a>
-                <a href="../../electronics.html">Electronics</a>
-                <a href="../../other.html">Other</a>
-                <a href="../../3d-printing.html">3D Printing</a>
+                <a href="/">Home</a>
+                <a href="/engineering.html">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
 </div>
             <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
@@ -414,7 +353,7 @@
 
     <!-- Project Header -->
     <section class="project-header">
-        <a href="../../3d-printing.html" class="back-button">
+        <a href="/3d-printing.html" class="back-button">
             ← Back to 3D Printing Projects
         </a>
         
