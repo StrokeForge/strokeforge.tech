@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bolt Shear &amp; Bearing Calculator (EC3) | StrokeForge Engineering</title>
+    <meta name="description" content="Bolt connection shear and bearing resistance calculator per ČSN EN 1993-1-8 (EC3). Checks Fv,Rd and Fb,Rd for M8–M36 bolts, grades 4.6–12.9, single and double shear planes.">
+    <meta name="keywords" content="bolt shear calculator, bearing resistance, Fv,Rd, Fb,Rd, EN 1993-1-8, šroubový spoj střih, otlačení šroub, EC3 bolt connection">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-007/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 2rem 1rem; background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%); }
+        .page-header h1 { font-size: 2rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+        .page-header p { font-size: 0.95rem; color: var(--text-gray); }
+
+        .tool-wrap { max-width: 920px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .back-button { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-gray); text-decoration: none; font-size: 0.88rem; margin-bottom: 1.5rem; transition: color 0.2s; }
+        .back-button:hover { color: var(--primary-orange); }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 620px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); }
+
+        .section-title { font-size: 0.78rem; color: var(--primary-orange); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin: 1.1rem 0 0.6rem; }
+
+        /* Verdict */
+        .result-verdict { border-radius: 10px; padding: 1.1rem 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
+        .result-verdict.pass { background: rgba(74,222,128,0.1); border: 2px solid #4ade80; }
+        .result-verdict.fail { background: rgba(248,113,113,0.1); border: 2px solid #f87171; }
+        .result-verdict.na   { background: rgba(100,116,139,0.1); border: 2px solid var(--border-gray); }
+        .verdict-icon { font-size: 2rem; }
+        .verdict-text { font-size: 1.1rem; font-weight: 700; }
+        .verdict-sub  { font-size: 0.82rem; color: var(--text-gray); margin-top: 0.2rem; }
+
+        /* Results grid */
+        .res-main { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 560px) { .res-main { grid-template-columns: 1fr 1fr; } }
+        .res-cell { background: var(--darker-bg); border-radius: 8px; padding: 0.85rem 1rem; }
+        .res-cell .lbl { font-size: 0.7rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .res-cell .val { font-size: 1.05rem; font-weight: 700; color: var(--light-gray); }
+        .res-cell .val.orange { color: var(--primary-orange); }
+        .res-cell .val.green  { color: #4ade80; }
+        .res-cell .val.red    { color: #f87171; }
+        .res-cell .val.yellow { color: #f59e0b; }
+        .res-cell .sub { font-size: 0.74rem; color: var(--text-gray); margin-top: 0.2rem; }
+
+        /* Governing bar */
+        .gov-bar { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
+        .gov-block { flex: 1; border-radius: 8px; padding: 0.8rem 1rem; border: 2px solid var(--border-gray); }
+        .gov-block.governing { border-color: var(--primary-orange); background: rgba(249,115,22,0.08); }
+        .gov-block .glbl { font-size: 0.72rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .gov-block .gval { font-size: 1.2rem; font-weight: 800; color: var(--primary-orange); }
+        .gov-block .gsub { font-size: 0.75rem; color: var(--text-gray); margin-top: 0.2rem; }
+        .gov-tag { font-size: 0.65rem; font-weight: 700; background: var(--primary-orange); color: #000; border-radius: 3px; padding: 0.1rem 0.4rem; margin-left: 0.4rem; vertical-align: middle; }
+
+        /* Util bar */
+        .util-bar-wrap { background: rgba(255,255,255,0.07); border-radius: 6px; height: 10px; margin-top: 0.75rem; overflow: hidden; }
+        .util-bar { height: 100%; border-radius: 6px; transition: width 0.4s ease, background 0.3s; }
+
+        /* Warnings */
+        .warn-box { border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.82rem; margin-bottom: 0.5rem; display: none; }
+        .warn-box.show { display: block; }
+        .warn-box.err  { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #f87171; }
+        .warn-box.warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #f59e0b; }
+        .warn-box.info { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); color: #93c5fd; }
+
+        /* Diagram */
+        .diagram-wrap { display: flex; justify-content: center; padding: 0.5rem 0; }
+
+        /* Info */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.6; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+
+        details.card summary { cursor: pointer; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; }
+        details.card[open] summary { margin-bottom: 1rem; }
+
+        /* Bolt data table */
+        .bolt-tbl { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        .bolt-tbl th { background: var(--darker-bg); color: var(--text-gray); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.5rem 0.6rem; border-bottom: 2px solid var(--border-gray); text-align: right; }
+        .bolt-tbl th:first-child { text-align: left; }
+        .bolt-tbl td { padding: 0.4rem 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--light-gray); text-align: right; }
+        .bolt-tbl td:first-child { text-align: left; font-weight: 600; color: var(--primary-orange); }
+        .bolt-tbl tr.active-row td { background: rgba(249,115,22,0.08); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Bolt Shear &amp; Bearing Calculator</h1>
+        <p>Šroubový spoj — střih a otlačení dle ČSN EN 1993-1-8 (EC3) §3.6</p>
+    </div>
+
+    <div class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- Inputs -->
+        <div class="card">
+            <h2>Bolt &amp; Connection Parameters</h2>
+
+            <div class="section-title">Bolt</div>
+            <div class="input-grid">
+                <div class="field">
+                    <label>Bolt size</label>
+                    <select class="sel" id="bolt-size">
+                        <option value="8">M8</option>
+                        <option value="10">M10</option>
+                        <option value="12">M12</option>
+                        <option value="14">M14</option>
+                        <option value="16" selected>M16</option>
+                        <option value="20">M20</option>
+                        <option value="24">M24</option>
+                        <option value="27">M27</option>
+                        <option value="30">M30</option>
+                        <option value="36">M36</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Bolt grade</label>
+                    <select class="sel" id="bolt-grade">
+                        <option value="4.6">4.6 — f<sub>ub</sub> = 400 MPa</option>
+                        <option value="5.6">5.6 — f<sub>ub</sub> = 500 MPa</option>
+                        <option value="6.8">6.8 — f<sub>ub</sub> = 600 MPa</option>
+                        <option value="8.8" selected>8.8 — f<sub>ub</sub> = 800 MPa</option>
+                        <option value="10.9">10.9 — f<sub>ub</sub> = 1000 MPa</option>
+                        <option value="12.9">12.9 — f<sub>ub</sub> = 1200 MPa</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Shear planes</label>
+                    <select class="sel" id="shear-planes">
+                        <option value="1" selected>1 — single shear (lap joint)</option>
+                        <option value="2">2 — double shear (splice)</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Shear through</label>
+                    <select class="sel" id="shear-through">
+                        <option value="thread" selected>Thread (A<sub>s</sub>) — conservative</option>
+                        <option value="shank">Shank (A) — shank in shear plane</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Number of bolts <i>n</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="n-bolts" value="4" min="1" max="50" step="1">
+                        <span class="unit">pcs</span>
+                    </div>
+                    <span class="hint">Total bolts in connection</span>
+                </div>
+                <div class="field">
+                    <label>Applied shear <i>V</i><sub>Ed</sub></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="force" value="120" min="0" step="1">
+                        <span class="unit">kN</span>
+                    </div>
+                    <span class="hint">Design value (factored)</span>
+                </div>
+            </div>
+
+            <div class="section-title">Plate (governing for bearing)</div>
+            <div class="input-grid">
+                <div class="field">
+                    <label>Plate thickness <i>t</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="t" value="10" min="1" step="0.5">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">Thinnest plate in joint</span>
+                </div>
+                <div class="field">
+                    <label>Plate material</label>
+                    <select class="sel" id="plate-mat">
+                        <option value="235">S235 — f<sub>u</sub> = 360 MPa</option>
+                        <option value="275">S275 — f<sub>u</sub> = 430 MPa</option>
+                        <option value="355" selected>S355 — f<sub>u</sub> = 490 MPa</option>
+                        <option value="460">S460 — f<sub>u</sub> = 570 MPa</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Edge distance <i>e</i><sub>1</sub> (load dir.)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="e1" value="40" min="1" step="1">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">Min = 1.2 d₀</span>
+                </div>
+                <div class="field">
+                    <label>Edge distance <i>e</i><sub>2</sub> (perp.)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="e2" value="40" min="1" step="1">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">Min = 1.2 d₀</span>
+                </div>
+                <div class="field">
+                    <label>Bolt spacing <i>p</i><sub>1</sub> (load dir.)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="p1" value="60" min="1" step="1">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">Min = 2.2 d₀</span>
+                </div>
+                <div class="field">
+                    <label>Bolt spacing <i>p</i><sub>2</sub> (perp.)</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="p2" value="60" min="1" step="1">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">Min = 2.4 d₀</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="card">
+            <h2>Results</h2>
+
+            <div class="result-verdict na" id="verdict-box">
+                <div class="verdict-icon" id="verdict-icon">—</div>
+                <div>
+                    <div class="verdict-text" id="verdict-text">Enter values</div>
+                    <div class="verdict-sub" id="verdict-sub"></div>
+                </div>
+            </div>
+
+            <div class="gov-bar">
+                <div class="gov-block" id="shear-block">
+                    <div class="glbl">Shear resistance F<sub>v,Rd</sub> per bolt</div>
+                    <div class="gval" id="fvrd-val">—</div>
+                    <div class="gsub" id="fvrd-sub"></div>
+                </div>
+                <div class="gov-block" id="bearing-block">
+                    <div class="glbl">Bearing resistance F<sub>b,Rd</sub> per bolt</div>
+                    <div class="gval" id="fbrd-val">—</div>
+                    <div class="gsub" id="fbrd-sub"></div>
+                </div>
+            </div>
+
+            <div class="res-main">
+                <div class="res-cell">
+                    <div class="lbl">Governing F<sub>Rd</sub> per bolt</div>
+                    <div class="val orange" id="frd-bolt">—</div>
+                    <div class="sub" id="frd-bolt-sub"></div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Total resistance n × F<sub>Rd</sub></div>
+                    <div class="val orange" id="frd-total">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Applied V<sub>Ed</sub></div>
+                    <div class="val" id="ved-val">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Utilisation η</div>
+                    <div class="val" id="eta">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Reserve capacity</div>
+                    <div class="val" id="reserve">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Bolt area used</div>
+                    <div class="val" id="bolt-area">—</div>
+                </div>
+            </div>
+
+            <div class="util-bar-wrap">
+                <div class="util-bar" id="util-bar" style="width:0%"></div>
+            </div>
+
+            <div style="margin-top:0.75rem"></div>
+            <div class="warn-box err"  id="w-e1">Edge distance e₁ &lt; 1.2 d₀ — minimum not satisfied (EC3 Table 3.3).</div>
+            <div class="warn-box err"  id="w-e2">Edge distance e₂ &lt; 1.2 d₀ — minimum not satisfied.</div>
+            <div class="warn-box err"  id="w-p1">Spacing p₁ &lt; 2.2 d₀ — minimum not satisfied.</div>
+            <div class="warn-box err"  id="w-p2">Spacing p₂ &lt; 2.4 d₀ — minimum not satisfied.</div>
+            <div class="warn-box warn" id="w-high">Utilisation &gt; 80% — consider more or larger bolts.</div>
+            <div class="warn-box info" id="w-shear-gov">Shear governs — consider higher bolt grade to improve resistance.</div>
+            <div class="warn-box info" id="w-bear-gov">Bearing governs — consider increasing edge distance or plate thickness.</div>
+        </div>
+
+        <!-- Diagram -->
+        <div class="card">
+            <h2>Connection Diagram</h2>
+            <div class="diagram-wrap">
+                <svg id="diagram" width="540" height="200" viewBox="0 0 540 200"></svg>
+            </div>
+        </div>
+
+        <!-- Bolt data table -->
+        <div class="card">
+            <h2>Bolt Data Reference</h2>
+            <div style="overflow-x:auto">
+            <table class="bolt-tbl" id="bolt-table">
+                <thead>
+                    <tr>
+                        <th>Size</th>
+                        <th>d (mm)</th>
+                        <th>d₀ (mm)</th>
+                        <th>A shank (mm²)</th>
+                        <th>A<sub>s</sub> thread (mm²)</th>
+                        <th>Min e₁</th>
+                        <th>Min e₂</th>
+                        <th>Min p₁</th>
+                        <th>Min p₂</th>
+                    </tr>
+                </thead>
+                <tbody id="bolt-table-body"></tbody>
+            </table>
+            </div>
+        </div>
+
+        <!-- Method info -->
+        <div class="card">
+            <h2>Calculation Method — EC3 §3.6</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Shear resistance per bolt</h3>
+                    <p style="font-family:monospace;font-size:0.85rem;color:var(--light-gray)">F<sub>v,Rd</sub> = α<sub>v</sub> · f<sub>ub</sub> · A / γ<sub>M2</sub></p>
+                    <ul style="margin-top:0.5rem">
+                        <li>α<sub>v</sub> = 0.6 for grades 4.6, 5.6, 6.8, 8.8</li>
+                        <li>α<sub>v</sub> = 0.5 for grades 10.9, 12.9</li>
+                        <li>A = A<sub>s</sub> (thread) or A (shank) depending on shear plane location</li>
+                        <li>γ<sub>M2</sub> = 1.25</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Bearing resistance per bolt</h3>
+                    <p style="font-family:monospace;font-size:0.85rem;color:var(--light-gray)">F<sub>b,Rd</sub> = k₁ · α<sub>b</sub> · f<sub>u</sub> · d · t / γ<sub>M2</sub></p>
+                    <ul style="margin-top:0.5rem">
+                        <li>k₁ = min(2.8e₂/d₀ − 1.7, 1.4p₂/d₀ − 1.7, 2.5)</li>
+                        <li>α<sub>b</sub> = min(e₁/3d₀, p₁/3d₀ − ¼, f<sub>ub</sub>/f<sub>u</sub>, 1.0)</li>
+                        <li>f<sub>u</sub> = ultimate strength of plate material</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Spacing limits (EC3 Table 3.3)</h3>
+                    <ul>
+                        <li>e₁ ≥ 1.2 d₀ (min) / ≤ 4t + 40 mm (max)</li>
+                        <li>e₂ ≥ 1.2 d₀ (min) / ≤ 4t + 40 mm (max)</li>
+                        <li>p₁ ≥ 2.2 d₀ (min) / ≤ min(14t, 200 mm) (max)</li>
+                        <li>p₂ ≥ 2.4 d₀ (min) / ≤ min(14t, 200 mm) (max)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Connection resistance</h3>
+                    <p>Governing resistance per bolt:</p>
+                    <p style="font-family:monospace;font-size:0.85rem;color:var(--light-gray);margin-top:0.3rem">F<sub>Rd,bolt</sub> = min(F<sub>v,Rd</sub>, F<sub>b,Rd</sub>)</p>
+                    <p style="margin-top:0.4rem">Total connection resistance (assuming equal load distribution):</p>
+                    <p style="font-family:monospace;font-size:0.85rem;color:var(--light-gray);margin-top:0.3rem">F<sub>Rd</sub> = n · F<sub>Rd,bolt</sub></p>
+                    <p style="margin-top:0.4rem;font-size:0.79rem;color:var(--text-gray)">For long joints (&gt;15d) apply reduction factor β<sub>Lf</sub> per EC3 §3.8.</p>
+                </div>
+            </div>
+        </div>
+
+        <details class="card">
+            <summary>Preloaded (HSFG) bolts — when to use?</summary>
+            <div class="info-grid" style="margin-top:0">
+                <div class="info-block">
+                    <h3>Standard vs. preloaded</h3>
+                    <p>This calculator covers <strong>non-preloaded</strong> (ordinary) bolts in bearing-type connections. Use preloaded (HSFG) bolts when:</p>
+                    <ul style="margin-top:0.4rem">
+                        <li>Slip resistance is required (fatigue, vibration)</li>
+                        <li>Connections subject to load reversal</li>
+                        <li>Connections in Category B or C per EC3 §3.4</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Group effect — long joints</h3>
+                    <p>When the distance between the first and last bolt in a row exceeds 15d, the resistance must be reduced by factor:</p>
+                    <p style="font-family:monospace;font-size:0.85rem;color:var(--light-gray);margin-top:0.4rem">β<sub>Lf</sub> = 1 − (L<sub>j</sub> − 15d) / (200d)</p>
+                    <p style="margin-top:0.4rem">where β<sub>Lf</sub> ≥ 0.75</p>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top: 0.5rem;">
+            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script>
+    // Bolt data: size → [d, d0, A_shank, As_thread]
+    const BOLTS = {
+        8:  [8,  9,  50.3,  36.6],
+        10: [10, 11, 78.5,  58.0],
+        12: [12, 13, 113,   84.3],
+        14: [14, 15, 154,   115],
+        16: [16, 18, 201,   157],
+        20: [20, 22, 314,   245],
+        24: [24, 26, 452,   353],
+        27: [27, 30, 572,   459],
+        30: [30, 33, 707,   561],
+        36: [36, 39, 1018,  817],
+    };
+    // Grades: fub, αv
+    const GRADES = {
+        '4.6':  [400, 0.6],
+        '5.6':  [500, 0.6],
+        '6.8':  [600, 0.6],
+        '8.8':  [800, 0.6],
+        '10.9': [1000, 0.5],
+        '12.9': [1200, 0.5],
+    };
+    // Plate: fu
+    const PLATES = { '235': 360, '275': 430, '355': 490, '460': 570 };
+
+    const gM2 = 1.25;
+
+    function fmt1(v) { return v.toFixed(1); }
+    function fmt2(v) { return v.toFixed(2); }
+
+    function calculate() {
+        const bSize  = parseInt(document.getElementById('bolt-size').value);
+        const grade  = document.getElementById('bolt-grade').value;
+        const nPlanes = parseInt(document.getElementById('shear-planes').value);
+        const shearThrough = document.getElementById('shear-through').value;
+        const nBolts = parseInt(document.getElementById('n-bolts').value) || 1;
+        const VEd   = parseFloat(document.getElementById('force').value) || 0;
+        const t     = parseFloat(document.getElementById('t').value) || 0;
+        const matKey = document.getElementById('plate-mat').value;
+        const e1    = parseFloat(document.getElementById('e1').value) || 0;
+        const e2    = parseFloat(document.getElementById('e2').value) || 0;
+        const p1    = parseFloat(document.getElementById('p1').value) || 0;
+        const p2    = parseFloat(document.getElementById('p2').value) || 0;
+
+        const [d, d0, A_shank, As] = BOLTS[bSize];
+        const [fub, alphav] = GRADES[grade];
+        const fu = PLATES[matKey];
+        const A = shearThrough === 'thread' ? As : A_shank;
+
+        // Shear resistance per bolt (per shear plane × n planes)
+        const FvRd_plane = alphav * fub * A / gM2 / 1000; // kN
+        const FvRd = FvRd_plane * nPlanes;
+
+        // Bearing coefficients
+        const k1 = Math.min(2.8 * e2 / d0 - 1.7, 1.4 * p2 / d0 - 1.7, 2.5);
+        const alphab = Math.min(e1 / (3 * d0), p1 / (3 * d0) - 0.25, fub / fu, 1.0);
+        const FbRd = Math.max(0, k1 * alphab * fu * d * t / gM2 / 1000); // kN
+
+        const FRd_bolt = Math.min(FvRd, FbRd);
+        const FRd_total = FRd_bolt * nBolts;
+        const eta = FRd_total > 0 ? VEd / FRd_total : 0;
+        const etaPct = eta * 100;
+        const reserve = (1 - eta) * 100;
+
+        const shearGoverns = FvRd <= FbRd;
+
+        // Hide warnings
+        ['w-e1','w-e2','w-p1','w-p2','w-high','w-shear-gov','w-bear-gov'].forEach(id =>
+            document.getElementById(id).classList.remove('show'));
+
+        // Geometry checks
+        if (e1 < 1.2 * d0) document.getElementById('w-e1').classList.add('show');
+        if (e2 < 1.2 * d0) document.getElementById('w-e2').classList.add('show');
+        if (p1 < 2.2 * d0 && nBolts > 1) document.getElementById('w-p1').classList.add('show');
+        if (p2 < 2.4 * d0 && nBolts > 1) document.getElementById('w-p2').classList.add('show');
+        if (etaPct > 80 && etaPct <= 100) document.getElementById('w-high').classList.add('show');
+        if (shearGoverns) document.getElementById('w-shear-gov').classList.add('show');
+        else              document.getElementById('w-bear-gov').classList.add('show');
+
+        // Update governing blocks
+        const sb = document.getElementById('shear-block');
+        const bb = document.getElementById('bearing-block');
+        sb.className = 'gov-block' + (shearGoverns ? ' governing' : '');
+        bb.className = 'gov-block' + (!shearGoverns ? ' governing' : '');
+        document.getElementById('fvrd-val').textContent = fmt2(FvRd) + ' kN' + (shearGoverns ? ' ◀ governs' : '');
+        document.getElementById('fvrd-sub').textContent = `αv=${alphav}, A=${A.toFixed(0)} mm², ${nPlanes} plane(s)`;
+        document.getElementById('fbrd-val').textContent = fmt2(FbRd) + ' kN' + (!shearGoverns ? ' ◀ governs' : '');
+        document.getElementById('fbrd-sub').textContent = `k₁=${fmt2(k1)}, αb=${fmt2(alphab)}`;
+
+        // Update result cells
+        document.getElementById('frd-bolt').textContent = fmt2(FRd_bolt) + ' kN';
+        document.getElementById('frd-bolt-sub').textContent = shearGoverns ? 'Shear governs' : 'Bearing governs';
+        document.getElementById('frd-total').textContent = fmt2(FRd_total) + ' kN';
+        document.getElementById('ved-val').textContent = fmt2(VEd) + ' kN';
+        document.getElementById('bolt-area').textContent = `${A.toFixed(0)} mm² (${shearThrough === 'thread' ? 'As' : 'shank'})`;
+
+        const etaEl = document.getElementById('eta');
+        etaEl.textContent = fmt1(etaPct) + ' %';
+        etaEl.className = 'val ' + (etaPct > 100 ? 'red' : etaPct > 80 ? 'yellow' : 'green');
+
+        const resEl = document.getElementById('reserve');
+        resEl.textContent = reserve >= 0 ? fmt1(reserve) + ' %' : '—';
+        resEl.className = 'val ' + (reserve < 0 ? 'red' : reserve < 20 ? 'yellow' : 'green');
+
+        // Bar
+        const barW = Math.min(etaPct, 100);
+        const barColor = etaPct > 100 ? '#f87171' : etaPct > 80 ? '#f59e0b' : '#4ade80';
+        document.getElementById('util-bar').style.width = barW + '%';
+        document.getElementById('util-bar').style.background = barColor;
+
+        // Verdict
+        const verdict = document.getElementById('verdict-box');
+        const vIcon = document.getElementById('verdict-icon');
+        const vText = document.getElementById('verdict-text');
+        const vSub  = document.getElementById('verdict-sub');
+
+        if (VEd === 0) {
+            verdict.className = 'result-verdict na';
+            vIcon.textContent = '—'; vText.textContent = 'Enter values'; vSub.textContent = '';
+        } else if (eta <= 1.0) {
+            verdict.className = 'result-verdict pass';
+            vIcon.textContent = '✅';
+            vText.textContent = 'VYHOVUJE — PASS';
+            vSub.textContent = `η = ${fmt1(etaPct)} % ≤ 100 %  |  ${nBolts}× M${bSize} ${grade}  |  governs: ${shearGoverns ? 'shear' : 'bearing'}`;
+        } else {
+            verdict.className = 'result-verdict fail';
+            vIcon.textContent = '❌';
+            vText.textContent = 'NEVYHOVUJE — FAIL';
+            vSub.textContent = `η = ${fmt1(etaPct)} % > 100 %  |  F,Rd = ${fmt2(FRd_total)} kN < V,Ed = ${fmt2(VEd)} kN`;
+        }
+
+        drawDiagram(bSize, nBolts, nPlanes, eta, shearGoverns);
+        updateBoltTable(bSize, d0);
+    }
+
+    // --- Bolt table ---
+    function updateBoltTable(activeSize, d0_active) {
+        const tbody = document.getElementById('bolt-table-body');
+        tbody.innerHTML = Object.entries(BOLTS).map(([s, [d, d0, A, As]]) => {
+            const active = parseInt(s) === activeSize ? ' class="active-row"' : '';
+            return `<tr${active}>
+                <td>M${s}</td>
+                <td>${d}</td>
+                <td>${d0}</td>
+                <td>${A}</td>
+                <td>${As}</td>
+                <td>${(1.2*d0).toFixed(1)}</td>
+                <td>${(1.2*d0).toFixed(1)}</td>
+                <td>${(2.2*d0).toFixed(1)}</td>
+                <td>${(2.4*d0).toFixed(1)}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    // --- SVG Diagram ---
+    function drawDiagram(boltSize, nBolts, nPlanes, eta, shearGoverns) {
+        const svg = document.getElementById('diagram');
+        svg.innerHTML = '';
+        const ns = 'http://www.w3.org/2000/svg';
+        const orange = '#f97316', gray = '#9ca3af', light = '#e5e7eb', blue = '#60a5fa';
+        const boltColor = eta > 1 ? '#f87171' : eta > 0.8 ? '#f59e0b' : orange;
+
+        function rect(x,y,w,h,col,fill,rx) {
+            const el = document.createElementNS(ns,'rect');
+            el.setAttribute('x',x); el.setAttribute('y',y); el.setAttribute('width',w); el.setAttribute('height',h);
+            el.setAttribute('stroke',col||gray); el.setAttribute('fill',fill||'none'); el.setAttribute('stroke-width',1.8);
+            if (rx) el.setAttribute('rx',rx);
+            svg.appendChild(el); return el;
+        }
+        function circ(cx,cy,r,col,fill) {
+            const el = document.createElementNS(ns,'circle');
+            el.setAttribute('cx',cx); el.setAttribute('cy',cy); el.setAttribute('r',r);
+            el.setAttribute('stroke',col||boltColor); el.setAttribute('fill',fill||'#1a1a1a');
+            el.setAttribute('stroke-width',2); svg.appendChild(el);
+        }
+        function line(x1,y1,x2,y2,col,w) {
+            const el = document.createElementNS(ns,'line');
+            el.setAttribute('x1',x1); el.setAttribute('y1',y1); el.setAttribute('x2',x2); el.setAttribute('y2',y2);
+            el.setAttribute('stroke',col||gray); el.setAttribute('stroke-width',w||1.8); svg.appendChild(el);
+        }
+        function arrow(x1,y1,x2,y2,col) {
+            line(x1,y1,x2,y2,col,2.5);
+            const ang = Math.atan2(y2-y1,x2-x1);
+            const s = 10;
+            const poly = document.createElementNS(ns,'polygon');
+            poly.setAttribute('points',`${x2},${y2} ${x2-s*Math.cos(ang-0.4)},${y2-s*Math.sin(ang-0.4)} ${x2-s*Math.cos(ang+0.4)},${y2-s*Math.sin(ang+0.4)}`);
+            poly.setAttribute('fill',col); svg.appendChild(poly);
+        }
+        function txt(x,y,t,col,size,anchor) {
+            const el = document.createElementNS(ns,'text');
+            el.setAttribute('x',x); el.setAttribute('y',y); el.setAttribute('fill',col||light);
+            el.setAttribute('font-size',size||11); el.setAttribute('text-anchor',anchor||'middle');
+            el.setAttribute('dominant-baseline','middle'); el.textContent=t; svg.appendChild(el);
+        }
+
+        const W = 540, H = 200, cy = H / 2;
+        const showN = Math.min(nBolts, 5);
+        const spacing = 50;
+        const totalW = (showN - 1) * spacing;
+        const startX = W/2 - totalW/2;
+
+        // Top plate
+        rect(60, cy - 50, W - 120, 40, gray, '#1e1e1e', 3);
+        txt(W/2, cy - 30, 'PLATE 1', gray, 10);
+
+        // Bottom plate (lap)
+        rect(60 + (nPlanes === 2 ? 0 : 40), cy + 10, W - 120 - (nPlanes === 2 ? 0 : 40), 40, gray, '#252525', 3);
+        txt(W/2, cy + 30, nPlanes === 2 ? 'PLATE 2' : 'PLATE 2 (lap joint)', gray, 10);
+
+        // Bolts
+        for (let i = 0; i < showN; i++) {
+            const bx = startX + i * spacing;
+            circ(bx, cy - 10, 8, boltColor, '#1a1a1a');
+            circ(bx, cy - 10, 3, boltColor, boltColor);
+        }
+        if (nBolts > showN) {
+            txt(startX + showN * spacing + 10, cy - 10, `+${nBolts - showN}`, gray, 10, 'start');
+        }
+
+        // Force arrows
+        arrow(20, cy - 30, 65, cy - 30, blue);
+        txt(42, cy - 44, 'VEd', blue, 10);
+        if (nPlanes === 1) {
+            arrow(W - 20, cy + 30, W - 65, cy + 30, blue);
+        } else {
+            arrow(W - 20, cy - 30, W - 65, cy - 30, blue);
+            arrow(W - 20, cy + 30, W - 65, cy + 30, blue);
+        }
+
+        // Governs label
+        const govText = shearGoverns ? 'Shear governs (Fv,Rd)' : 'Bearing governs (Fb,Rd)';
+        txt(W/2, H - 12, govText, eta > 1 ? '#f87171' : orange, 10);
+    }
+
+    // All inputs trigger calculate
+    ['bolt-size','bolt-grade','shear-planes','shear-through','n-bolts','force','t','plate-mat','e1','e2','p1','p2']
+        .forEach(id => document.getElementById(id).addEventListener('input', calculate));
+
+    calculate();
+    </script>
+    <script src="../../js/nav.js"></script>
+</body>
+</html>

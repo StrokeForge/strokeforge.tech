@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Beam Deflection Calculator | StrokeForge Engineering</title>
+    <meta name="description" content="Simply supported beam deflection calculator. Reactions, shear force, bending moment and deflection diagrams for UDL and point loads.">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-009/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        body { max-width: 1000px; margin: 0 auto; padding: 0 1rem 3rem; }
+
+        .navbar { background: rgba(0,0,0,0.5); padding: 1rem 2rem; border-bottom: 1px solid var(--border-gray); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); margin: 0 -1rem; }
+        .navbar-content { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { font-size: 1.4rem; font-weight: 700; color: var(--primary-orange); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--light-gray); text-decoration: none; font-size: 0.95rem; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-orange); }
+
+        .page-header { text-align: center; padding: 1.5rem 0 1rem; border-bottom: 1px solid var(--border-gray); margin-bottom: 1.5rem; }
+        .page-header h1 { font-size: 1.7rem; color: var(--primary-orange); margin: 0 0 0.4rem; }
+        .page-header p { color: var(--text-gray); margin: 0; font-size: 0.95rem; }
+        .back-button { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--primary-orange); text-decoration: none; font-size: 0.9rem; margin: 1rem 0; }
+        .back-button:hover { text-decoration: underline; }
+
+        /* Layout */
+        .calc-layout { display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; align-items: start; }
+
+        /* Inputs */
+        .inputs-panel { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 10px; padding: 1.2rem; }
+        .inputs-panel h2 { font-size: 1rem; color: var(--primary-orange); margin: 0 0 1rem; }
+        .input-group { margin-bottom: 1rem; }
+        .input-group label { display: block; font-size: 0.82rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .input-group input, .input-group select {
+            width: 100%; padding: 0.45rem 0.7rem; background: var(--darker-bg);
+            border: 1px solid var(--border-gray); border-radius: 6px; color: var(--light-gray);
+            font-size: 0.9rem; box-sizing: border-box; transition: border-color 0.2s;
+        }
+        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--primary-orange); }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        .section-label { font-size: 0.78rem; color: var(--primary-orange); text-transform: uppercase; letter-spacing: 0.05em; margin: 1.2rem 0 0.5rem; font-weight: 600; border-bottom: 1px solid var(--border-gray); padding-bottom: 0.3rem; }
+        .calc-btn { width: 100%; padding: 0.7rem; background: var(--primary-orange); color: #111; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 0.5rem; transition: opacity 0.2s; }
+        .calc-btn:hover { opacity: 0.88; }
+
+        /* Position slider */
+        .pos-group { display: none; }
+        .pos-group.visible { display: block; }
+        input[type="range"] { width: 100%; accent-color: var(--primary-orange); }
+
+        /* Results */
+        .results-panel { display: flex; flex-direction: column; gap: 1.2rem; }
+
+        .result-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+        .result-card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 8px; padding: 0.9rem 1rem; }
+        .result-card .rc-label { font-size: 0.78rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .result-card .rc-value { font-size: 1.3rem; font-weight: 700; color: var(--light-gray); }
+        .result-card .rc-unit { font-size: 0.8rem; color: var(--text-gray); margin-left: 0.2rem; }
+        .result-card.highlight { border-color: var(--primary-orange); }
+        .result-card.highlight .rc-value { color: var(--primary-orange); }
+
+        /* Service check */
+        .service-check { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 8px; padding: 0.9rem 1rem; }
+        .service-check h3 { font-size: 0.9rem; color: var(--primary-orange); margin: 0 0 0.6rem; }
+        .svc-row { display: flex; justify-content: space-between; align-items: center; padding: 0.3rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
+        .svc-row:last-child { border-bottom: none; }
+        .svc-limit { color: var(--text-gray); }
+        .svc-result { font-weight: 600; }
+        .ok   { color: #4ade80; }
+        .warn { color: #facc15; }
+        .fail { color: #f87171; }
+
+        /* Diagrams */
+        .diagrams { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 10px; padding: 1rem; }
+        .diagrams h3 { font-size: 0.9rem; color: var(--primary-orange); margin: 0 0 0.8rem; }
+        .diagram-svg { width: 100%; display: block; }
+        .diag-sep { margin: 0.5rem 0; border: none; border-top: 1px solid var(--border-gray); }
+
+        /* Formula box */
+        .formula-box { background: var(--darker-bg); border: 1px solid var(--border-gray); border-radius: 8px; padding: 0.9rem 1rem; font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
+        .formula-box strong { color: var(--light-gray); }
+
+        .placeholder { text-align: center; padding: 3rem; color: var(--text-gray); font-size: 0.9rem; }
+
+        @media (max-width: 750px) {
+            .calc-layout { grid-template-columns: 1fr; }
+            .result-cards { grid-template-columns: 1fr 1fr; }
+        }
+
+        .footer { text-align: center; padding: 2rem; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid var(--border-gray); margin: 2rem -1rem 0; }
+        .footer a { color: var(--primary-orange); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <a href="/engineering.html" class="back-button">← Engineering Tools</a>
+
+    <div class="page-header">
+        <h1>📐 Simple Beam Deflection</h1>
+        <p>Simply supported beam — reactions, shear, bending moment and deflection</p>
+    </div>
+
+    <div class="calc-layout">
+        <!-- Inputs -->
+        <div class="inputs-panel">
+            <h2>Input Parameters</h2>
+
+            <div class="section-label">Geometry</div>
+            <div class="input-group">
+                <label>Span L (m)</label>
+                <input type="number" id="span" value="5" min="0.1" step="0.1">
+            </div>
+
+            <div class="section-label">Load</div>
+            <div class="input-group">
+                <label>Load type</label>
+                <select id="load-type" onchange="onLoadTypeChange()">
+                    <option value="udl">Uniform load q (kN/m)</option>
+                    <option value="center">Point load at midspan (kN)</option>
+                    <option value="point">Point load at position a (kN)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label id="load-label">Uniform load q (kN/m)</label>
+                <input type="number" id="load-val" value="10" min="0" step="0.5">
+            </div>
+            <div class="input-group pos-group" id="pos-group">
+                <label>Load position a from left: <strong id="pos-display">2.50 m</strong></label>
+                <input type="range" id="load-pos" min="0.05" max="0.95" step="0.05" value="0.5" oninput="onPosChange()">
+            </div>
+
+            <div class="section-label">Cross-Section</div>
+            <div class="input-group">
+                <label>Section type</label>
+                <select id="section-type" onchange="onSectionChange()">
+                    <option value="rect">Rectangle b × h</option>
+                    <option value="circle">Circle ∅ d</option>
+                    <option value="ipe">IPE profile</option>
+                    <option value="hea">HEA profile</option>
+                    <option value="heb">HEB profile</option>
+                    <option value="custom">Custom I_x (cm⁴)</option>
+                </select>
+            </div>
+
+            <!-- Rectangle -->
+            <div id="sec-rect">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Width b (mm)</label>
+                        <input type="number" id="rect-b" value="100" min="1">
+                    </div>
+                    <div class="input-group">
+                        <label>Height h (mm)</label>
+                        <input type="number" id="rect-h" value="200" min="1">
+                    </div>
+                </div>
+            </div>
+            <!-- Circle -->
+            <div id="sec-circle" style="display:none">
+                <div class="input-group">
+                    <label>Diameter d (mm)</label>
+                    <input type="number" id="circ-d" value="100" min="1">
+                </div>
+            </div>
+            <!-- IPE -->
+            <div id="sec-ipe" style="display:none">
+                <div class="input-group">
+                    <label>IPE size</label>
+                    <select id="ipe-select"></select>
+                </div>
+            </div>
+            <!-- HEA -->
+            <div id="sec-hea" style="display:none">
+                <div class="input-group">
+                    <label>HEA size</label>
+                    <select id="hea-select"></select>
+                </div>
+            </div>
+            <!-- HEB -->
+            <div id="sec-heb" style="display:none">
+                <div class="input-group">
+                    <label>HEB size</label>
+                    <select id="heb-select"></select>
+                </div>
+            </div>
+            <!-- Custom -->
+            <div id="sec-custom" style="display:none">
+                <div class="input-group">
+                    <label>I_x (cm⁴)</label>
+                    <input type="number" id="custom-ix" value="1000" min="0.01" step="1">
+                </div>
+            </div>
+
+            <div class="section-label">Material</div>
+            <div class="input-group">
+                <label>Material (E modulus)</label>
+                <select id="material" onchange="onMaterialChange()">
+                    <option value="210">Steel — E = 210 GPa</option>
+                    <option value="70">Aluminum — E = 70 GPa</option>
+                    <option value="30">Concrete — E = 30 GPa</option>
+                    <option value="11">Timber (C24) — E = 11 GPa</option>
+                    <option value="custom">Custom E (GPa)</option>
+                </select>
+            </div>
+            <div id="custom-e-group" style="display:none">
+                <div class="input-group">
+                    <label>E (GPa)</label>
+                    <input type="number" id="custom-e" value="200" min="0.1" step="1">
+                </div>
+            </div>
+
+            <button class="calc-btn" onclick="calculate()">Calculate</button>
+        </div>
+
+        <!-- Results -->
+        <div class="results-panel" id="results-panel">
+            <div class="placeholder">Enter parameters and press <strong>Calculate</strong></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top: 0.5rem;">
+            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // --- Profile data ---
+    const IPE = [
+        {n:'IPE 80',  Ix:80.1,  Wx:20.0, h:80},
+        {n:'IPE 100', Ix:171,   Wx:34.2, h:100},
+        {n:'IPE 120', Ix:318,   Wx:53.0, h:120},
+        {n:'IPE 140', Ix:541,   Wx:77.3, h:140},
+        {n:'IPE 160', Ix:869,   Wx:109,  h:160},
+        {n:'IPE 180', Ix:1317,  Wx:146,  h:180},
+        {n:'IPE 200', Ix:1943,  Wx:194,  h:200},
+        {n:'IPE 220', Ix:2772,  Wx:252,  h:220},
+        {n:'IPE 240', Ix:3892,  Wx:324,  h:240},
+        {n:'IPE 270', Ix:5790,  Wx:429,  h:270},
+        {n:'IPE 300', Ix:8356,  Wx:557,  h:300},
+        {n:'IPE 330', Ix:11770, Wx:713,  h:330},
+        {n:'IPE 360', Ix:16270, Wx:904,  h:360},
+        {n:'IPE 400', Ix:23130, Wx:1156, h:400},
+        {n:'IPE 450', Ix:33740, Wx:1500, h:450},
+        {n:'IPE 500', Ix:48200, Wx:1928, h:500},
+        {n:'IPE 550', Ix:67120, Wx:2441, h:550},
+        {n:'IPE 600', Ix:92080, Wx:3069, h:600},
+    ];
+    const HEA = [
+        {n:'HEA 100', Ix:349,   Wx:72.8,  h:96},
+        {n:'HEA 120', Ix:606,   Wx:109,   h:114},
+        {n:'HEA 140', Ix:1033,  Wx:155,   h:133},
+        {n:'HEA 160', Ix:1673,  Wx:220,   h:152},
+        {n:'HEA 180', Ix:2510,  Wx:294,   h:171},
+        {n:'HEA 200', Ix:3692,  Wx:389,   h:190},
+        {n:'HEA 220', Ix:5410,  Wx:515,   h:210},
+        {n:'HEA 240', Ix:7763,  Wx:675,   h:230},
+        {n:'HEA 260', Ix:10450, Wx:868,   h:250},
+        {n:'HEA 280', Ix:13670, Wx:1050,  h:270},
+        {n:'HEA 300', Ix:18260, Wx:1383,  h:290},
+        {n:'HEA 320', Ix:22930, Wx:1479,  h:310},
+        {n:'HEA 340', Ix:27690, Wx:1678,  h:330},
+        {n:'HEA 360', Ix:33090, Wx:1891,  h:350},
+        {n:'HEA 400', Ix:45070, Wx:2311,  h:390},
+        {n:'HEA 450', Ix:63720, Wx:2896,  h:440},
+        {n:'HEA 500', Ix:86970, Wx:3550,  h:490},
+    ];
+    const HEB = [
+        {n:'HEB 100', Ix:450,   Wx:89.9,  h:100},
+        {n:'HEB 120', Ix:864,   Wx:144,   h:120},
+        {n:'HEB 140', Ix:1509,  Wx:216,   h:140},
+        {n:'HEB 160', Ix:2492,  Wx:311,   h:160},
+        {n:'HEB 180', Ix:3831,  Wx:426,   h:180},
+        {n:'HEB 200', Ix:5696,  Wx:570,   h:200},
+        {n:'HEB 220', Ix:8091,  Wx:736,   h:220},
+        {n:'HEB 240', Ix:11260, Wx:938,   h:240},
+        {n:'HEB 260', Ix:14920, Wx:1148,  h:260},
+        {n:'HEB 280', Ix:19270, Wx:1376,  h:280},
+        {n:'HEB 300', Ix:25170, Wx:1678,  h:300},
+        {n:'HEB 320', Ix:30820, Wx:1926,  h:320},
+        {n:'HEB 340', Ix:36660, Wx:2156,  h:340},
+        {n:'HEB 360', Ix:43190, Wx:2400,  h:360},
+        {n:'HEB 400', Ix:57680, Wx:2884,  h:400},
+        {n:'HEB 450', Ix:79890, Wx:3551,  h:450},
+        {n:'HEB 500', Ix:107200,Wx:4287,  h:500},
+    ];
+
+    // Populate selects
+    function populateSelect(id, data) {
+        const sel = document.getElementById(id);
+        data.forEach((p,i) => {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = `${p.n}  (I=${p.Ix} cm⁴)`;
+            if (p.n.includes('200') || p.n.includes('IPE 200')) opt.selected = true;
+            sel.appendChild(opt);
+        });
+    }
+    populateSelect('ipe-select', IPE);
+    populateSelect('hea-select', HEA);
+    populateSelect('heb-select', HEB);
+
+    function onLoadTypeChange() {
+        const t = document.getElementById('load-type').value;
+        const lbl = document.getElementById('load-label');
+        const posGrp = document.getElementById('pos-group');
+        if (t === 'udl') { lbl.textContent = 'Uniform load q (kN/m)'; posGrp.classList.remove('visible'); }
+        else if (t === 'center') { lbl.textContent = 'Point load P (kN)'; posGrp.classList.remove('visible'); }
+        else { lbl.textContent = 'Point load P (kN)'; posGrp.classList.add('visible'); }
+    }
+
+    function onPosChange() {
+        const L = parseFloat(document.getElementById('span').value) || 5;
+        const rel = parseFloat(document.getElementById('load-pos').value);
+        document.getElementById('pos-display').textContent = (rel * L).toFixed(2) + ' m';
+    }
+
+    function onSectionChange() {
+        const t = document.getElementById('section-type').value;
+        ['rect','circle','ipe','hea','heb','custom'].forEach(s => {
+            document.getElementById('sec-'+s).style.display = (s===t) ? 'block' : 'none';
+        });
+    }
+
+    function onMaterialChange() {
+        const v = document.getElementById('material').value;
+        document.getElementById('custom-e-group').style.display = (v === 'custom') ? 'block' : 'none';
+    }
+
+    function getIx_mm4() {
+        const t = document.getElementById('section-type').value;
+        if (t === 'rect') {
+            const b = parseFloat(document.getElementById('rect-b').value);
+            const h = parseFloat(document.getElementById('rect-h').value);
+            return b * Math.pow(h, 3) / 12;
+        } else if (t === 'circle') {
+            const d = parseFloat(document.getElementById('circ-d').value);
+            return Math.PI * Math.pow(d, 4) / 64;
+        } else if (t === 'ipe') {
+            return IPE[+document.getElementById('ipe-select').value].Ix * 1e4;
+        } else if (t === 'hea') {
+            return HEA[+document.getElementById('hea-select').value].Ix * 1e4;
+        } else if (t === 'heb') {
+            return HEB[+document.getElementById('heb-select').value].Ix * 1e4;
+        } else {
+            return parseFloat(document.getElementById('custom-ix').value) * 1e4;
+        }
+    }
+
+    function getSectionLabel() {
+        const t = document.getElementById('section-type').value;
+        if (t === 'rect') {
+            const b = document.getElementById('rect-b').value;
+            const h = document.getElementById('rect-h').value;
+            return `Rectangle ${b}×${h} mm`;
+        } else if (t === 'circle') {
+            return `Circle ∅${document.getElementById('circ-d').value} mm`;
+        } else if (t === 'ipe') {
+            return IPE[+document.getElementById('ipe-select').value].n;
+        } else if (t === 'hea') {
+            return HEA[+document.getElementById('hea-select').value].n;
+        } else if (t === 'heb') {
+            return HEB[+document.getElementById('heb-select').value].n;
+        } else {
+            return `Custom I_x = ${document.getElementById('custom-ix').value} cm⁴`;
+        }
+    }
+
+    function getE_Pa() {
+        const v = document.getElementById('material').value;
+        const GPa = (v === 'custom') ? parseFloat(document.getElementById('custom-e').value) : parseFloat(v);
+        return GPa * 1e9;
+    }
+
+    // --- Main calculation ---
+    function calculate() {
+        const L = parseFloat(document.getElementById('span').value);
+        const loadVal = parseFloat(document.getElementById('load-val').value);
+        const loadType = document.getElementById('load-type').value;
+        const relPos = parseFloat(document.getElementById('load-pos').value);
+        const Ix_mm4 = getIx_mm4();
+        const E_Pa = getE_Pa();
+
+        if (!L || !loadVal || !Ix_mm4 || !E_Pa) return;
+
+        // Convert: E in N/mm², I in mm⁴, L in mm, load in N or N/mm
+        const Lmm = L * 1000;
+        const E = E_Pa / 1e6;  // N/mm²
+        const I = Ix_mm4;       // mm⁴
+        const EI = E * I;       // N·mm²
+
+        let RA, RB, Mmax, Mpos, dmax, dpos, Vmax;
+        let loadDesc, formulaHTML;
+        let a = 0, b_dist = 0;
+
+        if (loadType === 'udl') {
+            const q = loadVal;   // kN/m = N/mm
+            const qNmm = q;      // N/mm (1 kN/m = 1 N/mm)
+            RA = qNmm * Lmm / 2 / 1000;   // kN
+            RB = RA;
+            Mmax = qNmm * Lmm * Lmm / 8 / 1e6;  // kNm
+            Mpos = Lmm / 2;
+            dmax = 5 * qNmm * Math.pow(Lmm, 4) / (384 * EI);  // mm
+            dpos = Lmm / 2;
+            Vmax = RA;  // kN
+            loadDesc = `q = ${loadVal} kN/m, UDL`;
+            formulaHTML = `
+                <strong>UDL formulas:</strong><br>
+                R<sub>A</sub> = R<sub>B</sub> = qL/2<br>
+                M<sub>max</sub> = qL²/8 <em>(at midspan)</em><br>
+                δ<sub>max</sub> = 5qL⁴ / (384EI) <em>(at midspan)</em>
+            `;
+        } else if (loadType === 'center') {
+            const P = loadVal * 1000;  // N
+            RA = P / 2 / 1000;  // kN
+            RB = RA;
+            Mmax = P * Lmm / 4 / 1e6;  // kNm
+            Mpos = Lmm / 2;
+            dmax = P * Math.pow(Lmm, 3) / (48 * EI);  // mm
+            dpos = Lmm / 2;
+            Vmax = RA;
+            loadDesc = `P = ${loadVal} kN, at midspan`;
+            formulaHTML = `
+                <strong>Point load at midspan:</strong><br>
+                R<sub>A</sub> = R<sub>B</sub> = P/2<br>
+                M<sub>max</sub> = PL/4 <em>(at midspan)</em><br>
+                δ<sub>max</sub> = PL³ / (48EI) <em>(at midspan)</em>
+            `;
+        } else {
+            // Point load at position a
+            a = relPos * Lmm;
+            b_dist = Lmm - a;
+            const P = loadVal * 1000;  // N
+            RA = P * b_dist / Lmm / 1000;  // kN
+            RB = P * a / Lmm / 1000;        // kN
+            Mmax = P * a * b_dist / Lmm / 1e6;  // kNm (at load point)
+            Mpos = a;
+            // Max deflection position (from A, for a >= b use x = sqrt((L²-b²)/3))
+            const bL = b_dist;
+            if (a >= bL) {
+                const xmax = Math.sqrt((Lmm*Lmm - bL*bL) / 3);
+                dmax = P * bL * (Lmm*Lmm - bL*bL) * Math.pow(Lmm*Lmm - bL*bL, 0.5) / (9 * Math.sqrt(3) * EI * Lmm);
+                dpos = xmax;
+            } else {
+                const xmax = Math.sqrt((Lmm*Lmm - a*a) / 3);
+                dmax = P * a * (Lmm*Lmm - a*a) * Math.pow(Lmm*Lmm - a*a, 0.5) / (9 * Math.sqrt(3) * EI * Lmm);
+                dpos = xmax;
+            }
+            Vmax = Math.max(RA, RB);
+            loadDesc = `P = ${loadVal} kN, a = ${(a/1000).toFixed(2)} m from A`;
+            formulaHTML = `
+                <strong>Point load at position a:</strong><br>
+                R<sub>A</sub> = Pb/L, R<sub>B</sub> = Pa/L <em>(b = L−a)</em><br>
+                M<sub>load</sub> = Pab/L <em>(at load point)</em><br>
+                δ<sub>max</sub> = Pb(L²−b²)<sup>3/2</sup> / (9√3·EI·L)
+            `;
+        }
+
+        const dL_ratio = dmax / Lmm;  // dimensionless
+        const Ix_cm4 = I / 1e4;
+        const E_GPa = E / 1000;
+
+        // --- Render results ---
+        const panel = document.getElementById('results-panel');
+        panel.innerHTML = `
+            <div class="result-cards">
+                <div class="result-card">
+                    <div class="rc-label">Reaction R<sub>A</sub></div>
+                    <div class="rc-value">${RA.toFixed(2)}<span class="rc-unit">kN</span></div>
+                </div>
+                <div class="result-card">
+                    <div class="rc-label">Reaction R<sub>B</sub></div>
+                    <div class="rc-value">${RB.toFixed(2)}<span class="rc-unit">kN</span></div>
+                </div>
+                <div class="result-card">
+                    <div class="rc-label">Max shear force V<sub>max</sub></div>
+                    <div class="rc-value">${Vmax.toFixed(2)}<span class="rc-unit">kN</span></div>
+                </div>
+                <div class="result-card">
+                    <div class="rc-label">Max bending moment M<sub>max</sub></div>
+                    <div class="rc-value">${Mmax.toFixed(2)}<span class="rc-unit">kNm</span></div>
+                </div>
+                <div class="result-card highlight">
+                    <div class="rc-label">Max deflection δ<sub>max</sub></div>
+                    <div class="rc-value">${dmax.toFixed(2)}<span class="rc-unit">mm</span></div>
+                </div>
+                <div class="result-card highlight">
+                    <div class="rc-label">δ<sub>max</sub> position from A</div>
+                    <div class="rc-value">${(dpos/1000).toFixed(2)}<span class="rc-unit">m</span></div>
+                </div>
+            </div>
+
+            <div class="service-check">
+                <h3>Serviceability checks (δ<sub>max</sub> = ${dmax.toFixed(2)} mm, L/${Math.round(1/dL_ratio)})</h3>
+                ${svcRow('L/250 — general structures', L*1000/250, dmax)}
+                ${svcRow('L/300 — floors & roofs', L*1000/300, dmax)}
+                ${svcRow('L/360 — plaster / brittle finishes', L*1000/360, dmax)}
+                ${svcRow('L/400 — sensitive structures', L*1000/400, dmax)}
+                ${svcRow('L/500 — high-precision', L*1000/500, dmax)}
+            </div>
+
+            <div class="diagrams">
+                <h3>Diagrams — ${loadDesc} | ${getSectionLabel()} | E = ${E_GPa.toFixed(0)} GPa</h3>
+                ${drawDiagrams(loadType, L, loadVal, a/1000, dmax, RA, RB, Mmax, Mpos/1000)}
+            </div>
+
+            <div class="formula-box">
+                ${formulaHTML}
+                <br><strong>Parameters:</strong>
+                L = ${L} m, I<sub>x</sub> = ${Ix_cm4.toFixed(1)} cm⁴, E = ${E_GPa.toFixed(0)} GPa,
+                EI = ${(EI/1e12).toFixed(3)} × 10¹² N·mm²
+            </div>
+        `;
+    }
+
+    function svcRow(label, limit, dmax) {
+        const ok = dmax <= limit;
+        const warn = dmax <= limit * 1.2;
+        const cls = ok ? 'ok' : (warn ? 'warn' : 'fail');
+        const icon = ok ? '✓' : (warn ? '~' : '✗');
+        return `<div class="svc-row">
+            <span class="svc-limit">${label} ≤ ${limit.toFixed(1)} mm</span>
+            <span class="svc-result ${cls}">${icon} ${ok ? 'OK' : 'FAIL'}</span>
+        </div>`;
+    }
+
+    // --- SVG Diagrams ---
+    function drawDiagrams(type, L, loadVal, a, dmax, RA, RB, Mmax, Mpos) {
+        const W = 560, pad = 50;
+        const beamY = 60, beamLen = W - 2*pad;
+        const nPts = 200;
+
+        // Data arrays
+        const V = [], M = [], D = [];
+        for (let i = 0; i <= nPts; i++) {
+            const x = i / nPts;  // 0..1
+            const xmm = x * L * 1000;
+            const amm = a * 1000;
+            let v, m, d;
+            const EI_Nmm2 = getE_Pa()/1e6 * getIx_mm4();
+            const Lmm = L * 1000;
+
+            if (type === 'udl') {
+                const q = loadVal;
+                v = q * L / 2 - q * x * L;
+                m = q * L * x * L / 2 - q * (x*L)*(x*L) / 2;
+                d = loadVal * xmm * (Math.pow(Lmm,3) - 2*Lmm*xmm*xmm + Math.pow(xmm,3)) / (24 * EI_Nmm2);
+            } else if (type === 'center') {
+                const P = loadVal * 1000;
+                v = (x < 0.5) ? P/2/1000 : -P/2/1000;
+                m = (x <= 0.5) ? loadVal * x * L / 2 : loadVal * (1-x) * L / 2;
+                const xc = xmm, Lc = Lmm;
+                if (xmm <= Lmm/2) d = P*xc*(3*Lc*Lc - 4*xc*xc)/(48*EI_Nmm2);
+                else { const xs = Lc-xc; d = P*xs*(3*Lc*Lc-4*xs*xs)/(48*EI_Nmm2); }
+            } else {
+                // point load at a
+                const P = loadVal * 1000;
+                const bm = Lmm - amm;
+                v = (xmm < amm) ? P*bm/Lmm/1000 : -P*amm/Lmm/1000;
+                m = (xmm <= amm) ? P*bm*xmm/(Lmm*1e6)*1e6/1e3 : P*amm*(Lmm-xmm)/(Lmm*1e6)*1e6/1e3;
+                // deflection
+                if (xmm <= amm) d = P*bm*xmm*(Lmm*Lmm-bm*bm-xmm*xmm)/(6*EI_Nmm2*Lmm);
+                else { const xt = Lmm-xmm; d = P*amm*xt*(Lmm*Lmm-amm*amm-xt*xt)/(6*EI_Nmm2*Lmm); }
+            }
+            V.push(v); M.push(m); D.push(Math.max(0,d));
+        }
+
+        const maxV = Math.max(...V.map(Math.abs));
+        const maxM = Math.max(...M.map(Math.abs));
+        const maxD = Math.max(...D);
+
+        return `<svg viewBox="0 0 ${W} 340" class="diagram-svg" xmlns="http://www.w3.org/2000/svg">
+            ${drawBeamSchematic(W, pad, beamLen, beamY, type, L, loadVal, a, RA, RB)}
+            <line x1="${pad}" y1="135" x2="${W-pad}" y2="135" stroke="#444" stroke-width="1"/>
+            ${drawSignalDiagram(V, pad, 135, beamLen, 35, maxV, '#4ade80', 'SFD (kN)', W, true)}
+            <line x1="${pad}" y1="210" x2="${W-pad}" y2="210" stroke="#444" stroke-width="1"/>
+            ${drawSignalDiagram(M, pad, 210, beamLen, 35, maxM, '#60a5fa', 'BMD (kNm)', W, false)}
+            <line x1="${pad}" y1="285" x2="${W-pad}" y2="285" stroke="#444" stroke-width="1"/>
+            ${drawDeflDiagram(D, pad, 285, beamLen, 35, maxD, '#ff8c42', 'Deflection (mm)', W)}
+        </svg>`;
+    }
+
+    function drawBeamSchematic(W, pad, bLen, y, type, L, loadVal, a, RA, RB) {
+        let out = '';
+        // Beam
+        out += `<rect x="${pad}" y="${y-6}" width="${bLen}" height="12" fill="#334155" stroke="#64748b" stroke-width="1" rx="2"/>`;
+        // Support triangles
+        out += svgTriangle(pad, y+6, '#94a3b8');
+        out += svgTriangle(pad+bLen, y+6, '#94a3b8');
+        // Reactions
+        out += `<text x="${pad}" y="${y+32}" text-anchor="middle" fill="#94a3b8" font-size="9">R_A=${RA.toFixed(1)}kN</text>`;
+        out += `<text x="${pad+bLen}" y="${y+32}" text-anchor="middle" fill="#94a3b8" font-size="9">R_B=${RB.toFixed(1)}kN</text>`;
+
+        if (type === 'udl') {
+            // arrows for udl
+            for (let i = 0; i <= 10; i++) {
+                const x = pad + i * bLen/10;
+                out += `<line x1="${x}" y1="${y-6}" x2="${x}" y2="${y-20}" stroke="#facc15" stroke-width="1.5" marker-end="url(#arr)"/>`;
+            }
+            out += `<line x1="${pad}" y1="${y-20}" x2="${pad+bLen}" y2="${y-20}" stroke="#facc15" stroke-width="1.5"/>`;
+            out += `<text x="${pad+bLen/2}" y="${y-23}" text-anchor="middle" fill="#facc15" font-size="9">q=${loadVal} kN/m</text>`;
+        } else {
+            const xp = (type === 'center') ? pad + bLen/2 : pad + (a/L)*bLen;
+            out += `<line x1="${xp}" y1="${y-22}" x2="${xp}" y2="${y-8}" stroke="#facc15" stroke-width="2" marker-end="url(#arr)"/>`;
+            out += `<text x="${xp}" y="${y-26}" text-anchor="middle" fill="#facc15" font-size="9">P=${loadVal} kN</text>`;
+        }
+        out += `<defs><marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="6" orient="auto"><path d="M0,0 L6,0 L3,6 Z" fill="#facc15"/></marker></defs>`;
+
+        // Span label
+        out += `<line x1="${pad}" y1="${y+40}" x2="${pad+bLen}" y2="${y+40}" stroke="#475569" stroke-width="1"/>`;
+        out += `<text x="${pad+bLen/2}" y="${y+50}" text-anchor="middle" fill="#94a3b8" font-size="9">L = ${L} m</text>`;
+        return out;
+    }
+
+    function svgTriangle(x, y, col) {
+        return `<polygon points="${x},${y} ${x-10},${y+16} ${x+10},${y+16}" fill="${col}" opacity="0.7"/>`;
+    }
+
+    function drawSignalDiagram(data, x0, y0, width, halfH, maxVal, color, label, W) {
+        if (maxVal < 1e-10) return `<text x="${x0}" y="${y0}" fill="#666" font-size="9">${label}: 0</text>`;
+        const n = data.length;
+        let pts = '';
+        const zeroLine = `<line x1="${x0}" y1="${y0}" x2="${x0+width}" y2="${y0}" stroke="#444" stroke-width="0.5" stroke-dasharray="3,3"/>`;
+
+        for (let i = 0; i <= n-1; i++) {
+            const px = x0 + i / (n-1) * width;
+            const py = y0 - (data[i] / maxVal) * halfH;
+            pts += `${px},${py} `;
+        }
+        // Closed polygon for fill
+        const firstPx = x0, lastPx = x0 + width;
+        const fillPts = `${firstPx},${y0} ` + pts + `${lastPx},${y0}`;
+
+        return zeroLine +
+            `<polygon points="${fillPts}" fill="${color}" fill-opacity="0.15"/>` +
+            `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5"/>` +
+            `<text x="${x0}" y="${y0 - halfH - 4}" fill="${color}" font-size="8" font-weight="bold">${label}</text>` +
+            `<text x="${W-5}" y="${y0 - halfH + 4}" text-anchor="end" fill="${color}" font-size="8">${maxVal > 10 ? maxVal.toFixed(1) : maxVal.toFixed(2)}</text>`;
+    }
+
+    function drawDeflDiagram(data, x0, y0, width, halfH, maxVal, color, label, W) {
+        if (maxVal < 1e-10) return `<text x="${x0}" y="${y0}" fill="#666" font-size="9">${label}: 0</text>`;
+        const n = data.length;
+        let pts = '';
+        for (let i = 0; i <= n-1; i++) {
+            const px = x0 + i / (n-1) * width;
+            const py = y0 + (data[i] / maxVal) * halfH;
+            pts += `${px},${py} `;
+        }
+        const firstPx = x0, lastPx = x0 + width;
+        const fillPts = `${firstPx},${y0} ` + pts + `${lastPx},${y0}`;
+        return `<polygon points="${fillPts}" fill="${color}" fill-opacity="0.15"/>` +
+            `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5"/>` +
+            `<line x1="${x0}" y1="${y0}" x2="${x0+width}" y2="${y0}" stroke="#444" stroke-width="0.5" stroke-dasharray="3,3"/>` +
+            `<text x="${x0}" y="${y0 - 4}" fill="${color}" font-size="8" font-weight="bold">${label}</text>` +
+            `<text x="${W-5}" y="${y0 + halfH - 2}" text-anchor="end" fill="${color}" font-size="8">${maxVal.toFixed(2)} mm</text>`;
+    }
+
+    // Init: update pos display on load
+    onPosChange();
+    </script>
+</body>
+</html>

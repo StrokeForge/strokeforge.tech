@@ -1,0 +1,7 @@
+{
+  "id": "eng-006",
+  "title": "Fillet Weld Calculator (EC3)",
+  "category": "calculator",
+  "icon": "🔗",
+  "description": "Fillet weld strength calculator per ČSN EN 1993-1-8 (EC3), simplified method. Tension, shear, and bending load cases. Calculates throat area, weld stress, design resistance, and utilisation ratio for S235–S460 base materials."
+}
