@@ -486,7 +486,7 @@
         const W = Math.max(320, totalWidth);
         const H = 130;
 
-        svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+        svg.setAttribute('viewBox', `-20 0 ${W+20} ${H}`);
         svg.setAttribute('width', W);
         svg.setAttribute('height', H);
 
@@ -500,7 +500,7 @@
         svg.appendChild(el('line',{x1:batX-6, y1:midY-6, x2:batX+6, y2:midY-6, stroke:'#9ca3af','stroke-width':2}));
         svg.appendChild(el('line',{x1:batX-10,y1:midY+6, x2:batX+10,y2:midY+6, stroke:'#9ca3af','stroke-width':4}));
         svg.appendChild(el('line',{x1:batX-6, y1:midY+14,x2:batX+6, y2:midY+14,stroke:'#9ca3af','stroke-width':2}));
-        if (Vsup) svg.appendChild(txt(batX + 22, midY, Vsup+'V', '#facc15', 10, 'middle'));
+        if (Vsup) svg.appendChild(txt(batX - 14, midY, Vsup+'V', '#facc15', 10, 'end'));
         svg.appendChild(txt(batX-16, topY+6, '+', '#4ade80', 11, 'middle'));
         svg.appendChild(txt(batX-16, botY-6, '−', '#f87171', 11, 'middle'));
 
@@ -539,7 +539,7 @@
         const H = botY + 40;
         const W = 280;
 
-        svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+        svg.setAttribute('viewBox', `-20 0 ${W+20} ${H}`);
         svg.setAttribute('width', W);
         svg.setAttribute('height', H);
 
@@ -553,7 +553,7 @@
         svg.appendChild(el('line',{x1:batX-6, y1:midY-6, x2:batX+6, y2:midY-6, stroke:'#9ca3af','stroke-width':2}));
         svg.appendChild(el('line',{x1:batX-10,y1:midY+6, x2:batX+10,y2:midY+6, stroke:'#9ca3af','stroke-width':4}));
         svg.appendChild(el('line',{x1:batX-6, y1:midY+14,x2:batX+6, y2:midY+14,stroke:'#9ca3af','stroke-width':2}));
-        if (Vsup) svg.appendChild(txt(batX + 18, midY, Vsup+'V', '#facc15', 10, 'middle'));
+        if (Vsup) svg.appendChild(txt(batX - 12, midY, Vsup+'V', '#facc15', 10, 'end'));
         svg.appendChild(txt(batX-14, topY+6, '+', '#4ade80', 11, 'middle'));
         svg.appendChild(txt(batX-14, botY-6, '−', '#f87171', 11, 'middle'));
 
