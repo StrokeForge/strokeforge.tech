@@ -24,7 +24,7 @@
 
         .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
         @media (max-width: 580px) { .input-grid { grid-template-columns: 1fr 1fr; } }
-        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
         .field label { font-size: 0.8rem; color: var(--text-gray); }
         .field-row { display: flex; gap: 0.5rem; align-items: center; }
         .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
