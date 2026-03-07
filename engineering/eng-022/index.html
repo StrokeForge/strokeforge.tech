@@ -422,11 +422,11 @@
             svg.appendChild(tx(cx, padT + cH + 14, g.id, '#d1d5db', 9));
         });
 
-        // Legend
-        svg.appendChild(el('rect',{x:padL+cW-90,y:padT+4,width:10,height:10,fill:'#60a5fa',opacity:'0.85',rx:1}));
-        svg.appendChild(tx(padL+cW-78, padT+9, 'fy (t≤16)', '#9ca3af', 8, 'start'));
-        svg.appendChild(el('rect',{x:padL+cW-90,y:padT+17,width:10,height:10,fill:'#60a5fa',opacity:'0.35',rx:1}));
-        svg.appendChild(tx(padL+cW-78, padT+22, 'fu', '#9ca3af', 8, 'start'));
+        // Legend — horizontal, top-centre, above chart area
+        svg.appendChild(el('rect',{x:W/2-55,y:8,width:10,height:10,fill:'#60a5fa',opacity:'0.85',rx:1}));
+        svg.appendChild(tx(W/2-43, 13, 'fy  (t≤16)', '#9ca3af', 8, 'start'));
+        svg.appendChild(el('rect',{x:W/2+20,y:8,width:10,height:10,fill:'#60a5fa',opacity:'0.35',rx:1}));
+        svg.appendChild(tx(W/2+32, 13, 'fu', '#9ca3af', 8, 'start'));
     }
 
     init();
