@@ -428,7 +428,7 @@
         svg.appendChild(el('polygon',{points:pts.join(' '),fill:'rgba(96,165,250,0.15)',stroke:'#60a5fa','stroke-width':1.5}));
 
         // Labels
-        svg.appendChild(txt(bX+12,baseY-55,`M_A=${(Mmax/1e6).toFixed(2)} kN·m`,'#60a5fa',8,'start'));
+        svg.appendChild(txt(bX+4,baseY-75,`M_A=${(Mmax/1e6).toFixed(2)} kN·m`,'#60a5fa',8,'start'));
         svg.appendChild(txt(bX+bW,baseY+12,'0 (tip)','#6b7280',8));
         svg.appendChild(txt(bX,baseY+12,'A','#6b7280',8));
     }
