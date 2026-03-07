@@ -574,14 +574,14 @@
         const maxM = Math.max(...M.map(Math.abs));
         const maxD = Math.max(...D);
 
-        return `<svg viewBox="0 0 ${W} 340" class="diagram-svg" xmlns="http://www.w3.org/2000/svg">
+        return `<svg viewBox="0 0 ${W} 430" class="diagram-svg" xmlns="http://www.w3.org/2000/svg">
             ${drawBeamSchematic(W, pad, beamLen, beamY, type, L, loadVal, a, RA, RB)}
-            <line x1="${pad}" y1="135" x2="${W-pad}" y2="135" stroke="#444" stroke-width="1"/>
-            ${drawSignalDiagram(V, pad, 135, beamLen, 35, maxV, '#4ade80', 'SFD (kN)', W, true)}
-            <line x1="${pad}" y1="210" x2="${W-pad}" y2="210" stroke="#444" stroke-width="1"/>
-            ${drawSignalDiagram(M, pad, 210, beamLen, 35, maxM, '#60a5fa', 'BMD (kNm)', W, false)}
-            <line x1="${pad}" y1="285" x2="${W-pad}" y2="285" stroke="#444" stroke-width="1"/>
-            ${drawDeflDiagram(D, pad, 285, beamLen, 35, maxD, '#ff8c42', 'Deflection (mm)', W)}
+            <line x1="${pad}" y1="175" x2="${W-pad}" y2="175" stroke="#444" stroke-width="1"/>
+            ${drawSignalDiagram(V, pad, 175, beamLen, 45, maxV, '#4ade80', 'SFD (kN)', W, true)}
+            <line x1="${pad}" y1="270" x2="${W-pad}" y2="270" stroke="#444" stroke-width="1"/>
+            ${drawSignalDiagram(M, pad, 270, beamLen, 45, maxM, '#60a5fa', 'BMD (kNm)', W, false)}
+            <line x1="${pad}" y1="365" x2="${W-pad}" y2="365" stroke="#444" stroke-width="1"/>
+            ${drawDeflDiagram(D, pad, 365, beamLen, 45, maxD, '#ff8c42', 'Deflection (mm)', W)}
         </svg>`;
     }
 
