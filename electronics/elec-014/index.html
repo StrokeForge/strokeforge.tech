@@ -458,9 +458,10 @@
             svg.appendChild(line(130,56,130,84,'#60a5fa',2));
             svg.appendChild(line(130,70,220,70));
             svg.appendChild(txt(125,45,'C','#60a5fa',11,'middle'));
-            // R box (vertical, to GND)
-            svg.appendChild(el('rect',{x:208,y:70,width:24,height:60,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
-            svg.appendChild(txt(220,100,'R','#4ade80',11,'middle'));
+            // R box (vertical, to GND) — stub from node at y=70 down to rect top at y=75
+            svg.appendChild(line(220,70,220,75));
+            svg.appendChild(el('rect',{x:208,y:75,width:24,height:55,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
+            svg.appendChild(txt(220,103,'R','#4ade80',11,'middle'));
             svg.appendChild(line(220,130,220,145));
             // GND symbol
             svg.appendChild(line(206,145,234,145,'#6b7280',1.5));
