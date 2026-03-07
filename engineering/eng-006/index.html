@@ -99,7 +99,7 @@
 
     <div class="page-header">
         <h1>Fillet Weld Calculator</h1>
-        <p>Koutový svar — posouzení dle ČSN EN 1993-1-8 (EC3), zjednodušená metoda</p>
+        <p>Fillet weld assessment per EN 1993-1-8 (EC3), simplified method</p>
     </div>
 
     <div class="tool-wrap">
@@ -467,24 +467,24 @@
         rect(vx, vy, vw, vh, gray, '#222');
         txt(vx + vw/2, vy + vh/2, 'WEB', gray, 9);
 
-        // Weld triangles (both sides)
+        // Weld triangles (both sides) — right-angle at junction, legs up web face and along plate surface
         const weldColor = eta > 1 ? '#f87171' : eta > 0.8 ? '#f59e0b' : orange;
         // Left weld
         const wx1 = vx, wy1 = py;
         const poly1 = document.createElementNS(ns,'polygon');
-        poly1.setAttribute('points', `${wx1},${wy1} ${wx1-18},${wy1} ${wx1},${wy1+18}`);
+        poly1.setAttribute('points', `${wx1},${wy1} ${wx1-18},${wy1} ${wx1},${wy1-18}`);
         poly1.setAttribute('fill', weldColor); poly1.setAttribute('stroke','none'); poly1.setAttribute('opacity','0.9');
         svg.appendChild(poly1);
         // Right weld
         const wx2 = vx + vw, wy2 = py;
         const poly2 = document.createElementNS(ns,'polygon');
-        poly2.setAttribute('points', `${wx2},${wy2} ${wx2+18},${wy2} ${wx2},${wy2+18}`);
+        poly2.setAttribute('points', `${wx2},${wy2} ${wx2+18},${wy2} ${wx2},${wy2-18}`);
         poly2.setAttribute('fill', weldColor); poly2.setAttribute('stroke','none'); poly2.setAttribute('opacity','0.9');
         svg.appendChild(poly2);
 
-        // Dimension label: a
-        txt(vx - 28, py + 9, `a=${a}mm`, orange, 10, 'end');
-        txt(vx + vw + 28, py + 9, `a=${a}mm`, orange, 10, 'start');
+        // Dimension label: a — positioned on the triangle face
+        txt(vx - 12, py - 8, `a=${a}mm`, orange, 10, 'end');
+        txt(vx + vw + 12, py - 8, `a=${a}mm`, orange, 10, 'start');
 
         // Dimension label: l
         line(px, py + ph + 14, px + pw, py + ph + 14, gray, 1);
@@ -494,9 +494,9 @@
 
         // Load arrow
         if (mode === 'tension') {
-            arrow(W/2, vy - 10, W/2, vy + 5, blue);
-            arrow(W/2, py + ph + 35, W/2, py + ph + 20, blue);
-            txt(W/2, vy - 18, 'F (tension)', blue, 10);
+            arrow(W/2, vy + 12, W/2, vy - 10, blue);
+            arrow(W/2, py + ph - 12, W/2, py + ph + 30, blue);
+            txt(W/2, vy - 20, 'F (tension)', blue, 10);
         } else if (mode === 'shear') {
             arrow(px - 40, py + ph/2, px - 10, py + ph/2, blue);
             txt(px - 50, py + ph/2 - 14, 'V (shear)', blue, 10);
