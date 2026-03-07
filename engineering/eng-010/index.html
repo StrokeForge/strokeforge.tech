@@ -489,7 +489,7 @@
         out += `<rect x="${pad}" y="${y-6}" width="${bLen}" height="12" fill="#334155" stroke="#64748b" stroke-width="1" rx="2"/>`;
         // Free end label
         out += `<text x="${pad+bLen}" y="${y+26}" text-anchor="middle" fill="#94a3b8" font-size="9">Free end</text>`;
-        out += `<text x="${pad}" y="${y+26}" text-anchor="middle" fill="#94a3b8" font-size="9">Fixed</text>`;
+        out += `<text x="${pad+25}" y="${y+26}" text-anchor="middle" fill="#94a3b8" font-size="9">Fixed</text>`;
 
         if (type === 'udl') {
             for (let i = 0; i <= 10; i++) {
