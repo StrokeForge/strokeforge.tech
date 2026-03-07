@@ -1,0 +1,8 @@
+{
+  "id": "eng-012",
+  "title": "Cross-Section Properties",
+  "description": "Calculate cross-section characteristics: area A, moment of inertia Ix/Iy, section modulus Wx/Wy, and radius of gyration ix/iy for standard shapes and IPE/HEA/HEB profiles.",
+  "category": "calculator",
+  "icon": "🔲",
+  "difficulty": "intermediate"
+}

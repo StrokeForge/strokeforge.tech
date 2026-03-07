@@ -1,0 +1,8 @@
+{
+  "id": "eng-013",
+  "title": "Steel Profiles Reference",
+  "description": "Section properties table for standard steel profiles: IPE, HEA, HEB, UPN, and equal-leg angles (L). Dimensions and cross-section data per EN 10034 / EN 10056.",
+  "category": "reference",
+  "icon": "📋",
+  "difficulty": "beginner"
+}

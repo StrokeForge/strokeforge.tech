@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steel Profiles Reference — IPE HEA HEB UPN L | StrokeForge Engineering</title>
+    <meta name="description" content="Section properties tables for standard steel profiles: IPE, HEA, HEB, UPN, and equal-leg angles (L). Dimensions, area, moment of inertia, section modulus per EN 10034 / EN 10056.">
+    <meta name="keywords" content="IPE profile table, HEA HEB section properties, UPN channel, equal leg angle L, průřezové charakteristiky profily, moment setrvačnosti tabulka, EN 10034">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-013/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 1100px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Series tabs */
+        .series-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
+        .series-btn { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.4rem 1.1rem; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; }
+        .series-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .series-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; font-weight: 600; }
+
+        /* Search */
+        .search-row { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; }
+        .search-row label { font-size: 0.82rem; color: var(--text-gray); white-space: nowrap; }
+        .search-inp { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.45rem 0.8rem; font-size: 0.9rem; outline: none; width: 160px; transition: border-color 0.2s; }
+        .search-inp:focus { border-color: var(--primary-orange); }
+
+        /* Profile table */
+        .profile-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; overflow-x: auto; display: block; }
+        .profile-table thead th { padding: 0.55rem 0.75rem; text-align: right; color: var(--text-gray); border-bottom: 2px solid var(--border-gray); font-size: 0.72rem; font-weight: 600; white-space: nowrap; background: var(--darker-bg); position: sticky; top: 0; z-index: 1; }
+        .profile-table thead th:first-child { text-align: left; }
+        .profile-table tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; }
+        .profile-table tbody tr:hover { background: rgba(255,255,255,0.04); }
+        .profile-table tbody td { padding: 0.5rem 0.75rem; text-align: right; color: var(--light-gray); white-space: nowrap; }
+        .profile-table tbody td:first-child { text-align: left; color: var(--primary-orange); font-weight: 700; font-family: monospace; font-size: 0.88rem; }
+        .profile-table tbody tr.hidden { display: none; }
+
+        /* Diagram legend */
+        .dim-legend { display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 1rem; }
+        .dim-item { font-size: 0.78rem; color: var(--text-gray); }
+        .dim-item span { color: var(--light-gray); font-family: monospace; }
+
+        /* Info cards */
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.6rem; }
+        .info-block p, .info-block li { font-size: 0.8rem; color: var(--text-gray); line-height: 1.7; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+
+        /* Section shape SVG */
+        .shape-row { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+        .shape-row svg { flex-shrink: 0; }
+        .shape-note { font-size: 0.78rem; color: var(--text-gray); line-height: 1.7; max-width: 360px; }
+
+        .no-results { color: var(--text-gray); font-size: 0.88rem; padding: 1rem 0; display: none; }
+
+        @media (max-width: 600px) {
+            .card { padding: 1.25rem 1rem; }
+            .profile-table thead th, .profile-table tbody td { padding: 0.45rem 0.5rem; font-size: 0.72rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>📋 Steel Profiles Reference</h1>
+        <p>Dimensions and section properties for IPE, HEA, HEB, UPN, and L profiles per EN 10034 / EN 10056</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- SERIES SELECTOR -->
+        <div class="card">
+            <h2>Profile Series</h2>
+
+            <div class="series-tabs" id="seriesTabs">
+                <button class="series-btn active" data-series="ipe"  onclick="setSeries('ipe')">IPE</button>
+                <button class="series-btn"         data-series="hea"  onclick="setSeries('hea')">HEA</button>
+                <button class="series-btn"         data-series="heb"  onclick="setSeries('heb')">HEB</button>
+                <button class="series-btn"         data-series="upn"  onclick="setSeries('upn')">UPN</button>
+                <button class="series-btn"         data-series="l"    onclick="setSeries('l')">L equal</button>
+            </div>
+
+            <!-- Shape diagram + notes -->
+            <div class="shape-row" id="shapeRow">
+                <svg id="shapeSvg" width="90" height="90" viewBox="0 0 90 90"></svg>
+                <p class="shape-note" id="shapeNote"></p>
+            </div>
+
+            <!-- Search filter -->
+            <div class="search-row">
+                <label for="searchInp">Filter:</label>
+                <input type="text" id="searchInp" class="search-inp" placeholder="e.g. 200" oninput="filterTable()">
+            </div>
+
+            <!-- Table -->
+            <div style="overflow-x:auto;">
+                <table class="profile-table" id="profileTable">
+                    <thead id="tableHead"></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+                <p class="no-results" id="noResults">No profiles match the filter.</p>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Column definitions</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Dimensions</h3>
+                    <ul>
+                        <li><span>h</span> — total height [mm]</li>
+                        <li><span>b</span> — flange width [mm]</li>
+                        <li><span>t<sub>w</sub></span> — web thickness [mm]</li>
+                        <li><span>t<sub>f</sub></span> — flange thickness [mm]</li>
+                        <li><span>r</span> — root radius [mm] (I/U sections)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Section properties</h3>
+                    <ul>
+                        <li><span>A</span> — cross-sectional area [cm²]</li>
+                        <li><span>I<sub>x</sub></span> — moment of inertia, strong axis [cm⁴]</li>
+                        <li><span>I<sub>y</sub></span> — moment of inertia, weak axis [cm⁴]</li>
+                        <li><span>W<sub>x</sub></span> — elastic section modulus, strong axis [cm³]</li>
+                        <li><span>W<sub>y</sub></span> — elastic section modulus, weak axis [cm³]</li>
+                        <li><span>i<sub>x</sub></span> — radius of gyration, strong axis [cm]</li>
+                        <li><span>i<sub>y</sub></span> — radius of gyration, weak axis [cm]</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Standards</h3>
+                    <ul>
+                        <li>IPE — EN 10034</li>
+                        <li>HEA / HEB — EN 10034</li>
+                        <li>UPN — EN 10279</li>
+                        <li>L equal leg — EN 10056-1</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Notes</h3>
+                    <p>Values are nominal (elastic) section properties. Plastic section moduli (W<sub>pl</sub>) are not listed here — use the <a href="/engineering/eng-012/" style="color:var(--primary-orange)">Cross-Section Properties</a> tool for computed values. For design use, always verify against official mill certificates or EN tables.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem">
+            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ─── DATA ───────────────────────────────────────────────────────────────────
+    // IPE: h, b, tw, tf, r, A, Ix, Iy, Wx, Wy, ix, iy   (all per EN 10034)
+    const IPE = [
+        ['IPE 80',   80,  46, 3.8, 5.2, 5,  7.64,   80.1,   8.49,  20.0,  3.69, 3.24, 1.05],
+        ['IPE 100', 100,  55, 4.1, 5.7, 7,  10.3,   171,    15.9,  34.2,  5.79, 4.07, 1.24],
+        ['IPE 120', 120,  64, 4.4, 6.3, 7,  13.2,   318,    27.7,  53.0,  8.65, 4.90, 1.45],
+        ['IPE 140', 140,  73, 4.7, 6.9, 7,  16.4,   541,    44.9,  77.3, 12.3,  5.74, 1.65],
+        ['IPE 160', 160,  82, 5.0, 7.4, 9,  20.1,   869,    68.3, 109,   16.7,  6.58, 1.84],
+        ['IPE 180', 180,  91, 5.3, 8.0, 9,  23.9,  1317,    101,  146,   22.2,  7.42, 2.05],
+        ['IPE 200', 200, 100, 5.6, 8.5,12,  28.5,  1943,    142,  194,   28.5,  8.26, 2.24],
+        ['IPE 220', 220, 110, 5.9, 9.2,12,  33.4,  2772,    205,  252,   37.3,  9.11, 2.48],
+        ['IPE 240', 240, 120, 6.2, 9.8,15,  39.1,  3892,    284,  324,   47.3,  9.97, 2.69],
+        ['IPE 270', 270, 135, 6.6,10.2,15,  45.9,  5790,    420,  429,   62.2, 11.2,  3.02],
+        ['IPE 300', 300, 150, 7.1,10.7,15,  53.8,  8356,    604,  557,   80.5, 12.5,  3.35],
+        ['IPE 330', 330, 160, 7.5,11.5,18,  62.6, 11770,    788,  713,   98.5, 13.7,  3.55],
+        ['IPE 360', 360, 170, 8.0,12.7,18,  72.7, 16270,   1043,  904,  123,   15.0,  3.79],
+        ['IPE 400', 400, 180, 8.6,13.5,21,  84.5, 23130,   1318, 1156,  146,   16.5,  3.95],
+        ['IPE 450', 450, 190, 9.4,14.6,21,  98.8, 33740,   1676, 1500,  176,   18.5,  4.12],
+        ['IPE 500', 500, 200,10.2,16.0,21, 116,   48200,   2142, 1928,  214,   20.4,  4.31],
+        ['IPE 550', 550, 210,11.1,17.2,24, 134,   67120,   2668, 2441,  254,   22.3,  4.45],
+        ['IPE 600', 600, 220,12.0,19.0,24, 156,   92080,   3387, 3069,  308,   24.3,  4.66],
+    ];
+
+    // HEA: h, b, tw, tf, r, A, Ix, Iy, Wx, Wy, ix, iy
+    const HEA = [
+        ['HEA 100',  96, 100, 5.0, 8.0,12,  21.2,   349,   134,   72.8,  26.8,  4.06, 2.51],
+        ['HEA 120', 114, 120, 5.0, 8.0,12,  25.3,   606,   231,  106,    38.5,  4.89, 3.02],
+        ['HEA 140', 133, 140, 5.5, 8.5,12,  31.4,  1033,   389,  155,    55.6,  5.73, 3.52],
+        ['HEA 160', 152, 160, 6.0, 9.0,15,  38.8,  1673,   616,  220,    77.0,  6.57, 3.98],
+        ['HEA 180', 171, 180, 6.0, 9.5,15,  45.3,  2510,   925,  294,   103,    7.45, 4.52],
+        ['HEA 200', 190, 200, 6.5,10.0,18,  53.8,  3692,  1336,  389,   134,    8.28, 4.98],
+        ['HEA 220', 210, 220, 7.0,11.0,18,  64.3,  5410,  1955,  515,   178,    9.17, 5.51],
+        ['HEA 240', 230, 240, 7.5,12.0,21,  76.8,  7763,  2769,  675,   231,   10.1,  6.00],
+        ['HEA 260', 250, 260, 7.5,12.5,24,  86.8, 10450,  3668,  836,   282,   10.97, 6.50],
+        ['HEA 280', 270, 280, 8.0,13.0,24,  97.3, 13670,  4763, 1013,   340,   11.86, 6.99],
+        ['HEA 300', 290, 300, 8.5,14.0,27, 112,   18260,  6310, 1260,   421,   12.74, 7.49],
+        ['HEA 320', 310, 300, 9.0,15.5,27, 124,   22930,  6985, 1479,   466,   13.58, 7.49],
+        ['HEA 340', 330, 300, 9.5,16.5,27, 133,   27690,  7436, 1678,   496,   14.40, 7.46],
+        ['HEA 360', 350, 300,10.0,17.5,27, 143,   33090,  7887, 1891,   526,   15.22, 7.43],
+        ['HEA 400', 390, 300,11.0,19.0,27, 159,   45070,  8564, 2311,   571,   16.84, 7.34],
+        ['HEA 450', 440, 300,11.5,21.0,27, 178,   63720,  9465, 2896,   631,   18.93, 7.29],
+        ['HEA 500', 490, 300,12.0,23.0,27, 198,   86970, 10370, 3550,   691,   20.97, 7.24],
+        ['HEA 550', 540, 300,12.5,24.0,27, 212,  111900, 10820, 4146,   721,   23.00, 7.15],
+        ['HEA 600', 590, 300,13.0,25.0,27, 226,  141200, 11270, 4787,   751,   25.00, 7.07],
+    ];
+
+    // HEB: h, b, tw, tf, r, A, Ix, Iy, Wx, Wy, ix, iy
+    const HEB = [
+        ['HEB 100', 100, 100, 6.0,10.0,12,  26.0,   450,   167,   89.9,  33.5,  4.16, 2.53],
+        ['HEB 120', 120, 120, 6.5,11.0,12,  34.0,   864,   318,  144,    53.0,  5.04, 3.06],
+        ['HEB 140', 140, 140, 7.0,12.0,12,  43.0,  1509,   550,  216,    78.5,  5.93, 3.58],
+        ['HEB 160', 160, 160, 8.0,13.0,15,  54.3,  2492,   889,  311,   111,    6.78, 4.05],
+        ['HEB 180', 180, 180, 8.5,14.0,15,  65.3,  3831,  1363,  426,   151,    7.66, 4.57],
+        ['HEB 200', 200, 200, 9.0,15.0,18,  78.1,  5696,  2003,  570,   200,    8.54, 5.07],
+        ['HEB 220', 220, 220, 9.5,16.0,18,  91.0,  8091,  2843,  736,   258,    9.43, 5.59],
+        ['HEB 240', 240, 240,10.0,17.0,21, 106,   11260,  3923,  938,   327,   10.31, 6.08],
+        ['HEB 260', 260, 260,10.0,17.5,24, 118,   14920,  5135, 1148,   395,   11.24, 6.58],
+        ['HEB 280', 280, 280,10.5,18.0,24, 131,   19270,  6595, 1376,   471,   12.13, 7.09],
+        ['HEB 300', 300, 300,11.0,19.0,27, 149,   25170,  8563, 1678,   571,   13.00, 7.58],
+        ['HEB 320', 320, 300,11.5,20.5,27, 161,   30820,  9239, 1926,   616,   13.82, 7.57],
+        ['HEB 340', 340, 300,12.0,21.5,27, 171,   36660,  9690, 2156,   646,   14.65, 7.53],
+        ['HEB 360', 360, 300,12.5,22.5,27, 181,   43190, 10140, 2400,   676,   15.46, 7.49],
+        ['HEB 400', 400, 300,13.5,24.0,27, 198,   57680, 10820, 2884,   721,   17.08, 7.40],
+        ['HEB 450', 450, 300,14.0,26.0,27, 218,   79890, 11720, 3551,   781,   19.12, 7.33],
+        ['HEB 500', 500, 300,14.5,28.0,27, 239,  107200, 12620, 4287,   842,   21.16, 7.27],
+        ['HEB 550', 550, 300,15.0,29.0,27, 254,  136700, 13080, 4971,   872,   23.20, 7.17],
+        ['HEB 600', 600, 300,15.5,30.0,27, 270,  171000, 13530, 5701,   902,   25.17, 7.08],
+    ];
+
+    // UPN: h, b, tw, tf, r, A, Ix, Iy, Wx, Wy, ix, iy   (per EN 10279)
+    // Wy is to centroid of web side
+    const UPN = [
+        ['UPN 50',   50,  38, 5.0, 7.0, 7,   7.12,   26.4,   5.07,  10.6,  2.07, 1.92, 0.84],
+        ['UPN 65',   65,  42, 5.5, 7.5, 8,   9.03,   57.5,   8.03,  17.7,  2.73, 2.52, 0.94],
+        ['UPN 80',   80,  45, 6.0, 8.0, 8,  10.6,   106,    11.0,   26.5,  3.44, 3.16, 1.02],
+        ['UPN 100', 100,  50, 6.0, 8.5, 9,  13.5,   206,    16.2,   41.2,  4.54, 3.91, 1.10],
+        ['UPN 120', 120,  55, 7.0, 9.0, 9,  17.0,   364,    24.0,   60.7,  6.17, 4.63, 1.19],
+        ['UPN 140', 140,  60, 7.0, 10.0,10, 20.4,   605,    35.2,   86.4,  8.16, 5.45, 1.31],
+        ['UPN 160', 160,  65, 7.5, 10.5,10, 24.0,   925,    49.4,  116,   10.6,  6.21, 1.43],
+        ['UPN 180', 180,  70, 8.0, 11.0,11, 28.0,  1350,    68.1,  150,   13.5,  6.95, 1.56],
+        ['UPN 200', 200,  75, 8.5, 11.5,12, 32.2,  1910,    90.2,  191,   16.8,  7.70, 1.67],
+        ['UPN 220', 220,  80, 9.0, 12.5,12, 37.4,  2690,   120,    245,   21.1,  8.47, 1.79],
+        ['UPN 240', 240,  85, 9.5, 13.0,13, 42.3,  3600,   152,    300,   25.3,  9.22, 1.90],
+        ['UPN 260', 260,  90,10.0, 14.0,14, 48.3,  4820,   197,    371,   30.6, 10.0,  2.02],
+        ['UPN 280', 280,  95,10.0, 15.0,15, 53.3,  6280,   242,    448,   35.4, 10.9,  2.13],
+        ['UPN 300', 300, 100,10.0, 16.0,16, 58.8,  8030,   298,    535,   41.0, 11.7,  2.25],
+        ['UPN 320', 320, 100,14.0, 17.5,18, 75.8, 10870,   325,    679,   44.5, 12.0,  2.07],
+        ['UPN 350', 350, 100,14.0, 16.0,16, 77.3, 12840,   309,    734,   43.0, 12.9,  2.00],
+        ['UPN 380', 380, 102,13.5, 16.0,16, 80.4, 15760,   338,    830,   45.1, 14.0,  2.05],
+        ['UPN 400', 400, 110,14.0, 18.0,18, 91.5, 20350,   495,   1017,   62.1, 14.9,  2.33],
+    ];
+
+    // L equal leg: a (side), t, r1, r2, A, Ix=Iy, Wx=Wy, ix=iy, e (centroid from back)
+    // per EN 10056-1 — columns: a, t, r1, A, Ix, Wx, ix, e
+    const LEQUAL = [
+        ['L 20×3',   20,  3, 3.5, 1.1,   1.12,  0.40,  0.29, 0.59, 0.59],
+        ['L 25×3',   25,  3, 3.5, 1.2,   1.42,  0.80,  0.46, 0.75, 0.70],
+        ['L 25×4',   25,  4, 3.5, 1.2,   1.85,  1.00,  0.57, 0.74, 0.73],
+        ['L 30×3',   30,  3, 5.0, 1.6,   1.74,  1.40,  0.66, 0.90, 0.81],
+        ['L 30×4',   30,  4, 5.0, 2.0,   2.27,  1.77,  0.84, 0.88, 0.84],
+        ['L 35×4',   35,  4, 5.0, 2.0,   2.67,  2.87,  1.17, 1.04, 0.96],
+        ['L 40×4',   40,  4, 6.0, 2.0,   3.08,  4.47,  1.58, 1.20, 1.06],
+        ['L 40×5',   40,  5, 6.0, 2.0,   3.79,  5.43,  1.93, 1.20, 1.09],
+        ['L 45×4',   45,  4, 7.0, 2.0,   3.49,  6.43,  2.01, 1.36, 1.18],
+        ['L 45×5',   45,  5, 7.0, 2.0,   4.30,  7.84,  2.46, 1.35, 1.21],
+        ['L 50×4',   50,  4, 7.0, 2.0,   3.89,  8.90,  2.50, 1.51, 1.30],
+        ['L 50×5',   50,  5, 7.0, 2.0,   4.80, 10.9,   3.07, 1.51, 1.33],
+        ['L 50×6',   50,  6, 7.0, 2.0,   5.69, 12.8,   3.61, 1.50, 1.36],
+        ['L 55×5',   55,  5, 7.0, 2.0,   5.32, 14.7,   3.76, 1.66, 1.45],
+        ['L 60×5',   60,  5, 8.0, 2.0,   5.82, 21.0,   4.88, 1.90, 1.57],
+        ['L 60×6',   60,  6, 8.0, 2.0,   6.91, 24.6,   5.74, 1.89, 1.60],
+        ['L 60×8',   60,  8, 8.0, 2.0,   9.03, 31.3,   7.40, 1.86, 1.66],
+        ['L 65×7',   65,  7, 9.0, 2.0,   8.70, 37.0,   7.95, 2.06, 1.78],
+        ['L 70×6',   70,  6, 9.0, 2.0,   8.13, 42.0,   8.40, 2.27, 1.84],
+        ['L 70×7',   70,  7, 9.0, 2.0,   9.40, 48.1,   9.63, 2.26, 1.87],
+        ['L 75×6',   75,  6,10.0, 2.0,   8.73, 52.9,   9.78, 2.46, 1.97],
+        ['L 75×8',   75,  8,10.0, 2.0,  11.5,  68.5,  12.8,  2.44, 2.03],
+        ['L 80×6',   80,  6,10.0, 2.0,   9.35, 65.5,  11.3,  2.65, 2.10],
+        ['L 80×8',   80,  8,10.0, 2.0,  12.3,  85.0,  14.8,  2.63, 2.16],
+        ['L 80×10',  80, 10,10.0, 2.0,  15.1,  102,   18.0,  2.60, 2.22],
+        ['L 90×6',   90,  6,11.0, 2.0,  10.6,  104,   16.0,  3.13, 2.34],
+        ['L 90×8',   90,  8,11.0, 2.0,  13.9,  135,   20.8,  3.11, 2.40],
+        ['L 90×9',   90,  9,11.0, 2.0,  15.5,  149,   23.1,  3.10, 2.43],
+        ['L 90×10',  90, 10,11.0, 2.0,  17.1,  163,   25.3,  3.09, 2.46],
+        ['L 100×7', 100,  7,12.0, 2.0,  13.5,  177,   24.5,  3.62, 2.63],
+        ['L 100×8', 100,  8,12.0, 2.0,  15.5,  200,   27.8,  3.60, 2.66],
+        ['L 100×10',100, 10,12.0, 2.0,  19.2,  245,   34.2,  3.57, 2.72],
+        ['L 100×12',100, 12,12.0, 2.0,  22.7,  287,   40.2,  3.55, 2.78],
+        ['L 110×8', 110,  8,12.0, 2.0,  17.1,  268,   33.8,  3.96, 2.90],
+        ['L 110×10',110, 10,12.0, 2.0,  21.2,  327,   41.4,  3.93, 2.96],
+        ['L 120×8', 120,  8,13.0, 2.0,  18.7,  391,   45.2,  4.58, 3.18],
+        ['L 120×10',120, 10,13.0, 2.0,  23.2,  480,   55.7,  4.55, 3.24],
+        ['L 120×11',120, 11,13.0, 2.0,  25.4,  522,   60.8,  4.53, 3.27],
+        ['L 120×12',120, 12,13.0, 2.0,  27.5,  563,   65.7,  4.52, 3.30],
+        ['L 125×8', 125,  8,14.0, 2.0,  19.7,  447,   49.5,  4.77, 3.29],
+        ['L 125×10',125, 10,14.0, 2.0,  24.3,  547,   60.9,  4.75, 3.35],
+        ['L 125×12',125, 12,14.0, 2.0,  29.0,  645,   71.9,  4.72, 3.41],
+        ['L 130×9', 130,  9,14.0, 2.0,  22.8,  565,   60.4,  4.98, 3.51],
+        ['L 130×10',130, 10,14.0, 2.0,  25.3,  623,   66.7,  4.96, 3.53],
+        ['L 150×10',150, 10,16.0, 2.0,  29.3,  958,   88.2,  5.72, 3.95],
+        ['L 150×12',150, 12,16.0, 2.0,  34.8, 1138,   105,   5.72, 4.01],
+        ['L 150×14',150, 14,16.0, 2.0,  40.3, 1307,   121,   5.69, 4.07],
+        ['L 150×15',150, 15,16.0, 2.0,  43.0, 1392,   129,   5.69, 4.10],
+        ['L 160×10',160, 10,17.0, 2.0,  31.3, 1162,  100,    6.09, 4.18],
+        ['L 160×12',160, 12,17.0, 2.0,  37.2, 1374,   119,   6.08, 4.24],
+        ['L 180×12',180, 12,18.0, 2.0,  42.1, 2161,   166,   7.16, 4.75],
+        ['L 180×14',180, 14,18.0, 2.0,  48.7, 2479,   191,   7.13, 4.81],
+        ['L 180×16',180, 16,18.0, 2.0,  55.2, 2783,   215,   7.10, 4.87],
+        ['L 180×18',180, 18,18.0, 2.0,  61.7, 3078,   238,   7.06, 4.93],
+        ['L 200×13',200, 13,18.0, 2.0,  50.5, 3290,   225,   8.07, 5.23],
+        ['L 200×14',200, 14,18.0, 2.0,  54.2, 3527,   242,   8.07, 5.26],
+        ['L 200×15',200, 15,18.0, 2.0,  58.0, 3760,   258,   8.05, 5.29],
+        ['L 200×16',200, 16,18.0, 2.0,  61.7, 3990,   274,   8.03, 5.32],
+        ['L 200×18',200, 18,18.0, 2.0,  69.1, 4449,   307,   8.02, 5.38],
+        ['L 200×20',200, 20,18.0, 2.0,  76.5, 4892,   339,   8.00, 5.44],
+    ];
+
+    // ─── TABLE HEADERS ───────────────────────────────────────────────────────────
+    const HEADERS = {
+        ipe:    ['Profile', 'h [mm]', 'b [mm]', 'tᵥᵥ [mm]', 'tꜰ [mm]', 'r [mm]', 'A [cm²]', 'Iₓ [cm⁴]', 'Iᵧ [cm⁴]', 'Wₓ [cm³]', 'Wᵧ [cm³]', 'iₓ [cm]', 'iᵧ [cm]'],
+        hea:    ['Profile', 'h [mm]', 'b [mm]', 'tᵥᵥ [mm]', 'tꜰ [mm]', 'r [mm]', 'A [cm²]', 'Iₓ [cm⁴]', 'Iᵧ [cm⁴]', 'Wₓ [cm³]', 'Wᵧ [cm³]', 'iₓ [cm]', 'iᵧ [cm]'],
+        heb:    ['Profile', 'h [mm]', 'b [mm]', 'tᵥᵥ [mm]', 'tꜰ [mm]', 'r [mm]', 'A [cm²]', 'Iₓ [cm⁴]', 'Iᵧ [cm⁴]', 'Wₓ [cm³]', 'Wᵧ [cm³]', 'iₓ [cm]', 'iᵧ [cm]'],
+        upn:    ['Profile', 'h [mm]', 'b [mm]', 'tᵥᵥ [mm]', 'tꜰ [mm]', 'r [mm]', 'A [cm²]', 'Iₓ [cm⁴]', 'Iᵧ [cm⁴]', 'Wₓ [cm³]', 'Wᵧ [cm³]', 'iₓ [cm]', 'iᵧ [cm]'],
+        l:      ['Profile', 'a [mm]', 't [mm]', 'r₁ [mm]', 'A [cm²]', 'Iₓ=Iᵧ [cm⁴]', 'Wₓ=Wᵧ [cm³]', 'iₓ=iᵧ [cm]', 'e [cm]'],
+    };
+
+    // ─── SHAPE SVGs & NOTES ─────────────────────────────────────────────────────
+    const SHAPES = {
+        ipe: {
+            svg: `<svg width="90" height="90" viewBox="0 0 90 90">
+                <rect x="10" y="8"  width="70" height="8"  fill="none" stroke="#f97316" stroke-width="1.5"/>
+                <rect x="38" y="16" width="14" height="50" fill="none" stroke="#f97316" stroke-width="1.5"/>
+                <rect x="10" y="66" width="70" height="8"  fill="none" stroke="#f97316" stroke-width="1.5"/>
+                <line x1="45" y1="4"  x2="45" y2="88" stroke="#60a5fa" stroke-width="0.5" stroke-dasharray="3,2"/>
+                <line x1="4"  y1="45" x2="86" y2="45" stroke="#60a5fa" stroke-width="0.5" stroke-dasharray="3,2"/>
+                <text x="83" y="48" fill="#60a5fa" font-size="8" font-family="monospace">x</text>
+                <text x="47" y="10" fill="#60a5fa" font-size="8" font-family="monospace">y</text>
+            </svg>`,
+            note: 'I-section (IPE series). Strong axis x–x is horizontal. Flanges top and bottom, web in the middle. Commonly used as beams in bending.'
+        },
+        hea: {
+            svg: `<svg width="90" height="90" viewBox="0 0 90 90">
+                <rect x="8"  y="8"  width="74" height="10" fill="none" stroke="#f97316" stroke-width="1.5"/>
+                <rect x="36" y="18" width="18" height="54" fill="none" stroke="#f97316" stroke-width="1.5"/>
+                <rect x="8"  y="72" width="74" height="10" fill="none" stroke="#f97316" stroke-width="1.5"/>
+                <line x1="45" y1="4"  x2="45" y2="88" stroke="#60a5fa" stroke-width="0.5" stroke-dasharray="3,2"/>
+                <line x1="4"  y1="45" x2="86" y2="45" stroke="#60a5fa" stroke-width="0.5" stroke-dasharray="3,2"/>
+                <text x="83" y="48" fill="#60a5fa" font-size="8" font-family="monospace">x</text>
+                <text x="47" y="10" fill="#60a5fa" font-size="8" font-family="monospace">y</text>
+            </svg>`,
+            note: 'Wide-flange I-section (HEA series). Wider flanges relative to height compared to IPE. Often used as columns or beam-columns under combined loads.'
+        },
+        heb: {
+            svg: `<svg width="90" height="90" viewBox="0 0 90 90">
+                <rect x="8"  y="8"  width="74" height="12" fill="none" stroke="#f97316" stroke-width="1.5"/>
+                <rect x="35" y="20" width="20" height="50" fill="none" stroke="#f97316" stroke-width="1.5"/>
+                <rect x="8"  y="70" width="74" height="12" fill="none" stroke="#f97316" stroke-width="1.5"/>
+                <line x1="45" y1="4"  x2="45" y2="88" stroke="#60a5fa" stroke-width="0.5" stroke-dasharray="3,2"/>
+                <line x1="4"  y1="45" x2="86" y2="45" stroke="#60a5fa" stroke-width="0.5" stroke-dasharray="3,2"/>
+                <text x="83" y="48" fill="#60a5fa" font-size="8" font-family="monospace">x</text>
+                <text x="47" y="10" fill="#60a5fa" font-size="8" font-family="monospace">y</text>
+            </svg>`,
+            note: 'Wide-flange I-section (HEB series). Heavier flanges than HEA. Preferred for columns in multi-storey structures.'
+        },
+        upn: {
+            svg: `<svg width="90" height="90" viewBox="0 0 90 90">
+                <polyline points="72,8 20,8 20,82 72,82" fill="none" stroke="#f97316" stroke-width="1.5"/>
+                <line x1="20" y1="8"  x2="20" y2="18" stroke="#f97316" stroke-width="6"/>
+                <line x1="20" y1="72" x2="20" y2="82" stroke="#f97316" stroke-width="6"/>
+                <line x1="4"  y1="45" x2="86" y2="45" stroke="#60a5fa" stroke-width="0.5" stroke-dasharray="3,2"/>
+                <text x="83" y="48" fill="#60a5fa" font-size="8" font-family="monospace">x</text>
+            </svg>`,
+            note: 'C-channel section (UPN). Asymmetric about the y-axis — centroid lies inside the web. Used for purlins, rails, and framing members. Iy and Wy are given for the centroidal y-axis.'
+        },
+        l: {
+            svg: `<svg width="90" height="90" viewBox="0 0 90 90">
+                <polyline points="15,10 15,80 80,80" fill="none" stroke="#f97316" stroke-width="8" stroke-linecap="square"/>
+                <line x1="4"  y1="45" x2="86" y2="45" stroke="#60a5fa" stroke-width="0.5" stroke-dasharray="3,2"/>
+                <line x1="45" y1="4"  x2="45" y2="88" stroke="#60a5fa" stroke-width="0.5" stroke-dasharray="3,2"/>
+                <text x="83" y="48" fill="#60a5fa" font-size="8" font-family="monospace">x</text>
+                <text x="47" y="10" fill="#60a5fa" font-size="8" font-family="monospace">y</text>
+            </svg>`,
+            note: 'Equal-leg angle (L). Symmetric — Ix = Iy. The x and y axes shown are centroidal; e is the distance from the back of the leg to the centroid. Used in trusses, bracing, and gusset connections.'
+        },
+    };
+
+    // ─── STATE ───────────────────────────────────────────────────────────────────
+    let currentSeries = 'ipe';
+
+    function setSeries(s) {
+        currentSeries = s;
+        document.querySelectorAll('.series-btn').forEach(b => b.classList.toggle('active', b.dataset.series === s));
+        document.getElementById('searchInp').value = '';
+        renderShape(s);
+        renderTable(s);
+    }
+
+    function renderShape(s) {
+        const sh = SHAPES[s];
+        document.getElementById('shapeRow').innerHTML =
+            sh.svg.replace('<svg ', '<svg id="shapeSvg" ') +
+            '<p class="shape-note" id="shapeNote">' + sh.note + '</p>';
+    }
+
+    function renderTable(s) {
+        const heads = HEADERS[s];
+        const thead = document.getElementById('tableHead');
+        const tbody = document.getElementById('tableBody');
+
+        thead.innerHTML = '<tr>' + heads.map(h => '<th>' + h + '</th>').join('') + '</tr>';
+
+        let data;
+        if (s === 'ipe') data = IPE;
+        else if (s === 'hea') data = HEA;
+        else if (s === 'heb') data = HEB;
+        else if (s === 'upn') data = UPN;
+        else data = LEQUAL;
+
+        tbody.innerHTML = data.map(row => {
+            const cells = row.map((v, i) => {
+                if (i === 0) return '<td>' + v + '</td>';
+                return '<td>' + (typeof v === 'number' ? fmt(v) : v) + '</td>';
+            }).join('');
+            return '<tr>' + cells + '</tr>';
+        }).join('');
+
+        document.getElementById('noResults').style.display = 'none';
+    }
+
+    function fmt(v) {
+        if (v === null || v === undefined) return '—';
+        if (v >= 1000) return v.toFixed(0);
+        if (v >= 100)  return v.toFixed(1);
+        if (v >= 10)   return v.toFixed(2);
+        return v.toFixed(2);
+    }
+
+    function filterTable() {
+        const q = document.getElementById('searchInp').value.trim().toLowerCase();
+        const rows = document.getElementById('tableBody').querySelectorAll('tr');
+        let visible = 0;
+        rows.forEach(tr => {
+            const text = tr.querySelector('td').textContent.toLowerCase();
+            const show = !q || text.includes(q);
+            tr.classList.toggle('hidden', !show);
+            if (show) visible++;
+        });
+        document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+    }
+
+    // ─── INIT ────────────────────────────────────────────────────────────────────
+    renderShape('ipe');
+    renderTable('ipe');
+    </script>
+</body>
+</html>

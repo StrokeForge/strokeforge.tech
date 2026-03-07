@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keys & Keyways DIN 6885 — Pero a drážka | StrokeForge Engineering</title>
+    <meta name="description" content="Look up parallel key dimensions per DIN 6885 Form A for any shaft diameter. Check surface pressure p and shear stress τ for a given torque and key length.">
+    <meta name="keywords" content="DIN 6885 key keyway calculator, pero drážka DIN 6885, parallel key dimensions, key shear check, surface pressure keyway, otlačení pera, střih pera">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-014/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 900px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .input-grid   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        .input-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 620px) { .input-grid { grid-template-columns: 1fr 1fr; } .input-grid-2 { grid-template-columns: 1fr; } }
+
+        .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; min-width: 0; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; flex-shrink: 0; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        /* Key info banner */
+        .key-banner { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; background: var(--darker-bg); border-radius: 10px; padding: 1rem 1.2rem; margin-bottom: 1.25rem; }
+        .key-banner .kv { display: flex; flex-direction: column; gap: 0.1rem; }
+        .key-banner .kv-label { font-size: 0.7rem; color: var(--text-gray); text-transform: uppercase; letter-spacing: 0.05em; }
+        .key-banner .kv-val  { font-size: 1.1rem; color: var(--primary-orange); font-weight: 700; font-family: monospace; }
+        .key-banner .kv-sub  { font-size: 0.72rem; color: var(--text-gray); }
+        .key-banner .sep { width: 1px; height: 40px; background: var(--border-gray); }
+
+        /* Results table */
+        .res-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .res-table th { padding: 0.5rem 0.9rem; text-align: left; color: var(--text-gray); border-bottom: 1px solid var(--border-gray); font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+        .res-table td { padding: 0.55rem 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .res-table td:first-child  { color: var(--primary-orange); font-weight: 600; font-family: monospace; min-width: 90px; }
+        .res-table td:nth-child(2) { color: var(--light-gray); font-weight: 700; font-size: 0.95rem; }
+        .res-table td:nth-child(3) { color: var(--text-gray); font-size: 0.8rem; }
+        .res-table td:nth-child(4) { color: var(--text-gray); font-size: 0.78rem; font-family: monospace; }
+        .res-table tr:last-child td { border-bottom: none; }
+        .res-table .section-head td { color: var(--text-gray); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 1rem; border-bottom: 1px solid var(--border-gray); }
+
+        /* Utilization bar */
+        .bar-wrap { margin: 0.75rem 0 0; }
+        .bar-track { height: 10px; background: var(--darker-bg); border-radius: 99px; overflow: hidden; }
+        .bar-fill  { height: 100%; border-radius: 99px; transition: width 0.4s, background 0.4s; }
+        .bar-label { font-size: 0.78rem; color: var(--text-gray); margin-top: 0.35rem; display: flex; justify-content: space-between; }
+
+        /* Verdict */
+        .verdict { display: inline-block; margin-top: 0.75rem; padding: 0.3rem 1rem; border-radius: 6px; font-size: 0.88rem; font-weight: 700; }
+        .verdict.pass { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+        .verdict.fail { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+        .verdict.warn { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+
+        /* Layout: inputs + SVG */
+        .side-layout { display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: start; }
+        @media (max-width: 580px) { .side-layout { grid-template-columns: 1fr; } }
+
+        /* DIN table */
+        .din-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+        .din-table th { padding: 0.4rem 0.6rem; text-align: right; color: var(--text-gray); border-bottom: 2px solid var(--border-gray); font-size: 0.68rem; white-space: nowrap; background: var(--darker-bg); }
+        .din-table th:first-child { text-align: left; }
+        .din-table td { padding: 0.38rem 0.6rem; text-align: right; color: var(--light-gray); border-bottom: 1px solid rgba(255,255,255,0.03); white-space: nowrap; }
+        .din-table td:first-child { text-align: left; color: var(--text-gray); }
+        .din-table tr.highlight td { background: rgba(249,115,22,0.12); color: var(--primary-orange); font-weight: 700; }
+        .din-table tr.highlight td:first-child { color: var(--primary-orange); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>🔑 Keys &amp; Keyways DIN 6885</h1>
+        <p>Parallel key dimensions (Form A) per DIN 6885 — surface pressure and shear check</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- INPUT: Shaft + geometry -->
+        <div class="card">
+            <h2>Shaft &amp; Key</h2>
+            <div class="side-layout">
+                <div>
+                    <!-- Key info banner (auto-filled from d) -->
+                    <div class="key-banner" id="keyBanner">
+                        <div class="kv"><span class="kv-label">b × h</span><span class="kv-val" id="bh">—</span><span class="kv-sub">key cross-section [mm]</span></div>
+                        <div class="sep"></div>
+                        <div class="kv"><span class="kv-label">t₁ (shaft)</span><span class="kv-val" id="t1v">—</span><span class="kv-sub">keyway depth [mm]</span></div>
+                        <div class="sep"></div>
+                        <div class="kv"><span class="kv-label">t₂ (hub)</span><span class="kv-val" id="t2v">—</span><span class="kv-sub">keyway depth [mm]</span></div>
+                        <div class="sep"></div>
+                        <div class="kv"><span class="kv-label">d range</span><span class="kv-val" id="dRange">—</span><span class="kv-sub">shaft diameter [mm]</span></div>
+                    </div>
+
+                    <div class="input-grid" style="margin-bottom:1rem;">
+                        <div class="field">
+                            <label>Shaft diameter d</label>
+                            <div class="field-row">
+                                <input type="number" id="d" class="inp" value="40" min="6" max="500" step="1" oninput="calc()">
+                                <span class="unit">mm</span>
+                            </div>
+                            <span class="hint">6 – 500 mm</span>
+                        </div>
+                        <div class="field">
+                            <label>Torque M<sub>k</sub></label>
+                            <div class="field-row">
+                                <input type="number" id="mk" class="inp" value="500" min="0" step="1" oninput="calc()">
+                                <span class="unit">N·m</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Key length l</label>
+                            <div class="field-row">
+                                <input type="number" id="lkey" class="inp" value="50" min="6" max="500" step="1" oninput="calc()">
+                                <span class="unit">mm</span>
+                            </div>
+                            <span class="hint">Nominal length (Form A)</span>
+                        </div>
+                    </div>
+
+                    <div class="input-grid-2" style="margin-bottom:1rem;">
+                        <div class="field">
+                            <label>Hub material</label>
+                            <select id="matHub" class="sel" onchange="calc()">
+                                <option value="150">Steel — static load (150 MPa)</option>
+                                <option value="100" selected>Steel — light shock (100 MPa)</option>
+                                <option value="75">Steel — heavy shock (75 MPa)</option>
+                                <option value="60">Cast iron (60 MPa)</option>
+                                <option value="35">Light alloy (35 MPa)</option>
+                                <option value="custom">Custom p_allow</option>
+                            </select>
+                        </div>
+                        <div class="field" id="customPField" style="display:none;">
+                            <label>Custom p<sub>allow</sub></label>
+                            <div class="field-row">
+                                <input type="number" id="customP" class="inp" value="100" min="1" oninput="calc()">
+                                <span class="unit">MPa</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Number of keys</label>
+                            <select id="nkeys" class="sel" onchange="calc()">
+                                <option value="1" selected>1 key</option>
+                                <option value="2">2 keys (180°)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SVG cross-section diagram -->
+                <svg id="keySvg" width="140" height="140" viewBox="0 0 140 140">
+                    <!-- drawn by JS -->
+                </svg>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card" id="resultsCard">
+            <h2>Results</h2>
+            <table class="res-table">
+                <tbody id="resBody"></tbody>
+            </table>
+        </div>
+
+        <!-- DIN 6885 FULL TABLE -->
+        <div class="card">
+            <h2>DIN 6885 Form A — Full table</h2>
+            <div style="overflow-x:auto;">
+                <table class="din-table" id="dinTable">
+                    <thead>
+                        <tr>
+                            <th>d range [mm]</th>
+                            <th>b [mm]</th>
+                            <th>h [mm]</th>
+                            <th>t₁ [mm]</th>
+                            <th>t₂ [mm]</th>
+                            <th>l min [mm]</th>
+                            <th>l max [mm]</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dinBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Background</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Surface pressure (otlačení)</h3>
+                    <p>The key bears against the hub keyway wall. Effective contact area on the hub side:</p>
+                    <p style="margin-top:0.5rem;font-family:monospace;font-size:0.82rem;color:var(--light-gray);">
+                        A = lₑ · t₂<br>
+                        p = M / (d/2 · lₑ · t₂)<br>
+                        lₑ = l − b &nbsp;(Form A)
+                    </p>
+                    <p style="margin-top:0.4rem;">Hub side governs because t₂ &lt; t₁. Both sides are checked.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Shear stress</h3>
+                    <p>The key is sheared along the interface between shaft and hub:</p>
+                    <p style="margin-top:0.5rem;font-family:monospace;font-size:0.82rem;color:var(--light-gray);">
+                        τ = M / (d/2 · lₑ · b)<br>
+                        τ_allow ≈ 60–80 MPa (steel)
+                    </p>
+                    <p style="margin-top:0.4rem;">Shear rarely governs for standard proportions (h ≪ b is not the case for DIN keys).</p>
+                </div>
+                <div class="info-block">
+                    <h3>Allowable pressures</h3>
+                    <ul>
+                        <li>Steel/steel — static: 120–150 MPa</li>
+                        <li>Steel/steel — light shock: 80–100 MPa</li>
+                        <li>Steel/steel — heavy shock: 60–75 MPa</li>
+                        <li>Steel/cast iron: 50–70 MPa</li>
+                        <li>Steel/light alloy: 25–45 MPa</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Notes</h3>
+                    <ul>
+                        <li>Form A = both ends rounded (most common)</li>
+                        <li>Form B = both ends square; lₑ = l (full length)</li>
+                        <li>With 2 keys at 180° load is shared — divide torque per key</li>
+                        <li>Key length should satisfy: l ≥ 1.5d (rule of thumb)</li>
+                        <li>Standard per DIN 6885-1 / ISO 773 / ČSN 02 2562</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem">
+            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ─── DIN 6885 Form A DATA ────────────────────────────────────────────────────
+    // [dMin, dMax, b, h, t1, t2, lMin, lMax]
+    const DIN = [
+        [6,    8,   2,  2,  1.2, 1.0,  6,   20],
+        [8,   10,   3,  3,  1.8, 1.4,  6,   36],
+        [10,  12,   4,  4,  2.5, 1.8,  8,   45],
+        [12,  17,   5,  5,  3.0, 2.3,  10,  56],
+        [17,  22,   6,  6,  3.5, 2.8,  14,  70],
+        [22,  30,   8,  7,  4.0, 3.3,  18,  90],
+        [30,  38,  10,  8,  5.0, 3.3,  22, 110],
+        [38,  44,  12,  8,  5.0, 3.3,  28, 140],
+        [44,  50,  14,  9,  5.5, 3.8,  36, 160],
+        [50,  58,  16, 10,  6.0, 4.3,  45, 180],
+        [58,  65,  18, 11,  7.0, 4.4,  50, 200],
+        [65,  75,  20, 12,  7.5, 4.9,  56, 220],
+        [75,  85,  22, 14,  9.0, 5.4,  63, 250],
+        [85,  95,  25, 14,  9.0, 5.4,  70, 280],
+        [95, 110,  28, 16, 10.0, 6.4,  80, 320],
+        [110,130,  32, 18, 11.0, 7.4,  90, 360],
+        [130,150,  36, 20, 12.0, 8.4, 100, 400],
+        [150,170,  40, 22, 13.0, 9.4, 100, 400],
+        [170,200,  45, 25, 15.0,10.4, 110, 400],
+        [200,230,  50, 28, 17.0,11.4, 125, 400],
+        [230,260,  56, 32, 20.0,12.4, 140, 400],
+        [260,290,  63, 32, 20.0,12.4, 160, 400],
+        [290,330,  70, 36, 22.0,14.4, 180, 400],
+        [330,380,  80, 40, 25.0,15.4, 200, 400],
+        [380,440,  90, 45, 28.0,17.4, 220, 400],
+        [440,500, 100, 50, 31.0,19.5, 250, 400],
+    ];
+
+    // ─── HELPERS ─────────────────────────────────────────────────────────────────
+    function getKey(d) {
+        return DIN.find(r => d > r[0] && d <= r[1]) || null;
+    }
+
+    function fmt(v, dec) { return v.toFixed(dec ?? 2); }
+
+    function pAllow() {
+        const sel = document.getElementById('matHub').value;
+        if (sel === 'custom') return parseFloat(document.getElementById('customP').value) || 100;
+        return parseFloat(sel);
+    }
+
+    // ─── DRAW SVG ────────────────────────────────────────────────────────────────
+    function drawSvg(d, b, h, t1) {
+        const svg = document.getElementById('keySvg');
+        svg.innerHTML = '';
+        const cx = 70, cy = 75, R = 52;
+        const scale = R * 2 / d;  // px per mm
+
+        function el(tag, attrs, text) {
+            const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+            for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+            if (text !== undefined) e.textContent = text;
+            return e;
+        }
+
+        // shaft circle
+        svg.appendChild(el('circle', { cx, cy, r: R, fill: 'none', stroke: '#4ade80', 'stroke-width': 1.5 }));
+
+        // keyway notch (top)
+        const bPx = b * scale;
+        const t1Px = t1 * scale;
+        const notchX1 = cx - bPx / 2;
+        const notchX2 = cx + bPx / 2;
+        const notchY  = cy - R;         // top of circle
+        const notchBot = notchY - t1Px; // keyway goes outward (up)
+
+        // clip: draw shaft filled then cut keyway
+        // Fill shaft
+        svg.appendChild(el('circle', { cx, cy, r: R, fill: 'rgba(74,222,128,0.06)', stroke: '#4ade80', 'stroke-width': 1.5 }));
+
+        // Keyway rectangle (cut into shaft, going upward)
+        svg.appendChild(el('rect', {
+            x: notchX1,
+            y: notchBot,
+            width: bPx,
+            height: t1Px,
+            fill: '#1a1a1a',
+            stroke: '#f97316',
+            'stroke-width': 1.2,
+        }));
+
+        // Key (sits proud above shaft surface by t2, but we show it as rectangle above keyway bottom)
+        // Just draw the key outline slightly above the keyway
+        const keyHeight = h * scale;
+        const keyY = notchBot - (keyHeight - t1Px);
+        svg.appendChild(el('rect', {
+            x: notchX1,
+            y: keyY,
+            width: bPx,
+            height: keyHeight,
+            fill: 'rgba(249,115,22,0.18)',
+            stroke: '#f97316',
+            'stroke-width': 1.5,
+            rx: 1,
+        }));
+
+        // Center cross
+        svg.appendChild(el('line', { x1: cx - 6, y1: cy, x2: cx + 6, y2: cy, stroke: '#60a5fa', 'stroke-width': 0.7 }));
+        svg.appendChild(el('line', { x1: cx, y1: cy - 6, x2: cx, y2: cy + 6, stroke: '#60a5fa', 'stroke-width': 0.7 }));
+
+        // Labels
+        svg.appendChild(el('text', { x: cx, y: 9, fill: '#f97316', 'font-size': 9, 'font-family': 'monospace', 'text-anchor': 'middle', 'dominant-baseline': 'middle' }, `b=${b}`));
+        svg.appendChild(el('text', { x: cx + R + 6, y: cy, fill: '#4ade80', 'font-size': 8, 'font-family': 'monospace', 'text-anchor': 'start', 'dominant-baseline': 'middle' }, `d=${d}`));
+    }
+
+    // ─── MAIN CALC ───────────────────────────────────────────────────────────────
+    function calc() {
+        const d   = parseFloat(document.getElementById('d').value)    || 0;
+        const Mk  = parseFloat(document.getElementById('mk').value)   || 0;   // N·m
+        const l   = parseFloat(document.getElementById('lkey').value) || 0;   // mm
+        const n   = parseInt(document.getElementById('nkeys').value)  || 1;
+        const pA  = pAllow();
+
+        document.getElementById('customPField').style.display =
+            document.getElementById('matHub').value === 'custom' ? 'flex' : 'none';
+
+        const row = getKey(d);
+        if (!row) {
+            document.getElementById('bh').textContent    = '—';
+            document.getElementById('t1v').textContent   = '—';
+            document.getElementById('t2v').textContent   = '—';
+            document.getElementById('dRange').textContent = '—';
+            document.getElementById('resBody').innerHTML  = '<tr><td colspan="4" style="color:var(--text-gray);padding:1rem 0;">Shaft diameter out of range (6–500 mm).</td></tr>';
+            drawSvg(40, 12, 8, 5);
+            return;
+        }
+
+        const [dMin, dMax, b, h, t1, t2, lMin, lMax] = row;
+
+        // Update banner
+        document.getElementById('bh').textContent     = `${b} × ${h}`;
+        document.getElementById('t1v').textContent    = `${t1}`;
+        document.getElementById('t2v').textContent    = `${t2}`;
+        document.getElementById('dRange').textContent = `>${dMin} – ${dMax}`;
+
+        // Draw SVG
+        drawSvg(d, b, h, t1);
+
+        // Effective length
+        const le = Math.max(l - b, 0);  // Form A: subtract one radius each end = b total
+
+        // Per key torque
+        const MkPerKey = (Mk * 1000) / n;   // N·mm per key
+
+        // Surface pressure
+        // Shaft side: p1 = M / (d/2 · le · t1)
+        // Hub side:   p2 = M / (d/2 · le · t2)
+        let p1 = 0, p2 = 0, tau = 0;
+        if (le > 0 && d > 0) {
+            const arm = d / 2; // mm
+            p1  = MkPerKey / (arm * le * t1);   // MPa
+            p2  = MkPerKey / (arm * le * t2);   // MPa
+            tau = MkPerKey / (arm * le * b);     // MPa
+        }
+
+        const tauAllow = 70; // MPa (steel key, typical)
+        const pGov = Math.max(p1, p2); // governing pressure
+
+        // Utilization
+        const etaP   = pGov / pA;
+        const etaTau = tau / tauAllow;
+        const etaMax = Math.max(etaP, etaTau);
+
+        // Verdict
+        let verdict = 'PASS', vClass = 'pass';
+        if (etaMax > 1.0)       { verdict = 'FAIL'; vClass = 'fail'; }
+        else if (etaMax > 0.85) { verdict = 'PASS — near limit'; vClass = 'warn'; }
+
+        // Build result rows
+        function row3(sym, val, unit, formula) {
+            return `<tr>
+                <td>${sym}</td>
+                <td>${val}</td>
+                <td>${unit}</td>
+                <td>${formula}</td>
+            </tr>`;
+        }
+        function secHead(txt) {
+            return `<tr class="section-head"><td colspan="4">${txt}</td></tr>`;
+        }
+        function barRow(eta, label) {
+            const pct   = Math.min(eta * 100, 100).toFixed(0);
+            const color = eta > 1.0 ? '#f87171' : eta > 0.85 ? '#fbbf24' : '#4ade80';
+            return `<tr><td colspan="4" style="padding-top:0.5rem;">
+                <div class="bar-wrap">
+                    <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color};"></div></div>
+                    <div class="bar-label"><span>${label}</span><span>${(eta*100).toFixed(1)} %</span></div>
+                </div>
+            </td></tr>`;
+        }
+
+        let html = '';
+        html += secHead('Key geometry (DIN 6885 Form A)');
+        html += row3('b × h',   `${b} × ${h}`,       'mm',   `key cross-section`);
+        html += row3('t₁',      fmt(t1,1),             'mm',   `shaft keyway depth`);
+        html += row3('t₂',      fmt(t2,1),             'mm',   `hub keyway depth`);
+        html += row3('lₑ',      le > 0 ? fmt(le,1) : '—', 'mm', `l − b = ${l} − ${b}`);
+        html += row3('l range', `${lMin} – ${lMax}`,  'mm',   `per DIN 6885`);
+
+        html += secHead('Surface pressure');
+        html += row3('p₁ (shaft)', le > 0 ? fmt(p1,1) : '—', 'MPa', `M / (d/2 · lₑ · t₁)`);
+        html += row3('p₂ (hub)',   le > 0 ? fmt(p2,1) : '—', 'MPa', `M / (d/2 · lₑ · t₂)`);
+        html += row3('p_allow',    fmt(pA,0),   'MPa',  `selected material`);
+        html += barRow(etaP, 'Surface pressure utilization η_p');
+
+        html += secHead('Shear stress');
+        html += row3('τ',       le > 0 ? fmt(tau,1) : '—', 'MPa', `M / (d/2 · lₑ · b)`);
+        html += row3('τ_allow', `${tauAllow}`,             'MPa', `steel key (DIN)`);
+        html += barRow(etaTau, 'Shear stress utilization η_τ');
+
+        if (le <= 0 && l > 0) {
+            html += `<tr><td colspan="4" style="color:#fbbf24;font-size:0.82rem;padding:0.5rem 0.9rem;">⚠ Key length l ≤ b — effective length lₑ = 0. Increase key length.</td></tr>`;
+        }
+        if (l < 1.5 * d) {
+            html += `<tr><td colspan="4" style="color:#fbbf24;font-size:0.82rem;padding:0.3rem 0.9rem;">⚠ Rule of thumb: l ≥ 1.5·d = ${fmt(1.5*d,0)} mm recommended.</td></tr>`;
+        }
+        if (l > lMax) {
+            html += `<tr><td colspan="4" style="color:#fbbf24;font-size:0.82rem;padding:0.3rem 0.9rem;">⚠ Key length exceeds standard maximum (${lMax} mm) for this size.</td></tr>`;
+        }
+        if (l < lMin) {
+            html += `<tr><td colspan="4" style="color:#fbbf24;font-size:0.82rem;padding:0.3rem 0.9rem;">⚠ Key length below standard minimum (${lMin} mm) for this size.</td></tr>`;
+        }
+
+        html += `<tr><td colspan="4"><span class="verdict ${vClass}">${verdict}</span></td></tr>`;
+
+        document.getElementById('resBody').innerHTML = html;
+
+        // Highlight row in DIN table
+        document.querySelectorAll('#dinBody tr').forEach((tr, i) => {
+            tr.classList.toggle('highlight', i === DIN.indexOf(row));
+        });
+    }
+
+    // ─── BUILD DIN TABLE ─────────────────────────────────────────────────────────
+    function buildDinTable() {
+        const tbody = document.getElementById('dinBody');
+        tbody.innerHTML = DIN.map(r => {
+            const [dMin, dMax, b, h, t1, t2, lMin, lMax] = r;
+            return `<tr>
+                <td>&gt;${dMin} – ${dMax}</td>
+                <td>${b}</td><td>${h}</td>
+                <td>${t1}</td><td>${t2}</td>
+                <td>${lMin}</td><td>${lMax}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    // ─── INIT ─────────────────────────────────────────────────────────────────────
+    buildDinTable();
+    calc();
+    </script>
+</body>
+</html>

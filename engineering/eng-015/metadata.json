@@ -1,0 +1,8 @@
+{
+  "id": "eng-015",
+  "title": "Compression Spring Calculator",
+  "description": "Design and check cylindrical compression springs: spring rate k, shear stress τ with Wahl correction, solid length Ls, deflection at F1/F2, buckling check. Per DIN EN 13906-1.",
+  "category": "calculator",
+  "icon": "🌀",
+  "difficulty": "intermediate"
+}

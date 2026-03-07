@@ -1,0 +1,8 @@
+{
+  "id": "eng-011",
+  "title": "Bending Stress Calculator",
+  "description": "Calculate section modulus Wx and bending stress σ = M/Wx for rectangular, circular, hollow, and standard steel profiles (IPE/HEA/HEB). Includes yield check per EC3.",
+  "category": "calculator",
+  "icon": "📐",
+  "difficulty": "intermediate"
+}

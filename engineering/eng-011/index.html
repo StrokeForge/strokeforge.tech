@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bending Stress Calculator — Wx, σ | StrokeForge Engineering</title>
+    <meta name="description" content="Calculate elastic section modulus Wx and bending stress σ = M/Wx for rectangular, circular, hollow, and standard steel profiles IPE/HEA/HEB. Yield utilization check per EC3.">
+    <meta name="keywords" content="bending stress calculator, section modulus Wx, ohybové napětí, modul průřezu, IPE HEA HEB, EC3 bending, σ = M/W">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-011/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 900px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        .input-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 620px) { .input-grid { grid-template-columns: 1fr 1fr; } .input-grid-2 { grid-template-columns: 1fr; } }
+
+        .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; min-width: 0; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; flex-shrink: 0; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        /* Section type tabs */
+        .type-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.25rem; }
+        .type-btn { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.35rem 0.9rem; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
+        .type-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .type-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; font-weight: 600; }
+
+        /* Cross-section diagram */
+        .section-diagram { display: flex; justify-content: center; align-items: center; padding: 1rem 0 0.5rem; }
+
+        /* Verdict */
+        .verdict { border-radius: 10px; padding: 1rem 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
+        .verdict.pass { background: rgba(74,222,128,0.1); border: 2px solid #4ade80; }
+        .verdict.fail { background: rgba(248,113,113,0.1); border: 2px solid #f87171; }
+        .verdict.na   { background: rgba(100,116,139,0.1); border: 2px solid var(--border-gray); }
+        .verdict-icon { font-size: 2rem; line-height: 1; }
+        .verdict-text { font-size: 1.05rem; font-weight: 700; }
+        .verdict-sub  { font-size: 0.82rem; color: var(--text-gray); margin-top: 0.2rem; }
+
+        /* Results grid */
+        .res-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 600px) { .res-grid { grid-template-columns: 1fr 1fr; } }
+        .res-cell { background: var(--darker-bg); border-radius: 8px; padding: 0.85rem 1rem; }
+        .res-cell .lbl { font-size: 0.7rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .res-cell .val { font-size: 1.1rem; font-weight: 700; color: var(--light-gray); }
+        .res-cell .val.orange { color: var(--primary-orange); }
+        .res-cell .val.green  { color: #4ade80; }
+        .res-cell .val.red    { color: #f87171; }
+        .res-cell .sub { font-size: 0.72rem; color: var(--text-gray); margin-top: 0.15rem; }
+
+        /* Utilization bar */
+        .util-wrap { margin-bottom: 0.5rem; }
+        .util-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-gray); margin-bottom: 0.3rem; }
+        .util-bg { background: rgba(255,255,255,0.07); border-radius: 6px; height: 12px; overflow: hidden; position: relative; }
+        .util-fill { height: 100%; border-radius: 6px; transition: width 0.4s, background 0.3s; }
+        .util-limit { position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.3); }
+
+        /* Warn */
+        .warn-box { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.4); color: #f59e0b; border-radius: 8px; padding: 0.65rem 1rem; font-size: 0.82rem; margin-top: 0.75rem; display: none; }
+        .warn-box.show { display: block; }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.88rem; line-height: 2; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>📐 Bending Stress Calculator</h1>
+        <p>Section modulus W<sub>x</sub> and bending stress σ = M / W<sub>x</sub> — rectangular, circular, hollow and standard profiles</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- BENDING MOMENT -->
+        <div class="card">
+            <h2>Bending Moment</h2>
+            <div class="input-grid-2">
+                <div class="field">
+                    <label>Applied moment M</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="inp-M" placeholder="e.g. 10" min="0" step="any" oninput="calculate()">
+                        <select class="sel" id="unit-M" onchange="calculate()" style="width:auto">
+                            <option value="1">kN·m</option>
+                            <option value="0.001">N·m</option>
+                            <option value="0.000001">N·mm</option>
+                            <option value="0.001">kN·mm</option>
+                        </select>
+                    </div>
+                    <div class="hint">Design value M<sub>Ed</sub> or characteristic value</div>
+                </div>
+                <div class="field">
+                    <label>Material / yield strength f<sub>y</sub></label>
+                    <div class="field-row">
+                        <select class="sel" id="sel-mat" onchange="onMatChange()">
+                            <option value="235">S235 — f<sub>y</sub> = 235 MPa</option>
+                            <option value="275">S275 — f<sub>y</sub> = 275 MPa</option>
+                            <option value="355" selected>S355 — f<sub>y</sub> = 355 MPa</option>
+                            <option value="420">S420 — f<sub>y</sub> = 420 MPa</option>
+                            <option value="460">S460 — f<sub>y</sub> = 460 MPa</option>
+                            <option value="custom">Custom...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field" id="field-fy-custom" style="display:none">
+                    <label>Custom f<sub>y</sub></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="inp-fy" placeholder="e.g. 250" min="1" step="1" oninput="calculate()">
+                        <span class="unit">MPa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CROSS SECTION -->
+        <div class="card">
+            <h2>Cross-Section</h2>
+
+            <div class="type-tabs">
+                <button class="type-btn active" data-type="rect"    onclick="setType('rect')">Rectangle</button>
+                <button class="type-btn"         data-type="circle"  onclick="setType('circle')">Circle</button>
+                <button class="type-btn"         data-type="hrect"   onclick="setType('hrect')">Hollow rectangle</button>
+                <button class="type-btn"         data-type="hcirc"   onclick="setType('hcirc')">Hollow circle</button>
+                <button class="type-btn"         data-type="ipe"     onclick="setType('ipe')">IPE</button>
+                <button class="type-btn"         data-type="hea"     onclick="setType('hea')">HEA</button>
+                <button class="type-btn"         data-type="heb"     onclick="setType('heb')">HEB</button>
+                <button class="type-btn"         data-type="custom"  onclick="setType('custom')">Custom W<sub>x</sub></button>
+            </div>
+
+            <!-- Rectangle -->
+            <div id="sec-rect">
+                <div class="input-grid">
+                    <div class="field">
+                        <label>Width b</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="r-b" placeholder="e.g. 100" min="0" step="any" oninput="calculate()">
+                            <span class="unit">mm</span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Height h</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="r-h" placeholder="e.g. 200" min="0" step="any" oninput="calculate()">
+                            <span class="unit">mm</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hint" style="margin-top:0.5rem">W<sub>x</sub> = b · h² / 6</div>
+            </div>
+
+            <!-- Circle -->
+            <div id="sec-circle" style="display:none">
+                <div class="input-grid-2">
+                    <div class="field">
+                        <label>Diameter d</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="c-d" placeholder="e.g. 50" min="0" step="any" oninput="calculate()">
+                            <span class="unit">mm</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hint" style="margin-top:0.5rem">W<sub>x</sub> = π · d³ / 32</div>
+            </div>
+
+            <!-- Hollow rectangle -->
+            <div id="sec-hrect" style="display:none">
+                <div class="input-grid">
+                    <div class="field">
+                        <label>Outer width B</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="hr-B" placeholder="e.g. 100" min="0" step="any" oninput="calculate()">
+                            <span class="unit">mm</span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Outer height H</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="hr-H" placeholder="e.g. 150" min="0" step="any" oninput="calculate()">
+                            <span class="unit">mm</span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Wall thickness t</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="hr-t" placeholder="e.g. 5" min="0" step="any" oninput="calculate()">
+                            <span class="unit">mm</span>
+                        </div>
+                        <div class="hint">b = B−2t, h = H−2t</div>
+                    </div>
+                </div>
+                <div class="hint" style="margin-top:0.5rem">W<sub>x</sub> = (B·H³ − b·h³) / (6·H)</div>
+            </div>
+
+            <!-- Hollow circle -->
+            <div id="sec-hcirc" style="display:none">
+                <div class="input-grid">
+                    <div class="field">
+                        <label>Outer diameter D</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="hc-D" placeholder="e.g. 60" min="0" step="any" oninput="calculate()">
+                            <span class="unit">mm</span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Wall thickness t</label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="hc-t" placeholder="e.g. 5" min="0" step="any" oninput="calculate()">
+                            <span class="unit">mm</span>
+                        </div>
+                        <div class="hint">d = D − 2t</div>
+                    </div>
+                </div>
+                <div class="hint" style="margin-top:0.5rem">W<sub>x</sub> = π · (D⁴ − d⁴) / (32 · D)</div>
+            </div>
+
+            <!-- IPE -->
+            <div id="sec-ipe" style="display:none">
+                <div class="input-grid-2">
+                    <div class="field">
+                        <label>IPE profile</label>
+                        <select class="sel" id="sel-ipe" onchange="calculate()"></select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HEA -->
+            <div id="sec-hea" style="display:none">
+                <div class="input-grid-2">
+                    <div class="field">
+                        <label>HEA profile</label>
+                        <select class="sel" id="sel-hea" onchange="calculate()"></select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HEB -->
+            <div id="sec-heb" style="display:none">
+                <div class="input-grid-2">
+                    <div class="field">
+                        <label>HEB profile</label>
+                        <select class="sel" id="sel-heb" onchange="calculate()"></select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom -->
+            <div id="sec-custom" style="display:none">
+                <div class="input-grid-2">
+                    <div class="field">
+                        <label>Section modulus W<sub>x</sub></label>
+                        <div class="field-row">
+                            <input class="inp" type="number" id="cust-Wx" placeholder="e.g. 250" min="0" step="any" oninput="calculate()">
+                            <span class="unit">cm³</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SVG diagram -->
+            <div class="section-diagram">
+                <svg id="sec-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card" id="card-results" style="display:none">
+            <h2>Results</h2>
+
+            <div class="res-grid">
+                <div class="res-cell">
+                    <div class="lbl">Section modulus W<sub>x</sub></div>
+                    <div class="val orange" id="res-Wx">—</div>
+                    <div class="sub" id="res-Wx-mm">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Bending stress σ</div>
+                    <div class="val" id="res-sigma">—</div>
+                    <div class="sub">= M / W<sub>x</sub></div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Yield strength f<sub>y</sub></div>
+                    <div class="val" id="res-fy">—</div>
+                    <div class="sub">material limit</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Utilization η</div>
+                    <div class="val" id="res-eta">—</div>
+                    <div class="sub">σ / f<sub>y</sub></div>
+                </div>
+            </div>
+
+            <div class="verdict na" id="verdict">
+                <div class="verdict-icon" id="verdict-icon">—</div>
+                <div>
+                    <div class="verdict-text" id="verdict-text">—</div>
+                    <div class="verdict-sub" id="verdict-sub">—</div>
+                </div>
+            </div>
+
+            <div class="util-wrap">
+                <div class="util-label">
+                    <span>σ / f<sub>y</sub></span>
+                    <span id="util-pct">—</span>
+                </div>
+                <div class="util-bg">
+                    <div class="util-fill" id="util-fill" style="width:0%"></div>
+                    <div class="util-limit" style="left:100%"></div>
+                </div>
+            </div>
+
+            <div class="warn-box" id="warn-over">⚠ Stress exceeds yield strength — section is overstressed. Increase section size or reduce load.</div>
+            <div class="warn-box" id="warn-low" style="background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.3);color:#93c5fd">ℹ Utilization below 30% — section may be oversized. Consider a lighter profile.</div>
+        </div>
+
+        <!-- FORMULAS & INFO -->
+        <div class="card">
+            <h2>Formulas & notes</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Section modulus W<sub>x</sub></h3>
+                    <p class="mono">
+                        Rectangle:&nbsp;&nbsp;&nbsp; b·h² / 6<br>
+                        Circle:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; π·d³ / 32<br>
+                        Hollow rect:&nbsp; (B·H³−b·h³) / (6·H)<br>
+                        Hollow circ:&nbsp; π·(D⁴−d⁴) / (32·D)
+                    </p>
+                </div>
+                <div class="info-block">
+                    <h3>Bending stress</h3>
+                    <p class="mono">
+                        σ = M / W<sub>x</sub><br>
+                        η = σ / f<sub>y</sub> ≤ 1.0<br>
+                    </p>
+                    <p style="margin-top:0.6rem">For EC3 design: use M<sub>Ed</sub> (factored) and f<sub>y</sub>/γ<sub>M0</sub> (γ<sub>M0</sub> = 1.0 for S235–S460). This tool uses characteristic f<sub>y</sub> directly — apply your own partial factors as needed.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Yield strengths (EN 10025)</h3>
+                    <ul>
+                        <li>S235: f<sub>y</sub> = 235 MPa (t ≤ 40 mm)</li>
+                        <li>S275: f<sub>y</sub> = 275 MPa</li>
+                        <li>S355: f<sub>y</sub> = 355 MPa</li>
+                        <li>S420: f<sub>y</sub> = 420 MPa</li>
+                        <li>S460: f<sub>y</sub> = 460 MPa</li>
+                        <li>For t &gt; 40 mm: f<sub>y</sub> is reduced per EN 10025 Table 7</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Profile W<sub>x</sub> source</h3>
+                    <p>IPE, HEA, HEB values are elastic section moduli W<sub>y,el</sub> about the strong axis per EN 10034 / manufacturer tables. Plastic modulus W<sub>pl</sub> is ~10–15% higher — not used here (elastic check only).</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem">
+            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ── Profile data — Wx (= Wy,el) in cm³ ───────────────────────────────
+    const PROFILES = {
+        ipe: [
+            {name:'IPE 80',  Wx:20.0},  {name:'IPE 100', Wx:34.2},
+            {name:'IPE 120', Wx:53.0},  {name:'IPE 140', Wx:77.3},
+            {name:'IPE 160', Wx:109},   {name:'IPE 180', Wx:146},
+            {name:'IPE 200', Wx:194},   {name:'IPE 220', Wx:252},
+            {name:'IPE 240', Wx:324},   {name:'IPE 270', Wx:429},
+            {name:'IPE 300', Wx:557},   {name:'IPE 330', Wx:713},
+            {name:'IPE 360', Wx:904},   {name:'IPE 400', Wx:1156},
+            {name:'IPE 450', Wx:1500},  {name:'IPE 500', Wx:1928},
+            {name:'IPE 550', Wx:2441},  {name:'IPE 600', Wx:3069},
+        ],
+        hea: [
+            {name:'HEA 100', Wx:72.8},  {name:'HEA 120', Wx:106},
+            {name:'HEA 140', Wx:155},   {name:'HEA 160', Wx:220},
+            {name:'HEA 180', Wx:294},   {name:'HEA 200', Wx:389},
+            {name:'HEA 220', Wx:515},   {name:'HEA 240', Wx:675},
+            {name:'HEA 260', Wx:836},   {name:'HEA 280', Wx:1013},
+            {name:'HEA 300', Wx:1260},  {name:'HEA 320', Wx:1479},
+            {name:'HEA 340', Wx:1678},  {name:'HEA 360', Wx:1891},
+            {name:'HEA 400', Wx:2311},  {name:'HEA 450', Wx:2896},
+            {name:'HEA 500', Wx:3550},  {name:'HEA 550', Wx:4146},
+            {name:'HEA 600', Wx:4787},
+        ],
+        heb: [
+            {name:'HEB 100', Wx:104},   {name:'HEB 120', Wx:165},
+            {name:'HEB 140', Wx:245},   {name:'HEB 160', Wx:354},
+            {name:'HEB 180', Wx:481},   {name:'HEB 200', Wx:643},
+            {name:'HEB 220', Wx:827},   {name:'HEB 240', Wx:1053},
+            {name:'HEB 260', Wx:1283},  {name:'HEB 280', Wx:1534},
+            {name:'HEB 300', Wx:1869},  {name:'HEB 320', Wx:2149},
+            {name:'HEB 340', Wx:2408},  {name:'HEB 360', Wx:2683},
+            {name:'HEB 400', Wx:3232},  {name:'HEB 450', Wx:3982},
+            {name:'HEB 500', Wx:4815},  {name:'HEB 550', Wx:5591},
+            {name:'HEB 600', Wx:6525},
+        ],
+    };
+
+    // ── State ─────────────────────────────────────────────────────────────
+    let secType = 'rect';
+
+    // ── Init ─────────────────────────────────────────────────────────────
+    function init() {
+        ['ipe','hea','heb'].forEach(t => {
+            const sel = document.getElementById('sel-' + t);
+            PROFILES[t].forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.Wx;
+                opt.textContent = p.name + '  — Wx = ' + p.Wx + ' cm³';
+                sel.appendChild(opt);
+            });
+            sel.addEventListener('change', calculate);
+        });
+        drawDiagram();
+        calculate();
+    }
+
+    // ── Type switch ───────────────────────────────────────────────────────
+    function setType(t) {
+        secType = t;
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === t));
+        ['rect','circle','hrect','hcirc','ipe','hea','heb','custom'].forEach(id => {
+            document.getElementById('sec-' + id).style.display = id === t ? '' : 'none';
+        });
+        drawDiagram();
+        calculate();
+    }
+
+    // ── Material ─────────────────────────────────────────────────────────
+    function onMatChange() {
+        const v = document.getElementById('sel-mat').value;
+        document.getElementById('field-fy-custom').style.display = v === 'custom' ? '' : 'none';
+        calculate();
+    }
+
+    function getFy() {
+        const v = document.getElementById('sel-mat').value;
+        if (v === 'custom') {
+            const c = parseFloat(document.getElementById('inp-fy').value);
+            return isNaN(c) ? null : c;
+        }
+        return parseFloat(v);
+    }
+
+    // ── Section modulus [cm³] ─────────────────────────────────────────────
+    function getWx_cm3() {
+        switch (secType) {
+            case 'rect': {
+                const b = parseFloat(document.getElementById('r-b').value);
+                const h = parseFloat(document.getElementById('r-h').value);
+                if (isNaN(b) || isNaN(h) || b <= 0 || h <= 0) return null;
+                return b * h * h / 6 / 1000; // mm³ → cm³
+            }
+            case 'circle': {
+                const d = parseFloat(document.getElementById('c-d').value);
+                if (isNaN(d) || d <= 0) return null;
+                return Math.PI * d * d * d / 32 / 1000;
+            }
+            case 'hrect': {
+                const B = parseFloat(document.getElementById('hr-B').value);
+                const H = parseFloat(document.getElementById('hr-H').value);
+                const t = parseFloat(document.getElementById('hr-t').value);
+                if (isNaN(B)||isNaN(H)||isNaN(t)||B<=0||H<=0||t<=0) return null;
+                const b = B - 2*t, h = H - 2*t;
+                if (b <= 0 || h <= 0) return null;
+                return (B*H*H*H - b*h*h*h) / (6*H) / 1000;
+            }
+            case 'hcirc': {
+                const D = parseFloat(document.getElementById('hc-D').value);
+                const t = parseFloat(document.getElementById('hc-t').value);
+                if (isNaN(D)||isNaN(t)||D<=0||t<=0) return null;
+                const d = D - 2*t;
+                if (d <= 0) return null;
+                return Math.PI * (D*D*D*D - d*d*d*d) / (32*D) / 1000;
+            }
+            case 'ipe': return parseFloat(document.getElementById('sel-ipe').value) || null;
+            case 'hea': return parseFloat(document.getElementById('sel-hea').value) || null;
+            case 'heb': return parseFloat(document.getElementById('sel-heb').value) || null;
+            case 'custom': {
+                const v = parseFloat(document.getElementById('cust-Wx').value);
+                return isNaN(v) || v <= 0 ? null : v;
+            }
+        }
+        return null;
+    }
+
+    // ── Calculate ─────────────────────────────────────────────────────────
+    function calculate() {
+        drawDiagram();
+
+        const Mraw = parseFloat(document.getElementById('inp-M').value);
+        const Munit = parseFloat(document.getElementById('unit-M').value);
+        const fy = getFy();
+        const Wx_cm3 = getWx_cm3();
+
+        if (isNaN(Mraw) || Mraw < 0 || Wx_cm3 === null || fy === null) {
+            document.getElementById('card-results').style.display = 'none';
+            return;
+        }
+
+        const M_kNm = Mraw * Munit;          // kN·m
+        const M_Nmm = M_kNm * 1e6;           // N·mm
+        const Wx_mm3 = Wx_cm3 * 1000;        // mm³
+        const sigma = M_Nmm / Wx_mm3;        // MPa = N/mm²
+        const eta = sigma / fy;
+
+        // Display
+        document.getElementById('card-results').style.display = '';
+        document.getElementById('res-Wx').textContent = fmtNum(Wx_cm3) + ' cm³';
+        document.getElementById('res-Wx-mm').textContent = fmtNum(Wx_mm3) + ' mm³';
+        document.getElementById('res-sigma').textContent = sigma.toFixed(1) + ' MPa';
+        document.getElementById('res-fy').textContent = fy + ' MPa';
+        document.getElementById('res-eta').textContent = (eta * 100).toFixed(1) + '%';
+
+        // Utilization bar
+        const pct = Math.min(eta * 100, 120);
+        const barColor = eta <= 0.85 ? '#4ade80' : eta <= 1.0 ? '#fb923c' : '#f87171';
+        document.getElementById('util-fill').style.width = pct + '%';
+        document.getElementById('util-fill').style.background = barColor;
+        document.getElementById('util-pct').textContent = (eta * 100).toFixed(1) + '%';
+
+        // Sigma cell color
+        const sc = document.getElementById('res-sigma');
+        sc.className = 'val ' + (eta > 1.0 ? 'red' : eta > 0.85 ? 'orange' : 'green');
+
+        // Eta cell color
+        const ec = document.getElementById('res-eta');
+        ec.className = 'val ' + (eta > 1.0 ? 'red' : eta > 0.85 ? 'orange' : 'green');
+
+        // Verdict
+        const vd = document.getElementById('verdict');
+        vd.className = 'verdict ' + (eta <= 1.0 ? 'pass' : 'fail');
+        document.getElementById('verdict-icon').textContent = eta <= 1.0 ? '✅' : '❌';
+        if (eta <= 1.0) {
+            document.getElementById('verdict-text').textContent = 'Section OK — within elastic limit';
+            document.getElementById('verdict-sub').textContent =
+                'σ = ' + sigma.toFixed(1) + ' MPa  ≤  fy = ' + fy + ' MPa   (η = ' + (eta*100).toFixed(1) + '%)';
+        } else {
+            document.getElementById('verdict-text').textContent = 'OVERSTRESSED — exceeds yield';
+            document.getElementById('verdict-sub').textContent =
+                'σ = ' + sigma.toFixed(1) + ' MPa  >  fy = ' + fy + ' MPa   (η = ' + (eta*100).toFixed(1) + '%)';
+        }
+
+        // Warnings
+        document.getElementById('warn-over').className = 'warn-box' + (eta > 1.0 ? ' show' : '');
+        document.getElementById('warn-low').className  = 'warn-box' + (eta < 0.3 && eta > 0 ? ' show' : '')
+            + ' ';
+        document.getElementById('warn-low').style.cssText = eta < 0.3 && eta > 0
+            ? 'display:block;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.3);color:#93c5fd;border-radius:8px;padding:0.65rem 1rem;font-size:0.82rem;margin-top:0.75rem'
+            : 'display:none';
+    }
+
+    function fmtNum(v) {
+        if (v >= 10000) return v.toFixed(0);
+        if (v >= 1000)  return v.toFixed(1);
+        if (v >= 100)   return v.toFixed(2);
+        return v.toFixed(3);
+    }
+
+    // ── SVG cross-section diagram ─────────────────────────────────────────
+    function drawDiagram() {
+        const svg = document.getElementById('sec-svg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const ns = 'http://www.w3.org/2000/svg';
+        const W = 160, H = 120;
+        svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+        svg.setAttribute('width', W);
+        svg.setAttribute('height', H);
+
+        function el(tag, attrs) {
+            const e = document.createElementNS(ns, tag);
+            Object.entries(attrs).forEach(([k,v]) => e.setAttribute(k, v));
+            return e;
+        }
+        function txt(x, y, t, col, sz) {
+            const e = el('text', {x, y, fill: col||'#9ca3af', 'font-size': sz||9,
+                'text-anchor':'middle', 'dominant-baseline':'middle', 'font-family':'monospace'});
+            e.textContent = t;
+            return e;
+        }
+
+        const cx = W/2, cy = H/2;
+        const fill = '#1e293b', stroke = '#fb923c';
+
+        switch (secType) {
+            case 'rect': {
+                const bw = 70, bh = 50;
+                svg.appendChild(el('rect', {x:cx-bw/2, y:cy-bh/2, width:bw, height:bh, fill, stroke, 'stroke-width':1.5}));
+                svg.appendChild(txt(cx, cy-bh/2-8, 'b', '#60a5fa', 9));
+                svg.appendChild(el('line', {x1:cx-bw/2, y1:cy-bh/2-4, x2:cx+bw/2, y2:cy-bh/2-4, stroke:'#60a5fa', 'stroke-width':0.8}));
+                svg.appendChild(txt(cx+bw/2+10, cy, 'h', '#60a5fa', 9));
+                svg.appendChild(el('line', {x1:cx+bw/2+5, y1:cy-bh/2, x2:cx+bw/2+5, y2:cy+bh/2, stroke:'#60a5fa', 'stroke-width':0.8}));
+                break;
+            }
+            case 'circle': {
+                svg.appendChild(el('circle', {cx, cy, r:42, fill, stroke, 'stroke-width':1.5}));
+                svg.appendChild(el('line', {x1:cx, y1:cy, x2:cx+42, y2:cy, stroke:'#60a5fa', 'stroke-width':1}));
+                svg.appendChild(txt(cx+21, cy-7, 'd/2', '#60a5fa', 8));
+                break;
+            }
+            case 'hrect': {
+                const bw=70, bh=52, tw=10;
+                svg.appendChild(el('rect', {x:cx-bw/2, y:cy-bh/2, width:bw, height:bh, fill, stroke, 'stroke-width':1.5}));
+                svg.appendChild(el('rect', {x:cx-bw/2+tw, y:cy-bh/2+tw, width:bw-2*tw, height:bh-2*tw, fill:'#0f172a', stroke:'#374151', 'stroke-width':1}));
+                svg.appendChild(txt(cx, cy-bh/2-8, 'B', '#60a5fa', 9));
+                svg.appendChild(txt(cx+bw/2+10, cy, 'H', '#60a5fa', 9));
+                svg.appendChild(txt(cx-bw/2+tw/2, cy, 't', '#9ca3af', 8));
+                break;
+            }
+            case 'hcirc': {
+                svg.appendChild(el('circle', {cx, cy, r:42, fill, stroke, 'stroke-width':1.5}));
+                svg.appendChild(el('circle', {cx, cy, r:30, fill:'#0f172a', stroke:'#374151', 'stroke-width':1}));
+                svg.appendChild(el('line', {x1:cx, y1:cy, x2:cx+42, y2:cy, stroke:'#60a5fa', 'stroke-width':1}));
+                svg.appendChild(txt(cx+21, cy-7, 'D/2', '#60a5fa', 8));
+                svg.appendChild(el('line', {x1:cx, y1:cy, x2:cx+30, y2:cy-20, stroke:'#9ca3af', 'stroke-width':0.8}));
+                svg.appendChild(txt(cx+12, cy-18, 't', '#9ca3af', 8));
+                break;
+            }
+            case 'ipe': case 'hea': case 'heb': {
+                // I-section silhouette
+                const fw=64, fh=8, wh=60, wt=6;
+                const top = cy - wh/2;
+                // top flange
+                svg.appendChild(el('rect', {x:cx-fw/2, y:top-fh, width:fw, height:fh, fill, stroke, 'stroke-width':1.5}));
+                // web
+                svg.appendChild(el('rect', {x:cx-wt/2, y:top, width:wt, height:wh, fill, stroke, 'stroke-width':1.5}));
+                // bottom flange
+                svg.appendChild(el('rect', {x:cx-fw/2, y:top+wh, width:fw, height:fh, fill, stroke, 'stroke-width':1.5}));
+                // labels
+                const lbl = secType === 'ipe' ? 'IPE' : secType === 'hea' ? 'HEA' : 'HEB';
+                svg.appendChild(txt(cx, cy, lbl, '#fb923c', 10));
+                svg.appendChild(el('line', {x1:cx-fw/2-4, y1:top-fh, x2:cx-fw/2-4, y2:top+wh+fh, stroke:'#60a5fa', 'stroke-width':0.8}));
+                svg.appendChild(txt(cx-fw/2-13, cy, 'h', '#60a5fa', 9));
+                break;
+            }
+            case 'custom': {
+                svg.appendChild(txt(cx, cy, 'Custom Wx', '#9ca3af', 9));
+                break;
+            }
+        }
+    }
+
+    init();
+    </script>
+</body>
+</html>
