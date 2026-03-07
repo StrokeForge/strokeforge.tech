@@ -36,22 +36,7 @@
     <style>
         /* ===== NAVBAR ===== */
 /* ===== PAGE LAYOUT ===== */
-        .tool-header {
-            max-width: 1200px;
-            margin: 2.5rem auto 0;
-            padding: 0 2rem;
-        }
-        .tool-title {
-            font-size: 2.5rem;
-            color: var(--primary-orange);
-            margin-bottom: 0.4rem;
-        }
-        .tool-subtitle {
-            color: var(--text-gray);
-            font-size: 1rem;
-            margin-bottom: 0;
-        }
-        .content-section {
+.content-section {
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 2rem;
@@ -342,14 +327,17 @@
     </nav>
 
 <!-- Tool Header -->
-<div class="tool-header">
-    <h1 class="tool-title">Cutting Plan Optimizer</h1>
-    <p class="tool-subtitle">1D stock optimization for bars, tubes, and profiles — minimize waste, maximize efficiency.</p>
-    <a href="/other.html" class="back-button">← Back to Other Projects</a>
-</div>
+<header class="page-header">
+    <h1>Cutting Plan Optimizer</h1>
+    <p>1D stock optimization for bars, tubes, and profiles — minimize waste, maximize efficiency.</p>
+</header>
 
 <!-- ===== INPUT SECTION ===== -->
 <div id="inputSection">
+
+    <div style="max-width:1200px;margin:1.5rem auto 0;padding:0 2rem;">
+        <a href="/other.html" class="back-button">← Back to Other Projects</a>
+    </div>
 
     <!-- Stock Settings -->
     <section class="content-section">
