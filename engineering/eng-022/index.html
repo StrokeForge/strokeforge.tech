@@ -413,10 +413,10 @@
                 fill: g.color, opacity: '0.35', rx: 2,
             }));
 
-            // fy value label
-            svg.appendChild(tx(cx - barW/2 - 2, padT + cH - fyH - 7, g.fy[0], g.color, 8));
-            // fu value label
-            svg.appendChild(tx(cx + barW/2 + 2, padT + cH - fuH - 7, g.fu, '#94a3b8', 7));
+            // fy value label — inside bar near top
+            svg.appendChild(tx(cx - barW/2 - 2, padT + cH - fyH + 12, g.fy[0], '#fff', 8));
+            // fu value label — inside bar near top
+            svg.appendChild(tx(cx + barW/2 + 2, padT + cH - fuH + 12, g.fu, '#fff', 7));
 
             // grade label
             svg.appendChild(tx(cx, padT + cH + 14, g.id, '#d1d5db', 9));

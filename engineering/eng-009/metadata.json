@@ -1,1 +1,1 @@
-{"id":"eng-009","title":"Simple Beam Deflection Calculator","category":"calculator","icon":"📐","difficulty":"intermediate"}
+{"id":"eng-009","title":"Simple Beam Deflection Calculator","description":"Calculate maximum deflection, reactions and bending moment for simply supported beams with uniform and point loads. Checks deflection limit L/250 per EC3.","category":"calculator","icon":"📐","difficulty":"intermediate"}
