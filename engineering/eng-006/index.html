@@ -402,12 +402,12 @@
         } else if (eta <= 1.0) {
             verdict.className = 'result-verdict pass';
             vIcon.textContent = '✅';
-            vText.textContent = 'VYHOVUJE — PASS';
+            vText.textContent = 'PASS';
             vSub.textContent = `η = ${fmt1(etaPct)} % ≤ 100 % (reserve: ${fmt1(reserve)} %)`;
         } else {
             verdict.className = 'result-verdict fail';
             vIcon.textContent = '❌';
-            vText.textContent = 'NEVYHOVUJE — FAIL';
+            vText.textContent = 'FAIL';
             vSub.textContent = `η = ${fmt1(etaPct)} % > 100 % — increase throat a or weld length l`;
         }
 

@@ -111,7 +111,7 @@
 
     <div class="page-header">
         <h1>Bolt Shear &amp; Bearing Calculator</h1>
-        <p>Šroubový spoj — střih a otlačení dle ČSN EN 1993-1-8 (EC3) §3.6</p>
+        <p>Bolted connection — shear and bearing resistance per EN 1993-1-8 (EC3) §3.6</p>
     </div>
 
     <div class="tool-wrap">
@@ -528,12 +528,12 @@
         } else if (eta <= 1.0) {
             verdict.className = 'result-verdict pass';
             vIcon.textContent = '✅';
-            vText.textContent = 'VYHOVUJE — PASS';
+            vText.textContent = 'PASS';
             vSub.textContent = `η = ${fmt1(etaPct)} % ≤ 100 %  |  ${nBolts}× M${bSize} ${grade}  |  governs: ${shearGoverns ? 'shear' : 'bearing'}`;
         } else {
             verdict.className = 'result-verdict fail';
             vIcon.textContent = '❌';
-            vText.textContent = 'NEVYHOVUJE — FAIL';
+            vText.textContent = 'FAIL';
             vSub.textContent = `η = ${fmt1(etaPct)} % > 100 %  |  F,Rd = ${fmt2(FRd_total)} kN < V,Ed = ${fmt2(VEd)} kN`;
         }
 
