@@ -370,7 +370,7 @@
     function drawComparison() {
         const svg = document.getElementById('compSvg');
         svg.innerHTML = '';
-        const W=420, H=180, padL=50, padR=20, padT=20, padB=40;
+        const W=420, H=180, padL=50, padR=20, padT=30, padB=40;
         const cW = W - padL - padR, cH = H - padT - padB;
         function el(tag,a,t){return makeSvgEl(tag,a,t);}
         function tx(x,y,t,fill,size,anchor){
@@ -413,10 +413,10 @@
                 fill: g.color, opacity: '0.35', rx: 2,
             }));
 
-            // fy value label — inside bar near top
-            svg.appendChild(tx(cx - barW/2 - 2, padT + cH - fyH + 12, g.fy[0], '#fff', 8));
-            // fu value label — inside bar near top
-            svg.appendChild(tx(cx + barW/2 + 2, padT + cH - fuH + 12, g.fu, '#fff', 7));
+            // fy value label — above bar
+            svg.appendChild(tx(cx - barW/2 - 2, padT + cH - fyH - 6, g.fy[0], '#d1d5db', 8));
+            // fu value label — above bar
+            svg.appendChild(tx(cx + barW/2 + 2, padT + cH - fuH - 6, g.fu, '#d1d5db', 7));
 
             // grade label
             svg.appendChild(tx(cx, padT + cH + 14, g.id, '#d1d5db', 9));
