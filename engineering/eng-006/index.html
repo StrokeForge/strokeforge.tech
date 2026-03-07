@@ -227,7 +227,7 @@
         <div class="card">
             <h2>Diagram</h2>
             <div class="diagram-wrap">
-                <svg id="diagram" width="540" height="250" viewBox="0 0 540 250"></svg>
+                <svg id="diagram" width="540" height="270" viewBox="0 0 540 270"></svg>
             </div>
         </div>
 
@@ -422,7 +422,7 @@
         svg.innerHTML = '';
         const ns = 'http://www.w3.org/2000/svg';
         const orange = '#f97316', gray = '#9ca3af', light = '#e5e7eb', blue = '#60a5fa', green = '#4ade80';
-        const W = 540, H = 250;
+        const W = 540, H = 270;
 
         function line(x1,y1,x2,y2,col,w) {
             const el = document.createElementNS(ns,'line');
@@ -482,11 +482,11 @@
         txt(vx - 22, py - 10, `a=${a}mm`, orange, 10, 'end');
         txt(vx + vw + 22, py - 10, `a=${a}mm`, orange, 10, 'start');
 
-        // Dimension label: l
-        line(px, py + ph + 14, px + pw, py + ph + 14, gray, 1);
-        line(px, py + ph + 8,  px,       py + ph + 20, gray, 1);
-        line(px + pw, py + ph + 8, px + pw, py + ph + 20, gray, 1);
-        txt(px + pw/2, py + ph + 26, `l = ${l} mm  (${n}× weld)`, gray, 10);
+        // Dimension label: l — below bottom tension arrow (which ends at py+ph+28)
+        line(px, py + ph + 36, px + pw, py + ph + 36, gray, 1);
+        line(px, py + ph + 30, px,       py + ph + 42, gray, 1);
+        line(px + pw, py + ph + 30, px + pw, py + ph + 42, gray, 1);
+        txt(px + pw/2, py + ph + 48, `l = ${l} mm  (${n}× weld)`, gray, 10);
 
         // Load arrows — all start/end outside structural elements
         if (mode === 'tension') {
@@ -497,7 +497,7 @@
             arrow(px - 40, py + ph/2, px - 10, py + ph/2, blue);
             txt(px - 50, py + ph/2 - 14, 'V (shear)', blue, 10);
         } else {
-            txt(W/2, vy - 22, 'M (bending)', blue, 10);
+            txt(W/2, vy - 44, 'M (bending)', blue, 10);
             const arcEl = document.createElementNS(ns,'path');
             arcEl.setAttribute('d', `M ${W/2-30},${vy} A 30 30 0 0 1 ${W/2+30},${vy}`);
             arcEl.setAttribute('stroke', blue); arcEl.setAttribute('fill','none'); arcEl.setAttribute('stroke-width',2.5);
@@ -506,9 +506,9 @@
         }
 
         // Legend
-        rect(10, 226, 12, 12, 'none', weldColor);
-        txt(26, 232, 'Fillet weld', gray, 10, 'start');
-        txt(W - 10, 232, `n = ${n} weld${n>1?'s':''}`, gray, 10, 'end');
+        rect(10, 252, 12, 12, 'none', weldColor);
+        txt(26, 258, 'Fillet weld', gray, 10, 'start');
+        txt(W - 10, 258, `n = ${n} weld${n>1?'s':''}`, gray, 10, 'end');
     }
 
     // Mode buttons
