@@ -227,7 +227,7 @@
         <div class="card">
             <h2>Diagram</h2>
             <div class="diagram-wrap">
-                <svg id="diagram" width="540" height="210" viewBox="0 0 540 210"></svg>
+                <svg id="diagram" width="540" height="250" viewBox="0 0 540 250"></svg>
             </div>
         </div>
 
@@ -422,7 +422,7 @@
         svg.innerHTML = '';
         const ns = 'http://www.w3.org/2000/svg';
         const orange = '#f97316', gray = '#9ca3af', light = '#e5e7eb', blue = '#60a5fa', green = '#4ade80';
-        const W = 540, H = 210;
+        const W = 540, H = 250;
 
         function line(x1,y1,x2,y2,col,w) {
             const el = document.createElementNS(ns,'line');
@@ -457,53 +457,47 @@
             poly.setAttribute('fill',col); svg.appendChild(poly);
         }
 
-        // Base plate
-        const px = 140, py = 80, pw = 260, ph = 50;
+        // Base plate — shifted down to leave room for force arrows above
+        const px = 140, py = 120, pw = 260, ph = 50;
         rect(px, py, pw, ph, gray, '#1a1a1a');
         txt(px + pw/2, py + ph/2, 'BASE PLATE', gray, 10);
 
-        // Vertical plate
-        const vx = W/2 - 15, vy = 20, vw = 30, vh = py - vy;
+        // Vertical web
+        const vx = W/2 - 15, vy = 55, vw = 30, vh = py - vy;
         rect(vx, vy, vw, vh, gray, '#222');
         txt(vx + vw/2, vy + vh/2, 'WEB', gray, 9);
 
-        // Weld triangles (both sides) — right-angle at junction, legs up web face and along plate surface
+        // Weld triangles — right-angle at web/plate junction, one leg up web face, one leg along plate surface
         const weldColor = eta > 1 ? '#f87171' : eta > 0.8 ? '#f59e0b' : orange;
-        // Left weld
-        const wx1 = vx, wy1 = py;
         const poly1 = document.createElementNS(ns,'polygon');
-        poly1.setAttribute('points', `${wx1},${wy1} ${wx1-18},${wy1} ${wx1},${wy1-18}`);
+        poly1.setAttribute('points', `${vx},${py} ${vx-18},${py} ${vx},${py-18}`);
         poly1.setAttribute('fill', weldColor); poly1.setAttribute('stroke','none'); poly1.setAttribute('opacity','0.9');
         svg.appendChild(poly1);
-        // Right weld
-        const wx2 = vx + vw, wy2 = py;
         const poly2 = document.createElementNS(ns,'polygon');
-        poly2.setAttribute('points', `${wx2},${wy2} ${wx2+18},${wy2} ${wx2},${wy2-18}`);
+        poly2.setAttribute('points', `${vx+vw},${py} ${vx+vw+18},${py} ${vx+vw},${py-18}`);
         poly2.setAttribute('fill', weldColor); poly2.setAttribute('stroke','none'); poly2.setAttribute('opacity','0.9');
         svg.appendChild(poly2);
 
-        // Dimension label: a — positioned on the triangle face
-        txt(vx - 12, py - 8, `a=${a}mm`, orange, 10, 'end');
-        txt(vx + vw + 12, py - 8, `a=${a}mm`, orange, 10, 'start');
+        // Weld size labels
+        txt(vx - 22, py - 10, `a=${a}mm`, orange, 10, 'end');
+        txt(vx + vw + 22, py - 10, `a=${a}mm`, orange, 10, 'start');
 
         // Dimension label: l
         line(px, py + ph + 14, px + pw, py + ph + 14, gray, 1);
-        line(px, py + ph + 8, px, py + ph + 20, gray, 1);
+        line(px, py + ph + 8,  px,       py + ph + 20, gray, 1);
         line(px + pw, py + ph + 8, px + pw, py + ph + 20, gray, 1);
-        txt(px + pw/2, py + ph + 22, `l = ${l} mm  (${n}× weld)`, gray, 10);
+        txt(px + pw/2, py + ph + 26, `l = ${l} mm  (${n}× weld)`, gray, 10);
 
-        // Load arrow
+        // Load arrows — all start/end outside structural elements
         if (mode === 'tension') {
-            arrow(W/2, vy + 12, W/2, vy - 10, blue);
-            arrow(W/2, py + ph - 12, W/2, py + ph + 30, blue);
-            txt(W/2, vy - 20, 'F (tension)', blue, 10);
+            arrow(W/2, vy, W/2, vy - 28, blue);
+            arrow(W/2, py + ph, W/2, py + ph + 28, blue);
+            txt(W/2, vy - 38, 'F (tension)', blue, 10);
         } else if (mode === 'shear') {
             arrow(px - 40, py + ph/2, px - 10, py + ph/2, blue);
             txt(px - 50, py + ph/2 - 14, 'V (shear)', blue, 10);
         } else {
-            // Bending: curved arrow
-            txt(W/2, vy - 18, 'M (bending)', blue, 10);
-            // Simple arc with line
+            txt(W/2, vy - 22, 'M (bending)', blue, 10);
             const arcEl = document.createElementNS(ns,'path');
             arcEl.setAttribute('d', `M ${W/2-30},${vy} A 30 30 0 0 1 ${W/2+30},${vy}`);
             arcEl.setAttribute('stroke', blue); arcEl.setAttribute('fill','none'); arcEl.setAttribute('stroke-width',2.5);
@@ -512,9 +506,9 @@
         }
 
         // Legend
-        rect(10, 180, 12, 12, 'none', weldColor);
-        txt(26, 186, 'Fillet weld', gray, 10, 'start');
-        txt(W - 10, 186, `n = ${n} weld${n>1?'s':''}`, gray, 10, 'end');
+        rect(10, 226, 12, 12, 'none', weldColor);
+        txt(26, 232, 'Fillet weld', gray, 10, 'start');
+        txt(W - 10, 232, `n = ${n} weld${n>1?'s':''}`, gray, 10, 'end');
     }
 
     // Mode buttons
