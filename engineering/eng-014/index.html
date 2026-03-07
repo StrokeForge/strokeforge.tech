@@ -333,18 +333,16 @@
         const bPx = b * scale;
         const t1Px = t1 * scale;
         const notchX1 = cx - bPx / 2;
-        const notchX2 = cx + bPx / 2;
-        const notchY  = cy - R;         // top of circle
-        const notchBot = notchY - t1Px; // keyway goes outward (up)
+        const notchY  = cy - R;              // shaft surface (top of circle)
+        const t2Px    = (h - t1) * scale;   // key protrusion above shaft into hub
 
-        // clip: draw shaft filled then cut keyway
         // Fill shaft
         svg.appendChild(el('circle', { cx, cy, r: R, fill: 'rgba(74,222,128,0.06)', stroke: '#4ade80', 'stroke-width': 1.5 }));
 
-        // Keyway rectangle (cut into shaft, going upward)
+        // Keyway rectangle: cut INTO shaft (going downward from circle top)
         svg.appendChild(el('rect', {
             x: notchX1,
-            y: notchBot,
+            y: notchY,
             width: bPx,
             height: t1Px,
             fill: '#1a1a1a',
@@ -352,10 +350,9 @@
             'stroke-width': 1.2,
         }));
 
-        // Key (sits proud above shaft surface by t2, but we show it as rectangle above keyway bottom)
-        // Just draw the key outline slightly above the keyway
+        // Key: t1 inside shaft + t2 protruding above shaft surface
         const keyHeight = h * scale;
-        const keyY = notchBot - (keyHeight - t1Px);
+        const keyY = notchY - t2Px;
         svg.appendChild(el('rect', {
             x: notchX1,
             y: keyY,
