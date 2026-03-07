@@ -1,0 +1,8 @@
+{
+  "id": "eng-023",
+  "title": "Czech Steel Grades ČSN",
+  "description": "Reference database of Czech ČSN steel grades with properties and EN/DIN/AISI equivalents. Structural, engineering, stainless and tool steels.",
+  "category": "materials",
+  "icon": "📋",
+  "difficulty": "beginner"
+}

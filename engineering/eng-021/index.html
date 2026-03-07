@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bearing Life Calculator L10 L10h | StrokeForge Engineering</title>
+    <meta name="description" content="Calculate L10 and L10h bearing life per ISO 281. Supports ball and roller bearings, reliability adjustment factor a1, and equivalent dynamic load estimation.">
+    <meta name="keywords" content="bearing life calculator, L10 L10h bearing, ISO 281, trvanlivost ložiska kalkulátor, bearing dynamic load rating, bearing hours, spolehlivost ložiska">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-021/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 960px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .input-grid   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        .input-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 640px) { .input-grid { grid-template-columns: 1fr 1fr; } .input-grid-2 { grid-template-columns: 1fr; } }
+
+        .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; min-width: 0; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; flex-shrink: 0; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        .res-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .res-table td { padding: 0.55rem 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .res-table td:first-child  { color: var(--primary-orange); font-weight: 600; font-family: monospace; width: 130px; }
+        .res-table td:nth-child(2) { color: var(--light-gray); font-weight: 700; }
+        .res-table td:nth-child(3) { color: var(--text-gray); font-size: 0.8rem; width: 70px; }
+        .res-table td:nth-child(4) { color: var(--text-gray); font-size: 0.78rem; font-family: monospace; }
+        .res-table tr:last-child td { border-bottom: none; }
+        .res-table .sec-head td { color: var(--text-gray); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border-gray); }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.82rem; line-height: 2.0; display: block; margin-top: 0.3rem; }
+
+        .chart-wrap { margin-top: 1.25rem; }
+        .chart-label { font-size: 0.75rem; color: var(--text-gray); text-align: center; margin-top: 0.4rem; }
+
+        .sep { border: none; border-top: 1px solid var(--border-gray); margin: 1.25rem 0; }
+
+        .type-tabs { display: flex; gap: 0.4rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+        .type-btn { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.35rem 0.9rem; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
+        .type-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .type-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>⚙️ Bearing Life Calculator</h1>
+        <p>L10 · L10h · reliability-adjusted L10m — per ISO 281</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- INPUT -->
+        <div class="card">
+            <h2>Bearing parameters</h2>
+
+            <div class="input-grid-2" style="margin-bottom:1rem;">
+                <div class="field">
+                    <label>Bearing type</label>
+                    <select id="bearingType" class="sel" onchange="calc()">
+                        <option value="ball">Ball bearing (p = 3)</option>
+                        <option value="roller">Roller bearing (p = 10/3)</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Reliability</label>
+                    <select id="reliability" class="sel" onchange="calc()">
+                        <option value="1.00">90% — a₁ = 1.00 (standard L10)</option>
+                        <option value="0.62">95% — a₁ = 0.62</option>
+                        <option value="0.53">96% — a₁ = 0.53</option>
+                        <option value="0.44">97% — a₁ = 0.44</option>
+                        <option value="0.33">98% — a₁ = 0.33</option>
+                        <option value="0.21">99% — a₁ = 0.21</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-grid" style="margin-bottom:1rem;">
+                <div class="field">
+                    <label>Basic dynamic load rating C</label>
+                    <div class="field-row">
+                        <input type="number" id="C" class="inp" value="25" min="0.1" step="0.5" oninput="calc()">
+                        <span class="unit">kN</span>
+                    </div>
+                    <span class="hint">From bearing catalogue</span>
+                </div>
+                <div class="field">
+                    <label>Equivalent dynamic load P</label>
+                    <div class="field-row">
+                        <input type="number" id="P" class="inp" value="8" min="0.01" step="0.1" oninput="calc()">
+                        <span class="unit">kN</span>
+                    </div>
+                    <span class="hint">P = X·Fr + Y·Fa</span>
+                </div>
+                <div class="field">
+                    <label>Rotational speed n</label>
+                    <div class="field-row">
+                        <input type="number" id="n" class="inp" value="1500" min="1" step="50" oninput="calc()">
+                        <span class="unit">rpm</span>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="sep">
+            <p style="font-size:0.8rem;color:var(--text-gray);margin-bottom:0.75rem;">Equivalent dynamic load — radial bearing</p>
+            <div class="input-grid" style="margin-bottom:0.5rem;">
+                <div class="field">
+                    <label>Radial load F<sub>r</sub></label>
+                    <div class="field-row">
+                        <input type="number" id="Fr" class="inp" value="7" min="0" step="0.1" oninput="calcP()">
+                        <span class="unit">kN</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Axial load F<sub>a</sub></label>
+                    <div class="field-row">
+                        <input type="number" id="Fa" class="inp" value="2" min="0" step="0.1" oninput="calcP()">
+                        <span class="unit">kN</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Factor e (Fa/Fr threshold)</label>
+                    <div class="field-row">
+                        <input type="number" id="ef" class="inp" value="0.35" min="0.01" step="0.01" oninput="calcP()">
+                        <span class="unit">—</span>
+                    </div>
+                    <span class="hint">Typical: 0.19–0.44 (deep groove ball)</span>
+                </div>
+            </div>
+            <p id="pNote" style="font-size:0.78rem;color:var(--text-gray);"></p>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card">
+            <h2>Results</h2>
+            <table class="res-table"><tbody id="resBody"></tbody></table>
+            <div class="chart-wrap">
+                <svg id="lifeSvg" width="100%" viewBox="0 0 400 160"></svg>
+                <p class="chart-label">Bearing life vs. C/P ratio — operating point marked</p>
+            </div>
+        </div>
+
+        <!-- FORMULAS -->
+        <div class="card">
+            <h2>Formulas — ISO 281</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Basic rating life</h3>
+                    <span class="mono">L10 = (C/P)^p &nbsp;[10⁶ rev]<br>p = 3 &nbsp;&nbsp;&nbsp;&nbsp;(ball bearings)<br>p = 10/3 &nbsp;(roller bearings)<br>L10h = L10·10⁶ / (60·n)</span>
+                </div>
+                <div class="info-block">
+                    <h3>Reliability-adjusted life</h3>
+                    <span class="mono">L10m = a1 · L10 &nbsp;[10⁶ rev]<br>L10mh = a1 · L10h &nbsp;[hours]</span>
+                    <p style="margin-top:0.5rem;">a1 = 1.00 → 90% reliability (standard)<br>a1 accounts for survivor probability only. Full ISO 281 Annex A uses aISO (lubrication, contamination).</p>
+                </div>
+                <div class="info-block">
+                    <h3>Equivalent dynamic load P</h3>
+                    <span class="mono">If Fa/Fr ≤ e:<br>&nbsp;&nbsp;P = Fr<br>If Fa/Fr &gt; e:<br>&nbsp;&nbsp;P = X·Fr + Y·Fa</span>
+                    <p style="margin-top:0.5rem;">X, Y from bearing catalogue (depends on bearing series and Fa/C0 ratio).</p>
+                </div>
+                <div class="info-block">
+                    <h3>Typical design targets</h3>
+                    <ul>
+                        <li>Industrial gearboxes: 20 000 – 30 000 h</li>
+                        <li>Electric motors: 20 000 – 40 000 h</li>
+                        <li>Agricultural machines: 3 000 – 5 000 h</li>
+                        <li>Automotive: 1 500 – 3 000 h</li>
+                        <li>Household appliances: 1 000 – 2 000 h</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem">
+            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    function calcP() {
+        const Fr = parseFloat(document.getElementById('Fr').value) || 0;
+        const Fa = parseFloat(document.getElementById('Fa').value) || 0;
+        const e  = parseFloat(document.getElementById('ef').value) || 0.35;
+
+        let P, note;
+        if (Fr <= 0) { P = Fa; note = 'P = Fa (no radial load)'; }
+        else if (Fa / Fr <= e) {
+            P = Fr;
+            note = `Fa/Fr = ${(Fa/Fr).toFixed(3)} ≤ e → P = Fr = ${Fr.toFixed(2)} kN`;
+        } else {
+            // Use X=0.56, Y=1.4 as typical values — user should verify from catalogue
+            const X = 0.56, Y = 1.4;
+            P = X * Fr + Y * Fa;
+            note = `Fa/Fr = ${(Fa/Fr).toFixed(3)} > e → P = 0.56·Fr + 1.40·Fa = ${P.toFixed(2)} kN (verify X,Y from catalogue)`;
+        }
+
+        document.getElementById('P').value = Math.max(0.01, P).toFixed(2);
+        document.getElementById('pNote').textContent = note;
+        calc();
+    }
+
+    function calc() {
+        const C  = parseFloat(document.getElementById('C').value) || 0;
+        const P  = parseFloat(document.getElementById('P').value) || 0;
+        const n  = parseFloat(document.getElementById('n').value) || 0;
+        const p  = document.getElementById('bearingType').value === 'ball' ? 3 : 10/3;
+        const a1 = parseFloat(document.getElementById('reliability').value);
+
+        if (C <= 0 || P <= 0 || n <= 0) { document.getElementById('resBody').innerHTML = ''; return; }
+
+        const ratio = C / P;
+        const L10   = Math.pow(ratio, p);           // 10⁶ revolutions
+        const L10h  = L10 * 1e6 / (60 * n);        // hours
+        const L10mh = a1 * L10h;
+
+        function fmt(v, d) { return v.toFixed(d ?? 1); }
+        function fmtH(h) {
+            if (h >= 1e6) return (h / 1e6).toFixed(2) + ' M h';
+            if (h >= 1000) return (h / 1000).toFixed(1) + ' k h';
+            return h.toFixed(0) + ' h';
+        }
+        function row(s,v,u,f) { return `<tr><td>${s}</td><td>${v}</td><td>${u}</td><td>${f}</td></tr>`; }
+        function sec(t) { return `<tr class="sec-head"><td colspan="4">${t}</td></tr>`; }
+
+        let html = '';
+        html += sec('Load ratio');
+        html += row('C/P', fmt(ratio, 3), '—', `${C} / ${P} kN`);
+        html += row('p', document.getElementById('bearingType').value === 'ball' ? '3' : '3.33', '—', 'life exponent');
+
+        html += sec('Basic rating life (90% reliability)');
+        html += row('L10',  fmt(L10, 2),  '×10⁶ rev', 'ISO 281 basic life');
+        html += row('L10h', fmtH(L10h),   '',          `at n = ${n} rpm`);
+
+        html += sec(`Adjusted life (a₁ = ${a1})`);
+        html += row('L10mh', fmtH(L10mh), '', `reliability-adjusted`);
+
+        // Targets
+        const targets = [
+            {label:'Household (1 500 h)', h:1500},
+            {label:'Automotive (2 500 h)', h:2500},
+            {label:'Industrial (20 000 h)', h:20000},
+        ];
+        targets.forEach(t => {
+            const ok = L10h >= t.h;
+            html += `<tr><td colspan="4" style="padding:0.35rem 0.9rem;">
+                <span style="font-size:0.82rem;color:${ok?'#4ade80':'#f87171'};">
+                ${ok?'✓':'✗'} ${t.label}: L10h = ${fmtH(L10h)} ${ok?'≥':'<'} ${fmtH(t.h)}
+                </span></td></tr>`;
+        });
+
+        document.getElementById('resBody').innerHTML = html;
+        drawChart(ratio, L10h, p, a1);
+    }
+
+    function makeSvgEl(tag, attrs, txt) {
+        const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+        for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+        if (txt !== undefined) e.textContent = txt;
+        return e;
+    }
+
+    function drawChart(currentRatio, currentL10h, p, a1) {
+        const svg = document.getElementById('lifeSvg');
+        svg.innerHTML = '';
+        const W=400, H=160, padL=55, padR=20, padT=15, padB=30;
+        const cW = W - padL - padR, cH = H - padT - padB;
+        function el(tag, attrs, txt) { return makeSvgEl(tag, attrs, txt); }
+        function tx(x, y, t, fill, size, anchor) {
+            return el('text', {x, y, fill: fill||'#9ca3af', 'font-size': size||8, 'font-family':'monospace', 'text-anchor': anchor||'middle', 'dominant-baseline':'middle'}, t);
+        }
+
+        // X axis: C/P ratio from 0.5 to 8 (linear)
+        const xMin = 0.5, xMax = 8;
+        // Y axis: L10h log scale — from 10 to 1 000 000
+        const yLogMin = 1, yLogMax = 7; // log10(10)=1 to log10(10M)=7
+
+        function xPx(r) { return padL + (r - xMin) / (xMax - xMin) * cW; }
+        function yPx(h) { const l = Math.max(yLogMin, Math.min(yLogMax, Math.log10(Math.max(h, 10)))); return padT + cH - (l - yLogMin) / (yLogMax - yLogMin) * cH; }
+
+        // Grid + Y labels
+        [10,100,1000,10000,100000,1000000,10000000].forEach(h => {
+            const y = yPx(h);
+            if (y >= padT && y <= padT+cH) {
+                svg.appendChild(el('line',{x1:padL,y1:y,x2:padL+cW,y2:y,stroke:'#1e293b','stroke-width':0.8}));
+                const label = h >= 1e6 ? (h/1e6)+'M h' : h >= 1000 ? (h/1000)+'k h' : h+' h';
+                svg.appendChild(tx(padL-3, y, label, '#6b7280', 7, 'end'));
+            }
+        });
+
+        // X grid + labels
+        [1,2,3,4,5,6,7,8].forEach(r => {
+            const x = xPx(r);
+            svg.appendChild(el('line',{x1:x,y1:padT,x2:x,y2:padT+cH,stroke:'#1e293b','stroke-width':0.8}));
+            svg.appendChild(tx(x, padT+cH+10, r, '#6b7280', 7));
+        });
+
+        // Axes
+        svg.appendChild(el('line',{x1:padL,y1:padT,x2:padL,y2:padT+cH,stroke:'#374151','stroke-width':1}));
+        svg.appendChild(el('line',{x1:padL,y1:padT+cH,x2:padL+cW,y2:padT+cH,stroke:'#374151','stroke-width':1}));
+
+        // Axis labels
+        svg.appendChild(tx(padL + cW/2, H-3, 'C/P ratio', '#6b7280', 8));
+
+        // Life curve
+        const pts = [];
+        for (let i=0; i<=80; i++) {
+            const r = xMin + (xMax - xMin) * i / 80;
+            const l10 = Math.pow(r, p);
+            const h = l10 * 1e6 / (60 * parseFloat(document.getElementById('n').value || 1500));
+            const x = xPx(r);
+            const y = yPx(h);
+            if (y >= padT && y <= padT+cH) pts.push(`${x},${y}`);
+        }
+        if (pts.length > 1) {
+            svg.appendChild(el('polyline',{points:pts.join(' '),fill:'none',stroke:'#60a5fa','stroke-width':1.5}));
+        }
+
+        // a1-adjusted curve
+        if (a1 < 1.0) {
+            const pts2 = [];
+            for (let i=0; i<=80; i++) {
+                const r = xMin + (xMax - xMin) * i / 80;
+                const l10 = Math.pow(r, p);
+                const h = a1 * l10 * 1e6 / (60 * parseFloat(document.getElementById('n').value || 1500));
+                const x = xPx(r);
+                const y = yPx(h);
+                if (y >= padT && y <= padT+cH) pts2.push(`${x},${y}`);
+            }
+            if (pts2.length > 1) {
+                svg.appendChild(el('polyline',{points:pts2.join(' '),fill:'none',stroke:'#a78bfa','stroke-width':1,'stroke-dasharray':'4,2'}));
+            }
+        }
+
+        // Operating point
+        const opX = xPx(currentRatio);
+        const opY = yPx(currentL10h);
+        if (opX >= padL && opX <= padL+cW && opY >= padT && opY <= padT+cH) {
+            svg.appendChild(el('line',{x1:opX,y1:padT,x2:opX,y2:padT+cH,stroke:'#f97316','stroke-width':0.8,'stroke-dasharray':'3,2'}));
+            svg.appendChild(el('circle',{cx:opX,cy:opY,r:4,fill:'#f97316',stroke:'#fff','stroke-width':1}));
+        }
+
+        // Legend
+        svg.appendChild(el('line',{x1:padL+4,y1:padT+6,x2:padL+20,y2:padT+6,stroke:'#60a5fa','stroke-width':1.5}));
+        svg.appendChild(tx(padL+22, padT+6, 'L10h (90%)', '#60a5fa', 7, 'start'));
+        if (a1 < 1.0) {
+            svg.appendChild(el('line',{x1:padL+4,y1:padT+16,x2:padL+20,y2:padT+16,stroke:'#a78bfa','stroke-width':1,'stroke-dasharray':'4,2'}));
+            svg.appendChild(tx(padL+22, padT+16, `L10mh (a1=${a1})`, '#a78bfa', 7, 'start'));
+        }
+        svg.appendChild(el('circle',{cx:padL+8,cy:padT+26,r:3,fill:'#f97316'}));
+        svg.appendChild(tx(padL+22, padT+26, 'Operating point', '#f97316', 7, 'start'));
+    }
+
+    // Init
+    calcP();
+    </script>
+</body>
+</html>

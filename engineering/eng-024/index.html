@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stainless Steel Grades 304 316 2205 | StrokeForge Engineering</title>
+    <meta name="description" content="Reference database of stainless steel grades — austenitic, ferritic, martensitic, duplex and PH. EN designation, W.Nr., AISI, mechanical properties, PREN corrosion resistance.">
+    <meta name="keywords" content="stainless steel grades database, nerezová ocel, 304 316 2205, austenitic ferritic martensitic duplex, PREN corrosion resistance, W.Nr. 1.4301 1.4401 1.4462, EN stainless steel">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-024/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 1060px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .cat-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+        .cat-btn { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.35rem 0.9rem; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
+        .cat-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .cat-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; font-weight: 600; }
+
+        /* Grade cards */
+        .grade-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; }
+        .grade-card {
+            background: var(--darker-bg); border: 2px solid var(--border-gray); border-radius: 10px;
+            padding: 1rem 1.1rem; cursor: pointer; transition: all 0.2s;
+        }
+        .grade-card:hover { border-color: var(--primary-orange); }
+        .grade-card.active { border-color: var(--primary-orange); background: rgba(255,107,53,0.06); }
+        .grade-card .gc-aisi { font-size: 1.1rem; font-weight: 700; color: var(--primary-orange); font-family: monospace; }
+        .grade-card .gc-en   { font-size: 0.75rem; color: var(--text-gray); font-family: monospace; margin-top: 0.1rem; }
+        .grade-card .gc-wnr  { font-size: 0.75rem; color: var(--text-gray); font-family: monospace; }
+        .grade-card .gc-fy   { font-size: 0.8rem; color: var(--light-gray); margin-top: 0.5rem; }
+        .gc-fam-badge { display: inline-block; padding: 0.1rem 0.45rem; border-radius: 3px; font-size: 0.68rem; font-weight: 600; margin-top: 0.35rem; }
+
+        /* Detail panel */
+        .detail-panel { display: none; background: var(--darker-bg); border: 1px solid var(--border-gray); border-radius: 10px; padding: 1.5rem 2rem; margin-bottom: 1.5rem; }
+        .detail-panel.open { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        @media (max-width: 620px) { .detail-panel.open { grid-template-columns: 1fr; } }
+        .detail-panel h3 { color: var(--primary-orange); font-size: 1.1rem; font-family: monospace; grid-column: 1/-1; margin-bottom: 0; }
+        .dp-close { float: right; background: none; border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 5px; padding: 0.2rem 0.6rem; cursor: pointer; font-size: 0.8rem; margin-left: 0.5rem; }
+        .dp-close:hover { color: var(--light-gray); border-color: var(--primary-orange); }
+
+        .dp-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .dp-table td { padding: 0.42rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .dp-table td:first-child { color: var(--text-gray); width: 45%; }
+        .dp-table td:last-child  { color: var(--light-gray); font-family: monospace; font-size: 0.88rem; }
+        .dp-table tr:last-child td { border-bottom: none; }
+        .dp-note { font-size: 0.82rem; color: var(--text-gray); line-height: 1.75; }
+        .dp-note h4 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.4rem; }
+
+        /* Comparison chart */
+        .chart-label { font-size: 0.75rem; color: var(--text-gray); text-align: center; margin-top: 0.4rem; }
+
+        /* PREN bar */
+        .pren-bar { height: 6px; background: var(--border-gray); border-radius: 3px; margin-top: 0.35rem; overflow: hidden; }
+        .pren-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>✨ Stainless Steel Grades</h1>
+        <p>Austenitic · ferritic · martensitic · duplex · PH — properties &amp; corrosion resistance</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- GRADE SELECTOR -->
+        <div class="card">
+            <h2>Select family</h2>
+            <div class="cat-tabs" id="catTabs">
+                <button class="cat-btn active" data-fam="all"          onclick="filterFam('all')">All families</button>
+                <button class="cat-btn"         data-fam="austenitic"   onclick="filterFam('austenitic')">Austenitic</button>
+                <button class="cat-btn"         data-fam="ferritic"     onclick="filterFam('ferritic')">Ferritic</button>
+                <button class="cat-btn"         data-fam="martensitic"  onclick="filterFam('martensitic')">Martensitic</button>
+                <button class="cat-btn"         data-fam="duplex"       onclick="filterFam('duplex')">Duplex</button>
+                <button class="cat-btn"         data-fam="ph"           onclick="filterFam('ph')">Precip. Hardening</button>
+            </div>
+            <div class="grade-grid" id="gradeGrid"></div>
+        </div>
+
+        <!-- DETAIL -->
+        <div class="detail-panel" id="detailPanel">
+            <h3 id="detailTitle"><button class="dp-close" onclick="closeDetail()">✕</button></h3>
+            <div>
+                <table class="dp-table" id="dpTable"></table>
+            </div>
+            <div>
+                <div class="dp-note" id="dpNote"></div>
+            </div>
+        </div>
+
+        <!-- COMPARISON CHART -->
+        <div class="card">
+            <h2>Strength comparison — f<sub>y</sub> min / f<sub>u</sub> min</h2>
+            <svg id="compSvg" width="100%" viewBox="0 0 520 200"></svg>
+            <p class="chart-label">Representative grades, minimum values (annealed condition)</p>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Family overview</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Austenitic (300 series)</h3>
+                    <ul>
+                        <li>FCC crystal structure, non-magnetic</li>
+                        <li>Best corrosion resistance &amp; formability</li>
+                        <li>Cannot be hardened by heat treatment</li>
+                        <li>Work hardens significantly</li>
+                        <li>Typical: 304, 316, 321, 310</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Ferritic (400 series)</h3>
+                    <ul>
+                        <li>BCC structure, magnetic</li>
+                        <li>Lower Ni content → more economical</li>
+                        <li>Good resistance to stress-corrosion cracking</li>
+                        <li>Limited toughness at low temperature</li>
+                        <li>Typical: 430, 409, 441, 444</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Martensitic (400 series)</h3>
+                    <ul>
+                        <li>Hardenable by quench &amp; temper</li>
+                        <li>Magnetic, highest strength of SS families</li>
+                        <li>Lower corrosion resistance than austenitic</li>
+                        <li>Typical: 410, 420, 440C</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Duplex</h3>
+                    <ul>
+                        <li>Mixed austenitic + ferritic microstructure</li>
+                        <li>Higher strength than austenitic at lower cost</li>
+                        <li>Excellent SCC and pitting resistance</li>
+                        <li>PREN &gt; 34 (standard), &gt; 40 (super duplex)</li>
+                        <li>Typical: 2205, 2507, LDX 2101</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>PREN — Pitting Resistance Equivalent Number</h2>
+            <p style="font-size:0.85rem;color:var(--text-gray);margin-bottom:1rem;line-height:1.7;">
+                PREN = %Cr + 3.3×%Mo + 16×%N &nbsp;&nbsp;|&nbsp;&nbsp; Higher = better pitting corrosion resistance
+            </p>
+            <svg id="prenSvg" width="100%" viewBox="0 0 520 170"></svg>
+            <p class="chart-label">PREN values for selected grades</p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem">
+            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    const FAM_COLORS = {
+        austenitic:  '#60a5fa',
+        ferritic:    '#4ade80',
+        martensitic: '#fbbf24',
+        duplex:      '#f97316',
+        ph:          '#a78bfa',
+    };
+    const FAM_LABELS = {
+        austenitic: 'Austenitic', ferritic: 'Ferritic',
+        martensitic: 'Martensitic', duplex: 'Duplex', ph: 'PH',
+    };
+
+    // Grade database
+    // fy/fu: minimum values (MPa, annealed unless noted)
+    // pren: approximate pitting resistance equivalent
+    const GRADES = [
+        // ── AUSTENITIC ───────────────────────────────────────────────────────────
+        {aisi:'304',    en:'X5CrNi18-10',       wnr:'1.4301', fam:'austenitic', fy:195, fu:500, elong:45, hb:215, pren:18, cr:18.0, mo:0,    ni:9.0,
+         note:'Most widely used stainless steel. Good general corrosion resistance. Food, chemical, architectural, household. Not suitable for chloride-rich environments.',
+         apps:['Food processing', 'Kitchen equipment', 'Chemical vessels', 'Architectural cladding']},
+        {aisi:'304L',   en:'X2CrNi18-9',        wnr:'1.4307', fam:'austenitic', fy:175, fu:460, elong:45, hb:215, pren:18, cr:18.0, mo:0,    ni:9.0,
+         note:'Low carbon version of 304. Prevents sensitisation in heat-affected zones. Used when post-weld annealing is not possible.',
+         apps:['Welded vessels', 'Cryogenic equipment', 'Nuclear components']},
+        {aisi:'316',    en:'X5CrNiMo17-12-2',   wnr:'1.4401', fam:'austenitic', fy:195, fu:500, elong:40, hb:217, pren:24, cr:17.0, mo:2.1,  ni:11.0,
+         note:'Mo addition significantly improves pitting and crevice corrosion resistance vs 304. Standard for marine, pharmaceutical and chemical applications.',
+         apps:['Marine hardware', 'Pharmaceutical equipment', 'Chemical process', 'Medical implants']},
+        {aisi:'316L',   en:'X2CrNiMo17-12-2',   wnr:'1.4404', fam:'austenitic', fy:175, fu:460, elong:40, hb:217, pren:24, cr:17.0, mo:2.1,  ni:11.0,
+         note:'Low carbon 316. Standard choice for welded assemblies in corrosive environments. Most popular marine and food-grade stainless.',
+         apps:['Welded marine structures', 'Food and dairy', 'Pharmaceutical', 'Coastal architecture']},
+        {aisi:'316Ti',  en:'X6CrNiMoTi17-12-2', wnr:'1.4571', fam:'austenitic', fy:195, fu:500, elong:40, hb:217, pren:24, cr:17.0, mo:2.1,  ni:11.5,
+         note:'Ti stabilised to prevent sensitisation at 450–850°C service temperatures. Good for intermittent high-temperature service in chemical plants.',
+         apps:['Heat exchangers', 'High-temp chemical process', 'Exhaust systems']},
+        {aisi:'321',    en:'X6CrNiTi18-10',      wnr:'1.4541', fam:'austenitic', fy:195, fu:500, elong:40, hb:215, pren:18, cr:17.5, mo:0,    ni:9.5,
+         note:'Ti stabilised austenitic for sustained high-temperature use (up to 850°C). Good oxidation resistance. Aircraft exhaust collectors.',
+         apps:['Aircraft components', 'Engine exhausts', 'High-temp chemical', 'Boilers']},
+        {aisi:'310S',   en:'X8CrNi25-21',        wnr:'1.4845', fam:'austenitic', fy:195, fu:490, elong:40, hb:215, pren:26, cr:25.0, mo:0,    ni:20.0,
+         note:'High Cr+Ni for maximum oxidation resistance up to 1100°C. Furnace parts, kilns, heat treatment equipment.',
+         apps:['Furnace parts', 'Kiln furniture', 'Heat treatment equipment', 'Chemical combustion']},
+        {aisi:'303',    en:'X8CrNiS18-9',        wnr:'1.4305', fam:'austenitic', fy:195, fu:500, elong:35, hb:262, pren:17, cr:18.0, mo:0,    ni:9.0,
+         note:'Free-cutting version of 304 (S addition). Best machinability of austenitic grades. Slightly lower corrosion resistance than 304.',
+         apps:['Turned parts', 'Fittings', 'Nuts & bolts', 'Machine components']},
+
+        // ── FERRITIC ─────────────────────────────────────────────────────────────
+        {aisi:'430',    en:'X6Cr17',             wnr:'1.4016', fam:'ferritic',   fy:230, fu:430, elong:22, hb:183, pren:17, cr:16.5, mo:0,    ni:0,
+         note:'Standard ferritic grade. Magnetic. Good oxidation resistance, lower cost than austenitic due to no Ni. Decorative trim and light-duty corrosion resistant parts.',
+         apps:['Automotive trim', 'Appliances', 'Cutlery', 'Architectural panels']},
+        {aisi:'409',    en:'X6CrTi12',           wnr:'1.4512', fam:'ferritic',   fy:175, fu:380, elong:25, hb:179, pren:11, cr:11.5, mo:0,    ni:0,
+         note:'Economy ferritic with minimum Cr for corrosion resistance. Lowest cost stainless. Used in automotive exhaust systems.',
+         apps:['Automotive exhausts', 'Catalytic converters', 'Agricultural equipment']},
+        {aisi:'441',    en:'X2CrTiNb18',         wnr:'1.4509', fam:'ferritic',   fy:230, fu:430, elong:25, hb:210, pren:18, cr:18.0, mo:0,    ni:0,
+         note:'Stabilised ferritic with good formability and weldability. Popular for automotive exhaust systems as an alternative to 304.',
+         apps:['Automotive exhaust', 'Domestic appliances', 'Kitchen equipment']},
+        {aisi:'444',    en:'X2CrMoTi18-2',       wnr:'1.4521', fam:'ferritic',   fy:240, fu:420, elong:20, hb:217, pren:24, cr:18.0, mo:2.0,  ni:0,
+         note:'Mo-bearing ferritic with good pitting resistance. Good SCC resistance vs austenitic grades. Water heaters, heat exchangers.',
+         apps:['Water heaters', 'Heat exchangers', 'Coastal cladding', 'Swimming pools']},
+
+        // ── MARTENSITIC ──────────────────────────────────────────────────────────
+        {aisi:'410',    en:'X12Cr13',            wnr:'1.4006', fam:'martensitic', fy:275, fu:450, elong:20, hb:200, pren:11, cr:12.5, mo:0,   ni:0,
+         note:'Hardened: fy ~1000 MPa, fu ~1100 MPa. Basic martensitic grade. General purpose hardened components where moderate corrosion resistance is needed.',
+         apps:['Pump shafts', 'Valve trim', 'Steam turbine blades', 'Cutlery']},
+        {aisi:'420',    en:'X20Cr13',            wnr:'1.4021', fam:'martensitic', fy:450, fu:650, elong:12, hb:241, pren:12, cr:13.0, mo:0,   ni:0,
+         note:'Higher carbon than 410. Achieves higher hardness (50–52 HRC). Cutlery, surgical instruments, dental tools.',
+         apps:['Cutlery', 'Surgical instruments', 'Dental tools', 'Molds']},
+        {aisi:'440C',   en:'X105CrMo17',         wnr:'1.4125', fam:'martensitic', fy:1900,fu:1900,elong:2,  hb:269, pren:17, cr:17.0, mo:0.5, ni:0,
+         note:'Highest hardness of standard stainless grades (58–62 HRC when hardened). Excellent wear resistance. Ball bearings, valve seats, knife blades.',
+         apps:['Bearings', 'Valve seats', 'High-end knives', 'Surgical instruments']},
+
+        // ── DUPLEX ───────────────────────────────────────────────────────────────
+        {aisi:'2101',   en:'X2CrMnNiN21-5-1',   wnr:'1.4162', fam:'duplex',     fy:450, fu:650, elong:30, hb:290, pren:26, cr:21.5, mo:0.3,  ni:1.5,
+         note:'Lean duplex (LDX 2101). Low Ni content reduces cost. Good alternative to 304/316 in moderate environments. Tanks, construction.',
+         apps:['Storage tanks', 'Construction', 'Bridges (moderate corrosion)']},
+        {aisi:'2205',   en:'X2CrNiMoN22-5-3',   wnr:'1.4462', fam:'duplex',     fy:450, fu:620, elong:25, hb:290, pren:35, cr:22.0, mo:3.1,  ni:5.5,
+         note:'Standard duplex. PREN≈35, excellent SCC resistance. Twice the strength of 316L. Oil & gas, desalination, chemical industry. Most used duplex grade.',
+         apps:['Oil & gas', 'Desalination', 'Chemical industry', 'Heat exchangers', 'Bridges']},
+        {aisi:'2507',   en:'X2CrNiMoN25-7-4',   wnr:'1.4410', fam:'duplex',     fy:550, fu:750, elong:25, hb:310, pren:43, cr:25.0, mo:3.8,  ni:7.0,
+         note:'Super duplex. PREN≈43, highest corrosion resistance of standard duplex grades. Critical offshore applications, subsea equipment, high-chloride environments.',
+         apps:['Offshore platforms', 'Subsea equipment', 'FGD systems', 'High-pressure piping']},
+
+        // ── PRECIPITATION HARDENING ──────────────────────────────────────────────
+        {aisi:'17-4 PH',en:'X5CrNiCuNb16-4',    wnr:'1.4542', fam:'ph',         fy:725, fu:930, elong:16, hb:277, pren:15, cr:15.5, mo:0,    ni:4.5,
+         note:'Most widely used PH grade. Age hardened to H900 condition: fy≈1170 MPa, fu≈1310 MPa. Combines high strength with moderate corrosion resistance. Aerospace fasteners, shafts, valves.',
+         apps:['Aerospace fasteners', 'Shafts', 'Pump parts', 'Valves', 'Medical instruments']},
+        {aisi:'15-5 PH',en:'X5CrNiCuNb15-5',    wnr:'1.4545', fam:'ph',         fy:690, fu:930, elong:16, hb:277, pren:14, cr:14.5, mo:0,    ni:5.0,
+         note:'Similar to 17-4 PH but with better transverse toughness. Produced by VIM+VAR for premium applications. Aircraft parts.',
+         apps:['Aircraft components', 'High-strength fasteners', 'Turbine parts']},
+    ];
+
+    let activeFam = 'all';
+    let activeIdx = null;
+
+    function filterFam(fam) {
+        activeFam = fam;
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.fam === fam));
+        closeDetail();
+        renderCards();
+    }
+
+    function renderCards() {
+        const grid = document.getElementById('gradeGrid');
+        grid.innerHTML = '';
+        const filtered = GRADES.filter(g => activeFam === 'all' || g.fam === activeFam);
+        filtered.forEach((g, i) => {
+            const idx = GRADES.indexOf(g);
+            const col = FAM_COLORS[g.fam];
+            const div = document.createElement('div');
+            div.className = 'grade-card' + (activeIdx === idx ? ' active' : '');
+            div.innerHTML = `
+                <div class="gc-aisi">${g.aisi}</div>
+                <div class="gc-en">${g.en}</div>
+                <div class="gc-wnr">${g.wnr}</div>
+                <div class="gc-fy">f<sub>y</sub> = ${g.fy} MPa &nbsp;|&nbsp; f<sub>u</sub> = ${g.fu} MPa</div>
+                <span class="gc-fam-badge" style="background:${col}22;color:${col};">${FAM_LABELS[g.fam]}</span>
+            `;
+            div.onclick = () => showDetail(idx);
+            grid.appendChild(div);
+        });
+    }
+
+    function showDetail(idx) {
+        activeIdx = idx;
+        renderCards(); // refresh card active state
+        const g = GRADES[idx];
+        const col = FAM_COLORS[g.fam];
+
+        document.getElementById('detailTitle').innerHTML =
+            `<button class="dp-close" onclick="closeDetail()">✕</button>${g.aisi} — ${g.en} (${g.wnr})`;
+
+        const rows = [
+            ['Family',          FAM_LABELS[g.fam]],
+            ['W.Nr.',           g.wnr],
+            ['EN designation',  g.en],
+            ['AISI',            g.aisi],
+            ['f_y min (MPa)',   g.fy],
+            ['f_u min (MPa)',   g.fu],
+            ['Elongation A (%)',g.elong],
+            ['Hardness max',    g.hb + ' HB'],
+            ['%Cr',             g.cr],
+            ['%Mo',             g.mo],
+            ['%Ni',             g.ni],
+            ['PREN (approx)',   g.pren],
+        ];
+        document.getElementById('dpTable').innerHTML = rows.map(([k,v]) =>
+            `<tr><td>${k}</td><td>${v}</td></tr>`).join('');
+
+        const appsHtml = g.apps ? `<p style="font-size:0.8rem;color:var(--primary-orange);margin-bottom:0.3rem;">Typical applications</p><ul style="padding-left:1.2rem;margin:0;">${g.apps.map(a=>`<li>${a}</li>`).join('')}</ul>` : '';
+        document.getElementById('dpNote').innerHTML = `
+            <h4>Description</h4>
+            <p style="font-size:0.82rem;color:var(--text-gray);line-height:1.75;margin-bottom:0.85rem;">${g.note}</p>
+            ${appsHtml}
+            <div style="margin-top:0.85rem;">
+                <span style="font-size:0.8rem;color:var(--text-gray);">PREN = ${g.pren}</span>
+                <div class="pren-bar"><div class="pren-fill" style="width:${Math.min(100, g.pren/50*100)}%;background:${col};"></div></div>
+            </div>
+        `;
+        document.getElementById('detailPanel').classList.add('open');
+        document.getElementById('detailPanel').scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+
+    function closeDetail() {
+        activeIdx = null;
+        document.getElementById('detailPanel').classList.remove('open');
+        renderCards();
+    }
+
+    function makeSvgEl(tag, attrs, txt) {
+        const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+        for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+        if (txt !== undefined) e.textContent = txt;
+        return e;
+    }
+
+    function drawComparison() {
+        // Representative grades for comparison
+        const sel = ['304','316','430','410','2205','2507','17-4 PH'];
+        const data = sel.map(a => GRADES.find(g => g.aisi === a)).filter(Boolean);
+
+        const svg = document.getElementById('compSvg');
+        svg.innerHTML = '';
+        const W=520, H=200, padL=55, padR=20, padT=20, padB=50;
+        const cW = W-padL-padR, cH = H-padT-padB;
+        function el(tag,a,t){return makeSvgEl(tag,a,t);}
+        function tx(x,y,t,fill,size,anchor){return el('text',{x,y,fill:fill||'#9ca3af','font-size':size||8,'font-family':'monospace','text-anchor':anchor||'middle','dominant-baseline':'middle'},t);}
+
+        const maxV = 2000;
+        const gW = cW / data.length;
+        const bW = gW * 0.28;
+
+        [0,500,1000,1500,2000].forEach(v => {
+            const y = padT + cH - (v/maxV)*cH;
+            svg.appendChild(el('line',{x1:padL,y1:y,x2:padL+cW,y2:y,stroke:'#1e293b','stroke-width':0.8}));
+            svg.appendChild(tx(padL-5, y, v, '#6b7280', 7, 'end'));
+        });
+        svg.appendChild(el('line',{x1:padL,y1:padT,x2:padL,y2:padT+cH,stroke:'#374151','stroke-width':1}));
+        svg.appendChild(el('line',{x1:padL,y1:padT+cH,x2:padL+cW,y2:padT+cH,stroke:'#374151','stroke-width':1}));
+
+        data.forEach((g,i) => {
+            const cx = padL + gW*(i+0.5);
+            const col = FAM_COLORS[g.fam];
+
+            const fyH = (g.fy/maxV)*cH;
+            svg.appendChild(el('rect',{x:cx-bW-1,y:padT+cH-fyH,width:bW,height:fyH,fill:col,opacity:'0.85',rx:2}));
+
+            const fuH = (Math.min(g.fu,maxV)/maxV)*cH;
+            svg.appendChild(el('rect',{x:cx+1,y:padT+cH-fuH,width:bW,height:fuH,fill:col,opacity:'0.3',rx:2}));
+
+            svg.appendChild(tx(cx-bW/2-1, padT+cH-fyH-7, g.fy, col, 7));
+
+            // Grade label — two lines
+            svg.appendChild(tx(cx, padT+cH+14, g.aisi, '#d1d5db', 8));
+            svg.appendChild(tx(cx, padT+cH+26, FAM_LABELS[g.fam], '#6b7280', 7));
+        });
+
+        // Legend
+        svg.appendChild(el('rect',{x:padL+cW-95,y:padT+4,width:9,height:9,fill:'#60a5fa',opacity:'0.85',rx:1}));
+        svg.appendChild(tx(padL+cW-84,padT+8.5,'fy min','#9ca3af',7,'start'));
+        svg.appendChild(el('rect',{x:padL+cW-95,y:padT+16,width:9,height:9,fill:'#60a5fa',opacity:'0.3',rx:1}));
+        svg.appendChild(tx(padL+cW-84,padT+20.5,'fu min','#9ca3af',7,'start'));
+    }
+
+    function drawPREN() {
+        const prenData = GRADES.filter(g => g.pren > 0).sort((a,b) => b.pren - a.pren);
+        const svg = document.getElementById('prenSvg');
+        svg.innerHTML = '';
+        const W=520, H=170, padL=95, padR=30, padT=15, padB=15;
+        const cW = W-padL-padR, cH = H-padT-padB;
+        const rowH = cH / prenData.length;
+        function el(tag,a,t){return makeSvgEl(tag,a,t);}
+        function tx(x,y,t,fill,size,anchor){return el('text',{x,y,fill:fill||'#9ca3af','font-size':size||8,'font-family':'monospace','text-anchor':anchor||'middle','dominant-baseline':'middle'},t);}
+
+        const maxPREN = 50;
+
+        // X grid
+        [0,10,20,30,40,50].forEach(v => {
+            const x = padL + (v/maxPREN)*cW;
+            svg.appendChild(el('line',{x1:x,y1:padT,x2:x,y2:padT+cH,stroke:'#1e293b','stroke-width':0.8}));
+            svg.appendChild(tx(x, padT+cH+8, v, '#6b7280', 7));
+        });
+
+        prenData.forEach((g,i) => {
+            const y = padT + i*rowH + rowH*0.1;
+            const bH = rowH*0.7;
+            const bW = (g.pren/maxPREN)*cW;
+            const col = FAM_COLORS[g.fam];
+
+            svg.appendChild(el('rect',{x:padL,y,width:bW,height:bH,fill:col,opacity:'0.7',rx:2}));
+            svg.appendChild(tx(padL-4, y+bH/2, g.aisi, '#d1d5db', 7, 'end'));
+            if (bW > 25) svg.appendChild(tx(padL+bW-4, y+bH/2, g.pren, '#fff', 7, 'end'));
+            else svg.appendChild(tx(padL+bW+4, y+bH/2, g.pren, col, 7, 'start'));
+        });
+    }
+
+    renderCards();
+    drawComparison();
+    drawPREN();
+    </script>
+</body>
+</html>

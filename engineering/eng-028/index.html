@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Unit Converter | StrokeForge Engineering</title>
+    <meta name="description" content="Multi-category unit converter for engineering. Length, mass, force, pressure, torque, temperature, energy, power, area and volume. Enter any value and all units update instantly.">
+    <meta name="keywords" content="engineering unit converter, převodník jednotek, length force pressure torque temperature, MPa psi bar, N kgf lbf, mm inch feet, kalkulátor jednotky">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-028/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 960px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Category tabs */
+        .cat-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .cat-btn {
+            background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray);
+            border-radius: 6px; padding: 0.4rem 0.85rem; font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
+        }
+        .cat-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .cat-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; font-weight: 600; }
+
+        /* Unit grid */
+        .unit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        @media (max-width: 500px) { .unit-grid { grid-template-columns: 1fr; } }
+
+        .unit-field { display: flex; flex-direction: column; gap: 0.2rem; }
+        .unit-field label { font-size: 0.75rem; color: var(--text-gray); display: flex; justify-content: space-between; }
+        .unit-field label span { color: #4b5563; font-size: 0.7rem; }
+        .unit-inp {
+            background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray);
+            border-radius: 7px; padding: 0.55rem 0.8rem; font-size: 0.95rem; font-family: monospace;
+            outline: none; transition: border-color 0.2s; width: 100%; box-sizing: border-box;
+        }
+        .unit-inp:focus { border-color: var(--primary-orange); }
+        .unit-inp.source { border-color: var(--primary-orange); background: rgba(255,107,53,0.04); }
+        .unit-inp::placeholder { color: #374151; }
+
+        /* Clear button */
+        .clear-btn {
+            background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray);
+            border-radius: 7px; padding: 0.45rem 1rem; font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
+            margin-bottom: 1rem;
+        }
+        .clear-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+
+        /* Category icon+name header */
+        .cat-header { display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 1rem; }
+        .cat-header .cat-icon { font-size: 1.2rem; }
+        .cat-header .cat-name { font-size: 1rem; font-weight: 600; color: var(--light-gray); }
+        .cat-header .cat-si { font-size: 0.78rem; color: var(--text-gray); }
+
+        /* Quick reference */
+        .quick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 0.6rem; }
+        .quick-card { background: var(--darker-bg); border-radius: 7px; padding: 0.7rem 0.9rem; font-size: 0.8rem; }
+        .quick-card strong { color: var(--primary-orange); display: block; margin-bottom: 0.25rem; font-size: 0.78rem; }
+        .quick-card span { color: var(--text-gray); font-family: monospace; font-size: 0.78rem; line-height: 1.8; display: block; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>⚖️ Engineering Unit Converter</h1>
+        <p>Length · mass · force · pressure · torque · temperature · energy · power · area · volume · angle</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <div class="card">
+            <div class="cat-tabs" id="catTabs"></div>
+            <div class="cat-header">
+                <span class="cat-icon" id="catIcon"></span>
+                <span class="cat-name" id="catName"></span>
+                <span class="cat-si" id="catSI"></span>
+            </div>
+            <button class="clear-btn" onclick="clearAll()">✕ Clear</button>
+            <div class="unit-grid" id="unitGrid"></div>
+        </div>
+
+        <!-- Quick reference -->
+        <div class="card">
+            <h2>Quick reference — common conversions</h2>
+            <div class="quick-grid">
+                <div class="quick-card">
+                    <strong>Length</strong>
+                    <span>1 in = 25.4 mm<br>1 ft = 304.8 mm<br>1 m = 3.2808 ft<br>1 mile = 1.6093 km</span>
+                </div>
+                <div class="quick-card">
+                    <strong>Force</strong>
+                    <span>1 kgf = 9.8067 N<br>1 lbf = 4.4482 N<br>1 kN = 0.2248 kip<br>1 tf = 9.8067 kN</span>
+                </div>
+                <div class="quick-card">
+                    <strong>Pressure / Stress</strong>
+                    <span>1 MPa = 145.04 psi<br>1 bar = 100 kPa<br>1 atm = 101.325 kPa<br>1 kgf/cm² = 0.0981 MPa</span>
+                </div>
+                <div class="quick-card">
+                    <strong>Torque</strong>
+                    <span>1 N·m = 8.8507 lbf·in<br>1 N·m = 0.7376 lbf·ft<br>1 kgf·m = 9.8067 N·m</span>
+                </div>
+                <div class="quick-card">
+                    <strong>Temperature</strong>
+                    <span>°F = °C × 9/5 + 32<br>K = °C + 273.15<br>0°C = 32°F = 273.15 K</span>
+                </div>
+                <div class="quick-card">
+                    <strong>Power</strong>
+                    <span>1 hp (metric) = 735.5 W<br>1 hp (imperial) = 745.7 W<br>1 kW = 1.3596 hp (metric)</span>
+                </div>
+                <div class="quick-card">
+                    <strong>Energy</strong>
+                    <span>1 kWh = 3600 kJ<br>1 kcal = 4.1868 kJ<br>1 BTU = 1.0551 kJ</span>
+                </div>
+                <div class="quick-card">
+                    <strong>Angle</strong>
+                    <span>1 rad = 57.296°<br>1° = π/180 rad<br>1 rev = 360° = 2π rad<br>1 grad = 0.9°</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem">
+            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // Category definitions
+    // factor = how many SI base units per 1 unit (for linear units)
+    // Temperature handled separately
+    const CATEGORIES = [
+        {
+            id: 'length', icon: '📏', name: 'Length', si: 'SI base: metre (m)',
+            units: [
+                {sym:'mm',      name:'Millimetre',      f:0.001},
+                {sym:'cm',      name:'Centimetre',      f:0.01},
+                {sym:'m',       name:'Metre',           f:1},
+                {sym:'km',      name:'Kilometre',       f:1000},
+                {sym:'in',      name:'Inch',            f:0.0254},
+                {sym:'ft',      name:'Foot',            f:0.3048},
+                {sym:'yd',      name:'Yard',            f:0.9144},
+                {sym:'mile',    name:'Mile',            f:1609.344},
+            ]
+        },
+        {
+            id: 'mass', icon: '⚖️', name: 'Mass', si: 'SI base: kilogram (kg)',
+            units: [
+                {sym:'mg',   name:'Milligram',  f:1e-6},
+                {sym:'g',    name:'Gram',       f:0.001},
+                {sym:'kg',   name:'Kilogram',   f:1},
+                {sym:'t',    name:'Metric ton', f:1000},
+                {sym:'oz',   name:'Ounce',      f:0.0283495},
+                {sym:'lb',   name:'Pound',      f:0.453592},
+                {sym:'st',   name:'Stone',      f:6.35029},
+                {sym:'ton (US)', name:'US short ton', f:907.185},
+            ]
+        },
+        {
+            id: 'force', icon: '⬇️', name: 'Force', si: 'SI base: newton (N)',
+            units: [
+                {sym:'N',    name:'Newton',        f:1},
+                {sym:'kN',   name:'Kilonewton',    f:1000},
+                {sym:'MN',   name:'Meganewton',    f:1e6},
+                {sym:'kgf',  name:'Kilogram-force',f:9.80665},
+                {sym:'tf',   name:'Tonne-force',   f:9806.65},
+                {sym:'lbf',  name:'Pound-force',   f:4.44822},
+                {sym:'kip',  name:'Kip (1000 lbf)',f:4448.22},
+                {sym:'daN',  name:'Decanewton',    f:10},
+            ]
+        },
+        {
+            id: 'pressure', icon: '🔵', name: 'Pressure / Stress', si: 'SI base: pascal (Pa)',
+            units: [
+                {sym:'Pa',       name:'Pascal',              f:1},
+                {sym:'kPa',      name:'Kilopascal',          f:1000},
+                {sym:'MPa',      name:'Megapascal',          f:1e6},
+                {sym:'GPa',      name:'Gigapascal',          f:1e9},
+                {sym:'bar',      name:'Bar',                 f:100000},
+                {sym:'mbar',     name:'Millibar',            f:100},
+                {sym:'atm',      name:'Atmosphere',          f:101325},
+                {sym:'psi',      name:'Pound/in² (psi)',     f:6894.76},
+                {sym:'kgf/cm²',  name:'kgf/cm²',            f:98066.5},
+                {sym:'mmHg',     name:'Millimetre of Hg',    f:133.322},
+            ]
+        },
+        {
+            id: 'torque', icon: '🔄', name: 'Torque / Moment', si: 'SI base: N·m',
+            units: [
+                {sym:'N·mm',    name:'Newton·millimetre', f:0.001},
+                {sym:'N·m',     name:'Newton·metre',      f:1},
+                {sym:'kN·m',    name:'Kilonewton·metre',  f:1000},
+                {sym:'kgf·m',   name:'kgf·metre',         f:9.80665},
+                {sym:'kgf·cm',  name:'kgf·centimetre',    f:0.0980665},
+                {sym:'lbf·in',  name:'lbf·inch',          f:0.112985},
+                {sym:'lbf·ft',  name:'lbf·foot',          f:1.35582},
+            ]
+        },
+        {
+            id: 'temperature', icon: '🌡️', name: 'Temperature', si: 'SI base: kelvin (K)',
+            special: 'temperature',
+            units: [
+                {sym:'°C', name:'Celsius'},
+                {sym:'°F', name:'Fahrenheit'},
+                {sym:'K',  name:'Kelvin'},
+            ]
+        },
+        {
+            id: 'energy', icon: '⚡', name: 'Energy / Work', si: 'SI base: joule (J)',
+            units: [
+                {sym:'J',    name:'Joule',       f:1},
+                {sym:'kJ',   name:'Kilojoule',   f:1000},
+                {sym:'MJ',   name:'Megajoule',   f:1e6},
+                {sym:'Wh',   name:'Watt-hour',   f:3600},
+                {sym:'kWh',  name:'Kilowatt-hour',f:3600000},
+                {sym:'cal',  name:'Calorie',      f:4.1868},
+                {sym:'kcal', name:'Kilocalorie',  f:4186.8},
+                {sym:'BTU',  name:'British thermal unit', f:1055.06},
+                {sym:'eV',   name:'Electronvolt', f:1.602176634e-19},
+            ]
+        },
+        {
+            id: 'power', icon: '💡', name: 'Power', si: 'SI base: watt (W)',
+            units: [
+                {sym:'W',        name:'Watt',           f:1},
+                {sym:'kW',       name:'Kilowatt',       f:1000},
+                {sym:'MW',       name:'Megawatt',       f:1e6},
+                {sym:'hp (metric)', name:'Horsepower (metric)', f:735.499},
+                {sym:'hp (imperial)', name:'Horsepower (imperial)', f:745.7},
+                {sym:'BTU/h',    name:'BTU per hour',   f:0.29307},
+                {sym:'kcal/h',   name:'kcal per hour',  f:1.163},
+            ]
+        },
+        {
+            id: 'area', icon: '⬛', name: 'Area', si: 'SI base: m²',
+            units: [
+                {sym:'mm²',  name:'Square millimetre', f:1e-6},
+                {sym:'cm²',  name:'Square centimetre', f:1e-4},
+                {sym:'m²',   name:'Square metre',      f:1},
+                {sym:'km²',  name:'Square kilometre',  f:1e6},
+                {sym:'ha',   name:'Hectare',           f:10000},
+                {sym:'in²',  name:'Square inch',       f:6.4516e-4},
+                {sym:'ft²',  name:'Square foot',       f:0.092903},
+                {sym:'yd²',  name:'Square yard',       f:0.836127},
+                {sym:'acre', name:'Acre',               f:4046.86},
+            ]
+        },
+        {
+            id: 'volume', icon: '🧊', name: 'Volume', si: 'SI base: m³',
+            units: [
+                {sym:'mm³',   name:'Cubic millimetre',  f:1e-9},
+                {sym:'cm³',   name:'Cubic centimetre',  f:1e-6},
+                {sym:'l',     name:'Litre',             f:0.001},
+                {sym:'m³',    name:'Cubic metre',       f:1},
+                {sym:'ml',    name:'Millilitre',        f:1e-6},
+                {sym:'in³',   name:'Cubic inch',        f:1.63871e-5},
+                {sym:'ft³',   name:'Cubic foot',        f:0.0283168},
+                {sym:'gal (US)', name:'US gallon',      f:0.00378541},
+                {sym:'gal (UK)', name:'UK gallon',      f:0.00454609},
+                {sym:'fl oz (US)', name:'US fl. ounce', f:2.95735e-5},
+            ]
+        },
+        {
+            id: 'angle', icon: '📐', name: 'Angle', si: 'SI base: radian (rad)',
+            units: [
+                {sym:'°',    name:'Degree',      f:Math.PI/180},
+                {sym:'rad',  name:'Radian',      f:1},
+                {sym:'grad', name:'Gradian',     f:Math.PI/200},
+                {sym:'rev',  name:'Revolution',  f:2*Math.PI},
+                {sym:'\'',   name:'Arcminute',   f:Math.PI/10800},
+                {sym:'"',    name:'Arcsecond',   f:Math.PI/648000},
+            ]
+        },
+        {
+            id: 'velocity', icon: '🚀', name: 'Velocity', si: 'SI base: m/s',
+            units: [
+                {sym:'m/s',   name:'Metre/second',  f:1},
+                {sym:'km/h',  name:'Kilometre/hour', f:1/3.6},
+                {sym:'mph',   name:'Miles/hour',     f:0.44704},
+                {sym:'ft/s',  name:'Foot/second',    f:0.3048},
+                {sym:'knot',  name:'Knot',           f:0.514444},
+                {sym:'Mach',  name:'Mach (≈ 340 m/s)',f:340.29},
+            ]
+        },
+    ];
+
+    let activeCat = CATEGORIES[0].id;
+    let sourceUnit = null;
+
+    function buildTabs() {
+        const container = document.getElementById('catTabs');
+        CATEGORIES.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'cat-btn' + (cat.id === activeCat ? ' active' : '');
+            btn.dataset.id = cat.id;
+            btn.textContent = cat.icon + ' ' + cat.name;
+            btn.onclick = () => switchCat(cat.id);
+            container.appendChild(btn);
+        });
+    }
+
+    function switchCat(id) {
+        activeCat = id;
+        sourceUnit = null;
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.id === id));
+        renderConverter();
+    }
+
+    function renderConverter() {
+        const cat = CATEGORIES.find(c => c.id === activeCat);
+        document.getElementById('catIcon').textContent = cat.icon;
+        document.getElementById('catName').textContent = cat.name;
+        document.getElementById('catSI').textContent = cat.si || '';
+
+        const grid = document.getElementById('unitGrid');
+        grid.innerHTML = '';
+
+        cat.units.forEach(u => {
+            const div = document.createElement('div');
+            div.className = 'unit-field';
+
+            const label = document.createElement('label');
+            label.htmlFor = 'u_' + u.sym;
+            label.innerHTML = `<strong style="color:var(--light-gray);">${u.sym}</strong><span>${u.name}</span>`;
+
+            const inp = document.createElement('input');
+            inp.type = 'number';
+            inp.id = 'u_' + u.sym;
+            inp.className = 'unit-inp';
+            inp.placeholder = u.sym;
+            inp.dataset.sym = u.sym;
+            inp.step = 'any';
+            inp.addEventListener('input', () => onInput(u.sym));
+
+            div.appendChild(label);
+            div.appendChild(inp);
+            grid.appendChild(div);
+        });
+    }
+
+    function onInput(sym) {
+        sourceUnit = sym;
+        const cat = CATEGORIES.find(c => c.id === activeCat);
+        const inp = document.getElementById('u_' + sym);
+        const val = parseFloat(inp.value);
+
+        // Mark source
+        document.querySelectorAll('.unit-inp').forEach(el => {
+            el.classList.toggle('source', el.dataset.sym === sym);
+        });
+
+        if (isNaN(val) || inp.value === '') {
+            // Clear others
+            cat.units.forEach(u => {
+                if (u.sym !== sym) {
+                    const el = document.getElementById('u_' + u.sym);
+                    if (el) el.value = '';
+                }
+            });
+            return;
+        }
+
+        if (cat.special === 'temperature') {
+            convertTemp(sym, val);
+        } else {
+            // Convert to base, then to all others
+            const srcUnit = cat.units.find(u => u.sym === sym);
+            const base = val * srcUnit.f;
+            cat.units.forEach(u => {
+                if (u.sym !== sym) {
+                    const el = document.getElementById('u_' + u.sym);
+                    if (!el) return;
+                    const result = base / u.f;
+                    el.value = fmtNum(result);
+                }
+            });
+        }
+    }
+
+    function convertTemp(from, val) {
+        let celsius;
+        if (from === '°C') celsius = val;
+        else if (from === '°F') celsius = (val - 32) * 5/9;
+        else if (from === 'K')  celsius = val - 273.15;
+
+        const results = {
+            '°C': celsius,
+            '°F': celsius * 9/5 + 32,
+            'K':  celsius + 273.15,
+        };
+
+        Object.entries(results).forEach(([sym, v]) => {
+            if (sym === from) return;
+            const el = document.getElementById('u_' + sym);
+            if (el) el.value = fmtNum(v);
+        });
+    }
+
+    function fmtNum(v) {
+        if (!isFinite(v)) return '';
+        const abs = Math.abs(v);
+        if (abs === 0) return '0';
+        if (abs >= 1e10 || (abs < 1e-6 && abs > 0)) return v.toExponential(4);
+        if (abs >= 1000) return parseFloat(v.toPrecision(7)).toString();
+        if (abs >= 1)    return parseFloat(v.toPrecision(7)).toString();
+        return parseFloat(v.toPrecision(5)).toString();
+    }
+
+    function clearAll() {
+        document.querySelectorAll('.unit-inp').forEach(el => {
+            el.value = '';
+            el.classList.remove('source');
+        });
+        sourceUnit = null;
+    }
+
+    buildTabs();
+    renderConverter();
+    </script>
+</body>
+</html>

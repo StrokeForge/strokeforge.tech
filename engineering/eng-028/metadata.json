@@ -1,0 +1,8 @@
+{
+  "id": "eng-028",
+  "title": "Engineering Unit Converter",
+  "description": "Multi-category unit converter for engineering: length, mass, force, pressure, torque, temperature, energy, power, area, volume and angle. Enter any value, all units update instantly.",
+  "category": "utilities",
+  "icon": "⚖️",
+  "difficulty": "beginner"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "eng-020",
+  "title": "Cantilever Beam",
+  "description": "Calculate tip deflection, reactions and bending moment for a cantilever beam under uniform load (UDL) or point load at free end. SVG diagram with deflection curve and M-diagram.",
+  "category": "calculator",
+  "icon": "📐",
+  "difficulty": "beginner"
+}

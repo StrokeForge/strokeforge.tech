@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steel Grade Converter ČSN EN DIN AISI | StrokeForge Engineering</title>
+    <meta name="description" content="Cross-reference tool for steel grade designations. Search by any standard — ČSN, EN, DIN, W.Nr. or AISI — and instantly find equivalents in all other systems.">
+    <meta name="keywords" content="steel grade converter, převodník ocelí, ČSN EN DIN AISI ekvivalenty, 11 373 S235 St37, 12 050 C45, 15 130 42CrMo4, steel cross reference, Werkstoffnummer">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-025/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 1060px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Search */
+        .search-big { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem; }
+        .search-inp {
+            flex: 1; background: var(--darker-bg); border: 2px solid var(--border-gray);
+            color: var(--light-gray); border-radius: 9px; padding: 0.75rem 1.1rem;
+            font-size: 1.05rem; outline: none; transition: border-color 0.2s;
+        }
+        .search-inp:focus { border-color: var(--primary-orange); }
+        .search-inp::placeholder { color: #4b5563; }
+        .clear-btn {
+            background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray);
+            border-radius: 7px; padding: 0.6rem 0.9rem; font-size: 0.85rem; cursor: pointer;
+            white-space: nowrap; transition: all 0.2s;
+        }
+        .clear-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+
+        .search-meta { font-size: 0.78rem; color: var(--text-gray); margin-bottom: 1.25rem; }
+        .search-meta span { color: var(--primary-orange); }
+
+        /* Category filter */
+        .cat-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .cat-btn { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.3rem 0.8rem; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+        .cat-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .cat-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; font-weight: 600; }
+
+        /* Table */
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+        .data-table th { background: rgba(255,107,53,0.08); color: var(--primary-orange); font-size: 0.74rem; font-weight: 600; padding: 0.55rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border-gray); white-space: nowrap; }
+        .data-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--light-gray); vertical-align: middle; }
+        .data-table td.mono { font-family: monospace; }
+        .data-table td.csn  { font-family: monospace; font-weight: 700; color: var(--primary-orange); }
+        .data-table td.muted { color: #6b7280; font-family: monospace; font-size: 0.8rem; }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr.match-row td { background: rgba(255,107,53,0.04); }
+        .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+        /* Highlight */
+        .hl { background: rgba(255,107,53,0.25); border-radius: 2px; padding: 0 1px; color: var(--primary-orange); }
+
+        /* Category badge */
+        .cat-badge { display: inline-block; padding: 0.08rem 0.4rem; border-radius: 3px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
+        .cat-structural  { background: rgba(96,165,250,0.15);  color: #60a5fa; }
+        .cat-engineering { background: rgba(74,222,128,0.15);  color: #4ade80; }
+        .cat-stainless   { background: rgba(167,139,250,0.15); color: #a78bfa; }
+        .cat-tool        { background: rgba(251,191,36,0.15);  color: #fbbf24; }
+        .cat-spring      { background: rgba(248,113,113,0.15); color: #f87171; }
+        .cat-case        { background: rgba(52,211,153,0.15);  color: #34d399; }
+
+        .no-results { text-align: center; padding: 2.5rem; color: var(--text-gray); font-size: 0.9rem; }
+        .no-results span { display: block; font-size: 1.5rem; margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>🔄 Steel Grade Converter</h1>
+        <p>ČSN ↔ EN ↔ DIN ↔ W.Nr. ↔ AISI — search by any designation</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <div class="card">
+            <h2>Search</h2>
+
+            <div class="search-big">
+                <input type="text" id="searchInp" class="search-inp"
+                    placeholder="Type any designation — e.g. S355, 42CrMo4, 4140, 1.4301, 11 523 …"
+                    oninput="render()" autocomplete="off" spellcheck="false">
+                <button class="clear-btn" onclick="clearSearch()">✕ Clear</button>
+            </div>
+            <p class="search-meta">Searching across <span id="totalCount"></span> grades in ČSN · EN · DIN · W.Nr. · AISI &nbsp;|&nbsp; <span id="resultCount"></span> results</p>
+
+            <div class="cat-tabs" id="catTabs">
+                <button class="cat-btn active" data-cat="all"         onclick="filterCat('all')">All</button>
+                <button class="cat-btn"         data-cat="structural"  onclick="filterCat('structural')">Structural</button>
+                <button class="cat-btn"         data-cat="engineering" onclick="filterCat('engineering')">Engineering</button>
+                <button class="cat-btn"         data-cat="case"        onclick="filterCat('case')">Case hardening</button>
+                <button class="cat-btn"         data-cat="spring"      onclick="filterCat('spring')">Spring</button>
+                <button class="cat-btn"         data-cat="stainless"   onclick="filterCat('stainless')">Stainless</button>
+                <button class="cat-btn"         data-cat="tool"        onclick="filterCat('tool')">Tool</button>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ČSN</th>
+                            <th>EN designation</th>
+                            <th>W.Nr.</th>
+                            <th>DIN (old)</th>
+                            <th>AISI / UNS</th>
+                            <th>Name / Description</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Standard systems explained</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;">
+                <div style="background:var(--darker-bg);border-radius:8px;padding:0.9rem 1.1rem;">
+                    <p style="font-size:0.78rem;color:var(--primary-orange);font-weight:600;margin-bottom:0.3rem;">ČSN</p>
+                    <p style="font-size:0.8rem;color:var(--text-gray);line-height:1.6;">Czech/Czechoslovak standard. 5-digit numeric code (e.g. 11 373). Largely superseded by EN in CZ.</p>
+                </div>
+                <div style="background:var(--darker-bg);border-radius:8px;padding:0.9rem 1.1rem;">
+                    <p style="font-size:0.78rem;color:var(--primary-orange);font-weight:600;margin-bottom:0.3rem;">EN (European)</p>
+                    <p style="font-size:0.8rem;color:var(--text-gray);line-height:1.6;">Current European standard. Symbolic name: S355J2, C45, X5CrNi18-10. Used across EU.</p>
+                </div>
+                <div style="background:var(--darker-bg);border-radius:8px;padding:0.9rem 1.1rem;">
+                    <p style="font-size:0.78rem;color:var(--primary-orange);font-weight:600;margin-bottom:0.3rem;">W.Nr. (Werkstoffnummer)</p>
+                    <p style="font-size:0.8rem;color:var(--text-gray);line-height:1.6;">German material number, 1.XYYY format. Widely used in catalogues and drawings. EN 10027-2.</p>
+                </div>
+                <div style="background:var(--darker-bg);border-radius:8px;padding:0.9rem 1.1rem;">
+                    <p style="font-size:0.78rem;color:var(--primary-orange);font-weight:600;margin-bottom:0.3rem;">DIN (old German)</p>
+                    <p style="font-size:0.8rem;color:var(--text-gray);line-height:1.6;">Legacy German standard (St37, Ck45, 42CrMo4). Still widely used in industry despite EN adoption.</p>
+                </div>
+                <div style="background:var(--darker-bg);border-radius:8px;padding:0.9rem 1.1rem;">
+                    <p style="font-size:0.78rem;color:var(--primary-orange);font-weight:600;margin-bottom:0.3rem;">AISI / SAE</p>
+                    <p style="font-size:0.8rem;color:var(--text-gray);line-height:1.6;">American system. 304, 316, 4140, 1045 etc. UNS (G/S/T prefix) is the formal US designation.</p>
+                </div>
+                <div style="background:var(--darker-bg);border-radius:8px;padding:0.9rem 1.1rem;">
+                    <p style="font-size:0.78rem;color:var(--primary-orange);font-weight:600;margin-bottom:0.3rem;">Note on equivalents</p>
+                    <p style="font-size:0.8rem;color:var(--text-gray);line-height:1.6;">Equivalents are approximate — composition and property limits differ between standards. Always verify for critical use.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem">
+            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // Cross-reference database
+    // csn, en, wnr, din, aisi, name, cat
+    const DB = [
+        // ── STRUCTURAL ────────────────────────────────────────────────────────────
+        {csn:'11 300', en:'—',           wnr:'1.0035', din:'St33',     aisi:'—',         name:'Basic structural, not weldable',     cat:'structural'},
+        {csn:'11 343', en:'S220G',       wnr:'1.0036', din:'St34-2',   aisi:'—',         name:'Structural, weldable',               cat:'structural'},
+        {csn:'11 373', en:'S235JR',      wnr:'1.0037', din:'St37-2',   aisi:'A36 (≈)',   name:'Structural, general use',            cat:'structural'},
+        {csn:'11 375', en:'S235J2',      wnr:'1.0122', din:'St37-3',   aisi:'A36 (≈)',   name:'Structural, improved toughness',     cat:'structural'},
+        {csn:'11 378', en:'S235J2G3',    wnr:'1.0116', din:'St37-3N',  aisi:'—',         name:'Structural, normalised fine-grain',  cat:'structural'},
+        {csn:'11 416', en:'S275JR',      wnr:'1.0044', din:'St44-2',   aisi:'—',         name:'Structural, higher strength',        cat:'structural'},
+        {csn:'11 423', en:'S275J0',      wnr:'1.0143', din:'St44-3',   aisi:'—',         name:'Structural, improved toughness',     cat:'structural'},
+        {csn:'11 500', en:'S295',        wnr:'1.0050', din:'St50-2',   aisi:'—',         name:'Structural, normalised',             cat:'structural'},
+        {csn:'11 503', en:'S275N',       wnr:'1.0490', din:'StE285',   aisi:'—',         name:'Fine-grain structural, normalised',  cat:'structural'},
+        {csn:'11 523', en:'S355J2',      wnr:'1.0577', din:'St52-3',   aisi:'—',         name:'High-strength structural',           cat:'structural'},
+        {csn:'11 525', en:'S355N',       wnr:'1.0545', din:'StE355',   aisi:'A572-50(≈)','name':'Fine-grain structural normalised', cat:'structural'},
+        {csn:'11 600', en:'—',           wnr:'1.0060', din:'St60-2',   aisi:'—',         name:'High-strength structural',           cat:'structural'},
+        {csn:'11 700', en:'S420N (≈)',   wnr:'1.8902', din:'StE420',   aisi:'—',         name:'High-strength structural',           cat:'structural'},
+
+        // ── UNALLOYED ENGINEERING ─────────────────────────────────────────────────
+        {csn:'12 010', en:'C10',         wnr:'1.0301', din:'C10',      aisi:'1010',      name:'Low carbon, case hardening',         cat:'engineering'},
+        {csn:'12 020', en:'C10E',        wnr:'1.1121', din:'Ck10',     aisi:'1010',      name:'Low carbon quality, case hardening', cat:'engineering'},
+        {csn:'12 040', en:'C35',         wnr:'1.0501', din:'C35',      aisi:'1035',      name:'Medium carbon, normalised',          cat:'engineering'},
+        {csn:'12 050', en:'C45',         wnr:'1.0503', din:'C45',      aisi:'1045',      name:'Medium carbon, general engineering', cat:'engineering'},
+        {csn:'12 060', en:'C55',         wnr:'1.0535', din:'C55',      aisi:'1055',      name:'Higher carbon, wear resistance',     cat:'engineering'},
+        {csn:'12 061', en:'C60',         wnr:'1.0601', din:'C60',      aisi:'1060',      name:'High carbon, springs & rails',       cat:'engineering'},
+        {csn:'12 090', en:'C90U',        wnr:'1.1535', din:'Ck90',     aisi:'1090',      name:'High carbon tool/spring steel',      cat:'engineering'},
+
+        // ── ALLOY ENGINEERING ─────────────────────────────────────────────────────
+        {csn:'13 140', en:'28Mn6',       wnr:'1.1165', din:'28Mn6',    aisi:'1330 (≈)',  name:'Manganese steel',                    cat:'engineering'},
+        {csn:'13 240', en:'41Cr4',       wnr:'1.7035', din:'41Cr4',    aisi:'5140',      name:'Chromium steel, through-hardening',  cat:'engineering'},
+        {csn:'14 109', en:'51CrV4',      wnr:'1.8159', din:'50CrV4',   aisi:'6150',      name:'Cr-V spring & engineering steel',    cat:'spring'},
+        {csn:'14 220', en:'20MnCr5',     wnr:'1.7147', din:'20MnCr5',  aisi:'5120',      name:'Mn-Cr case hardening steel',         cat:'case'},
+        {csn:'14 240', en:'25CrMo4',     wnr:'1.7218', din:'25CrMo4',  aisi:'4130',      name:'Cr-Mo low-alloy structural',         cat:'engineering'},
+        {csn:'14 260', en:'20MnCrS5',    wnr:'1.7149', din:'20MnCrS5', aisi:'5120',      name:'Free-cutting Mn-Cr case hardening',  cat:'case'},
+        {csn:'14 331', en:'16MnCr5',     wnr:'1.7131', din:'16MnCr5',  aisi:'5115',      name:'Mn-Cr case hardening, gears',        cat:'case'},
+        {csn:'14 340', en:'34CrMo4',     wnr:'1.7220', din:'34CrMo4',  aisi:'4135',      name:'Cr-Mo pressure vessel steel',        cat:'engineering'},
+        {csn:'15 130', en:'42CrMo4',     wnr:'1.7225', din:'42CrMo4',  aisi:'4140',      name:'High-strength Cr-Mo, crankshafts',   cat:'engineering'},
+        {csn:'15 142', en:'34CrNiMo6',   wnr:'1.6582', din:'34CrNiMo6',aisi:'4340',      name:'Ni-Cr-Mo ultra-high strength',       cat:'engineering'},
+        {csn:'15 260', en:'34CrMo4',     wnr:'1.7220', din:'34CrMo4',  aisi:'4135',      name:'Cr-Mo, pressure vessels',            cat:'engineering'},
+        {csn:'16 220', en:'18CrNiMo7-6', wnr:'1.6587', din:'18CrNiMo7-6','aisi':'8620 (≈)','name':'Ni-Cr-Mo case hardening, gears', cat:'case'},
+
+        // ── SPRING STEELS ─────────────────────────────────────────────────────────
+        {csn:'13 260', en:'46Mn7',       wnr:'1.1127', din:'46Mn7',    aisi:'—',         name:'Mn spring steel',                    cat:'spring'},
+        {csn:'14 260', en:'50CrMo4',     wnr:'1.7228', din:'50CrMo4',  aisi:'—',         name:'Cr-Mo spring steel',                 cat:'spring'},
+        {csn:'13 180', en:'60SiCr7',     wnr:'1.7108', din:'60SiCr7',  aisi:'9254',      name:'Si-Cr valve spring steel',           cat:'spring'},
+
+        // ── STAINLESS ─────────────────────────────────────────────────────────────
+        {csn:'17 022', en:'X20Cr13',     wnr:'1.4021', din:'X20Cr13',  aisi:'420',       name:'Martensitic, hardenable',            cat:'stainless'},
+        {csn:'17 040', en:'X6Cr13',      wnr:'1.4000', din:'X6Cr13',   aisi:'410S',      name:'Ferritic, basic corrosion resistance',cat:'stainless'},
+        {csn:'17 240', en:'X5CrNi18-10', wnr:'1.4301', din:'X5CrNi18-10','aisi':'304',   name:'Austenitic, 18/10, general use',     cat:'stainless'},
+        {csn:'17 241', en:'X8CrNiS18-9', wnr:'1.4305', din:'X8CrNiS18-9','aisi':'303',  name:'Austenitic, free-cutting',           cat:'stainless'},
+        {csn:'—',      en:'X2CrNi18-9',  wnr:'1.4307', din:'—',        aisi:'304L',      name:'Austenitic, low carbon',             cat:'stainless'},
+        {csn:'17 246', en:'X5CrNiMo17-12-2',wnr:'1.4401',din:'X5CrNiMo17-12-2','aisi':'316','name':'Austenitic, Mo-bearing',       cat:'stainless'},
+        {csn:'17 248', en:'X2CrNiMo17-12-2',wnr:'1.4404',din:'X2CrNiMo17-12-2','aisi':'316L','name':'Austenitic, low C Mo-bearing', cat:'stainless'},
+        {csn:'17 251', en:'X6CrNiMoTi17-12-2',wnr:'1.4571',din:'X6CrNiMoTi17-12-2','aisi':'316Ti','name':'Austenitic, Ti stabilised, Mo', cat:'stainless'},
+        {csn:'—',      en:'X6CrNiTi18-10',wnr:'1.4541',din:'X6CrNiTi18-10','aisi':'321','name':'Austenitic, Ti stabilised',        cat:'stainless'},
+        {csn:'—',      en:'X2CrNiMoN22-5-3',wnr:'1.4462',din:'—',     aisi:'2205',      name:'Duplex, standard',                   cat:'stainless'},
+        {csn:'—',      en:'X2CrNiMoN25-7-4',wnr:'1.4410',din:'—',     aisi:'2507',      name:'Super duplex',                       cat:'stainless'},
+        {csn:'—',      en:'X5CrNiCuNb16-4',wnr:'1.4542',din:'—',      aisi:'17-4 PH',   name:'Precipitation hardening',            cat:'stainless'},
+        {csn:'17 465', en:'X8CrNi25-21',  wnr:'1.4845',din:'X8CrNi25-21','aisi':'310S', name:'Austenitic, high temperature',       cat:'stainless'},
+        {csn:'—',      en:'X6Cr17',       wnr:'1.4016',din:'X6Cr17',   aisi:'430',       name:'Ferritic, decorative',               cat:'stainless'},
+        {csn:'—',      en:'X2CrTiNb18',   wnr:'1.4509',din:'—',        aisi:'441',       name:'Ferritic stabilised, exhaust',       cat:'stainless'},
+
+        // ── TOOL STEELS ───────────────────────────────────────────────────────────
+        {csn:'19 083', en:'X155CrVMo12-1',wnr:'1.2379',din:'X155CrVMo12-1','aisi':'D2', name:'High-Cr cold work die steel',        cat:'tool'},
+        {csn:'19 191', en:'C80U / C105U', wnr:'1.1525',din:'C85W',     aisi:'W1',        name:'Water hardening plain carbon tool',   cat:'tool'},
+        {csn:'19 221', en:'90MnCrV8',     wnr:'1.2842',din:'90MnCrV8', aisi:'O2',        name:'Oil hardening, gauges & jigs',        cat:'tool'},
+        {csn:'19 312', en:'X40CrMoV5-1',  wnr:'1.2344',din:'X40CrMoV5-1','aisi':'H13',  name:'Hot work die steel, die casting',     cat:'tool'},
+        {csn:'19 350', en:'X37CrMoV5-1',  wnr:'1.2343',din:'X37CrMoV5-1','aisi':'H11',  name:'Hot work die steel',                  cat:'tool'},
+        {csn:'19 421', en:'X210Cr12',     wnr:'1.2080',din:'X210Cr12', aisi:'D3',        name:'High-Cr cold work, deep hardening',   cat:'tool'},
+        {csn:'19 452', en:'90MnCrV8',     wnr:'1.2842',din:'90MnCrV8', aisi:'O2',        name:'Oil hardening tool steel',            cat:'tool'},
+        {csn:'19 614', en:'HS6-5-2',      wnr:'1.3343',din:'S6-5-2',   aisi:'M2',        name:'Standard high-speed steel',           cat:'tool'},
+        {csn:'19 721', en:'HS18-0-1',     wnr:'1.3355',din:'S18-0-1',  aisi:'T1',        name:'Tungsten high-speed steel',           cat:'tool'},
+        {csn:'—',      en:'X153CrMoV12',  wnr:'1.2363',din:'X100CrMoV5','aisi':'A2',     name:'Air hardening cold work die steel',   cat:'tool'},
+        {csn:'—',      en:'X45NiCrMo4',   wnr:'1.2767',din:'X45NiCrMo4','aisi':'L6',     name:'Ni-Cr-Mo shock resistant tool steel', cat:'tool'},
+    ];
+
+    let activeCat = 'all';
+
+    function filterCat(cat) {
+        activeCat = cat;
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+        render();
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInp').value = '';
+        render();
+    }
+
+    function highlight(text, q) {
+        if (!q || !text) return text || '—';
+        const str = String(text);
+        if (!q) return str;
+        const idx = str.toLowerCase().indexOf(q.toLowerCase());
+        if (idx < 0) return str;
+        return str.slice(0,idx) + `<span class="hl">${str.slice(idx, idx+q.length)}</span>` + str.slice(idx+q.length);
+    }
+
+    function catBadge(cat) {
+        const map = {structural:'Structural',engineering:'Engineering',stainless:'Stainless',tool:'Tool',spring:'Spring',case:'Case harden.'};
+        return `<span class="cat-badge cat-${cat}">${map[cat]||cat}</span>`;
+    }
+
+    function render() {
+        const q = document.getElementById('searchInp').value.trim();
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+
+        const filtered = DB.filter(row => {
+            const matchCat = activeCat === 'all' || row.cat === activeCat;
+            if (!matchCat) return false;
+            if (!q) return true;
+            const ql = q.toLowerCase();
+            return [row.csn, row.en, row.wnr, row.din, row.aisi, row.name]
+                .some(v => v && String(v).toLowerCase().includes(ql));
+        });
+
+        document.getElementById('totalCount').textContent = DB.length;
+        document.getElementById('resultCount').textContent = filtered.length;
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" class="no-results"><span>🔍</span>No results for "${q}"<br><small>Try a shorter term or different standard</small></td></tr>`;
+            return;
+        }
+
+        filtered.forEach(row => {
+            const tr = document.createElement('tr');
+            const fields = [row.csn, row.en, row.wnr, row.din, row.aisi, row.name];
+            const isMatch = q && fields.some(v => v && String(v).toLowerCase().includes(q.toLowerCase()));
+            if (isMatch) tr.className = 'match-row';
+
+            tr.innerHTML = `
+                <td class="csn">${highlight(row.csn, q)}</td>
+                <td class="mono">${highlight(row.en, q)}</td>
+                <td class="muted">${highlight(row.wnr, q)}</td>
+                <td class="muted">${highlight(row.din, q)}</td>
+                <td class="mono">${highlight(row.aisi, q)}</td>
+                <td>${highlight(row.name, q)}</td>
+                <td>${catBadge(row.cat)}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    render();
+    </script>
+</body>
+</html>

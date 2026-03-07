@@ -1,0 +1,8 @@
+{
+  "id": "eng-021",
+  "title": "Bearing Life Calculator",
+  "description": "Calculate L10 and L10h bearing life per ISO 281. Ball and roller bearings, reliability adjustment (a1), equivalent dynamic load.",
+  "category": "machine-elements",
+  "icon": "⚙️",
+  "difficulty": "intermediate"
+}

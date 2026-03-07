@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fillet Weld Calculator — EC3 EN 1993-1-8 | StrokeForge Engineering</title>
+    <meta name="description" content="Check fillet welds under tension N, shear V and bending M per ČSN EN 1993-1-8 (EC3). Calculates σ⊥, τ⊥, τ‖, comparison stress and PASS/FAIL for S235–S460.">
+    <meta name="keywords" content="fillet weld calculator, koutový svar výpočet, EC3 EN 1993-1-8, weld stress check, σ⊥ τ‖ koutový svar, svarový spoj kalkulátor, S355 weld">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-016/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 920px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .input-grid   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        .input-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 640px) { .input-grid { grid-template-columns: 1fr 1fr; } .input-grid-2 { grid-template-columns: 1fr; } }
+
+        .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; min-width: 0; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; flex-shrink: 0; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        /* Load type tabs */
+        .type-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.25rem; }
+        .type-btn { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.35rem 0.9rem; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
+        .type-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .type-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; font-weight: 600; }
+
+        /* Layout: inputs | SVG */
+        .side-layout { display: grid; grid-template-columns: 1fr 180px; gap: 2rem; align-items: start; }
+        @media (max-width: 600px) { .side-layout { grid-template-columns: 1fr; } }
+
+        /* Results */
+        .res-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .res-table td { padding: 0.55rem 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .res-table td:first-child  { color: var(--primary-orange); font-weight: 600; font-family: monospace; width: 130px; }
+        .res-table td:nth-child(2) { color: var(--light-gray); font-weight: 700; }
+        .res-table td:nth-child(3) { color: var(--text-gray); font-size: 0.8rem; width: 55px; }
+        .res-table td:nth-child(4) { color: var(--text-gray); font-size: 0.78rem; font-family: monospace; }
+        .res-table tr:last-child td { border-bottom: none; }
+        .res-table .sec-head td { color: var(--text-gray); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border-gray); }
+
+        /* Bar */
+        .bar-wrap { margin: 0.5rem 0 0; }
+        .bar-track { height: 10px; background: var(--darker-bg); border-radius: 99px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s, background 0.4s; }
+        .bar-label { font-size: 0.78rem; color: var(--text-gray); margin-top: 0.35rem; display: flex; justify-content: space-between; }
+
+        /* Verdict */
+        .verdict { display: inline-block; padding: 0.3rem 1.1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 700; margin-top: 0.6rem; }
+        .verdict.pass { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+        .verdict.fail { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+        .verdict.warn { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+
+        /* Info */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.82rem; line-height: 2.0; display: block; margin-top: 0.3rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>🔧 Fillet Weld Calculator</h1>
+        <p>σ⊥, τ⊥, τ‖ — directional method per ČSN EN 1993-1-8 (EC3)</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- INPUT -->
+        <div class="card">
+            <h2>Weld geometry &amp; loading</h2>
+            <div class="side-layout">
+                <div>
+                    <!-- Load type tabs -->
+                    <div class="type-tabs">
+                        <button class="type-btn active" data-mode="N"   onclick="setMode('N')">Tension / Compression N</button>
+                        <button class="type-btn"         data-mode="V"   onclick="setMode('V')">Shear V</button>
+                        <button class="type-btn"         data-mode="M"   onclick="setMode('M')">Bending M</button>
+                        <button class="type-btn"         data-mode="NVM" onclick="setMode('NVM')">Combined N+V+M</button>
+                    </div>
+
+                    <!-- Weld geometry -->
+                    <div class="input-grid" style="margin-bottom:1rem;">
+                        <div class="field">
+                            <label>Throat thickness a</label>
+                            <div class="field-row">
+                                <input type="number" id="a" class="inp" value="6" min="1" step="0.5" oninput="calc()">
+                                <span class="unit">mm</span>
+                            </div>
+                            <span class="hint">a ≥ 3 mm, a ≤ 0.7·t_min</span>
+                        </div>
+                        <div class="field">
+                            <label>Weld length l</label>
+                            <div class="field-row">
+                                <input type="number" id="lw" class="inp" value="150" min="1" step="5" oninput="calc()">
+                                <span class="unit">mm</span>
+                            </div>
+                            <span class="hint">Nominal length</span>
+                        </div>
+                        <div class="field">
+                            <label>Number of welds</label>
+                            <select id="nw" class="sel" onchange="calc()">
+                                <option value="1">1 — single sided</option>
+                                <option value="2" selected>2 — double sided</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Forces -->
+                    <div class="input-grid" style="margin-bottom:1rem;" id="forceInputs">
+                        <div class="field" id="fN">
+                            <label>Axial force N</label>
+                            <div class="field-row">
+                                <input type="number" id="N" class="inp" value="50" step="1" oninput="calc()">
+                                <span class="unit">kN</span>
+                            </div>
+                            <span class="hint">+ tension, − compression</span>
+                        </div>
+                        <div class="field" id="fV" style="display:none;">
+                            <label>Shear force V</label>
+                            <div class="field-row">
+                                <input type="number" id="V" class="inp" value="30" step="1" oninput="calc()">
+                                <span class="unit">kN</span>
+                            </div>
+                        </div>
+                        <div class="field" id="fM" style="display:none;">
+                            <label>Bending moment M</label>
+                            <div class="field-row">
+                                <input type="number" id="M" class="inp" value="5" step="0.1" oninput="calc()">
+                                <span class="unit">kN·m</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Material -->
+                    <div class="input-grid-2">
+                        <div class="field">
+                            <label>Steel grade (base material)</label>
+                            <select id="steel" class="sel" onchange="calc()">
+                                <option value="235,360,0.8">S235 — fu = 360 MPa, βw = 0.80</option>
+                                <option value="275,430,0.85">S275 — fu = 430 MPa, βw = 0.85</option>
+                                <option value="355,490,0.9" selected>S355 — fu = 490 MPa, βw = 0.90</option>
+                                <option value="420,520,1.0">S420 — fu = 520 MPa, βw = 1.00</option>
+                                <option value="460,560,1.0">S460 — fu = 560 MPa, βw = 1.00</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Weld electrode matches base material</label>
+                            <select id="electrode" class="sel" onchange="calc()">
+                                <option value="1" selected>Yes (standard)</option>
+                                <option value="0">No — enter fu,w manually</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SVG -->
+                <svg id="weldSvg" width="160" height="200" viewBox="0 0 160 200"></svg>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card">
+            <h2>Results</h2>
+            <table class="res-table">
+                <tbody id="resBody"></tbody>
+            </table>
+        </div>
+
+        <!-- BACKGROUND -->
+        <div class="card">
+            <h2>Method — EN 1993-1-8 directional method</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Stresses on weld throat</h3>
+                    <span class="mono">σ⊥ = N / Aw &nbsp;&nbsp;&nbsp;&nbsp;(⊥ to throat plane)<br>τ⊥ = V / Aw &nbsp;&nbsp;&nbsp;&nbsp;(⊥ to weld axis)<br>τ‖ = — &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(‖ to weld axis)<br>Aw = a · leff · n</span>
+                    <p style="margin-top:0.4rem">Effective length: l<sub>eff</sub> = l − 2a (end craters deducted). n = number of welds.</p>
+                </div>
+                <div class="info-block">
+                    <h3>EC3 comparison criterion</h3>
+                    <span class="mono">σ_eq = √(σ⊥² + 3·(τ⊥² + τ‖²))<br>σ_eq ≤ fu / (βw · γM2)<br>σ⊥ &nbsp;&nbsp;≤ 0.9 · fu / γM2</span>
+                    <p style="margin-top:0.4rem">γM2 = 1.25 (partial factor, EN 1993-1-8 §4.5.3.2). Both conditions must be satisfied.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Correlation factor βw</h3>
+                    <ul>
+                        <li>S235: βw = 0.80</li>
+                        <li>S275: βw = 0.85</li>
+                        <li>S355: βw = 0.90</li>
+                        <li>S420 / S460: βw = 1.00</li>
+                    </ul>
+                    <p style="margin-top:0.4rem">Electrode must match or overmatch the base material.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Bending (bracket weld)</h3>
+                    <span class="mono">Ww = a · l² / 6<br>σ⊥_M = M / Ww</span>
+                    <p style="margin-top:0.4rem">Valid for a single flat weld group (line weld). For complex weld groups use the weld group section modulus directly.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Minimum weld size</h3>
+                    <ul>
+                        <li>a ≥ 3 mm (EN 1993-1-8)</li>
+                        <li>a ≤ 0.7 · t<sub>min</sub> (thinner part)</li>
+                        <li>l ≥ max(6a, 30 mm)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Notes</h3>
+                    <ul>
+                        <li>This tool uses the directional (vector) method — conservative for transverse welds</li>
+                        <li>For lap joints (τ‖ only) use the simplified method: f<sub>w,Rd</sub> = f<sub>u</sub>·a / (√3·βw·γM2)</li>
+                        <li>Preheating, fatigue and impact requirements are not checked here</li>
+                        <li>Standard: ČSN EN 1993-1-8:2006, §4.5.3</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem">
+            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ─── STATE ───────────────────────────────────────────────────────────────────
+    let mode = 'N';
+    const gM2 = 1.25;
+
+    // ─── MODE SWITCH ──────────────────────────────────────────────────────────────
+    function setMode(m) {
+        mode = m;
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+        document.getElementById('fN').style.display = (m === 'N' || m === 'NVM') ? '' : 'none';
+        document.getElementById('fV').style.display = (m === 'V' || m === 'NVM') ? '' : 'none';
+        document.getElementById('fM').style.display = (m === 'M' || m === 'NVM') ? '' : 'none';
+        drawSvg(m);
+        calc();
+    }
+
+    // ─── SVG DIAGRAM ─────────────────────────────────────────────────────────────
+    function drawSvg(m) {
+        const svg = document.getElementById('weldSvg');
+        svg.innerHTML = '';
+        const W = 160, H = 200;
+
+        function el(tag, attrs, txt) {
+            const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+            for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+            if (txt !== undefined) e.textContent = txt;
+            return e;
+        }
+        function line(x1,y1,x2,y2,stroke,sw) {
+            return el('line',{x1,y1,x2,y2,stroke:stroke||'#4b5563','stroke-width':sw||1});
+        }
+        function arrow(x1,y1,x2,y2,color) {
+            const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+            const ux=dx/len,uy=dy/len;
+            const hx=x2-ux*10,hy=y2-uy*10;
+            const px=-uy,py=ux;
+            const g=el('g',{});
+            g.appendChild(el('line',{x1,y1,x2,y2,stroke:color,'stroke-width':1.8}));
+            g.appendChild(el('polygon',{
+                points:`${x2},${y2} ${hx+px*4},${hy+py*4} ${hx-px*4},${hy-py*4}`,
+                fill:color
+            }));
+            return g;
+        }
+        function txt(x,y,t,fill,size,anchor) {
+            return el('text',{x,y,fill:fill||'#9ca3af','font-size':size||9,'font-family':'monospace','text-anchor':anchor||'middle','dominant-baseline':'middle'},t);
+        }
+
+        // Base plate
+        svg.appendChild(el('rect',{x:30,y:100,width:100,height:55,fill:'#1e293b',stroke:'#4b5563','stroke-width':1}));
+        // Vertical member
+        svg.appendChild(el('rect',{x:60,y:20,width:40,height:80,fill:'#1e293b',stroke:'#4b5563','stroke-width':1}));
+        // Fillet weld triangles
+        svg.appendChild(el('polygon',{points:'60,100 60,80 80,100',fill:'#f97316',opacity:'0.85'}));
+        svg.appendChild(el('polygon',{points:'100,100 100,80 80,100',fill:'#f97316',opacity:'0.85'}));
+        // Labels
+        svg.appendChild(txt(138,127,'Base','#6b7280',8));
+        svg.appendChild(txt(80,10,'Member','#6b7280',8));
+        svg.appendChild(txt(52,92,'a','#f97316',9));
+        svg.appendChild(txt(108,92,'a','#f97316',9));
+
+        // Force arrows per mode
+        if (m === 'N' || m === 'NVM') {
+            svg.appendChild(arrow(80,55,80,25,'#4ade80'));
+            svg.appendChild(txt(92,40,'N','#4ade80',9,'start'));
+        }
+        if (m === 'V' || m === 'NVM') {
+            svg.appendChild(arrow(25,60,58,60,'#60a5fa'));
+            svg.appendChild(txt(20,55,'V','#60a5fa',9,'end'));
+        }
+        if (m === 'M' || m === 'NVM') {
+            // moment arc
+            svg.appendChild(el('path',{d:'M 65 35 A 15 15 0 0 1 95 35',fill:'none',stroke:'#fbbf24','stroke-width':1.8}));
+            svg.appendChild(el('polygon',{points:'95,35 90,30 88,38',fill:'#fbbf24'}));
+            svg.appendChild(txt(80,22,'M','#fbbf24',9));
+        }
+    }
+
+    // ─── CALC ─────────────────────────────────────────────────────────────────────
+    function calc() {
+        const a   = parseFloat(document.getElementById('a').value)  || 0;
+        const lw  = parseFloat(document.getElementById('lw').value) || 0;
+        const nw  = parseInt(document.getElementById('nw').value)   || 1;
+        const N   = (mode === 'N' || mode === 'NVM') ? (parseFloat(document.getElementById('N').value) || 0) * 1000 : 0; // N
+        const V   = (mode === 'V' || mode === 'NVM') ? (parseFloat(document.getElementById('V').value) || 0) * 1000 : 0;
+        const M   = (mode === 'M' || mode === 'NVM') ? (parseFloat(document.getElementById('M').value) || 0) * 1e6  : 0; // N·mm
+
+        const [,fu_s, bw] = document.getElementById('steel').value.split(',').map(Number);
+
+        if (a <= 0 || lw <= 0) {
+            document.getElementById('resBody').innerHTML = '<tr><td colspan="4" style="color:var(--text-gray);padding:1rem 0;">Enter valid weld geometry.</td></tr>';
+            return;
+        }
+
+        // Effective length (deduct 2a for end craters, each end)
+        const leff = Math.max(lw - 2 * a, 0);
+        // Total throat area
+        const Aw = a * leff * nw;    // mm²
+        // Weld section modulus for bending (each weld, line model)
+        const Ww = nw * a * leff * leff / 6; // mm³
+
+        // Stresses [MPa]
+        const sigN  = Aw > 0 ? Math.abs(N) / Aw : 0;           // from axial → σ⊥
+        const tauV  = Aw > 0 ? Math.abs(V) / Aw : 0;           // from shear → τ⊥
+        const sigM  = Ww > 0 ? Math.abs(M) / Ww : 0;           // from bending → σ⊥
+
+        const sigPerp = sigN + sigM;   // combined σ⊥ (additive for same direction)
+        const tauPerp = tauV;          // τ⊥
+        const tauPar  = 0;             // τ‖ (parallel shear — not applied in this model)
+
+        // EC3 comparison stress
+        const sigEq = Math.sqrt(sigPerp ** 2 + 3 * (tauPerp ** 2 + tauPar ** 2));
+
+        // Resistances
+        const fwRd   = fu_s / (bw * gM2);       // σ_eq limit
+        const sigRd  = 0.9 * fu_s / gM2;        // σ⊥ limit
+
+        const eta1 = sigEq  / fwRd;
+        const eta2 = sigPerp / sigRd;
+        const etaMax = Math.max(eta1, eta2);
+
+        // Verdict
+        let vText = 'PASS', vClass = 'pass';
+        if (etaMax > 1.0)       { vText = 'FAIL'; vClass = 'fail'; }
+        else if (etaMax > 0.85) { vText = 'PASS — near limit'; vClass = 'warn'; }
+
+        function fmt(v, d) { return isFinite(v) && v !== null ? v.toFixed(d ?? 1) : '—'; }
+        function row(s, v, u, f) { return `<tr><td>${s}</td><td>${v}</td><td>${u}</td><td>${f}</td></tr>`; }
+        function secHead(t) { return `<tr class="sec-head"><td colspan="4">${t}</td></tr>`; }
+        function barRow(eta, label) {
+            const pct = Math.min(eta*100,100).toFixed(0);
+            const col = eta>1?'#f87171':eta>0.85?'#fbbf24':'#4ade80';
+            return `<tr><td colspan="4" style="padding:0.3rem 0.9rem 0.7rem;">
+                <div class="bar-wrap">
+                    <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${col};"></div></div>
+                    <div class="bar-label"><span>${label}</span><span>${(eta*100).toFixed(1)} %</span></div>
+                </div></td></tr>`;
+        }
+
+        let html = '';
+        html += secHead('Weld geometry');
+        html += row('a',    fmt(a,1),    'mm',   'throat thickness');
+        html += row('l',    fmt(lw,0),   'mm',   'nominal length');
+        html += row('l_eff',Aw>0?fmt(leff,1):'—','mm','l − 2a (end craters)');
+        html += row('A_w',  fmt(Aw,0),   'mm²',  `a · leff · ${nw}`);
+
+        html += secHead('Stresses on weld throat');
+        html += row('σ⊥',   fmt(sigPerp,1), 'MPa', 'from N + M');
+        html += row('τ⊥',   fmt(tauPerp,1), 'MPa', 'from V');
+        html += row('τ‖',   fmt(tauPar,1),  'MPa', '(not applied)');
+        html += row('σ_eq', fmt(sigEq,1),   'MPa', '√(σ⊥² + 3·(τ⊥² + τ‖²))');
+
+        html += secHead('Design resistance (EC3, γM2 = 1.25)');
+        html += row('f_w,Rd', fmt(fwRd,1),  'MPa', `fu/(βw·γM2) = ${fu_s}/(${bw}·1.25)`);
+        html += row('σ⊥,Rd',  fmt(sigRd,1), 'MPa', `0.9·fu/γM2 = 0.9·${fu_s}/1.25`);
+
+        html += secHead('Utilization');
+        html += barRow(eta1, 'Comparison stress  η₁ = σ_eq / f_w,Rd');
+        html += barRow(eta2, 'Normal stress  η₂ = σ⊥ / σ⊥,Rd');
+
+        if (leff <= 0) html += `<tr><td colspan="4" style="color:#fbbf24;font-size:0.82rem;padding:0.3rem 0.9rem;">⚠ Effective length ≤ 0. Weld length l must be greater than 2a = ${2*a} mm.</td></tr>`;
+        if (lw < 6*a) html += `<tr><td colspan="4" style="color:#fbbf24;font-size:0.82rem;padding:0.3rem 0.9rem;">⚠ l &lt; 6a — minimum weld length not met (min ${fmt(6*a,0)} mm).</td></tr>`;
+        if (lw < 30)  html += `<tr><td colspan="4" style="color:#fbbf24;font-size:0.82rem;padding:0.3rem 0.9rem;">⚠ l &lt; 30 mm — minimum weld length not met.</td></tr>`;
+
+        html += `<tr><td colspan="4"><span class="verdict ${vClass}">${vText}</span></td></tr>`;
+        document.getElementById('resBody').innerHTML = html;
+    }
+
+    // ─── INIT ─────────────────────────────────────────────────────────────────────
+    setMode('N');
+    </script>
+</body>
+</html>

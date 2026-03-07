@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Czech Steel Grades ČSN — EN DIN AISI Equivalents | StrokeForge Engineering</title>
+    <meta name="description" content="Reference database of Czech ČSN steel grades with mechanical properties and EN/DIN/AISI equivalents. Structural, engineering, stainless and tool steels.">
+    <meta name="keywords" content="ČSN oceli databáze, Czech steel grades, ČSN EN ekvivalent, 11 373 S235, 11 523 S355, 15 130 42CrMo4, 17 240 304, ocel ČSN normy">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-023/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 1060px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Category tabs */
+        .cat-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+        .cat-btn { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.35rem 0.9rem; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
+        .cat-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .cat-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; font-weight: 600; }
+
+        /* Search */
+        .search-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; align-items: center; }
+        .search-inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.9rem; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+        .search-inp:focus { border-color: var(--primary-orange); }
+        .search-inp::placeholder { color: var(--text-gray); }
+        #resultCount { font-size: 0.78rem; color: var(--text-gray); white-space: nowrap; }
+
+        /* Table */
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .data-table th { background: rgba(255,107,53,0.08); color: var(--primary-orange); font-size: 0.75rem; font-weight: 600; padding: 0.5rem 0.7rem; text-align: left; border-bottom: 1px solid var(--border-gray); white-space: nowrap; }
+        .data-table td { padding: 0.48rem 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--light-gray); vertical-align: middle; }
+        .data-table td.csn { font-family: monospace; font-weight: 700; color: var(--primary-orange); font-size: 0.9rem; white-space: nowrap; }
+        .data-table td.eq  { font-family: monospace; font-size: 0.8rem; color: #94a3b8; }
+        .data-table td.num { font-family: monospace; text-align: right; color: #cbd5e1; }
+        .data-table tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table .hidden { display: none; }
+
+        /* Category badge */
+        .cat-badge { display: inline-block; padding: 0.1rem 0.45rem; border-radius: 3px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; }
+        .cat-structural { background: rgba(96,165,250,0.15); color: #60a5fa; }
+        .cat-engineering { background: rgba(74,222,128,0.15); color: #4ade80; }
+        .cat-stainless { background: rgba(167,139,250,0.15); color: #a78bfa; }
+        .cat-tool { background: rgba(251,191,36,0.15); color: #fbbf24; }
+
+        /* Detail modal / drawer */
+        .detail-panel { display: none; background: var(--darker-bg); border: 1px solid var(--border-gray); border-radius: 10px; padding: 1.25rem 1.5rem; margin-top: 1rem; }
+        .detail-panel.open { display: block; }
+        .detail-panel h3 { color: var(--primary-orange); font-size: 1rem; margin-bottom: 0.75rem; font-family: monospace; }
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 2rem; }
+        @media (max-width: 500px) { .detail-grid { grid-template-columns: 1fr; } }
+        .detail-row { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.3rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .detail-row span:first-child { color: var(--text-gray); }
+        .detail-row span:last-child  { color: var(--light-gray); font-family: monospace; }
+        .close-btn { float: right; background: none; border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 5px; padding: 0.2rem 0.6rem; cursor: pointer; font-size: 0.8rem; }
+        .close-btn:hover { color: var(--light-gray); border-color: var(--primary-orange); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>📋 Czech Steel Grades ČSN</h1>
+        <p>Structural · engineering · stainless · tool steels — EN / DIN / AISI equivalents</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <div class="card">
+            <h2>Steel grade database</h2>
+
+            <div class="cat-tabs" id="catTabs">
+                <button class="cat-btn active" data-cat="all"         onclick="filterCat('all')">All grades</button>
+                <button class="cat-btn"         data-cat="structural"  onclick="filterCat('structural')">Structural (11xxx)</button>
+                <button class="cat-btn"         data-cat="engineering" onclick="filterCat('engineering')">Engineering (12–15xxx)</button>
+                <button class="cat-btn"         data-cat="stainless"   onclick="filterCat('stainless')">Stainless (17xxx)</button>
+                <button class="cat-btn"         data-cat="tool"        onclick="filterCat('tool')">Tool (19xxx)</button>
+            </div>
+
+            <div class="search-row">
+                <input type="text" id="searchInp" class="search-inp" placeholder="Search ČSN, EN, DIN, AISI, description…" oninput="filterSearch()">
+                <span id="resultCount"></span>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ČSN</th>
+                            <th>Name / Description</th>
+                            <th>f<sub>y</sub> (MPa)</th>
+                            <th>f<sub>u</sub> (MPa)</th>
+                            <th>EN equivalent</th>
+                            <th>DIN</th>
+                            <th>AISI / W.Nr.</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody id="steelBody"></tbody>
+                </table>
+            </div>
+
+            <div class="detail-panel" id="detailPanel">
+                <button class="close-btn" onclick="closeDetail()">✕ Close</button>
+                <h3 id="detailTitle"></h3>
+                <div class="detail-grid" id="detailGrid"></div>
+                <p id="detailNote" style="font-size:0.8rem;color:var(--text-gray);margin-top:0.85rem;line-height:1.7;"></p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>How to read ČSN steel designations</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div style="background:var(--darker-bg);border-radius:8px;padding:1rem 1.2rem;">
+                    <h3 style="font-size:0.85rem;color:var(--primary-orange);margin-bottom:0.5rem;">Numbering system</h3>
+                    <p style="font-size:0.82rem;color:var(--text-gray);line-height:1.8;">
+                        ČSN uses a 5-digit system: <strong style="color:var(--light-gray);">XX YYY</strong><br>
+                        First 2 digits = steel group (11 = structural, 12 = unalloyed, 14 = low-alloy, 15 = alloy, 17 = stainless, 19 = tool)<br>
+                        Last 3 digits = grade within group
+                    </p>
+                </div>
+                <div style="background:var(--darker-bg);border-radius:8px;padding:1rem 1.2rem;">
+                    <h3 style="font-size:0.85rem;color:var(--primary-orange);margin-bottom:0.5rem;">Note on equivalents</h3>
+                    <p style="font-size:0.82rem;color:var(--text-gray);line-height:1.8;">
+                        ČSN was the Czechoslovak standard, now superseded by EN in the Czech Republic. Equivalents are approximate — always verify mechanical properties for critical applications. Some ČSN grades have no direct EN equivalent.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem">
+            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ČSN steel database
+    // fields: csn, name, fy, fu, en, din, aisi, cat, note
+    const STEELS = [
+        // ── STRUCTURAL 11xxx ──────────────────────────────────────────────────────
+        {csn:'11 300', name:'Unalloyed structural steel, not weldable',     fy:175,  fu:'300–370', en:'—',       din:'St33',         aisi:'—',          cat:'structural',  note:'Basic low-quality structural steel. Not suitable for welding. Used for non-critical cast parts and light structures.'},
+        {csn:'11 343', name:'Structural steel, weldable',                   fy:210,  fu:'330–430', en:'S220G',   din:'St34-2',       aisi:'—',          cat:'structural',  note:'Basic weldable structural steel. Older grade, largely replaced by S235.'},
+        {csn:'11 373', name:'Structural steel, weldable — standard grade',  fy:235,  fu:'340–470', en:'S235JR',  din:'St37-2',       aisi:'A36 (approx)',cat:'structural', note:'Most common structural steel in Czech practice. Equivalent to S235JR. Used for general structures, frames, brackets.'},
+        {csn:'11 375', name:'Structural steel, improved toughness',         fy:235,  fu:'340–470', en:'S235J2',  din:'St37-3',       aisi:'A36 (approx)',cat:'structural', note:'Higher impact toughness vs 11 373. Used in cold environments and bridges.'},
+        {csn:'11 378', name:'Structural steel, fine-grain, normalised',     fy:235,  fu:'340–470', en:'S235J2G3',din:'St37-3N',      aisi:'—',          cat:'structural',  note:'Normalised fine-grain version.'},
+        {csn:'11 416', name:'Structural steel, weldable, higher strength',  fy:265,  fu:'410–540', en:'S275JR',  din:'St44-2',       aisi:'—',          cat:'structural',  note:'Intermediate strength grade between S235 and S355.'},
+        {csn:'11 423', name:'Structural steel, improved toughness',         fy:275,  fu:'410–540', en:'S275J0',  din:'St44-3',       aisi:'—',          cat:'structural',  note:'Improved toughness version, tested at 0°C. Bridges and outdoor structures.'},
+        {csn:'11 500', name:'Structural steel, normalised',                 fy:295,  fu:'490–630', en:'S295',    din:'St50-2',       aisi:'—',          cat:'structural',  note:'Higher strength structural grade. Used in pressure vessels and machinery frames.'},
+        {csn:'11 523', name:'Structural fine-grain steel, weldable',        fy:355,  fu:'490–630', en:'S355J2',  din:'St52-3',       aisi:'—',          cat:'structural',  note:'High-strength structural steel, direct equivalent of S355J2. Standard for bridges, cranes, offshore.'},
+        {csn:'11 600', name:'High-strength structural steel',               fy:355,  fu:'590–730', en:'—',       din:'St60-2',       aisi:'—',          cat:'structural',  note:'Higher ultimate strength than S355. No direct EN equivalent.'},
+        {csn:'11 700', name:'High-strength structural steel',               fy:420,  fu:'640–780', en:'S420 (approx)', din:'St70-2','aisi':'—',          cat:'structural',  note:'High-strength grade, approximate equivalent to S420.'},
+
+        // ── ENGINEERING 12–15xxx ──────────────────────────────────────────────────
+        {csn:'12 010', name:'Unalloyed quality steel C10',                  fy:205,  fu:'320–490', en:'C10',     din:'Ck10',         aisi:'1010',       cat:'engineering', note:'Low carbon steel for case hardening. Used for lightly loaded gears, pins and shafts.'},
+        {csn:'12 020', name:'Unalloyed quality steel C10E',                 fy:215,  fu:'340–490', en:'C10E',    din:'Ck10',         aisi:'1010',       cat:'engineering', note:'Case hardening steel, good machinability.'},
+        {csn:'12 050', name:'Unalloyed quality steel C45',                  fy:340,  fu:'600–750', en:'C45',     din:'Ck45',         aisi:'1045',       cat:'engineering', note:'Most common medium-carbon engineering steel. Used for shafts, axles, keys, bolts. Can be heat treated to ~700 MPa.'},
+        {csn:'12 060', name:'Unalloyed quality steel C55',                  fy:380,  fu:'650–800', en:'C55',     din:'Ck55',         aisi:'1055',       cat:'engineering', note:'Higher strength version of C45. Good wear resistance. Springs, tools, higher-loaded shafts.'},
+        {csn:'12 061', name:'Unalloyed quality steel C60',                  fy:400,  fu:'710–850', en:'C60',     din:'Ck60',         aisi:'1060',       cat:'engineering', note:'High carbon, good hardness. Leaf springs, rails, agricultural tools.'},
+        {csn:'13 240', name:'Low-alloy Cr steel',                           fy:590,  fu:'780–1030',en:'41Cr4',   din:'41Cr4',        aisi:'5140',       cat:'engineering', note:'Chromium steel for through-hardening. Gears, shafts, axles. Quench & temper to ~900 MPa.'},
+        {csn:'14 109', name:'Mn-Si spring steel',                           fy:1100, fu:'1250–1450',en:'51CrV4', din:'50SiCr',      aisi:'9254',       cat:'engineering', note:'Spring steel. Used for coil springs, leaf springs.'},
+        {csn:'14 220', name:'Case hardening Cr-Mn steel',                   fy:590,  fu:'880–1180',en:'20MnCr5', din:'20MnCr5',      aisi:'5120',       cat:'engineering', note:'Case hardening steel for heavily loaded gears and shafts. Core toughness with hard case.'},
+        {csn:'14 240', name:'Low-alloy Cr-Mo steel',                        fy:590,  fu:'780–980', en:'25CrMo4', din:'25CrMo4',      aisi:'4130',       cat:'engineering', note:'Good weldability and toughness. Structural and pressure parts.'},
+        {csn:'14 260', name:'Free-cutting Cr-Mn steel',                     fy:590,  fu:'880–1180',en:'20MnCrS5',din:'20MnCrS5',     aisi:'5120',       cat:'engineering', note:'Free-cutting variant of 14 220. Better machinability for mass production.'},
+        {csn:'15 130', name:'High-strength Cr-Mo steel',                    fy:650,  fu:'900–1100',en:'42CrMo4', din:'42CrMo4',      aisi:'4140',       cat:'engineering', note:'One of the most widely used alloy steels. High strength and toughness after Q&T. Crankshafts, connecting rods, gears.'},
+        {csn:'15 142', name:'High-strength Ni-Cr-Mo steel',                 fy:750,  fu:'1000–1200',en:'34CrNiMo6',din:'34CrNiMo6', aisi:'4340',       cat:'engineering', note:'Very high strength after Q&T. Critical components: aircraft parts, racing connecting rods, high-load shafts.'},
+        {csn:'15 260', name:'Cr-Mn-Mo steel',                               fy:690,  fu:'930–1130',en:'34CrMo4', din:'34CrMo4',      aisi:'4135',       cat:'engineering', note:'Pressure vessel steel. Good weldability at elevated temperatures.'},
+
+        // ── STAINLESS 17xxx ───────────────────────────────────────────────────────
+        {csn:'17 240', name:'Austenitic stainless, 18/10',                  fy:195,  fu:'500–700', en:'X5CrNi18-10',   din:'1.4301',  aisi:'304',        cat:'stainless',   note:'Most common stainless steel. Good corrosion resistance, non-magnetic. Food, chemical, architectural applications.'},
+        {csn:'17 241', name:'Austenitic stainless, free-cutting',           fy:195,  fu:'500–700', en:'X8CrNiS18-9',   din:'1.4305',  aisi:'303',        cat:'stainless',   note:'Free-cutting version of 304. Better machinability, slightly lower corrosion resistance.'},
+        {csn:'17 246', name:'Austenitic stainless with Mo, 18/10/2',        fy:195,  fu:'500–700', en:'X5CrNiMo17-12-2',din:'1.4401', aisi:'316',        cat:'stainless',   note:'Molybdenum addition improves resistance to pitting and crevice corrosion. Marine and chemical industry.'},
+        {csn:'17 248', name:'Low-carbon austenitic stainless with Mo',      fy:195,  fu:'485–685', en:'X2CrNiMo17-12-2',din:'1.4404', aisi:'316L',       cat:'stainless',   note:'Low carbon version of 316. Better weld decay resistance. Used where welded assemblies are not annealed after welding.'},
+        {csn:'17 251', name:'Austenitic stainless with Mo, Ti stabilised',  fy:195,  fu:'500–700', en:'X6CrNiMoTi17-12-2',din:'1.4571',aisi:'316Ti',     cat:'stainless',   note:'Titanium stabilised to prevent sensitisation at high temperatures. Heat exchangers and welded equipment.'},
+        {csn:'17 040', name:'Ferritic stainless Cr13',                      fy:245,  fu:'420–630', en:'X6Cr13',        din:'1.4000',  aisi:'410S',       cat:'stainless',   note:'Ferritic, magnetic, lower cost than austenitic. Decorative trim, automotive exhausts, cutlery.'},
+        {csn:'17 022', name:'Martensitic stainless Cr13',                   fy:450,  fu:'650–850', en:'X20Cr13',       din:'1.4021',  aisi:'420',        cat:'stainless',   note:'Hardenable, magnetic. Cutlery, surgical instruments, pump shafts.'},
+
+        // ── TOOL 19xxx ────────────────────────────────────────────────────────────
+        {csn:'19 083', name:'High-Cr cold work tool steel',                 fy:'—',  fu:'—',       en:'X155CrVMo12-1', din:'1.2379',  aisi:'D2',         cat:'tool',        note:'Highly wear resistant cold work die steel. Punches, dies, slitter blades. Very high hardness (58–62 HRC).'},
+        {csn:'19 191', name:'Plain carbon tool steel W1',                   fy:'—',  fu:'—',       en:'C80U / C105U',  din:'1.1525',  aisi:'W1',         cat:'tool',        note:'Water hardening tool steel. Simple tools, chisels, woodworking blades. Low hardenability.'},
+        {csn:'19 312', name:'Hot work Cr-Mo-V tool steel',                  fy:'—',  fu:'—',       en:'X40CrMoV5-1',   din:'1.2344',  aisi:'H13',        cat:'tool',        note:'Premium hot work die steel. Die casting dies, extrusion tools, forging dies. Very good thermal fatigue resistance.'},
+        {csn:'19 452', name:'Oil hardening tool steel',                     fy:'—',  fu:'—',       en:'90MnCrV8',      din:'1.2842',  aisi:'O2',         cat:'tool',        note:'Oil hardening, good dimensional stability. Gauges, jigs, precision tools.'},
+        {csn:'19 614', name:'High-speed steel M2-type',                     fy:'—',  fu:'—',       en:'HS6-5-2',       din:'1.3343',  aisi:'M2',         cat:'tool',        note:'Standard high-speed steel. Drills, end mills, taps, turning inserts. Hardness up to 66 HRC.'},
+    ];
+
+    let activeCat = 'all';
+    let activeSearch = '';
+    let selectedRow = null;
+
+    function catBadge(cat) {
+        const map = {structural:'Structural',engineering:'Engineering',stainless:'Stainless',tool:'Tool'};
+        return `<span class="cat-badge cat-${cat}">${map[cat]}</span>`;
+    }
+
+    function render() {
+        const tbody = document.getElementById('steelBody');
+        tbody.innerHTML = '';
+        let count = 0;
+
+        STEELS.forEach((s, idx) => {
+            const matchCat = activeCat === 'all' || s.cat === activeCat;
+            const q = activeSearch.toLowerCase();
+            const matchSearch = !q ||
+                s.csn.toLowerCase().includes(q) ||
+                s.name.toLowerCase().includes(q) ||
+                String(s.en).toLowerCase().includes(q) ||
+                String(s.din).toLowerCase().includes(q) ||
+                String(s.aisi).toLowerCase().includes(q) ||
+                (s.note && s.note.toLowerCase().includes(q));
+
+            if (!matchCat || !matchSearch) return;
+            count++;
+
+            const tr = document.createElement('tr');
+            tr.dataset.idx = idx;
+            tr.innerHTML = `
+                <td class="csn">${s.csn}</td>
+                <td>${s.name}</td>
+                <td class="num">${s.fy}</td>
+                <td class="num">${s.fu}</td>
+                <td class="eq">${s.en}</td>
+                <td class="eq">${s.din}</td>
+                <td class="eq">${s.aisi}</td>
+                <td>${catBadge(s.cat)}</td>
+            `;
+            tr.onclick = () => showDetail(idx, tr);
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('resultCount').textContent = `${count} grades`;
+    }
+
+    function showDetail(idx, tr) {
+        const s = STEELS[idx];
+        if (selectedRow) selectedRow.style.background = '';
+        selectedRow = tr;
+        tr.style.background = 'rgba(255,107,53,0.06)';
+
+        document.getElementById('detailTitle').textContent = `${s.csn} — ${s.name}`;
+        const grid = document.getElementById('detailGrid');
+        const rows = [
+            ['Category',    s.cat.charAt(0).toUpperCase() + s.cat.slice(1)],
+            ['Standard',    'ČSN / EN 10025 / EN 10083'],
+            ['fy (MPa)',     s.fy],
+            ['fu (MPa)',     s.fu],
+            ['EN equivalent', s.en],
+            ['DIN / W.Nr.',   s.din],
+            ['AISI',          s.aisi],
+        ];
+        grid.innerHTML = rows.map(([k,v]) =>
+            `<div class="detail-row"><span>${k}</span><span>${v}</span></div>`
+        ).join('');
+        document.getElementById('detailNote').textContent = s.note || '';
+        document.getElementById('detailPanel').classList.add('open');
+        document.getElementById('detailPanel').scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+
+    function closeDetail() {
+        if (selectedRow) selectedRow.style.background = '';
+        selectedRow = null;
+        document.getElementById('detailPanel').classList.remove('open');
+    }
+
+    function filterCat(cat) {
+        activeCat = cat;
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+        closeDetail();
+        render();
+    }
+
+    function filterSearch() {
+        activeSearch = document.getElementById('searchInp').value;
+        render();
+    }
+
+    render();
+    </script>
+</body>
+</html>

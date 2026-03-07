@@ -1,0 +1,8 @@
+{
+  "id": "eng-025",
+  "title": "Steel Grade Converter ČSN ↔ EN ↔ DIN ↔ AISI",
+  "description": "Cross-reference tool for steel grade designations. Search by any standard — ČSN, EN, DIN, W.Nr. or AISI — and find all equivalents instantly.",
+  "category": "materials",
+  "icon": "🔄",
+  "difficulty": "beginner"
+}

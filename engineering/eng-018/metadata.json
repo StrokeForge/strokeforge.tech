@@ -1,0 +1,8 @@
+{
+  "id": "eng-018",
+  "title": "Bolt Grades Reference",
+  "description": "Reference table of bolt property classes 4.6 – 12.9: yield strength fyb, ultimate strength fub, hardness HV/HB/HRC, proof load, and material per ISO 898-1.",
+  "category": "reference",
+  "icon": "📋",
+  "difficulty": "beginner"
+}

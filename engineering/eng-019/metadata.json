@@ -1,0 +1,8 @@
+{
+  "id": "eng-019",
+  "title": "Simply Supported Beam",
+  "description": "Calculate deflection, reactions and bending moment for a simply supported beam under uniform load (UDL) or point load. SVG diagram with deflection curve and M-diagram.",
+  "category": "calculator",
+  "icon": "📐",
+  "difficulty": "beginner"
+}

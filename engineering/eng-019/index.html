@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simply Supported Beam Deflection Calculator | StrokeForge Engineering</title>
+    <meta name="description" content="Calculate deflection, reactions and bending moment for a simply supported beam under UDL or point load. Supports IPE/HEA/HEB profiles or custom Ix. SVG deflection and M-diagram.">
+    <meta name="keywords" content="simply supported beam deflection calculator, průhyb nosníku kalkulátor, beam bending moment, UDL point load beam, IPE HEA beam deflection, průhyb prostý nosník">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-019/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 960px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .input-grid   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        .input-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 640px) { .input-grid { grid-template-columns: 1fr 1fr; } .input-grid-2 { grid-template-columns: 1fr; } }
+
+        .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; min-width: 0; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; flex-shrink: 0; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        .type-tabs { display: flex; gap: 0.4rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+        .type-btn { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.35rem 0.9rem; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
+        .type-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .type-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; font-weight: 600; }
+
+        .res-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .res-table td { padding: 0.55rem 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .res-table td:first-child  { color: var(--primary-orange); font-weight: 600; font-family: monospace; width: 130px; }
+        .res-table td:nth-child(2) { color: var(--light-gray); font-weight: 700; }
+        .res-table td:nth-child(3) { color: var(--text-gray); font-size: 0.8rem; width: 55px; }
+        .res-table td:nth-child(4) { color: var(--text-gray); font-size: 0.78rem; font-family: monospace; }
+        .res-table tr:last-child td { border-bottom: none; }
+        .res-table .sec-head td { color: var(--text-gray); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border-gray); }
+
+        .diag-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        @media (max-width: 560px) { .diag-wrap { grid-template-columns: 1fr; } }
+        .diag-label { font-size: 0.75rem; color: var(--text-gray); text-align: center; margin-top: 0.4rem; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.82rem; line-height: 2.0; display: block; margin-top: 0.3rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>📐 Simply Supported Beam</h1>
+        <p>Deflection · reactions · bending moment — UDL or point load</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <div class="card">
+            <h2>Beam &amp; loading</h2>
+
+            <div class="type-tabs">
+                <button class="type-btn active" data-lt="udl"   onclick="setLoad('udl')">Uniform load (UDL)</button>
+                <button class="type-btn"         data-lt="point" onclick="setLoad('point')">Point load</button>
+                <button class="type-btn"         data-lt="both"  onclick="setLoad('both')">UDL + Point load</button>
+            </div>
+
+            <div class="input-grid" style="margin-bottom:1rem;">
+                <div class="field">
+                    <label>Span L</label>
+                    <div class="field-row">
+                        <input type="number" id="L" class="inp" value="5000" min="1" step="100" oninput="calc()">
+                        <span class="unit">mm</span>
+                    </div>
+                </div>
+                <div class="field" id="fQ" >
+                    <label>UDL q</label>
+                    <div class="field-row">
+                        <input type="number" id="q" class="inp" value="10" min="0" step="0.1" oninput="calc()">
+                        <span class="unit">kN/m</span>
+                    </div>
+                </div>
+                <div class="field" id="fF" style="display:none;">
+                    <label>Point load F</label>
+                    <div class="field-row">
+                        <input type="number" id="F" class="inp" value="20" min="0" step="1" oninput="calc()">
+                        <span class="unit">kN</span>
+                    </div>
+                </div>
+                <div class="field" id="fA" style="display:none;">
+                    <label>Load position a</label>
+                    <div class="field-row">
+                        <input type="number" id="a" class="inp" value="2500" min="0" step="100" oninput="calc()">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">Distance from left support</span>
+                </div>
+            </div>
+
+            <div class="input-grid-2" style="margin-bottom:1rem;">
+                <div class="field">
+                    <label>Cross-section I<sub>x</sub></label>
+                    <select id="secType" class="sel" onchange="onSecChange()">
+                        <option value="custom">Custom Ix</option>
+                        <option value="ipe">IPE profile</option>
+                        <option value="hea">HEA profile</option>
+                        <option value="heb">HEB profile</option>
+                    </select>
+                </div>
+                <div class="field" id="customIxField">
+                    <label>I<sub>x</sub></label>
+                    <div class="field-row">
+                        <input type="number" id="Ix" class="inp" value="8356" min="1" oninput="calc()">
+                        <span class="unit">cm⁴</span>
+                    </div>
+                </div>
+                <div class="field" id="profileField" style="display:none;">
+                    <label>Profile</label>
+                    <select id="profileSel" class="sel" onchange="onProfileChange()"></select>
+                </div>
+            </div>
+
+            <div class="input-grid-2">
+                <div class="field">
+                    <label>E-modulus</label>
+                    <select id="Emat" class="sel" onchange="calc()">
+                        <option value="210000" selected>Steel — 210 000 MPa</option>
+                        <option value="70000">Aluminium — 70 000 MPa</option>
+                        <option value="12000">Timber (C24) — 12 000 MPa</option>
+                        <option value="custom">Custom E</option>
+                    </select>
+                </div>
+                <div class="field" id="customEField" style="display:none;">
+                    <label>Custom E</label>
+                    <div class="field-row">
+                        <input type="number" id="Ecust" class="inp" value="210000" oninput="calc()">
+                        <span class="unit">MPa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card">
+            <h2>Results</h2>
+            <table class="res-table"><tbody id="resBody"></tbody></table>
+            <div class="diag-wrap" style="margin-top:1.25rem;">
+                <div>
+                    <svg id="beamSvg" width="100%" viewBox="0 0 400 120"></svg>
+                    <p class="diag-label">Beam scheme + deflection curve</p>
+                </div>
+                <div>
+                    <svg id="mSvg" width="100%" viewBox="0 0 400 120"></svg>
+                    <p class="diag-label">Bending moment diagram M(x)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Formulas</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>UDL — uniform distributed load</h3>
+                    <span class="mono">R_A = R_B = q·L/2<br>M_max = q·L²/8 &nbsp;(at midspan)<br>f_max = 5·q·L⁴/(384·E·Ix)</span>
+                </div>
+                <div class="info-block">
+                    <h3>Point load — midspan (a = L/2)</h3>
+                    <span class="mono">R_A = R_B = F/2<br>M_max = F·L/4<br>f_max = F·L³/(48·E·Ix)</span>
+                </div>
+                <div class="info-block">
+                    <h3>Point load — general position a</h3>
+                    <span class="mono">R_A = F·(L−a)/L<br>R_B = F·a/L<br>M at a = R_A·a<br>f_max ≈ F·a·(L−a)·(2L−a)·√(3) / (27·E·Ix·L) if a≤L/2</span>
+                </div>
+                <div class="info-block">
+                    <h3>Serviceability (L/δ)</h3>
+                    <ul>
+                        <li>Floors: L/300 – L/360</li>
+                        <li>Roofs: L/200 – L/250</li>
+                        <li>Purlins: L/200</li>
+                        <li>Brittle finishes: L/360</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem">
+            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // Profile Ix data [cm⁴]
+    const PROFILES = {
+        ipe: [
+            {n:'IPE 80',Ix:80.1},{n:'IPE 100',Ix:171},{n:'IPE 120',Ix:318},{n:'IPE 140',Ix:541},
+            {n:'IPE 160',Ix:869},{n:'IPE 180',Ix:1317},{n:'IPE 200',Ix:1943},{n:'IPE 220',Ix:2772},
+            {n:'IPE 240',Ix:3892},{n:'IPE 270',Ix:5790},{n:'IPE 300',Ix:8356},{n:'IPE 330',Ix:11770},
+            {n:'IPE 360',Ix:16270},{n:'IPE 400',Ix:23130},{n:'IPE 450',Ix:33740},{n:'IPE 500',Ix:48200},
+            {n:'IPE 550',Ix:67120},{n:'IPE 600',Ix:92080},
+        ],
+        hea: [
+            {n:'HEA 100',Ix:349},{n:'HEA 120',Ix:606},{n:'HEA 140',Ix:1033},{n:'HEA 160',Ix:1673},
+            {n:'HEA 180',Ix:2510},{n:'HEA 200',Ix:3692},{n:'HEA 220',Ix:5410},{n:'HEA 240',Ix:7763},
+            {n:'HEA 260',Ix:10450},{n:'HEA 280',Ix:13670},{n:'HEA 300',Ix:18260},{n:'HEA 320',Ix:22930},
+            {n:'HEA 340',Ix:27690},{n:'HEA 360',Ix:33090},{n:'HEA 400',Ix:45070},{n:'HEA 450',Ix:63720},
+            {n:'HEA 500',Ix:86970},{n:'HEA 550',Ix:111900},{n:'HEA 600',Ix:141200},
+        ],
+        heb: [
+            {n:'HEB 100',Ix:450},{n:'HEB 120',Ix:864},{n:'HEB 140',Ix:1509},{n:'HEB 160',Ix:2492},
+            {n:'HEB 180',Ix:3831},{n:'HEB 200',Ix:5696},{n:'HEB 220',Ix:8091},{n:'HEB 240',Ix:11260},
+            {n:'HEB 260',Ix:14920},{n:'HEB 280',Ix:19270},{n:'HEB 300',Ix:25170},{n:'HEB 320',Ix:30820},
+            {n:'HEB 340',Ix:36660},{n:'HEB 360',Ix:43190},{n:'HEB 400',Ix:57680},{n:'HEB 450',Ix:79890},
+            {n:'HEB 500',Ix:107200},{n:'HEB 550',Ix:136700},{n:'HEB 600',Ix:171000},
+        ],
+    };
+
+    let loadType = 'udl';
+
+    function setLoad(lt) {
+        loadType = lt;
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.lt === lt));
+        document.getElementById('fQ').style.display = (lt==='udl'||lt==='both') ? '' : 'none';
+        document.getElementById('fF').style.display = (lt==='point'||lt==='both') ? '' : 'none';
+        document.getElementById('fA').style.display = (lt==='point'||lt==='both') ? '' : 'none';
+        calc();
+    }
+
+    function onSecChange() {
+        const t = document.getElementById('secType').value;
+        document.getElementById('customIxField').style.display = t==='custom' ? '' : 'none';
+        document.getElementById('profileField').style.display  = t!=='custom' ? '' : 'none';
+        if (t !== 'custom') {
+            const sel = document.getElementById('profileSel');
+            sel.innerHTML = PROFILES[t].map(p=>`<option value="${p.Ix}">${p.n} — Ix=${p.Ix} cm⁴</option>`).join('');
+        }
+        calc();
+    }
+
+    function onProfileChange() { calc(); }
+
+    function getIx() {
+        const t = document.getElementById('secType').value;
+        if (t === 'custom') return parseFloat(document.getElementById('Ix').value) || 0;
+        return parseFloat(document.getElementById('profileSel').value) || 0;
+    }
+
+    function getE() {
+        const v = document.getElementById('Emat').value;
+        document.getElementById('customEField').style.display = v==='custom' ? '' : 'none';
+        if (v === 'custom') return parseFloat(document.getElementById('Ecust').value) || 0;
+        return parseFloat(v);
+    }
+
+    function calc() {
+        const L   = parseFloat(document.getElementById('L').value) || 0;  // mm
+        const q   = (loadType==='udl'||loadType==='both') ? (parseFloat(document.getElementById('q').value)||0)/1000 : 0; // N/mm
+        const F   = (loadType==='point'||loadType==='both') ? (parseFloat(document.getElementById('F').value)||0)*1000 : 0; // N
+        const a   = (loadType==='point'||loadType==='both') ? (parseFloat(document.getElementById('a').value)||0) : L/2;
+        const Ix  = getIx() * 1e4;  // cm⁴ → mm⁴
+        const E   = getE();          // MPa = N/mm²
+        const EI  = E * Ix;
+
+        if (L<=0 || EI<=0) { document.getElementById('resBody').innerHTML=''; return; }
+
+        // ── Reactions
+        const RA_udl  = q * L / 2;
+        const RB_udl  = q * L / 2;
+        const b = L - a;
+        const RA_pt   = F * b / L;
+        const RB_pt   = F * a / L;
+        const RA = RA_udl + RA_pt;
+        const RB = RB_udl + RB_pt;
+
+        // ── Max moment
+        const Mmax_udl = q * L * L / 8;
+        const Mmax_pt  = RA_pt * a;
+        const Mmax = Mmax_udl + Mmax_pt; // approximate superposition
+
+        // ── Max deflection
+        const f_udl  = 5 * q * Math.pow(L,4) / (384 * EI);
+        // Point load: exact formula
+        let f_pt = 0;
+        if (F > 0) {
+            // max deflection location for off-centre: x0 = √((L²−b²)/3) if a>b, else symmetric
+            const aa = Math.min(a, b), bb = Math.max(a, b);
+            const x0 = Math.sqrt((L*L - bb*bb) / 3);
+            f_pt = F * bb * x0 * (L*L - bb*bb - x0*x0) / (6 * EI * L);
+        }
+        const f_max = f_udl + f_pt; // superposition (conservative)
+
+        const L_over_f = f_max > 0 ? L / f_max : Infinity;
+
+        function fmt(v,d) { return v.toFixed(d??2); }
+        function row(s,v,u,f) { return `<tr><td>${s}</td><td>${v}</td><td>${u}</td><td>${f}</td></tr>`; }
+        function sec(t) { return `<tr class="sec-head"><td colspan="4">${t}</td></tr>`; }
+
+        let html = '';
+        html += sec('Reactions');
+        html += row('R_A', fmt(RA/1000,2), 'kN', 'left support');
+        html += row('R_B', fmt(RB/1000,2), 'kN', 'right support');
+        html += sec('Bending moment');
+        html += row('M_max', fmt(Mmax/1e6,3), 'kN·m', 'max value');
+        html += sec('Deflection');
+        html += row('f_max',   fmt(f_max,2),            'mm',  'maximum deflection (down)');
+        html += row('L/f',     isFinite(L_over_f)?`L/${fmt(L_over_f,0)}`:'—', '—', 'serviceability ratio');
+        html += row('EI',      (EI/1e6).toFixed(1),     'kN·m²', `E·Ix = ${E} × ${(Ix/1e4).toFixed(0)} cm⁴`);
+
+        // Serviceability check L/300
+        const limit = L / 300;
+        if (f_max > 0) {
+            const ok = f_max <= limit;
+            html += `<tr><td colspan="4" style="padding:0.6rem 0.9rem;">
+                <span style="font-size:0.85rem;color:${ok?'#4ade80':'#f87171'};">
+                ${ok?'✓':'✗'} L/300 limit: f_allow = ${fmt(limit,1)} mm — deflection is ${ok?'OK':'exceeded'}
+                </span></td></tr>`;
+        }
+
+        document.getElementById('resBody').innerHTML = html;
+        drawDiagrams(L, q, F, a, RA, RB, f_max, Mmax, EI);
+    }
+
+    function drawDiagrams(L, q, F, a, RA, RB, fmax, Mmax, EI) {
+        drawBeam(L, q, F, a, RA, RB, fmax);
+        drawMoment(L, q, F, a, RA, Mmax);
+    }
+
+    function makeSvgEl(tag, attrs, txt) {
+        const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+        for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+        if (txt!==undefined) e.textContent=txt;
+        return e;
+    }
+
+    function drawBeam(L, q, F, a, RA, RB, fmax) {
+        const svg = document.getElementById('beamSvg');
+        svg.innerHTML = '';
+        const W=400, H=120, pad=50, bY=60, bH=10;
+        const bW = W - 2*pad;
+        function el(tag,attrs,txt){return makeSvgEl(tag,attrs,txt);}
+        function line(x1,y1,x2,y2,col,sw){return el('line',{x1,y1,x2,y2,stroke:col||'#4b5563','stroke-width':sw||1});}
+        function txt(x,y,t,fill,size,anchor){return el('text',{x,y,fill:fill||'#9ca3af','font-size':size||9,'font-family':'monospace','text-anchor':anchor||'middle','dominant-baseline':'middle'},t);}
+
+        // Beam
+        svg.appendChild(el('rect',{x:pad,y:bY,width:bW,height:bH,fill:'#334155',stroke:'#4b5563','stroke-width':1}));
+
+        // Supports (triangles)
+        function triangle(x) {
+            return el('polygon',{points:`${x},${bY+bH} ${x-10},${bY+bH+16} ${x+10},${bY+bH+16}`,fill:'#374151',stroke:'#64748b','stroke-width':1});
+        }
+        svg.appendChild(triangle(pad));
+        svg.appendChild(triangle(pad+bW));
+        // Pin circle (left = pin, right = roller)
+        svg.appendChild(el('circle',{cx:pad,cy:bY+bH+2,r:3,fill:'#64748b'}));
+        svg.appendChild(el('circle',{cx:pad+bW,cy:bY+bH+2,r:3,fill:'#64748b'}));
+
+        // UDL arrows
+        if (q > 0) {
+            const nArrows = 8;
+            for (let i=0;i<=nArrows;i++) {
+                const x = pad + bW*i/nArrows;
+                svg.appendChild(el('line',{x1:x,y1:bY-22,x2:x,y2:bY,stroke:'#60a5fa','stroke-width':1}));
+                svg.appendChild(el('polygon',{points:`${x},${bY} ${x-3},${bY-7} ${x+3},${bY-7}`,fill:'#60a5fa'}));
+            }
+            svg.appendChild(line(pad,bY-22,pad+bW,bY-22,'#60a5fa',1));
+            svg.appendChild(txt(W/2,bY-28,'q','#60a5fa',9));
+        }
+
+        // Point load arrow
+        if (F > 0) {
+            const ax = pad + bW*(a/L);
+            svg.appendChild(el('line',{x1:ax,y1:bY-36,x2:ax,y2:bY,stroke:'#facc15','stroke-width':2}));
+            svg.appendChild(el('polygon',{points:`${ax},${bY} ${ax-4},${bY-10} ${ax+4},${bY-10}`,fill:'#facc15'}));
+            svg.appendChild(txt(ax,bY-42,'F','#facc15',9));
+        }
+
+        // Deflection curve (parabolic approximation)
+        const nPts = 40;
+        const pts = [];
+        for (let i=0;i<=nPts;i++) {
+            const xi = i/nPts;
+            const x = pad + bW*xi;
+            // shape: sin(π·xi) for UDL, for point load use piece-wise linear (approx)
+            const dy = Math.sin(Math.PI*xi) * 22;
+            pts.push(`${x},${bY+bH/2+dy}`);
+        }
+        svg.appendChild(el('polyline',{points:pts.join(' '),fill:'none',stroke:'#f97316','stroke-width':1.5,'stroke-dasharray':'3,2'}));
+
+        // Labels
+        svg.appendChild(txt(pad,bY+bH+28,`R_A=${(RA/1000).toFixed(1)}kN`,'#4ade80',8));
+        svg.appendChild(txt(pad+bW,bY+bH+28,`R_B=${(RB/1000).toFixed(1)}kN`,'#4ade80',8));
+        svg.appendChild(txt(W/2,H-5,`f_max=${fmax.toFixed(1)} mm`,'#f97316',8));
+    }
+
+    function drawMoment(L, q, F, a, RA, Mmax) {
+        const svg = document.getElementById('mSvg');
+        svg.innerHTML = '';
+        const W=400,H=120,pad=50,baseY=90,scale=60/Math.max(Mmax,1);
+        const bW = W - 2*pad;
+        function el(tag,attrs,txt){return makeSvgEl(tag,attrs,txt);}
+        function txt(x,y,t,fill,size,anchor){return el('text',{x,y,fill:fill||'#9ca3af','font-size':size||9,'font-family':'monospace','text-anchor':anchor||'middle','dominant-baseline':'middle'},t);}
+
+        // Baseline
+        svg.appendChild(el('line',{x1:pad,y1:baseY,x2:pad+bW,y2:baseY,stroke:'#4b5563','stroke-width':1}));
+
+        // M diagram
+        const nPts = 60;
+        const pts = [`${pad},${baseY}`];
+        for (let i=0;i<=nPts;i++) {
+            const x = i/nPts * L;
+            let M = 0;
+            // UDL contribution
+            const RA_udl = q*L/2;
+            M += RA_udl*x - q*x*x/2;
+            // Point load contribution
+            if (x <= a) M += (F*(L-a)/L)*x;
+            else        M += (F*(L-a)/L)*x - F*(x-a);
+
+            const px = pad + bW*(x/L);
+            const py = baseY - M*scale;
+            pts.push(`${px},${py}`);
+        }
+        pts.push(`${pad+bW},${baseY}`);
+
+        svg.appendChild(el('polygon',{points:pts.join(' '),fill:'rgba(96,165,250,0.15)',stroke:'#60a5fa','stroke-width':1.5}));
+
+        // Labels
+        svg.appendChild(txt(W/2,baseY-65,`M_max=${(Mmax/1e6).toFixed(2)} kN·m`,'#60a5fa',8));
+        svg.appendChild(txt(pad,baseY+12,'0','#6b7280',8));
+        svg.appendChild(txt(pad+bW,baseY+12,'L','#6b7280',8));
+        svg.appendChild(el('line',{x1:pad,y1:10,x2:pad,y2:baseY+5,stroke:'#4b5563','stroke-width':0.5,'stroke-dasharray':'3,2'}));
+    }
+
+    // Init
+    onSecChange();
+    setLoad('udl');
+    </script>
+</body>
+</html>

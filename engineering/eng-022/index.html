@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Structural Steels S235 S275 S355 S420 S460 | StrokeForge Engineering</title>
+    <meta name="description" content="Reference database of structural steel grades S235 to S460 per EN 10025. Yield strength fy by thickness, sub-grades JR/J0/J2/K2, EC3 design values, and material constants.">
+    <meta name="keywords" content="structural steel S235 S275 S355 S420 S460, EN 10025, yield strength fy, konstrukční oceli, mez kluzu, EN 1993 EC3 design values, steel material properties">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-022/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 960px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Grade tabs */
+        .grade-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .grade-btn {
+            background: var(--darker-bg); border: 2px solid var(--border-gray);
+            color: var(--text-gray); border-radius: 8px; padding: 0.5rem 1.2rem;
+            font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+            font-family: monospace;
+        }
+        .grade-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .grade-btn.active { border-color: var(--primary-orange); color: var(--primary-orange); background: rgba(255,107,53,0.08); }
+
+        /* Detail panel */
+        .detail { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .detail { grid-template-columns: 1fr; } }
+
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.75rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+
+        /* Tables */
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        .data-table th { background: rgba(255,107,53,0.08); color: var(--primary-orange); font-size: 0.78rem; font-weight: 600; padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border-gray); }
+        .data-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--light-gray); }
+        .data-table td:first-child { color: var(--text-gray); font-family: monospace; font-size: 0.82rem; }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table .highlight td { background: rgba(255,107,53,0.05); }
+        .data-table .highlight td:first-child { color: var(--primary-orange); }
+
+        /* Comparison chart */
+        .chart-wrap { margin-top: 0.5rem; }
+        .chart-label { font-size: 0.75rem; color: var(--text-gray); text-align: center; margin-top: 0.4rem; }
+
+        /* Constants grid */
+        .const-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+        @media (max-width: 560px) { .const-grid { grid-template-columns: 1fr 1fr; } }
+        .const-card { background: var(--darker-bg); border-radius: 8px; padding: 0.85rem 1rem; text-align: center; }
+        .const-card .val { font-size: 1.1rem; font-weight: 700; color: var(--primary-orange); font-family: monospace; }
+        .const-card .sym { font-size: 0.75rem; color: var(--light-gray); margin-bottom: 0.2rem; }
+        .const-card .lbl { font-size: 0.72rem; color: var(--text-gray); margin-top: 0.2rem; }
+
+        /* Sub-grade table */
+        .subgrade-wrap { margin-top: 1rem; }
+        .badge { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; font-family: monospace; }
+        .badge-jr  { background: rgba(74,222,128,0.12); color: #4ade80; }
+        .badge-j0  { background: rgba(96,165,250,0.12); color: #60a5fa; }
+        .badge-j2  { background: rgba(167,139,250,0.12); color: #a78bfa; }
+        .badge-k2  { background: rgba(251,191,36,0.12); color: #fbbf24; }
+        .badge-m   { background: rgba(248,113,113,0.12); color: #f87171; }
+        .badge-n   { background: rgba(52,211,153,0.12); color: #34d399; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>🔩 Structural Steels S235–S460</h1>
+        <p>EN 10025 · yield strength by thickness · EC3 design values · sub-grades</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- GRADE SELECTOR -->
+        <div class="card">
+            <h2>Select grade</h2>
+            <div class="grade-tabs" id="gradeTabs"></div>
+            <div class="detail" id="detailPanel"></div>
+        </div>
+
+        <!-- YIELD STRENGTH BY THICKNESS -->
+        <div class="card">
+            <h2>Yield strength f<sub>y</sub> by thickness — all grades (EN 10025-2)</h2>
+            <div style="overflow-x:auto;">
+                <table class="data-table" id="fyTable">
+                    <thead>
+                        <tr>
+                            <th>Thickness t (mm)</th>
+                            <th>S235</th><th>S275</th><th>S355</th><th>S420</th><th>S460</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fyBody"></tbody>
+                </table>
+            </div>
+            <p style="font-size:0.75rem;color:var(--text-gray);margin-top:0.75rem;">All values in MPa. For plates, flats and sections. Hollow sections may differ — see EN 10210 / EN 10219.</p>
+        </div>
+
+        <!-- COMPARISON CHART -->
+        <div class="card">
+            <h2>Grade comparison</h2>
+            <div class="chart-wrap">
+                <svg id="compSvg" width="100%" viewBox="0 0 420 180"></svg>
+                <p class="chart-label">Yield strength f<sub>y</sub> for t ≤ 16 mm and ultimate strength f<sub>u</sub></p>
+            </div>
+        </div>
+
+        <!-- MATERIAL CONSTANTS -->
+        <div class="card">
+            <h2>Material constants — all structural steels</h2>
+            <div class="const-grid">
+                <div class="const-card">
+                    <div class="sym">E</div>
+                    <div class="val">210 000</div>
+                    <div class="lbl">Young's modulus (MPa)</div>
+                </div>
+                <div class="const-card">
+                    <div class="sym">G</div>
+                    <div class="val">81 000</div>
+                    <div class="lbl">Shear modulus (MPa)</div>
+                </div>
+                <div class="const-card">
+                    <div class="sym">ν</div>
+                    <div class="val">0.3</div>
+                    <div class="lbl">Poisson's ratio</div>
+                </div>
+                <div class="const-card">
+                    <div class="sym">ρ</div>
+                    <div class="val">7 850</div>
+                    <div class="lbl">Density (kg/m³)</div>
+                </div>
+                <div class="const-card">
+                    <div class="sym">α</div>
+                    <div class="val">12×10⁻⁶</div>
+                    <div class="lbl">Thermal expansion (/°C)</div>
+                </div>
+                <div class="const-card">
+                    <div class="sym">γM0</div>
+                    <div class="val">1.00</div>
+                    <div class="lbl">EC3 partial factor (cross-section)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUB-GRADES -->
+        <div class="card">
+            <h2>Sub-grades — impact toughness</h2>
+            <div style="overflow-x:auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Sub-grade</th>
+                            <th>Test temperature</th>
+                            <th>Min. impact energy</th>
+                            <th>Typical use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-jr">JR</span></td>
+                            <td>+20 °C</td>
+                            <td>27 J</td>
+                            <td>Indoor structures, mild climate</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-j0">J0</span></td>
+                            <td>0 °C</td>
+                            <td>27 J</td>
+                            <td>Outdoor structures, moderate climate</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-j2">J2</span></td>
+                            <td>−20 °C</td>
+                            <td>27 J</td>
+                            <td>Cold climate, bridges</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-k2">K2</span></td>
+                            <td>−20 °C</td>
+                            <td>40 J</td>
+                            <td>High toughness requirement</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-m">M / ML</span></td>
+                            <td>−20 / −50 °C</td>
+                            <td>40 J</td>
+                            <td>Thermomechanically rolled (EN 10025-4)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-n">N / NL</span></td>
+                            <td>−20 / −50 °C</td>
+                            <td>40 J</td>
+                            <td>Normalised / normalised rolled (EN 10025-3)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size:0.75rem;color:var(--text-gray);margin-top:0.75rem;">
+                Example: S355J2 = structural steel, fy=355 MPa (t≤16), impact tested at −20 °C.
+                For S420 and S460 only M/N sub-grades are common (EN 10025-3/4).
+            </p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+        <p style="margin-top:0.5rem;font-size:0.8rem">
+            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    const GRADES = [
+        {
+            id: 'S235',
+            std: 'EN 10025-2',
+            fu: 360,
+            fy: [235, 225, 215, 215, 215],        // t≤16, ≤40, ≤63, ≤80, ≤100
+            subgrades: ['JR','J0','J2'],
+            color: '#60a5fa',
+            note: 'Most common structural grade. Used for general fabrication, light structures, purlins, secondary members.',
+            weldability: 'Excellent — no preheating required for t ≤ 25 mm.',
+            ceq: '≤ 0.35 (JR), ≤ 0.35 (J0/J2)',
+        },
+        {
+            id: 'S275',
+            std: 'EN 10025-2',
+            fu: 430,
+            fy: [275, 265, 255, 245, 235],
+            subgrades: ['JR','J0','J2'],
+            color: '#4ade80',
+            note: 'Common in UK and export markets. Good balance of strength and weldability.',
+            weldability: 'Very good — no preheating for t ≤ 25 mm in most cases.',
+            ceq: '≤ 0.40',
+        },
+        {
+            id: 'S355',
+            std: 'EN 10025-2/3/4',
+            fu: 510,
+            fy: [355, 345, 335, 325, 315],
+            subgrades: ['JR','J0','J2','K2','N','NL','M','ML'],
+            color: '#f97316',
+            note: 'Most widely used high-strength structural steel. Standard for bridges, cranes, heavy frames, pressure vessels.',
+            weldability: 'Good — preheat may be needed for t > 25 mm or high restraint.',
+            ceq: '≤ 0.45 (JR/J0), ≤ 0.43 (J2/K2)',
+        },
+        {
+            id: 'S420',
+            std: 'EN 10025-3/4',
+            fu: 520,
+            fy: [420, 400, 390, 370, 360],
+            subgrades: ['N','NL','M','ML'],
+            color: '#a78bfa',
+            note: 'High-strength grade for weight-critical structures: offshore platforms, lifting equipment, cranes.',
+            weldability: 'Moderate — preheat required for t > 20 mm. Low hydrogen consumables recommended.',
+            ceq: '≤ 0.47',
+        },
+        {
+            id: 'S460',
+            std: 'EN 10025-3/4/6',
+            fu: 550,
+            fy: [460, 440, 430, 410, 400],
+            subgrades: ['N','NL','M','ML','Q','QL','QL1'],
+            color: '#fb923c',
+            note: 'Very high strength. Used in bridges, offshore, automotive chassis, tall buildings where weight saving is critical.',
+            weldability: 'Requires careful procedure: low hydrogen, preheat ≥ 100 °C for most thicknesses.',
+            ceq: '≤ 0.53',
+        },
+    ];
+
+    const THICK_LABELS = ['t ≤ 16', '16 < t ≤ 40', '40 < t ≤ 63', '63 < t ≤ 80', '80 < t ≤ 100'];
+
+    let activeGrade = 'S355';
+
+    function init() {
+        // Tabs
+        const tabs = document.getElementById('gradeTabs');
+        GRADES.forEach(g => {
+            const btn = document.createElement('button');
+            btn.className = 'grade-btn' + (g.id === activeGrade ? ' active' : '');
+            btn.textContent = g.id;
+            btn.onclick = () => selectGrade(g.id);
+            tabs.appendChild(btn);
+        });
+
+        // fy table
+        const tbody = document.getElementById('fyBody');
+        THICK_LABELS.forEach((lbl, i) => {
+            const tr = document.createElement('tr');
+            if (i === 0) tr.className = 'highlight';
+            tr.innerHTML = `<td>${lbl} mm</td>` + GRADES.map(g => `<td>${g.fy[i]}</td>`).join('');
+            tbody.appendChild(tr);
+        });
+
+        renderDetail();
+        drawComparison();
+    }
+
+    function selectGrade(id) {
+        activeGrade = id;
+        document.querySelectorAll('.grade-btn').forEach(b => {
+            b.classList.toggle('active', b.textContent === id);
+        });
+        renderDetail();
+    }
+
+    function renderDetail() {
+        const g = GRADES.find(x => x.id === activeGrade);
+        const panel = document.getElementById('detailPanel');
+        const fyd = g.fy[0]; // t≤16, γM0=1.0
+
+        panel.innerHTML = `
+            <div class="info-block">
+                <h3>${g.id} — Yield strength f<sub>y</sub></h3>
+                <table class="data-table" style="margin-top:0.25rem;">
+                    <thead><tr><th>Thickness</th><th>f<sub>y</sub> (MPa)</th><th>f<sub>yd</sub> = f<sub>y</sub>/γM0</th></tr></thead>
+                    <tbody>
+                        ${THICK_LABELS.map((lbl,i)=>`<tr${i===0?' class="highlight"':''}>
+                            <td>${lbl} mm</td>
+                            <td>${g.fy[i]}</td>
+                            <td>${g.fy[i]}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+            </div>
+            <div class="info-block">
+                <h3>${g.id} — Properties</h3>
+                <table class="data-table" style="margin-top:0.25rem;">
+                    <tbody>
+                        <tr><td>Standard</td><td>${g.std}</td></tr>
+                        <tr><td>f<sub>u</sub> (MPa)</td><td>${g.fu}</td></tr>
+                        <tr><td>f<sub>y</sub> (t≤16)</td><td>${g.fy[0]} MPa</td></tr>
+                        <tr><td>f<sub>u</sub>/f<sub>y</sub></td><td>${(g.fu/g.fy[0]).toFixed(2)}</td></tr>
+                        <tr><td>Sub-grades</td><td style="font-family:monospace;font-size:0.82rem;">${g.subgrades.join(', ')}</td></tr>
+                        <tr><td>CEV</td><td style="font-family:monospace;">${g.ceq}</td></tr>
+                        <tr><td>Weldability</td><td>${g.weldability}</td></tr>
+                    </tbody>
+                </table>
+                <p style="font-size:0.8rem;color:var(--text-gray);margin-top:0.75rem;">${g.note}</p>
+            </div>
+        `;
+    }
+
+    function makeSvgEl(tag, attrs, txt) {
+        const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+        for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+        if (txt !== undefined) e.textContent = txt;
+        return e;
+    }
+
+    function drawComparison() {
+        const svg = document.getElementById('compSvg');
+        svg.innerHTML = '';
+        const W=420, H=180, padL=50, padR=20, padT=20, padB=40;
+        const cW = W - padL - padR, cH = H - padT - padB;
+        function el(tag,a,t){return makeSvgEl(tag,a,t);}
+        function tx(x,y,t,fill,size,anchor){
+            return el('text',{x,y,fill:fill||'#9ca3af','font-size':size||9,'font-family':'monospace','text-anchor':anchor||'middle','dominant-baseline':'middle'},t);
+        }
+
+        const maxVal = 600;
+        const nGrades = GRADES.length;
+        const groupW = cW / nGrades;
+        const barW = groupW * 0.3;
+
+        // Y axis grid
+        [0,100,200,300,400,500,600].forEach(v => {
+            const y = padT + cH - (v / maxVal) * cH;
+            svg.appendChild(el('line',{x1:padL,y1:y,x2:padL+cW,y2:y,stroke:'#1e293b','stroke-width':0.8}));
+            svg.appendChild(tx(padL-5, y, v, '#6b7280', 8, 'end'));
+        });
+
+        // Axes
+        svg.appendChild(el('line',{x1:padL,y1:padT,x2:padL,y2:padT+cH,stroke:'#374151','stroke-width':1}));
+        svg.appendChild(el('line',{x1:padL,y1:padT+cH,x2:padL+cW,y2:padT+cH,stroke:'#374151','stroke-width':1}));
+        svg.appendChild(tx(padL+cW/2, H-5, 'MPa', '#6b7280', 8));
+
+        GRADES.forEach((g, i) => {
+            const cx = padL + groupW * (i + 0.5);
+
+            // fy bar
+            const fyH = (g.fy[0] / maxVal) * cH;
+            svg.appendChild(el('rect',{
+                x: cx - barW - 2, y: padT + cH - fyH,
+                width: barW, height: fyH,
+                fill: g.color, opacity: '0.85', rx: 2,
+            }));
+
+            // fu bar
+            const fuH = (g.fu / maxVal) * cH;
+            svg.appendChild(el('rect',{
+                x: cx + 2, y: padT + cH - fuH,
+                width: barW, height: fuH,
+                fill: g.color, opacity: '0.35', rx: 2,
+            }));
+
+            // fy value label
+            svg.appendChild(tx(cx - barW/2 - 2, padT + cH - fyH - 7, g.fy[0], g.color, 8));
+            // fu value label
+            svg.appendChild(tx(cx + barW/2 + 2, padT + cH - fuH - 7, g.fu, '#94a3b8', 7));
+
+            // grade label
+            svg.appendChild(tx(cx, padT + cH + 14, g.id, '#d1d5db', 9));
+        });
+
+        // Legend
+        svg.appendChild(el('rect',{x:padL+cW-90,y:padT+4,width:10,height:10,fill:'#60a5fa',opacity:'0.85',rx:1}));
+        svg.appendChild(tx(padL+cW-78, padT+9, 'fy (t≤16)', '#9ca3af', 8, 'start'));
+        svg.appendChild(el('rect',{x:padL+cW-90,y:padT+17,width:10,height:10,fill:'#60a5fa',opacity:'0.35',rx:1}));
+        svg.appendChild(tx(padL+cW-78, padT+22, 'fu', '#9ca3af', 8, 'start'));
+    }
+
+    init();
+    </script>
+</body>
+</html>
