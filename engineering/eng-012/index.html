@@ -632,7 +632,7 @@
                 svg.appendChild(el('rect',{x:cx-wt/2,y:top+fh,width:wt,height:wh,fill,stroke,'stroke-width':1.5}));
                 svg.appendChild(el('rect',{x:cx-fw/2,y:top+fh+wh,width:fw,height:fh,fill,stroke,'stroke-width':1.5}));
                 const lbl = secType === 'ipe' ? 'IPE' : secType === 'hea' ? 'HEA' : 'HEB';
-                svg.appendChild(txt(cx, cy+2, lbl, '#fb923c', 9));
+                svg.appendChild(txt(cx + fw/2 + 14, cy - 14, lbl, '#fb923c', 9));
                 break;
             }
         }
