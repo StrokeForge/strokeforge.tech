@@ -199,13 +199,15 @@
         const svg=mkSvg(220,120);
         const ox=75,oy=60,h=52,hw=Math.round(h*0.55);
         const amp=opamp(svg,ox,oy,h);
-        // VS+ supply pin: from top of triangle body UP
+        // VS+ / VS− supply pins — start exactly on triangle edge at spx
         const spx=ox+Math.round(hw*0.55);
-        ln(svg,spx,oy-h/2,spx,oy-h/2-14,C.yellow,1.2);
-        tx(svg,spx,oy-h/2-20,'Vs+',C.yellow,7,'middle');
-        // VS− supply pin: from bottom of triangle body DOWN
-        ln(svg,spx,oy+h/2,spx,oy+h/2+14,C.gray,1.2);
-        tx(svg,spx,oy+h/2+22,'Vs−',C.gray,7,'middle');
+        const t=(spx-ox)/hw;
+        const yTop=Math.round((oy-h/2)+t*(h/2));
+        const yBot=Math.round((oy+h/2)-t*(h/2));
+        ln(svg,spx,yTop,spx,yTop-14,C.yellow,1.2);
+        tx(svg,spx,yTop-20,'Vs+',C.yellow,7,'middle');
+        ln(svg,spx,yBot,spx,yBot+14,C.gray,1.2);
+        tx(svg,spx,yBot+22,'Vs−',C.gray,7,'middle');
         ln(svg,18,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,10,amp.inP.y,'V1',C.green,8);
         ln(svg,18,amp.inN.y,amp.inN.x,amp.inN.y); tx(svg,10,amp.inN.y,'V2',C.orange,8);
         ln(svg,amp.out.x,amp.out.y,212,amp.out.y);
@@ -216,11 +218,12 @@
         const svg=mkSvg(220,110),amp=opamp(svg,75,55,52);
         ln(svg,18,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,10,amp.inP.y,'Vin',C.green,8);
         ln(svg,amp.out.x,amp.out.y,210,amp.out.y); tx(svg,202,amp.out.y-9,'Vout',C.light,8);
-        // feedback: output → down → left → up → − input
-        const fby=88;
+        // feedback: output → down → left past triangle → up to − level → right to − input
+        const fby=92, fbxL=amp.inN.x-12;
         ln(svg,amp.out.x,amp.out.y,amp.out.x,fby);
-        ln(svg,amp.out.x,fby,amp.inN.x,fby);
-        ln(svg,amp.inN.x,fby,amp.inN.x,amp.inN.y);
+        ln(svg,amp.out.x,fby,fbxL,fby);
+        ln(svg,fbxL,fby,fbxL,amp.inN.y);
+        ln(svg,fbxL,amp.inN.y,amp.inN.x,amp.inN.y);
         return svg;
     }
     function drawNonInv() {
