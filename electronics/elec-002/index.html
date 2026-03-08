@@ -305,83 +305,77 @@
     }
 
     // ============================================================
-    //  Circuit SVG
+    //  Circuit SVG  —  Vcc → R → LED → GND  (linear)
     // ============================================================
     function drawCircuit(unap, uf, rLabel, ifma) {
         var svg = document.getElementById('circuit-svg');
-        var W = 520, H = 160;
-        var orange = '#ff6b35', gray = '#9ca3af', light = '#e5e7eb';
-
-        var lines = [
-            // top wire: left → right
-            ['line', {x1:40,y1:30, x2:480,y2:30, stroke:light, 'stroke-width':2}],
-            // left wire down: left top → left bottom
-            ['line', {x1:40,y1:30, x2:40,y2:130, stroke:light, 'stroke-width':2}],
-            // right wire down
-            ['line', {x1:480,y1:30, x2:480,y2:130, stroke:light, 'stroke-width':2}],
-            // bottom wire
-            ['line', {x1:40,y1:130, x2:480,y2:130, stroke:light, 'stroke-width':2}],
-        ];
-
-        // Battery symbol (left side, vertical)
-        var bx = 40;
-        lines.push(['line', {x1:bx,y1:55, x2:bx,y2:105, stroke:light, 'stroke-width':2}]);
-        lines.push(['line', {x1:bx-10,y1:65, x2:bx+10,y2:65, stroke:orange, 'stroke-width':3}]); // + plate
-        lines.push(['line', {x1:bx-6, y1:75, x2:bx+6, y2:75,  stroke:gray,   'stroke-width':2}]); // - plate
-        lines.push(['line', {x1:bx-10,y1:85, x2:bx+10,y2:85, stroke:orange, 'stroke-width':3}]);
-        lines.push(['line', {x1:bx-6, y1:95, x2:bx+6, y2:95,  stroke:gray,   'stroke-width':2}]);
-
-        // Resistor (top wire, left area) — zig-zag from x=120 to x=240
-        var ry = 30;
-        var rx1 = 130, rx2 = 260;
-        lines.push(['line', {x1:40,  y1:ry, x2:rx1, y2:ry, stroke:light, 'stroke-width':2}]);
-        var zz = [];
-        var steps = 8, zw = (rx2-rx1)/steps, zh = 10;
-        for (var i = 0; i <= steps; i++) {
-            zz.push((rx1 + i*zw) + ',' + (ry + (i%2===0 ? -zh : zh)));
-        }
-        lines.push(['polyline', {points:'130,30 '+zz.join(' ')+' 260,30', stroke:orange, 'stroke-width':2.5, fill:'none'}]);
-        lines.push(['line', {x1:rx2, y1:ry, x2:480, y2:ry, stroke:light, 'stroke-width':2}]);
-
-        // LED symbol (top wire, right area) at x=350
-        var lx = 360, ly = 30;
-        // Anode wire
-        lines.push(['line', {x1:260,y1:ly, x2:330,y2:ly, stroke:light, 'stroke-width':2}]);
-        // Triangle (anode→cathode direction)
-        lines.push(['polygon', {points:(330)+','+(ly-12)+' '+(330)+','+(ly+12)+' '+(360)+','+ly, fill:'#f59e0b', stroke:'#f59e0b', 'stroke-width':1}]);
-        // Cathode bar
-        lines.push(['line', {x1:360,y1:ly-13, x2:360,y2:ly+13, stroke:'#f59e0b', 'stroke-width':3}]);
-        // Cathode wire
-        lines.push(['line', {x1:360,y1:ly, x2:480,y2:ly, stroke:light, 'stroke-width':2}]);
-        // LED rays
-        lines.push(['line', {x1:348,y1:ly-18, x2:362,y2:ly-30, stroke:'#fbbf24', 'stroke-width':1.5}]);
-        lines.push(['line', {x1:358,y1:ly-16, x2:374,y2:ly-26, stroke:'#fbbf24', 'stroke-width':1.5}]);
-
-        // Render SVG
         svg.innerHTML = '';
-        svg.setAttribute('viewBox','0 0 '+W+' '+H);
-        lines.forEach(function(el) {
-            var node = document.createElementNS('http://www.w3.org/2000/svg', el[0]);
-            Object.keys(el[1]).forEach(function(k) { node.setAttribute(k, el[1][k]); });
-            svg.appendChild(node);
-        });
+        svg.setAttribute('viewBox','0 0 520 160');
 
+        var ns = 'http://www.w3.org/2000/svg';
+        var orange = '#ff6b35', gray = '#9ca3af', light = '#e5e7eb', yellow = '#fbbf24', blue = '#60a5fa';
+
+        function add(tag, attrs) {
+            var node = document.createElementNS(ns, tag);
+            Object.keys(attrs).forEach(function(k){ node.setAttribute(k, attrs[k]); });
+            svg.appendChild(node);
+        }
         function txt(x, y, s, color, size, anchor) {
-            var t = document.createElementNS('http://www.w3.org/2000/svg','text');
+            var t = document.createElementNS(ns, 'text');
             t.setAttribute('x', x); t.setAttribute('y', y);
             t.setAttribute('fill', color || gray);
             t.setAttribute('font-size', size || 11);
             t.setAttribute('font-family', 'monospace');
             t.setAttribute('text-anchor', anchor || 'middle');
+            t.setAttribute('dominant-baseline', 'middle');
             t.textContent = s;
             svg.appendChild(t);
         }
 
-        txt(195, 16, 'R = ' + rLabel, orange, 12);
-        txt(342, 16, 'LED  UF=' + uf.toFixed(1)+'V', '#f59e0b', 11);
-        txt(18,  80, unap+'V', light, 11, 'middle');
-        txt(260, 148, 'IF = ' + ifma + ' mA', gray, 11);
-        txt(18,  90, '⊕', orange, 12, 'middle');
+        var cy = 90;
+
+        // Vcc box
+        add('rect', {x:12, y:cy-16, width:65, height:32, fill:'#1a2433', stroke:orange, 'stroke-width':1.5, rx:4});
+        txt(44, cy-5, 'Vcc',     orange,    11, 'middle');
+        txt(44, cy+7, unap+'V', '#facc15',   9, 'middle');
+
+        // Wire Vcc → R
+        add('line', {x1:77, y1:cy, x2:110, y2:cy, stroke:light, 'stroke-width':2, 'stroke-linecap':'round'});
+
+        // Resistor zig-zag: x=110 → x=245
+        var rx1=110, rx2=245, zh=12, steps=8, zw=(rx2-rx1)/steps;
+        var pts = rx1+','+cy;
+        for (var i=0; i<=steps; i++) {
+            pts += ' '+(rx1+i*zw)+','+(cy+(i%2===0 ? -zh : zh));
+        }
+        pts += ' '+rx2+','+cy;
+        add('polyline', {points:pts, stroke:orange, 'stroke-width':2.5, fill:'none', 'stroke-linejoin':'round'});
+        txt(177, cy-28, 'R = '+rLabel, orange, 12, 'middle');
+
+        // Wire R → LED
+        add('line', {x1:245, y1:cy, x2:288, y2:cy, stroke:light, 'stroke-width':2, 'stroke-linecap':'round'});
+        txt(266, cy-14, ifma+' mA →', blue, 9, 'middle');
+
+        // LED symbol: anode at x=288, cathode at x=316
+        var lx=288;
+        add('polygon', {points:lx+','+(cy-14)+' '+lx+','+(cy+14)+' '+(lx+28)+','+cy,
+            fill:'rgba(245,158,11,0.25)', stroke:yellow, 'stroke-width':1.5});
+        add('line', {x1:lx+28, y1:cy-15, x2:lx+28, y2:cy+15, stroke:yellow, 'stroke-width':3});
+        // LED rays
+        add('line', {x1:lx+34, y1:cy-13, x2:lx+46, y2:cy-24, stroke:yellow, 'stroke-width':1.5});
+        add('line', {x1:lx+34, y1:cy-6,  x2:lx+46, y2:cy-17, stroke:yellow, 'stroke-width':1.5});
+        txt(lx+16, cy-30, 'LED  UF='+uf.toFixed(1)+'V', yellow, 10, 'middle');
+
+        // Wire LED → GND
+        add('line', {x1:lx+28, y1:cy, x2:432, y2:cy, stroke:light, 'stroke-width':2, 'stroke-linecap':'round'});
+
+        // GND symbol at x=432
+        var gx=432;
+        add('line', {x1:gx,    y1:cy,    x2:gx,    y2:cy+15, stroke:gray, 'stroke-width':1.5});
+        add('line', {x1:gx-15, y1:cy+15, x2:gx+15, y2:cy+15, stroke:gray, 'stroke-width':2.5});
+        add('line', {x1:gx-10, y1:cy+20, x2:gx+10, y2:cy+20, stroke:gray, 'stroke-width':2});
+        add('line', {x1:gx-5,  y1:cy+25, x2:gx+5,  y2:cy+25, stroke:gray, 'stroke-width':1.5});
+        txt(gx, cy+37, 'GND', gray, 10, 'middle');
     }
 
     // ============================================================
