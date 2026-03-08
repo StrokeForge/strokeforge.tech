@@ -389,46 +389,48 @@
         function line(x1,y1,x2,y2,col,w){return el('line',{x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'round'});}
         function txt(x,y,t,col,sz,anc){return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);}
 
-        // GPIO pin
-        svg.appendChild(el('rect',{x:10,y:48,width:55,height:24,fill:'#1a2433',stroke:'#fb923c','stroke-width':1.5,rx:4}));
-        svg.appendChild(txt(37,60,'GPIO','#fb923c',10,'middle'));
-        svg.appendChild(line(65,60,110,60));
-        svg.appendChild(txt(37,80,vgpio+'V','#facc15',8,'middle'));
+        const cy = 58;
 
-        // Resistor
-        svg.appendChild(el('rect',{x:110,y:48,width:60,height:24,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
-        svg.appendChild(txt(140,57,fmtR(R),'#4ade80',9,'middle'));
-        svg.appendChild(txt(140,68,'resistor','#6b7280',7,'middle'));
-        svg.appendChild(line(170,60,220,60));
+        // GPIO box
+        svg.appendChild(el('rect',{x:10,y:cy-14,width:65,height:28,fill:'#1a2433',stroke:'#fb923c','stroke-width':1.5,rx:4}));
+        svg.appendChild(txt(42,cy-4,'GPIO','#fb923c',10,'middle'));
+        svg.appendChild(txt(42,cy+7,vgpio+'V','#facc15',8,'middle'));
+
+        // Wire GPIO → R
+        svg.appendChild(line(75,cy,110,cy,'#6b7280'));
+
+        // Resistor box
+        svg.appendChild(el('rect',{x:110,y:cy-14,width:70,height:28,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
+        svg.appendChild(txt(145,cy-4,fmtR(R),'#4ade80',9,'middle'));
+        svg.appendChild(txt(145,cy+7,'resistor','#6b7280',7,'middle'));
+
+        // Wire R → LED
+        svg.appendChild(line(180,cy,215,cy,'#6b7280'));
 
         // LED symbol
-        const lx=220, ly=60;
-        // Triangle (anode→cathode)
+        const lx=215, ly=cy;
         svg.appendChild(el('polygon',{points:`${lx},${ly-12} ${lx},${ly+12} ${lx+22},${ly}`,fill:'rgba(255,107,53,0.2)',stroke:'#fb923c','stroke-width':1.5}));
-        // Cathode bar
         svg.appendChild(line(lx+22,ly-12,lx+22,ly+12,'#fb923c',2));
         // LED rays
-        svg.appendChild(line(lx+28,ly-10,lx+38,ly-18,'#fde047',1));
-        svg.appendChild(line(lx+28,ly-5, lx+38,ly-13,'#fde047',1));
+        svg.appendChild(line(lx+28,ly-10,lx+38,ly-18,'#fde047',1.2));
+        svg.appendChild(line(lx+28,ly-4, lx+38,ly-12,'#fde047',1.2));
         // LED labels
         svg.appendChild(txt(lx+11,ly+20,'LED','#6b7280',8,'middle'));
         svg.appendChild(txt(lx+11,ly+29,uf+'V','#fb923c',7,'middle'));
 
-        svg.appendChild(line(lx+22,ly,290,ly));
-        svg.appendChild(line(290,ly,290,110));
-
-        // GND rail
-        svg.appendChild(line(10,110,380,110,'#6b7280',1));
-        svg.appendChild(line(10,60,10,110,'#6b7280'));
+        // Wire LED → GND
+        svg.appendChild(line(lx+22,cy,315,cy,'#6b7280'));
 
         // GND symbol
-        svg.appendChild(line(150,110,150,120));
-        svg.appendChild(line(136,120,164,120,'#6b7280',1.5));
-        svg.appendChild(line(140,124,160,124,'#6b7280',1));
-        svg.appendChild(line(144,128,156,128,'#6b7280',0.8));
+        const gx=315, gy=cy;
+        svg.appendChild(line(gx,gy,gx,gy+14,'#6b7280',1.5));
+        svg.appendChild(line(gx-14,gy+14,gx+14,gy+14,'#6b7280',2));
+        svg.appendChild(line(gx-9, gy+19,gx+9, gy+19,'#6b7280',1.5));
+        svg.appendChild(line(gx-4, gy+24,gx+4, gy+24,'#6b7280',1));
+        svg.appendChild(txt(gx,gy+33,'GND','#6b7280',8,'middle'));
 
         // Current annotation
-        svg.appendChild(txt(190,45,iLed.toFixed(1)+' mA →','#60a5fa',8,'middle'));
+        svg.appendChild(txt(195,cy-22,iLed.toFixed(1)+' mA →','#60a5fa',8,'middle'));
     }
 
     buildPlatforms();
