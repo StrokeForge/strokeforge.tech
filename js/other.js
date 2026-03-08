@@ -23,6 +23,7 @@ async function loadProjects() {
         });
 
         allProjects = (await Promise.all(projectPromises)).filter(p => p !== null);
+        allProjects.sort((a, b) => a.title.localeCompare(b.title));
         displayProjects(allProjects);
 
     } catch (error) {
