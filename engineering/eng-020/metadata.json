@@ -1,9 +1,9 @@
 {
   "id": "eng-020",
-  "title": "Cantilever Beam",
-  "description": "Calculate tip deflection, reactions and bending moment for a cantilever beam under uniform load (UDL) or point load at free end. SVG diagram with deflection curve and M-diagram.",
-  "category": "calculator",
-  "icon": "📐",
+  "title": "Friction Coefficients Reference",
+  "description": "Reference table for static and kinetic friction coefficients for common material pairs: steel/steel, steel/bronze, steel/PTFE, rubber/asphalt, wood/wood — dry and lubricated conditions.",
+  "category": "reference",
+  "icon": "⚙️",
   "difficulty": "beginner",
-  "topic": "nosniky"
+  "topic": "materialy"
 }

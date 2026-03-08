@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISO Metric Thread Standards M1–M68 | StrokeForge Engineering</title>
-    <meta name="description" content="Complete ISO metric thread dimensions table M1–M68: coarse and fine pitches, pitch diameter, minor diameter, stress area, and wrench sizes.">
-    <meta name="keywords" content="ISO metric thread, thread dimensions, pitch diameter, minor diameter, stress area, DIN 13, M1 M2 M3 M4 M5 M6 M8 M10 M12 M16 M20 M24 M30 M36 M42 M48 M64">
+    <title>Thread Standards Reference — ISO Metric, Tr, BSW, G | StrokeForge Engineering</title>
+    <meta name="description" content="Complete thread dimension tables: ISO Metric M1–M68, Trapezoidal Tr (DIN 103), Whitworth BSW, and Pipe G (ISO 228). Pitch diameter, minor diameter, stress area.">
+    <meta name="keywords" content="ISO metric thread, trapezoidal thread, Tr thread, DIN 103, Whitworth BSW, pipe thread, G thread, ISO 228, pitch diameter, minor diameter, stress area">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://strokeforge.tech/engineering/eng-003/">
     <link rel="stylesheet" href="../../css/colors.css">
@@ -28,7 +28,7 @@
         .table-card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.5rem 2rem; overflow-x: auto; }
         .table-card h2 { color: var(--primary-orange); font-size: 1.1rem; margin-bottom: 1rem; }
 
-        table { width: 100%; border-collapse: collapse; font-size: 0.83rem; min-width: 800px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.83rem; min-width: 700px; }
         th {
             background: var(--darker-bg); color: var(--primary-orange);
             padding: 0.55rem 0.65rem; text-align: right; font-weight: 600;
@@ -51,6 +51,19 @@
         .badge { display: inline-block; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 10px; vertical-align: middle; margin-left: 4px; }
         .badge-c { background: rgba(255,107,53,0.15); color: var(--primary-orange); }
         .badge-f { background: rgba(96,165,250,0.15); color: #60a5fa; }
+
+        /* Thread type tabs */
+        .thread-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+        .thread-tab {
+            background: var(--card-bg); border: 1px solid var(--border-gray);
+            color: var(--text-gray); border-radius: 8px; padding: 0.5rem 1.1rem;
+            font-size: 0.88rem; cursor: pointer; transition: all 0.18s;
+        }
+        .thread-tab:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .thread-tab.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #fff; font-weight: 600; }
+
+        .thread-section { display: none; }
+        .thread-section.active { display: block; }
     </style>
 </head>
 <body>
@@ -67,64 +80,164 @@
             <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
     </nav>
-    
+
     <header class="page-header">
-        <h1>🔧 ISO Metric Thread Standards</h1>
-        <p>DIN 13 / ISO 261 | M1–M68 | Coarse &amp; fine pitches | Key dimensions</p>
+        <h1>🔩 Thread Standards Reference</h1>
+        <p>ISO Metric (DIN 13) &nbsp;|&nbsp; Trapezoidal Tr (DIN 103) &nbsp;|&nbsp; Whitworth BSW &nbsp;|&nbsp; Pipe G (ISO 228)</p>
     </header>
 
     <div class="tool-wrap">
         <a href="/engineering.html" class="back-button">← Back to Engineering</a>
 
-        <div class="ctrl-card">
-            <div class="ctrl-row">
-                <div class="ctrl-group">
-                    <label for="search">Search (e.g. M10, M16)</label>
-                    <input type="text" id="search" placeholder="M8, M24 …" oninput="filterTable()" style="width:180px;">
+        <!-- Tab navigation -->
+        <div class="thread-tabs">
+            <button class="thread-tab active" onclick="switchTab('iso')">ISO Metric (M)</button>
+            <button class="thread-tab" onclick="switchTab('tr')">Trapezoidal Tr</button>
+            <button class="thread-tab" onclick="switchTab('bsw')">Whitworth BSW</button>
+            <button class="thread-tab" onclick="switchTab('g')">Pipe G (ISO 228)</button>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ ISO METRIC -->
+        <div id="section-iso" class="thread-section active">
+            <div class="ctrl-card">
+                <div class="ctrl-row">
+                    <div class="ctrl-group">
+                        <label for="search">Search (e.g. M10, M16)</label>
+                        <input type="text" id="search" placeholder="M8, M24 …" oninput="filterTable()" style="width:180px;">
+                    </div>
+                    <div class="ctrl-group">
+                        <label for="series">Show</label>
+                        <select id="series" onchange="filterTable()" style="width:200px;">
+                            <option value="all">Coarse + Fine pitches</option>
+                            <option value="coarse">Coarse only</option>
+                            <option value="fine">Fine only</option>
+                        </select>
+                    </div>
+                    <div class="ctrl-group">
+                        <label for="range-min">Diameter from (mm)</label>
+                        <input type="number" id="range-min" min="1" max="68" value="1" oninput="filterTable()" style="width:110px;">
+                    </div>
+                    <div class="ctrl-group">
+                        <label for="range-max">to (mm)</label>
+                        <input type="number" id="range-max" min="1" max="68" value="68" oninput="filterTable()" style="width:110px;">
+                    </div>
                 </div>
-                <div class="ctrl-group">
-                    <label for="series">Show</label>
-                    <select id="series" onchange="filterTable()" style="width:200px;">
-                        <option value="all">Coarse + Fine pitches</option>
-                        <option value="coarse">Coarse only</option>
-                        <option value="fine">Fine only</option>
-                    </select>
-                </div>
-                <div class="ctrl-group">
-                    <label for="range-min">Diameter from (mm)</label>
-                    <input type="number" id="range-min" min="1" max="68" value="1" oninput="filterTable()" style="width:110px;">
-                </div>
-                <div class="ctrl-group">
-                    <label for="range-max">to (mm)</label>
-                    <input type="number" id="range-max" min="1" max="68" value="68" oninput="filterTable()" style="width:110px;">
+                <div class="info-box">
+                    d₂ = pitch diameter = d − 0.6495·p &nbsp;|&nbsp;
+                    d₁ = minor diameter = d − 1.2269·p &nbsp;|&nbsp;
+                    A<sub>s</sub> = π/4·(d − 0.9382·p)² &nbsp;|&nbsp;
+                    Standard: ISO 261 / DIN 13-1 to 13-11 &nbsp;|&nbsp; 60° thread angle
                 </div>
             </div>
-            <div class="info-box">
-                d₂ = pitch diameter = d − 0.6495·p &nbsp;|&nbsp;
-                d₁ = minor diameter = d − 1.2269·p &nbsp;|&nbsp;
-                A<sub>s</sub> = π/4·(d − 0.9382·p)² &nbsp;|&nbsp;
-                Standard: ISO 261 / DIN 13-1 to 13-11
+
+            <div class="table-card">
+                <h2>ISO Metric thread dimensions</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Thread</th>
+                            <th>d (mm)</th>
+                            <th>Pitch (mm)</th>
+                            <th>d₂ (mm)</th>
+                            <th>d₁ (mm)</th>
+                            <th>A<sub>s</sub> (mm²)</th>
+                            <th>Hex AF (mm)</th>
+                            <th>Allen (mm)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="thread-tbody"></tbody>
+                </table>
+                <div id="row-count" style="margin-top:0.75rem;font-size:0.8rem;color:var(--text-gray);"></div>
             </div>
         </div>
 
-        <div class="table-card">
-            <h2>Thread dimensions</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Thread</th>
-                        <th>d (mm)</th>
-                        <th>Pitch (mm)</th>
-                        <th>d₂ (mm)</th>
-                        <th>d₁ (mm)</th>
-                        <th>A<sub>s</sub> (mm²)</th>
-                        <th>Hex AF (mm)</th>
-                        <th>Allen (mm)</th>
-                    </tr>
-                </thead>
-                <tbody id="thread-tbody"></tbody>
-            </table>
-            <div id="row-count" style="margin-top:0.75rem;font-size:0.8rem;color:var(--text-gray);"></div>
+        <!-- ═══════════════════════════════════════════════════ TRAPEZOIDAL Tr -->
+        <div id="section-tr" class="thread-section">
+            <div class="ctrl-card">
+                <div class="info-box">
+                    d₂ = d − 0.5·p &nbsp;|&nbsp; d₃ = d − p (screw minor ∅) &nbsp;|&nbsp;
+                    A<sub>s</sub> = π/4·((d₂ + d₃)/2)² &nbsp;|&nbsp;
+                    Standard: DIN 103 / ISO 2901–2905 &nbsp;|&nbsp; 30° thread angle
+                </div>
+            </div>
+
+            <div class="table-card">
+                <h2>Trapezoidal thread dimensions (DIN 103)</h2>
+                <table id="tr-table">
+                    <thead>
+                        <tr>
+                            <th>Thread</th>
+                            <th>d (mm)</th>
+                            <th>Pitch (mm)</th>
+                            <th>d₂ (mm)</th>
+                            <th>d₃ (mm)</th>
+                            <th>A<sub>s</sub> (mm²)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tr-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ WHITWORTH BSW -->
+        <div id="section-bsw" class="thread-section">
+            <div class="ctrl-card">
+                <div class="info-box">
+                    d₂ = d − 0.6403·p &nbsp;|&nbsp; d₁ = d − 1.2806·p &nbsp;|&nbsp;
+                    A<sub>s</sub> = π/4·((d₂ + d₁)/2)² &nbsp;|&nbsp;
+                    Standard: BS 84 / ISO 228 (form) &nbsp;|&nbsp; 55° thread angle &nbsp;|&nbsp; p = 25.4/TPI mm
+                </div>
+            </div>
+
+            <div class="table-card">
+                <h2>Whitworth BSW thread dimensions</h2>
+                <table id="bsw-table">
+                    <thead>
+                        <tr>
+                            <th>Thread</th>
+                            <th>d (mm)</th>
+                            <th>TPI</th>
+                            <th>Pitch (mm)</th>
+                            <th>d₂ (mm)</th>
+                            <th>d₁ (mm)</th>
+                            <th>A<sub>s</sub> (mm²)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bsw-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════ PIPE G (ISO 228) -->
+        <div id="section-g" class="thread-section">
+            <div class="ctrl-card">
+                <div class="info-box">
+                    Cylindrical (parallel) pipe thread &nbsp;|&nbsp; 55° Whitworth thread form &nbsp;|&nbsp;
+                    d₂ = d − 0.6403·p &nbsp;|&nbsp; d₁ = d − 1.2806·p &nbsp;|&nbsp;
+                    Standard: ISO 228-1 / DIN ISO 228 &nbsp;|&nbsp; Nominal size ≠ actual diameter
+                </div>
+            </div>
+
+            <div class="table-card">
+                <h2>Pipe G thread dimensions (ISO 228)</h2>
+                <table id="g-table">
+                    <thead>
+                        <tr>
+                            <th>Thread</th>
+                            <th>d (mm)</th>
+                            <th>TPI</th>
+                            <th>Pitch (mm)</th>
+                            <th>d₂ (mm)</th>
+                            <th>d₁ (mm)</th>
+                            <th>A<sub>s</sub> (mm²)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="g-tbody"></tbody>
+                </table>
+                <div class="info-box" style="margin-top:1rem;">
+                    Note: <em>d</em> is the actual outside diameter of the threaded part, not the nominal pipe bore size. G1 means nominally 1" pipe, but OD = 33.249 mm.
+                </div>
+            </div>
         </div>
 
     </div>
@@ -138,9 +251,8 @@
 
     <script src="../../js/nav.js"></script>
     <script>
+    // ─── ISO METRIC ───────────────────────────────────────────────────────────
     // Thread data: [label, d, coarse_pitch, [fine_pitches,...], hex_af, allen]
-    // Dimensions calculated via formula; wrench sizes per DIN 933/ISO 4014 and ISO 4762
-    // null = not standardised / not common
     var THREADS = [
         ['M1',    1,    0.25, [],              null, null],
         ['M1.2',  1.2,  0.25, [],              null, null],
@@ -203,7 +315,6 @@
             if (d < minD || d > maxD) return;
             if (search && label.toLowerCase().indexOf(search) === -1) return;
 
-            // Coarse row
             if (series === 'all' || series === 'coarse') {
                 var dim = calcDims(d, pc);
                 var tr = document.createElement('tr');
@@ -220,7 +331,6 @@
                 count++;
             }
 
-            // Fine rows
             if (series === 'all' || series === 'fine') {
                 fines.forEach(function(pf) {
                     var dimf = calcDims(d, pf);
@@ -245,7 +355,166 @@
 
     function filterTable() { buildRows(); }
 
+    // ─── TRAPEZOIDAL Tr (DIN 103) ─────────────────────────────────────────────
+    // [label, d_nom, pitch]
+    var TR_THREADS = [
+        ['Tr10×2',   10,  2],
+        ['Tr12×3',   12,  3],
+        ['Tr14×3',   14,  3],
+        ['Tr16×4',   16,  4],
+        ['Tr18×4',   18,  4],
+        ['Tr20×4',   20,  4],
+        ['Tr22×5',   22,  5],
+        ['Tr24×5',   24,  5],
+        ['Tr26×5',   26,  5],
+        ['Tr28×5',   28,  5],
+        ['Tr30×6',   30,  6],
+        ['Tr32×6',   32,  6],
+        ['Tr34×6',   34,  6],
+        ['Tr36×6',   36,  6],
+        ['Tr38×7',   38,  7],
+        ['Tr40×7',   40,  7],
+        ['Tr44×7',   44,  7],
+        ['Tr48×8',   48,  8],
+        ['Tr52×8',   52,  8],
+        ['Tr55×9',   55,  9],
+        ['Tr60×9',   60,  9],
+        ['Tr65×10',  65, 10],
+        ['Tr70×10',  70, 10],
+        ['Tr75×10',  75, 10],
+        ['Tr80×10',  80, 10],
+        ['Tr85×12',  85, 12],
+        ['Tr90×12',  90, 12],
+        ['Tr95×12',  95, 12],
+        ['Tr100×12', 100, 12]
+    ];
+
+    function buildTrTable() {
+        var tbody = document.getElementById('tr-tbody');
+        tbody.innerHTML = '';
+        TR_THREADS.forEach(function(t) {
+            var label = t[0], d = t[1], p = t[2];
+            var d2 = (d - 0.5 * p).toFixed(3);
+            var d3 = (d - p).toFixed(3);
+            var d2n = d - 0.5 * p, d3n = d - p;
+            var As = (Math.PI / 4 * Math.pow((d2n + d3n) / 2, 2)).toFixed(2);
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td>' + label + '</td>' +
+                '<td>' + d + '</td>' +
+                '<td>' + p + '</td>' +
+                '<td>' + d2 + '</td>' +
+                '<td>' + d3 + '</td>' +
+                '<td>' + As + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+
+    // ─── WHITWORTH BSW ────────────────────────────────────────────────────────
+    // [label, d_inch_frac, d_mm, TPI]
+    var BSW_THREADS = [
+        ['1/16"',  1/16,   1.588,  60],
+        ['3/32"',  3/32,   2.381,  48],
+        ['1/8"',   1/8,    3.175,  40],
+        ['3/16"',  3/16,   4.763,  24],
+        ['1/4"',   1/4,    6.350,  20],
+        ['5/16"',  5/16,   7.938,  18],
+        ['3/8"',   3/8,    9.525,  16],
+        ['7/16"',  7/16,  11.113,  14],
+        ['1/2"',   1/2,   12.700,  12],
+        ['9/16"',  9/16,  14.288,  12],
+        ['5/8"',   5/8,   15.875,  11],
+        ['3/4"',   3/4,   19.050,  10],
+        ['7/8"',   7/8,   22.225,   9],
+        ['1"',     1,     25.400,   8],
+        ['1-1/8"', 1.125, 28.575,   7],
+        ['1-1/4"', 1.25,  31.750,   7],
+        ['1-3/8"', 1.375, 34.925,   6],
+        ['1-1/2"', 1.5,   38.100,   6],
+        ['1-3/4"', 1.75,  44.450,   5],
+        ['2"',     2,     50.800,   4.5]
+    ];
+
+    function buildBswTable() {
+        var tbody = document.getElementById('bsw-tbody');
+        tbody.innerHTML = '';
+        BSW_THREADS.forEach(function(t) {
+            var label = t[0], d = t[2], tpi = t[3];
+            var p = 25.4 / tpi;
+            var d2 = d - 0.6403 * p;
+            var d1 = d - 1.2806 * p;
+            var As = Math.PI / 4 * Math.pow((d2 + d1) / 2, 2);
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td>' + label + '</td>' +
+                '<td>' + d.toFixed(3) + '</td>' +
+                '<td>' + tpi + '</td>' +
+                '<td>' + p.toFixed(3) + '</td>' +
+                '<td>' + d2.toFixed(3) + '</td>' +
+                '<td>' + d1.toFixed(3) + '</td>' +
+                '<td>' + As.toFixed(2) + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+
+    // ─── PIPE G (ISO 228) ─────────────────────────────────────────────────────
+    // [label, d_actual_mm, TPI]
+    var G_THREADS = [
+        ['G 1/8',   9.728,  28],
+        ['G 1/4',  13.157,  19],
+        ['G 3/8',  16.662,  19],
+        ['G 1/2',  20.955,  14],
+        ['G 5/8',  22.911,  14],
+        ['G 3/4',  26.441,  14],
+        ['G 7/8',  30.201,  14],
+        ['G 1',    33.249,  11],
+        ['G 1-1/4', 41.910, 11],
+        ['G 1-1/2', 47.803, 11],
+        ['G 1-3/4', 53.746, 11],
+        ['G 2',    59.614,  11],
+        ['G 2-1/4', 65.710, 11],
+        ['G 2-1/2', 75.184, 11],
+        ['G 2-3/4', 81.534, 11],
+        ['G 3',    87.884,  11],
+        ['G 3-1/2', 100.330,11],
+        ['G 4',   113.030,  11]
+    ];
+
+    function buildGTable() {
+        var tbody = document.getElementById('g-tbody');
+        tbody.innerHTML = '';
+        G_THREADS.forEach(function(t) {
+            var label = t[0], d = t[1], tpi = t[2];
+            var p = 25.4 / tpi;
+            var d2 = d - 0.6403 * p;
+            var d1 = d - 1.2806 * p;
+            var As = Math.PI / 4 * Math.pow((d2 + d1) / 2, 2);
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td>' + label + '</td>' +
+                '<td>' + d.toFixed(3) + '</td>' +
+                '<td>' + tpi + '</td>' +
+                '<td>' + p.toFixed(3) + '</td>' +
+                '<td>' + d2.toFixed(3) + '</td>' +
+                '<td>' + d1.toFixed(3) + '</td>' +
+                '<td>' + As.toFixed(2) + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+
+    // ─── TAB SWITCHING ────────────────────────────────────────────────────────
+    function switchTab(tab) {
+        document.querySelectorAll('.thread-section').forEach(function(s) { s.classList.remove('active'); });
+        document.querySelectorAll('.thread-tab').forEach(function(b) { b.classList.remove('active'); });
+        document.getElementById('section-' + tab).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    // ─── INIT ─────────────────────────────────────────────────────────────────
     buildRows();
+    buildTrTable();
+    buildBswTable();
+    buildGTable();
     </script>
 </body>
 </html>

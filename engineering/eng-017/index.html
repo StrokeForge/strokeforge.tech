@@ -3,67 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bolt Shear & Bearing Check — EC3 EN 1993-1-8 | StrokeForge Engineering</title>
-    <meta name="description" content="Check bolted connections under shear load: bolt shear resistance Fv,Rd, bearing resistance Fb,Rd per ČSN EN 1993-1-8 (EC3). Supports M6–M36, grades 4.6–12.9.">
-    <meta name="keywords" content="bolt shear check EC3, Fv,Rd Fb,Rd calculator, šroubový spoj střih otlačení, EN 1993-1-8 bolt, bearing resistance bolt, šroub střih kalkulátor">
+    <title>Nuts & Washers Dimensions DIN 934/125/127/9021 | StrokeForge Engineering</title>
+    <meta name="description" content="Reference tables for hex nuts DIN 934, plain washers DIN 125, spring washers DIN 127, large washers DIN 9021 — dimensions for M3 to M24.">
+    <meta name="keywords" content="hex nut DIN 934, plain washer DIN 125, spring washer DIN 127, large washer DIN 9021, nut dimensions, washer dimensions, M3 M4 M5 M6 M8 M10 M12 M16 M20 M24">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://strokeforge.tech/engineering/eng-017/">
     <link rel="stylesheet" href="../../css/colors.css">
     <link rel="stylesheet" href="../../css/style.css">
     <style>
-        .tool-wrap { max-width: 920px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
-        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
-        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
-
-        .input-grid   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
-        .input-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        @media (max-width: 640px) { .input-grid { grid-template-columns: 1fr 1fr; } .input-grid-2 { grid-template-columns: 1fr; } }
-
-        .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
-        .field label { font-size: 0.8rem; color: var(--text-gray); }
-        .field-row { display: flex; gap: 0.5rem; align-items: center; }
-        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
-        .inp:focus { border-color: var(--primary-orange); }
-        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; min-width: 0; }
-        .sel:focus { border-color: var(--primary-orange); }
-        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; flex-shrink: 0; }
-        .hint { font-size: 0.71rem; color: var(--text-gray); margin-top: 0.1rem; }
-
-        /* shear plane tabs */
-        .type-tabs { display: flex; gap: 0.4rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
-        .type-btn { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 6px; padding: 0.35rem 0.9rem; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
-        .type-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
-        .type-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; font-weight: 600; }
-
-        .side-layout { display: grid; grid-template-columns: 1fr 160px; gap: 2rem; align-items: start; }
-        @media (max-width: 600px) { .side-layout { grid-template-columns: 1fr; } }
-
-        .res-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        .res-table td { padding: 0.55rem 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
-        .res-table td:first-child  { color: var(--primary-orange); font-weight: 600; font-family: monospace; width: 130px; }
-        .res-table td:nth-child(2) { color: var(--light-gray); font-weight: 700; }
-        .res-table td:nth-child(3) { color: var(--text-gray); font-size: 0.8rem; width: 55px; }
-        .res-table td:nth-child(4) { color: var(--text-gray); font-size: 0.78rem; font-family: monospace; }
-        .res-table tr:last-child td { border-bottom: none; }
-        .res-table .sec-head td { color: var(--text-gray); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border-gray); }
-
-        .bar-wrap { margin: 0.5rem 0 0; }
-        .bar-track { height: 10px; background: var(--darker-bg); border-radius: 99px; overflow: hidden; }
-        .bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s, background 0.4s; }
-        .bar-label { font-size: 0.78rem; color: var(--text-gray); margin-top: 0.35rem; display: flex; justify-content: space-between; }
-
-        .verdict { display: inline-block; padding: 0.3rem 1.1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 700; margin-top: 0.6rem; }
-        .verdict.pass { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
-        .verdict.fail { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
-        .verdict.warn { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
-
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
-        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
-        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
-        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
-        .info-block ul { padding-left: 1.2rem; margin: 0; }
-        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.82rem; line-height: 2.0; display: block; margin-top: 0.3rem; }
+.tool-wrap { max-width: 1000px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .ctrl-card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.25rem 1.75rem; margin-bottom: 1.25rem; }
+        .info-box { background: rgba(255,107,53,0.07); border-left: 3px solid var(--primary-orange); border-radius: 4px; padding: 0.8rem 1rem; font-size: 0.85rem; color: var(--text-gray); line-height: 1.6; }
+        .table-card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.5rem 2rem; overflow-x: auto; }
+        .table-card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 0.9rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.84rem; min-width: 520px; }
+        th { background: var(--darker-bg); color: var(--primary-orange); padding: 0.55rem 0.75rem; text-align: right; font-weight: 600; border-bottom: 2px solid var(--border-gray); white-space: nowrap; }
+        th:first-child { text-align: left; }
+        td { padding: 0.42rem 0.75rem; color: var(--light-gray); border-bottom: 1px solid var(--border-gray); text-align: right; font-family: monospace; white-space: nowrap; }
+        td:first-child { text-align: left; font-weight: 700; color: var(--primary-orange); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,107,53,0.06); }
+        .thread-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+        .thread-tab { background: var(--card-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 8px; padding: 0.5rem 1.1rem; font-size: 0.88rem; cursor: pointer; transition: all 0.18s; }
+        .thread-tab:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .thread-tab.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #fff; font-weight: 600; }
+        .thread-section { display: none; }
+        .thread-section.active { display: block; }
     </style>
 </head>
 <body>
@@ -82,335 +47,231 @@
     </nav>
 
     <header class="page-header">
-        <h1>🔩 Bolt Shear &amp; Bearing Check</h1>
-        <p>F<sub>v,Rd</sub> · F<sub>b,Rd</sub> — per ČSN EN 1993-1-8 (EC3), §3.6</p>
+        <h1>🔩 Nuts & Washers Dimensions</h1>
+        <p>DIN 934 Hex Nuts &nbsp;|&nbsp; DIN 125 Plain Washers &nbsp;|&nbsp; DIN 127 Spring Washers &nbsp;|&nbsp; DIN 9021 Large Washers</p>
     </header>
 
-    <main class="tool-wrap">
+    <div class="tool-wrap">
         <a href="/engineering.html" class="back-button">← Back to Engineering</a>
 
-        <div class="card">
-            <h2>Connection parameters</h2>
-            <div class="side-layout">
-                <div>
-                    <div class="type-tabs">
-                        <button class="type-btn active" data-sp="1" onclick="setSP(1)">Single shear plane</button>
-                        <button class="type-btn"         data-sp="2" onclick="setSP(2)">Double shear plane</button>
-                    </div>
+        <div class="thread-tabs">
+            <button class="thread-tab active" onclick="switchTab('nut', event)">Hex Nuts (DIN 934)</button>
+            <button class="thread-tab" onclick="switchTab('plain', event)">Plain Washers (DIN 125)</button>
+            <button class="thread-tab" onclick="switchTab('spring', event)">Spring Washers (DIN 127)</button>
+            <button class="thread-tab" onclick="switchTab('large', event)">Large Washers (DIN 9021)</button>
+        </div>
 
-                    <div class="input-grid" style="margin-bottom:1rem;">
-                        <div class="field">
-                            <label>Bolt diameter d</label>
-                            <select id="boltD" class="sel" onchange="onBoltChange()">
-                                <option value="6,4.5">M6 — d₀ = 7 mm</option>
-                                <option value="8,6.1">M8 — d₀ = 9 mm</option>
-                                <option value="10,7.8">M10 — d₀ = 11 mm</option>
-                                <option value="12,9.4">M12 — d₀ = 13 mm</option>
-                                <option value="16,15.7">M16 — d₀ = 18 mm</option>
-                                <option value="20,24.5" selected>M20 — d₀ = 22 mm</option>
-                                <option value="22,30.3">M22 — d₀ = 24 mm</option>
-                                <option value="24,35.6">M24 — d₀ = 26 mm</option>
-                                <option value="27,45.9">M27 — d₀ = 30 mm</option>
-                                <option value="30,56.0">M30 — d₀ = 33 mm</option>
-                                <option value="36,81.7">M36 — d₀ = 39 mm</option>
-                            </select>
-                            <span class="hint" id="AsHint">As = 24.5 mm²</span>
-                        </div>
-                        <div class="field">
-                            <label>Bolt grade</label>
-                            <select id="grade" class="sel" onchange="calc()">
-                                <option value="240,400">4.6 — fyb=240, fub=400 MPa</option>
-                                <option value="300,500">5.6 — fyb=300, fub=500 MPa</option>
-                                <option value="480,600">8.8 — fyb=480, fub=600 MPa</option>
-                                <option value="900,1000" selected>10.9 — fyb=900, fub=1000 MPa</option>
-                                <option value="1080,1200">12.9 — fyb=1080, fub=1200 MPa</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>Number of bolts n</label>
-                            <div class="field-row">
-                                <input type="number" id="nb" class="inp" value="2" min="1" max="50" step="1" oninput="calc()">
-                                <span class="unit">—</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="input-grid" style="margin-bottom:1rem;">
-                        <div class="field">
-                            <label>Plate thickness t</label>
-                            <div class="field-row">
-                                <input type="number" id="t" class="inp" value="10" min="1" step="0.5" oninput="calc()">
-                                <span class="unit">mm</span>
-                            </div>
-                            <span class="hint">Connected (thinner) part</span>
-                        </div>
-                        <div class="field">
-                            <label>End distance e₁</label>
-                            <div class="field-row">
-                                <input type="number" id="e1" class="inp" value="40" min="1" step="1" oninput="calc()">
-                                <span class="unit">mm</span>
-                            </div>
-                            <span class="hint">In load direction</span>
-                        </div>
-                        <div class="field">
-                            <label>Pitch p₁</label>
-                            <div class="field-row">
-                                <input type="number" id="p1" class="inp" value="60" min="1" step="1" oninput="calc()">
-                                <span class="unit">mm</span>
-                            </div>
-                            <span class="hint">Bolt spacing in load dir.</span>
-                        </div>
-                    </div>
-
-                    <div class="input-grid-2">
-                        <div class="field">
-                            <label>Plate steel grade</label>
-                            <select id="plateMat" class="sel" onchange="calc()">
-                                <option value="235,360">S235 — fu = 360 MPa</option>
-                                <option value="275,430">S275 — fu = 430 MPa</option>
-                                <option value="355,490" selected>S355 — fu = 490 MPa</option>
-                                <option value="420,520">S420 — fu = 520 MPa</option>
-                                <option value="460,560">S460 — fu = 560 MPa</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>Applied shear force F<sub>Ed</sub></label>
-                            <div class="field-row">
-                                <input type="number" id="FEd" class="inp" value="80" min="0" step="1" oninput="calc()">
-                                <span class="unit">kN</span>
-                            </div>
-                            <span class="hint">Total on connection</span>
-                        </div>
-                    </div>
+        <!-- DIN 934 -->
+        <div id="section-nut" class="thread-section active">
+            <div class="ctrl-card">
+                <div class="info-box">
+                    Hex nuts per DIN 934 / ISO 4032 &nbsp;|&nbsp;
+                    SW = wrench size (across flats) &nbsp;|&nbsp;
+                    <em>m</em> = nut height &nbsp;|&nbsp;
+                    e = across corners ≈ SW / cos 30° &nbsp;|&nbsp;
+                    d<sub>1</sub> = bore (thread clearance hole)
                 </div>
-
-                <!-- SVG -->
-                <svg id="boltSvg" width="140" height="200" viewBox="0 0 140 200"></svg>
+            </div>
+            <div class="table-card">
+                <h2>DIN 934 — Hex Nut dimensions</h2>
+                <table>
+                    <thead><tr>
+                        <th>Size</th><th>d (mm)</th><th>SW / AF (mm)</th>
+                        <th>m height (mm)</th><th>e corners (mm)</th><th>d₁ bore (mm)</th>
+                    </tr></thead>
+                    <tbody id="nut-tbody"></tbody>
+                </table>
             </div>
         </div>
 
-        <!-- RESULTS -->
-        <div class="card">
-            <h2>Results</h2>
-            <table class="res-table"><tbody id="resBody"></tbody></table>
-        </div>
-
-        <div class="card">
-            <h2>Formulas — EN 1993-1-8 §3.6</h2>
-            <div class="info-grid">
-                <div class="info-block">
-                    <h3>Bolt shear resistance</h3>
-                    <span class="mono">F_v,Rd = αv · fub · As / γM2<br>αv = 0.6 (grade 4.6–6.8, shank)<br>αv = 0.5 (grade 4.6–6.8, thread)<br>αv = 0.6 (grade 8.8–12.9)</span>
-                    <p style="margin-top:0.4rem">This tool assumes shear through the threaded portion (αv = 0.5 for 4.6, 0.6 for 8.8+). γM2 = 1.25.</p>
-                </div>
-                <div class="info-block">
-                    <h3>Bearing resistance</h3>
-                    <span class="mono">F_b,Rd = k₁ · αb · fu · d · t / γM2<br>αb = min(e₁/3d₀, p₁/3d₀−¼, fub/fu, 1)<br>k₁ = min(2.8·e₂/d₀−1.7, 2.5)</span>
-                    <p style="margin-top:0.4rem">e₂/d₀ assumed = 1.5 (edge distance perp. to load). Governing failure mode is the minimum of shear and bearing.</p>
-                </div>
-                <div class="info-block">
-                    <h3>Group resistance</h3>
-                    <span class="mono">F_Rd = n · min(F_v,Rd, F_b,Rd)<br>η = F_Ed / F_Rd ≤ 1.0</span>
-                    <p style="margin-top:0.4rem">Assumes equal load distribution (rigid group, identical bolts in line).</p>
-                </div>
-                <div class="info-block">
-                    <h3>Partial factors</h3>
-                    <ul>
-                        <li>γM2 = 1.25 (bolts, welds)</li>
-                        <li>γM0 = 1.00 (cross-sections)</li>
-                        <li>Preloaded bolts (slip-critical) are not checked here</li>
-                        <li>Standard: ČSN EN 1993-1-8:2006, Table 3.4</li>
-                    </ul>
+        <!-- DIN 125 -->
+        <div id="section-plain" class="thread-section">
+            <div class="ctrl-card">
+                <div class="info-box">
+                    Plain washers per DIN 125-1 form A / ISO 7089 &nbsp;|&nbsp;
+                    d<sub>1</sub> = inner diameter &nbsp;|&nbsp;
+                    d<sub>2</sub> = outer diameter &nbsp;|&nbsp;
+                    h = thickness
                 </div>
             </div>
+            <div class="table-card">
+                <h2>DIN 125 — Plain Washer dimensions</h2>
+                <table>
+                    <thead><tr>
+                        <th>Size</th><th>d₁ inner (mm)</th><th>d₂ outer (mm)</th><th>h thickness (mm)</th>
+                    </tr></thead>
+                    <tbody id="plain-tbody"></tbody>
+                </table>
+            </div>
         </div>
-    </main>
+
+        <!-- DIN 127 -->
+        <div id="section-spring" class="thread-section">
+            <div class="ctrl-card">
+                <div class="info-box">
+                    Spring (split-lock) washers per DIN 127-B (square ends) &nbsp;|&nbsp;
+                    d<sub>1</sub> = inner ∅ &nbsp;|&nbsp; d<sub>2</sub> = outer ∅ &nbsp;|&nbsp;
+                    b = radial width &nbsp;|&nbsp; s = wire/section thickness
+                </div>
+            </div>
+            <div class="table-card">
+                <h2>DIN 127 — Spring Washer dimensions</h2>
+                <table>
+                    <thead><tr>
+                        <th>Size</th><th>d₁ inner (mm)</th><th>d₂ outer (mm)</th>
+                        <th>b width (mm)</th><th>s thickness (mm)</th>
+                    </tr></thead>
+                    <tbody id="spring-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- DIN 9021 -->
+        <div id="section-large" class="thread-section">
+            <div class="ctrl-card">
+                <div class="info-box">
+                    Large (fender) washers per DIN 9021 / ISO 7093 &nbsp;|&nbsp;
+                    Wider outer diameter distributes load over a larger area &nbsp;|&nbsp;
+                    Suitable for soft materials, oversized holes, timber connections
+                </div>
+            </div>
+            <div class="table-card">
+                <h2>DIN 9021 — Large Washer dimensions</h2>
+                <table>
+                    <thead><tr>
+                        <th>Size</th><th>d₁ inner (mm)</th><th>d₂ outer (mm)</th><th>h thickness (mm)</th>
+                    </tr></thead>
+                    <tbody id="large-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <footer class="footer">
         <p>Designs from concept to reality | 2026</p>
-        <p style="margin-top:0.5rem;font-size:0.8rem">
-            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
+        <p style="margin-top:0.5rem;font-size:0.8rem;">
+            <a href="https://www.printables.com/@TechMaster" target="_blank" style="color:#ff6b35;text-decoration:none;">Printables: @TechMaster</a>
         </p>
     </footer>
 
     <script src="../../js/nav.js"></script>
     <script>
-    // Bolt data: [d_mm, d0_mm, As_mm2]
-    const BOLTS = {
-        '6,4.5':   {d:6,  d0:7,  As:4.5},
-        '8,6.1':   {d:8,  d0:9,  As:6.1},
-        '10,7.8':  {d:10, d0:11, As:7.8},
-        '12,9.4':  {d:12, d0:13, As:9.4},
-        '16,15.7': {d:16, d0:18, As:15.7},
-        '20,24.5': {d:20, d0:22, As:24.5},
-        '22,30.3': {d:22, d0:24, As:30.3},
-        '24,35.6': {d:24, d0:26, As:35.6},
-        '27,45.9': {d:27, d0:30, As:45.9},
-        '30,56.0': {d:30, d0:33, As:56.0},
-        '36,81.7': {d:36, d0:39, As:81.7},
-    };
+    var NUTS = [
+        ['M3',  3,   5.5, 2.4,  3.2],
+        ['M4',  4,   7,   3.2,  4.3],
+        ['M5',  5,   8,   4.0,  5.3],
+        ['M6',  6,   10,  5.0,  6.4],
+        ['M8',  8,   13,  6.5,  8.4],
+        ['M10', 10,  17,  8.0,  10.5],
+        ['M12', 12,  19,  10.0, 13.0],
+        ['M14', 14,  22,  11.0, 15.0],
+        ['M16', 16,  24,  13.0, 17.0],
+        ['M18', 18,  27,  15.0, 19.0],
+        ['M20', 20,  30,  16.0, 21.0],
+        ['M22', 22,  32,  18.0, 23.0],
+        ['M24', 24,  36,  19.0, 25.0]
+    ];
+    var PLAIN = [
+        ['M3',  3.2,  7,   0.5],
+        ['M4',  4.3,  9,   0.8],
+        ['M5',  5.3,  10,  1.0],
+        ['M6',  6.4,  12,  1.6],
+        ['M8',  8.4,  16,  1.6],
+        ['M10', 10.5, 20,  2.0],
+        ['M12', 13.0, 24,  2.5],
+        ['M14', 15.0, 28,  2.5],
+        ['M16', 17.0, 30,  3.0],
+        ['M18', 19.0, 34,  3.0],
+        ['M20', 21.0, 37,  3.0],
+        ['M22', 23.0, 39,  3.0],
+        ['M24', 25.0, 44,  4.0]
+    ];
+    var SPRING = [
+        ['M3',  3.1,  5.9,  1.0, 0.8],
+        ['M4',  4.1,  7.6,  1.2, 1.0],
+        ['M5',  5.1,  9.2,  1.5, 1.2],
+        ['M6',  6.1,  11.2, 1.8, 1.4],
+        ['M8',  8.2,  14.8, 2.5, 2.0],
+        ['M10', 10.2, 18.1, 3.0, 2.2],
+        ['M12', 12.2, 21.5, 3.5, 2.5],
+        ['M14', 14.2, 24.8, 4.0, 3.0],
+        ['M16', 16.2, 28.2, 4.5, 3.5],
+        ['M18', 18.2, 31.5, 5.0, 3.5],
+        ['M20', 20.2, 34.5, 5.5, 4.0],
+        ['M22', 22.5, 38.5, 6.0, 4.0],
+        ['M24', 24.5, 42.5, 6.5, 5.0]
+    ];
+    var LARGE = [
+        ['M3',  3.2,  9,   0.8],
+        ['M4',  4.3,  12,  1.0],
+        ['M5',  5.3,  15,  1.2],
+        ['M6',  6.4,  18,  1.6],
+        ['M8',  8.4,  24,  2.0],
+        ['M10', 10.5, 30,  2.5],
+        ['M12', 13.0, 37,  3.0],
+        ['M14', 15.0, 44,  3.0],
+        ['M16', 17.0, 50,  3.0],
+        ['M20', 21.0, 60,  4.0],
+        ['M24', 25.0, 72,  5.0]
+    ];
 
-    let nShear = 1; // shear planes
-
-    function setSP(n) {
-        nShear = n;
-        document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.sp) === n));
-        drawSvg(n);
-        calc();
+    function fill(tbodyId, rows, cols) {
+        var tbody = document.getElementById(tbodyId);
+        tbody.innerHTML = '';
+        rows.forEach(function(r) {
+            var tr = document.createElement('tr');
+            tr.innerHTML = cols.map(function(c, i) {
+                return '<td>' + (typeof c === 'function' ? c(r) : (typeof r[c] === 'number' ? r[c].toFixed(c === 1 ? 0 : 1) : r[c])) + '</td>';
+            }).join('');
+            tbody.appendChild(tr);
+        });
     }
 
-    function onBoltChange() {
-        const key = document.getElementById('boltD').value;
-        document.getElementById('AsHint').textContent = `As = ${BOLTS[key].As} mm²`;
-        calc();
+    function buildNuts() {
+        var tbody = document.getElementById('nut-tbody');
+        tbody.innerHTML = '';
+        NUTS.forEach(function(n) {
+            var e = (n[2] / Math.cos(Math.PI / 6)).toFixed(2);
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + n[0] + '</td><td>' + n[1] + '</td><td>' + n[2] + '</td><td>' + n[3].toFixed(1) + '</td><td>' + e + '</td><td>' + n[4].toFixed(1) + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+    function buildPlain() {
+        var tbody = document.getElementById('plain-tbody');
+        tbody.innerHTML = '';
+        PLAIN.forEach(function(w) {
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + w[0] + '</td><td>' + w[1].toFixed(1) + '</td><td>' + w[2] + '</td><td>' + w[3].toFixed(1) + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+    function buildSpring() {
+        var tbody = document.getElementById('spring-tbody');
+        tbody.innerHTML = '';
+        SPRING.forEach(function(w) {
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + w[0] + '</td><td>' + w[1].toFixed(1) + '</td><td>' + w[2].toFixed(1) + '</td><td>' + w[3].toFixed(1) + '</td><td>' + w[4].toFixed(1) + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+    function buildLarge() {
+        var tbody = document.getElementById('large-tbody');
+        tbody.innerHTML = '';
+        LARGE.forEach(function(w) {
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + w[0] + '</td><td>' + w[1].toFixed(1) + '</td><td>' + w[2] + '</td><td>' + w[3].toFixed(1) + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+    function switchTab(tab, e) {
+        document.querySelectorAll('.thread-section').forEach(function(s) { s.classList.remove('active'); });
+        document.querySelectorAll('.thread-tab').forEach(function(b) { b.classList.remove('active'); });
+        document.getElementById('section-' + tab).classList.add('active');
+        e.target.classList.add('active');
     }
 
-    function drawSvg(sp) {
-        const svg = document.getElementById('boltSvg');
-        svg.innerHTML = '';
-        function el(tag, attrs) {
-            const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
-            for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
-            return e;
-        }
-        function txt(x,y,t,fill,size,anchor) {
-            const e=el('text',{x,y,fill:fill||'#9ca3af','font-size':size||9,'font-family':'monospace','text-anchor':anchor||'middle','dominant-baseline':'middle'});
-            e.textContent=t; return e;
-        }
-        function rect(x,y,w,h,fill,stroke) {
-            return el('rect',{x,y,width:w,height:h,fill:fill||'#1e293b',stroke:stroke||'#4b5563','stroke-width':1});
-        }
-        function circle(cx,cy,r,fill,stroke) {
-            return el('circle',{cx,cy,r,fill:fill||'#374151',stroke:stroke||'#6b7280','stroke-width':1});
-        }
-        function arrow(x1,y1,x2,y2,col) {
-            const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
-            const ux=dx/len,uy=dy/len,hx=x2-ux*8,hy=y2-uy*8,px=-uy,py=ux;
-            const g=el('g',{});
-            g.appendChild(el('line',{x1,y1,x2,y2,stroke:col,'stroke-width':1.8}));
-            g.appendChild(el('polygon',{points:`${x2},${y2} ${hx+px*3.5},${hy+py*3.5} ${hx-px*3.5},${hy-py*3.5}`,fill:col}));
-            return g;
-        }
-
-        if (sp === 1) {
-            svg.appendChild(rect(20,60,100,40,'#1e293b','#4b5563'));  // top plate
-            svg.appendChild(rect(20,110,100,40,'#263548','#60a5fa')); // bottom plate
-            // bolt
-            svg.appendChild(rect(63,55,14,100,'#374151','#9ca3af'));
-            svg.appendChild(circle(70,80,7,'#4b5563','#9ca3af'));
-            svg.appendChild(circle(70,130,7,'#4b5563','#9ca3af'));
-            // shear plane line
-            svg.appendChild(el('line',{x1:20,y1:100,x2:120,y2:100,stroke:'#f97316','stroke-width':1.2,'stroke-dasharray':'4,2'}));
-            svg.appendChild(txt(125,100,'—','#f97316',8,'start'));
-            // force arrows
-            svg.appendChild(arrow(5,80,18,80,'#4ade80'));
-            svg.appendChild(arrow(122,130,135,130,'#4ade80'));
-            svg.appendChild(txt(70,190,'Single shear','#6b7280',8));
-        } else {
-            svg.appendChild(rect(20,40,100,30,'#263548','#60a5fa'));  // top
-            svg.appendChild(rect(20,85,100,30,'#1e293b','#4b5563')); // middle (gusset)
-            svg.appendChild(rect(20,130,100,30,'#263548','#60a5fa'));// bottom
-            // bolt
-            svg.appendChild(rect(63,35,14,130,'#374151','#9ca3af'));
-            svg.appendChild(circle(70,55,7,'#4b5563','#9ca3af'));
-            svg.appendChild(circle(70,100,7,'#4b5563','#9ca3af'));
-            svg.appendChild(circle(70,145,7,'#4b5563','#9ca3af'));
-            // shear planes
-            svg.appendChild(el('line',{x1:20,y1:85,x2:120,y2:85,stroke:'#f97316','stroke-width':1.2,'stroke-dasharray':'4,2'}));
-            svg.appendChild(el('line',{x1:20,y1:115,x2:120,y2:115,stroke:'#f97316','stroke-width':1.2,'stroke-dasharray':'4,2'}));
-            // forces
-            svg.appendChild(arrow(5,55,18,55,'#4ade80'));
-            svg.appendChild(arrow(5,145,18,145,'#4ade80'));
-            svg.appendChild(arrow(122,100,135,100,'#4ade80'));
-            svg.appendChild(txt(70,190,'Double shear','#6b7280',8));
-        }
-    }
-
-    function calc() {
-        const key  = document.getElementById('boltD').value;
-        const bolt = BOLTS[key];
-        const [fyb, fub] = document.getElementById('grade').value.split(',').map(Number);
-        const nb   = parseInt(document.getElementById('nb').value) || 1;
-        const t    = parseFloat(document.getElementById('t').value) || 0;
-        const e1   = parseFloat(document.getElementById('e1').value) || 0;
-        const p1   = parseFloat(document.getElementById('p1').value) || 0;
-        const [,fu] = document.getElementById('plateMat').value.split(',').map(Number);
-        const FEd  = (parseFloat(document.getElementById('FEd').value) || 0) * 1000; // N
-        const gM2  = 1.25;
-
-        if (t <= 0 || bolt.d <= 0) { document.getElementById('resBody').innerHTML=''; return; }
-
-        const d  = bolt.d;
-        const d0 = bolt.d0;
-        const As = bolt.As;
-
-        // αv: 0.5 if grade <= 6.8 (fub ≤ 600), 0.6 otherwise
-        const alphav = fub <= 600 ? 0.5 : 0.6;
-
-        // Shear resistance per bolt per shear plane
-        const FvRd1 = alphav * fub * As / gM2;   // N
-        const FvRd  = FvRd1 * nShear;
-
-        // Bearing: αb
-        const e2 = 1.5 * d0; // assumed edge distance ⊥ load
-        const alphab = Math.min(e1 / (3 * d0), p1 / (3 * d0) - 0.25, fub / fu, 1.0);
-        // k1 (perp. to load direction)
-        const k1 = Math.min(2.8 * e2 / d0 - 1.7, 2.5);
-        const FbRd = k1 * alphab * fu * d * t / gM2;   // N
-
-        // Governing per bolt
-        const FRd1  = Math.min(FvRd, FbRd);
-        const FRd   = nb * FRd1;
-        const governs = FvRd <= FbRd ? 'shear' : 'bearing';
-
-        const eta = FEd / FRd;
-
-        let vText = 'PASS', vClass = 'pass';
-        if (eta > 1.0)       { vText = 'FAIL'; vClass = 'fail'; }
-        else if (eta > 0.85) { vText = 'PASS — near limit'; vClass = 'warn'; }
-
-        function fmt(v,d) { return v.toFixed(d??1); }
-        function row(s,v,u,f) { return `<tr><td>${s}</td><td>${v}</td><td>${u}</td><td>${f}</td></tr>`; }
-        function secHead(t) { return `<tr class="sec-head"><td colspan="4">${t}</td></tr>`; }
-        function barRow(eta,label) {
-            const pct=Math.min(eta*100,100).toFixed(0);
-            const col=eta>1?'#f87171':eta>0.85?'#fbbf24':'#4ade80';
-            return `<tr><td colspan="4" style="padding:0.3rem 0.9rem 0.7rem;">
-                <div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${col};"></div></div>
-                <div class="bar-label"><span>${label}</span><span>${(eta*100).toFixed(1)} %</span></div></div></td></tr>`;
-        }
-
-        let html = '';
-        html += secHead('Bolt properties');
-        html += row('d / d₀',  `${d} / ${d0}`, 'mm',  'shank / hole diameter');
-        html += row('As',       fmt(As,1),        'mm²', 'tensile stress area');
-        html += row('f_ub',     fub,              'MPa', 'ultimate tensile strength');
-        html += row('αv',       alphav,           '—',   fub<=600?'thread in shear plane (4.6–6.8)':'shank in shear plane (8.8–12.9)');
-        html += row('n_s',      nShear,           '—',   'shear planes per bolt');
-
-        html += secHead('Single bolt resistances');
-        html += row('F_v,Rd',   fmt(FvRd/1000,2), 'kN', `αv·fub·As·ns/γM2 = ${alphav}·${fub}·${As}·${nShear}/1.25`);
-        html += row('αb',       fmt(alphab,3),    '—',  `min(e₁/3d₀, p₁/3d₀−¼, fub/fu, 1)`);
-        html += row('k₁',       fmt(k1,3),        '—',  `min(2.8·e₂/d₀−1.7, 2.5)`);
-        html += row('F_b,Rd',   fmt(FbRd/1000,2), 'kN', `k₁·αb·fu·d·t/γM2`);
-        html += row('Governing', governs === 'shear' ? '← shear' : '← bearing', '', `min(F_v,Rd, F_b,Rd) = ${fmt(FRd1/1000,2)} kN`);
-
-        html += secHead(`Group (n = ${nb} bolts)`);
-        html += row('F_Rd',  fmt(FRd/1000,2), 'kN', `n · min(F_v,Rd, F_b,Rd)`);
-        html += row('F_Ed',  fmt(FEd/1000,2), 'kN', 'applied shear');
-        html += barRow(eta, 'Utilization  η = F_Ed / F_Rd');
-
-        // Geometry warnings
-        if (e1 < 1.2 * d0) html += `<tr><td colspan="4" style="color:#fbbf24;font-size:0.82rem;padding:0.3rem 0.9rem;">⚠ e₁ &lt; 1.2·d₀ (min ${fmt(1.2*d0,0)} mm) — end distance too small.</td></tr>`;
-        if (p1 < 2.2 * d0 && nb > 1) html += `<tr><td colspan="4" style="color:#fbbf24;font-size:0.82rem;padding:0.3rem 0.9rem;">⚠ p₁ &lt; 2.2·d₀ (min ${fmt(2.2*d0,0)} mm) — spacing too small.</td></tr>`;
-
-        html += `<tr><td colspan="4"><span class="verdict ${vClass}">${vText}</span></td></tr>`;
-        document.getElementById('resBody').innerHTML = html;
-    }
-
-    // Init
-    setSP(1);
-    onBoltChange();
+    buildNuts(); buildPlain(); buildSpring(); buildLarge();
     </script>
 </body>
 </html>

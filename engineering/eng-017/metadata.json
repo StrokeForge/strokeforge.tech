@@ -1,9 +1,9 @@
 {
   "id": "eng-017",
-  "title": "Bolt Shear & Bearing Check",
-  "description": "Check bolted connections under shear: bolt shear resistance Fv,Rd, bearing resistance Fb,Rd, and group utilization per ČSN EN 1993-1-8 (EC3). Supports bolt grades 4.6–12.9.",
-  "category": "calculator",
+  "title": "Nuts & Washers Dimensions",
+  "description": "Reference tables for hex nuts (DIN 934), plain washers (DIN 125), spring washers (DIN 127) and large washers (DIN 9021) — inner/outer diameter, height, wrench size for M3–M24.",
+  "category": "reference",
   "icon": "🔩",
-  "difficulty": "intermediate",
+  "difficulty": "beginner",
   "topic": "spoje"
 }

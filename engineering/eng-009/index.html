@@ -119,11 +119,16 @@
                     <option value="udl">Uniform load q (kN/m)</option>
                     <option value="center">Point load at midspan (kN)</option>
                     <option value="point">Point load at position a (kN)</option>
+                    <option value="both">UDL + Point load</option>
                 </select>
             </div>
             <div class="input-group">
                 <label id="load-label">Uniform load q (kN/m)</label>
                 <input type="number" id="load-val" value="10" min="0" step="0.5">
+            </div>
+            <div class="input-group" id="both-f-group" style="display:none">
+                <label>Point load F (kN)</label>
+                <input type="number" id="both-f" value="10" min="0" step="0.5">
             </div>
             <div class="input-group pos-group" id="pos-group">
                 <label>Load position a from left: <strong id="pos-display">2.50 m</strong></label>
@@ -309,9 +314,20 @@
         const t = document.getElementById('load-type').value;
         const lbl = document.getElementById('load-label');
         const posGrp = document.getElementById('pos-group');
-        if (t === 'udl') { lbl.textContent = 'Uniform load q (kN/m)'; posGrp.classList.remove('visible'); }
-        else if (t === 'center') { lbl.textContent = 'Point load P (kN)'; posGrp.classList.remove('visible'); }
-        else { lbl.textContent = 'Point load P (kN)'; posGrp.classList.add('visible'); }
+        const bothFG = document.getElementById('both-f-group');
+        if (t === 'udl') {
+            lbl.textContent = 'Uniform load q (kN/m)';
+            posGrp.classList.remove('visible'); bothFG.style.display = 'none';
+        } else if (t === 'center') {
+            lbl.textContent = 'Point load P (kN)';
+            posGrp.classList.remove('visible'); bothFG.style.display = 'none';
+        } else if (t === 'point') {
+            lbl.textContent = 'Point load P (kN)';
+            posGrp.classList.add('visible'); bothFG.style.display = 'none';
+        } else { // both
+            lbl.textContent = 'Uniform load q (kN/m)';
+            posGrp.classList.add('visible'); bothFG.style.display = 'block';
+        }
     }
 
     function onPosChange() {
@@ -431,16 +447,15 @@
                 M<sub>max</sub> = PL/4 <em>(at midspan)</em><br>
                 δ<sub>max</sub> = PL³ / (48EI) <em>(at midspan)</em>
             `;
-        } else {
+        } else if (loadType === 'point') {
             // Point load at position a
             a = relPos * Lmm;
             b_dist = Lmm - a;
             const P = loadVal * 1000;  // N
             RA = P * b_dist / Lmm / 1000;  // kN
-            RB = P * a / Lmm / 1000;        // kN
-            Mmax = P * a * b_dist / Lmm / 1e6;  // kNm (at load point)
+            RB = P * a / Lmm / 1000;
+            Mmax = P * a * b_dist / Lmm / 1e6;
             Mpos = a;
-            // Max deflection position (from A, for a >= b use x = sqrt((L²-b²)/3))
             const bL = b_dist;
             if (a >= bL) {
                 const xmax = Math.sqrt((Lmm*Lmm - bL*bL) / 3);
@@ -458,6 +473,39 @@
                 R<sub>A</sub> = Pb/L, R<sub>B</sub> = Pa/L <em>(b = L−a)</em><br>
                 M<sub>load</sub> = Pab/L <em>(at load point)</em><br>
                 δ<sub>max</sub> = Pb(L²−b²)<sup>3/2</sup> / (9√3·EI·L)
+            `;
+        } else {
+            // UDL + Point load (superposition)
+            const q = loadVal;  // N/mm
+            const F_kN = parseFloat(document.getElementById('both-f').value) || 0;
+            const F = F_kN * 1000;  // N
+            a = relPos * Lmm;
+            b_dist = Lmm - a;
+            const RA_N = q * Lmm / 2 + F * b_dist / Lmm;
+            const RB_N = q * Lmm / 2 + F * a / Lmm;
+            RA = RA_N / 1000;
+            RB = RB_N / 1000;
+            // Moment at critical x (zero shear): x0 = RA_N/q (for x < a)
+            const x0 = Math.min(RA_N / q, a);
+            const M_at = x => { let m = RA_N*x - q*x*x/2; if (x > a) m -= F*(x-a); return m/1e6; };
+            Mmax = Math.max(M_at(x0), M_at(a), 0);
+            Mpos = a;
+            const f_udl = 5 * q * Math.pow(Lmm, 4) / (384 * EI);
+            let f_pt = 0;
+            if (F > 0) {
+                const bb = Math.min(a, b_dist), aa2 = Math.max(a, b_dist);
+                const xm = Math.sqrt((Lmm*Lmm - aa2*aa2) / 3);
+                f_pt = F * aa2 * xm * (Lmm*Lmm - aa2*aa2 - xm*xm) / (6 * EI * Lmm);
+            }
+            dmax = f_udl + f_pt;
+            dpos = Lmm / 2;
+            Vmax = Math.max(RA, RB);
+            loadDesc = `q=${loadVal} kN/m + F=${F_kN} kN at a=${(a/1000).toFixed(2)}m`;
+            formulaHTML = `
+                <strong>Superposition — UDL + Point load:</strong><br>
+                R<sub>A</sub> = qL/2 + Fb/L = ${RA.toFixed(2)} kN<br>
+                R<sub>B</sub> = qL/2 + Fa/L = ${RB.toFixed(2)} kN<br>
+                δ ≈ δ<sub>UDL</sub> + δ<sub>point</sub>
             `;
         }
 
@@ -506,7 +554,7 @@
 
             <div class="diagrams">
                 <h3>Diagrams — ${loadDesc} | ${getSectionLabel()} | E = ${E_GPa.toFixed(0)} GPa</h3>
-                ${drawDiagrams(loadType, L, loadVal, a/1000, dmax, RA, RB, Mmax, Mpos/1000)}
+                ${drawDiagrams(loadType, L, loadVal, a/1000, dmax, RA, RB, Mmax, Mpos/1000, loadType==='both' ? (parseFloat(document.getElementById('both-f').value)||0) : 0)}
             </div>
 
             <div class="formula-box">
@@ -530,7 +578,7 @@
     }
 
     // --- SVG Diagrams ---
-    function drawDiagrams(type, L, loadVal, a, dmax, RA, RB, Mmax, Mpos) {
+    function drawDiagrams(type, L, loadVal, a, dmax, RA, RB, Mmax, Mpos, F_kN) {
         const W = 560, pad = 50;
         const beamY = 60, beamLen = W - 2*pad;
         const nPts = 200;
@@ -557,15 +605,30 @@
                 const xc = xmm, Lc = Lmm;
                 if (xmm <= Lmm/2) d = P*xc*(3*Lc*Lc - 4*xc*xc)/(48*EI_Nmm2);
                 else { const xs = Lc-xc; d = P*xs*(3*Lc*Lc-4*xs*xs)/(48*EI_Nmm2); }
-            } else {
+            } else if (type === 'point') {
                 // point load at a
                 const P = loadVal * 1000;
                 const bm = Lmm - amm;
                 v = (xmm < amm) ? P*bm/Lmm/1000 : -P*amm/Lmm/1000;
                 m = (xmm <= amm) ? P*bm*xmm/(Lmm*1e6)*1e6/1e3 : P*amm*(Lmm-xmm)/(Lmm*1e6)*1e6/1e3;
-                // deflection
                 if (xmm <= amm) d = P*bm*xmm*(Lmm*Lmm-bm*bm-xmm*xmm)/(6*EI_Nmm2*Lmm);
                 else { const xt = Lmm-xmm; d = P*amm*xt*(Lmm*Lmm-amm*amm-xt*xt)/(6*EI_Nmm2*Lmm); }
+            } else {
+                // both: UDL + point load at a (superposition)
+                const q = loadVal;
+                const F = (F_kN || 0) * 1000;
+                const bm = Lmm - amm;
+                const RA_N = q*Lmm/2 + F*bm/Lmm;
+                v = (RA_N - q*xmm - (xmm >= amm ? F : 0)) / 1000;
+                m = (RA_N*xmm - q*xmm*xmm/2) / 1e6;
+                if (xmm > amm) m -= F*(xmm-amm)/1e6;
+                const d_udl = q*xmm*(Math.pow(Lmm,3)-2*Lmm*xmm*xmm+Math.pow(xmm,3))/(24*EI_Nmm2);
+                let d_pt = 0;
+                if (F > 0) {
+                    if (xmm <= amm) d_pt = F*bm*xmm*(Lmm*Lmm-bm*bm-xmm*xmm)/(6*EI_Nmm2*Lmm);
+                    else { const xt=Lmm-xmm; d_pt = F*amm*xt*(Lmm*Lmm-amm*amm-xt*xt)/(6*EI_Nmm2*Lmm); }
+                }
+                d = Math.max(0, d_udl + d_pt);
             }
             V.push(v); M.push(m); D.push(Math.max(0,d));
         }
@@ -575,7 +638,7 @@
         const maxD = Math.max(...D);
 
         return `<svg viewBox="0 0 ${W} 430" class="diagram-svg" xmlns="http://www.w3.org/2000/svg">
-            ${drawBeamSchematic(W, pad, beamLen, beamY, type, L, loadVal, a, RA, RB)}
+            ${drawBeamSchematic(W, pad, beamLen, beamY, type, L, loadVal, a, RA, RB, F_kN)}
             <line x1="${pad}" y1="175" x2="${W-pad}" y2="175" stroke="#444" stroke-width="1"/>
             ${drawSignalDiagram(V, pad, 175, beamLen, 45, maxV, '#4ade80', 'SFD (kN)', W, true)}
             <line x1="${pad}" y1="270" x2="${W-pad}" y2="270" stroke="#444" stroke-width="1"/>
@@ -585,7 +648,7 @@
         </svg>`;
     }
 
-    function drawBeamSchematic(W, pad, bLen, y, type, L, loadVal, a, RA, RB) {
+    function drawBeamSchematic(W, pad, bLen, y, type, L, loadVal, a, RA, RB, F_kN) {
         let out = '';
         // Beam
         out += `<rect x="${pad}" y="${y-6}" width="${bLen}" height="12" fill="#334155" stroke="#64748b" stroke-width="1" rx="2"/>`;
@@ -596,18 +659,20 @@
         out += `<text x="${pad}" y="${y+32}" text-anchor="middle" fill="#94a3b8" font-size="9">R_A=${RA.toFixed(1)}kN</text>`;
         out += `<text x="${pad+bLen}" y="${y+32}" text-anchor="middle" fill="#94a3b8" font-size="9">R_B=${RB.toFixed(1)}kN</text>`;
 
-        if (type === 'udl') {
-            // arrows for udl — pointing downward into beam
+        if (type === 'udl' || type === 'both') {
             for (let i = 0; i <= 10; i++) {
                 const x = pad + i * bLen/10;
                 out += `<line x1="${x}" y1="${y-20}" x2="${x}" y2="${y-7}" stroke="#facc15" stroke-width="1.5" marker-end="url(#arr)"/>`;
             }
             out += `<line x1="${pad}" y1="${y-20}" x2="${pad+bLen}" y2="${y-20}" stroke="#facc15" stroke-width="1.5"/>`;
             out += `<text x="${pad+bLen/2}" y="${y-30}" text-anchor="middle" fill="#facc15" font-size="9">q=${loadVal} kN/m</text>`;
-        } else {
+        }
+        if (type !== 'udl') {
             const xp = (type === 'center') ? pad + bLen/2 : pad + (a/L)*bLen;
-            out += `<line x1="${xp}" y1="${y-22}" x2="${xp}" y2="${y-8}" stroke="#facc15" stroke-width="2" marker-end="url(#arr)"/>`;
-            out += `<text x="${xp}" y="${y-26}" text-anchor="middle" fill="#facc15" font-size="9">P=${loadVal} kN</text>`;
+            const pLabel = (type === 'both') ? `F=${F_kN||'?'} kN` : `P=${loadVal} kN`;
+            const yOff = (type === 'both') ? y-38 : y-22;
+            out += `<line x1="${xp}" y1="${yOff}" x2="${xp}" y2="${y-8}" stroke="#60a5fa" stroke-width="2" marker-end="url(#arr)"/>`;
+            out += `<text x="${xp}" y="${yOff-6}" text-anchor="middle" fill="#60a5fa" font-size="9">${pLabel}</text>`;
         }
         out += `<defs><marker id="arr" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 Z" fill="#facc15"/></marker></defs>`;
 

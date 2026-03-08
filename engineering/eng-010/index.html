@@ -111,11 +111,16 @@
                     <option value="udl">Uniform load q (kN/m) — full length</option>
                     <option value="tip">Point load P at free end (kN)</option>
                     <option value="point">Point load P at position a (kN)</option>
+                    <option value="both">UDL + Point load at tip</option>
                 </select>
             </div>
             <div class="input-group">
                 <label id="load-label">Uniform load q (kN/m)</label>
                 <input type="number" id="load-val" value="5" min="0" step="0.5">
+            </div>
+            <div class="input-group" id="both-f-group" style="display:none">
+                <label>Point load F at tip (kN)</label>
+                <input type="number" id="both-f" value="5" min="0" step="0.5">
             </div>
             <div class="input-group pos-group" id="pos-group">
                 <label>Load position a from fixed end: <strong id="pos-display">1.00 m</strong></label>
@@ -235,9 +240,20 @@
         const t = document.getElementById('load-type').value;
         const lbl = document.getElementById('load-label');
         const pg = document.getElementById('pos-group');
-        if (t === 'udl')   { lbl.textContent = 'Uniform load q (kN/m)'; pg.classList.remove('visible'); }
-        else if (t === 'tip') { lbl.textContent = 'Point load P at free end (kN)'; pg.classList.remove('visible'); }
-        else               { lbl.textContent = 'Point load P (kN)'; pg.classList.add('visible'); }
+        const bothFG = document.getElementById('both-f-group');
+        if (t === 'udl') {
+            lbl.textContent = 'Uniform load q (kN/m)';
+            pg.classList.remove('visible'); bothFG.style.display = 'none';
+        } else if (t === 'tip') {
+            lbl.textContent = 'Point load P at free end (kN)';
+            pg.classList.remove('visible'); bothFG.style.display = 'none';
+        } else if (t === 'point') {
+            lbl.textContent = 'Point load P (kN)';
+            pg.classList.add('visible'); bothFG.style.display = 'none';
+        } else { // both
+            lbl.textContent = 'Uniform load q (kN/m)';
+            pg.classList.remove('visible'); bothFG.style.display = 'block';
+        }
     }
 
     function onPosChange() {
@@ -337,15 +353,14 @@
                 M<sub>max</sub> = PL <em>(at fixed end)</em><br>
                 δ<sub>max</sub> = PL³ / (3EI) <em>(at free end)</em>
             `;
-        } else {
+        } else if (loadType === 'point') {
             // Point load at position a from fixed end
-            const P = loadVal * 1000;   // N
+            const P = loadVal * 1000;
             const a = a_mm;
-            RA = loadVal;               // kN
-            MA_moment = loadVal * (a / 1000);  // kNm = P[kN] * a[m]
+            RA = loadVal;
+            MA_moment = loadVal * (a / 1000);
             Mmax = MA_moment;
             Vmax = RA;
-            // δ at free end = Pa²(3L-a)/(6EI)
             dmax = P * a * a * (3 * Lmm - a) / (6 * EI);
             dpos = Lmm;
             loadDesc = `P = ${loadVal} kN at a = ${(a/1000).toFixed(2)} m`;
@@ -353,8 +368,25 @@
                 <strong>Cantilever — point load at position a:</strong><br>
                 R<sub>A</sub> = P, M<sub>A</sub> = Pa<br>
                 M<sub>max</sub> = Pa <em>(at fixed end)</em><br>
-                δ<sub>free</sub> = Pa²(3L−a) / (6EI) <em>(at free end)</em><br>
-                δ(x≤a) = Px²(3a−x)/(6EI),  δ(x>a) = Pa²(3x−a)/(6EI)
+                δ<sub>free</sub> = Pa²(3L−a) / (6EI) <em>(at free end)</em>
+            `;
+        } else {
+            // UDL + Point load at tip (superposition)
+            const q = loadVal;
+            const F_kN = parseFloat(document.getElementById('both-f').value) || 0;
+            const F = F_kN * 1000;
+            RA = q * L + F_kN;
+            MA_moment = q * L * L / 2 + F_kN * L;
+            Mmax = MA_moment;
+            Vmax = RA;
+            dmax = q * Math.pow(Lmm, 4) / (8 * EI) + F * Math.pow(Lmm, 3) / (3 * EI);
+            dpos = Lmm;
+            loadDesc = `q=${loadVal} kN/m + F=${F_kN} kN at tip`;
+            formulaHTML = `
+                <strong>Superposition — UDL + Point load at tip:</strong><br>
+                R<sub>A</sub> = qL + F = ${RA.toFixed(2)} kN<br>
+                M<sub>A</sub> = qL²/2 + FL = ${MA_moment.toFixed(2)} kNm<br>
+                δ<sub>tip</sub> = qL⁴/(8EI) + FL³/(3EI)
             `;
         }
 
@@ -401,7 +433,7 @@
 
             <div class="diagrams">
                 <h3>Diagrams — ${loadDesc} | ${getSectionLabel()} | E = ${E_GPa.toFixed(0)} GPa</h3>
-                ${drawDiagrams(loadType, L, loadVal, a_mm, Lmm, EI)}
+                ${drawDiagrams(loadType, L, loadVal, a_mm, Lmm, EI, loadType==='both'?(parseFloat(document.getElementById('both-f').value)||0):0)}
             </div>
 
             <div class="formula-box">
@@ -424,7 +456,7 @@
         </div>`;
     }
 
-    function drawDiagrams(type, L, loadVal, a_mm, Lmm, EI) {
+    function drawDiagrams(type, L, loadVal, a_mm, Lmm, EI, F_kN) {
         const W = 560, pad = 50;
         const nPts = 200;
 
@@ -448,13 +480,21 @@
                 v = loadVal;  // constant kN
                 m = loadVal * (Lmm - xmm) / 1000;   // kNm
                 d = P * xmm * xmm * (3*Lmm - xmm) / (6 * EIc);
-            } else {
+            } else if (type === 'point') {
                 const P = loadVal * 1000;
                 const a = a_mm;
                 v = (xmm <= a) ? loadVal : 0;
                 m = (xmm <= a) ? loadVal * (a - xmm) / 1000 : 0;
                 if (xmm <= a) d = P * xmm * xmm * (3*a - xmm) / (6 * EIc);
                 else d = P * a * a * (3*xmm - a) / (6 * EIc);
+            } else {
+                // both: UDL + point at tip (superposition)
+                const q = loadVal;
+                const F = (F_kN || 0) * 1000;
+                v = q * (Lmm - xmm) / 1000 + (F_kN || 0);
+                m = q * Math.pow(Lmm - xmm, 2) / 2 / 1e6 + (F_kN || 0) * (Lmm - xmm) / 1000;
+                d = q * xmm * xmm * (6*Lmm*Lmm - 4*Lmm*xmm + xmm*xmm) / (24 * EIc)
+                  + F * xmm * xmm * (3*Lmm - xmm) / (6 * EIc);
             }
             V.push(Math.max(0, v));
             M.push(Math.max(0, m));
@@ -467,7 +507,7 @@
         const beamLen = W - 2*pad;
 
         return `<svg viewBox="0 0 ${W} 430" class="diagram-svg" xmlns="http://www.w3.org/2000/svg">
-            ${drawCantileverSchematic(W, pad, beamLen, 60, type, L, loadVal, a_mm, Lmm)}
+            ${drawCantileverSchematic(W, pad, beamLen, 60, type, L, loadVal, a_mm, Lmm, F_kN)}
             ${drawCantileverDiag(V, pad, 185, beamLen, 45, maxV, '#4ade80', 'SFD (kN)', W, false)}
             <line x1="${pad}" y1="185" x2="${W-pad}" y2="185" stroke="#444" stroke-width="0.5" stroke-dasharray="3,3"/>
             ${drawCantileverDiag(M, pad, 280, beamLen, 45, maxM, '#60a5fa', 'BMD (kNm)', W, true)}
@@ -477,7 +517,7 @@
         </svg>`;
     }
 
-    function drawCantileverSchematic(W, pad, bLen, y, type, L, loadVal, a_mm, Lmm) {
+    function drawCantileverSchematic(W, pad, bLen, y, type, L, loadVal, a_mm, Lmm, F_kN) {
         let out = '';
         // Fixed wall (hatching)
         out += `<rect x="${pad-14}" y="${y-22}" width="14" height="44" fill="#334155" stroke="#64748b" stroke-width="1"/>`;
@@ -491,21 +531,24 @@
         out += `<text x="${pad+bLen}" y="${y+26}" text-anchor="middle" fill="#94a3b8" font-size="9">Free end</text>`;
         out += `<text x="${pad+25}" y="${y+26}" text-anchor="middle" fill="#94a3b8" font-size="9">Fixed</text>`;
 
-        if (type === 'udl') {
+        if (type === 'udl' || type === 'both') {
             for (let i = 0; i <= 10; i++) {
                 const x = pad + i * bLen/10;
                 out += `<line x1="${x}" y1="${y-20}" x2="${x}" y2="${y-7}" stroke="#facc15" stroke-width="1.5" marker-end="url(#arr2)"/>`;
             }
             out += `<line x1="${pad}" y1="${y-20}" x2="${pad+bLen}" y2="${y-20}" stroke="#facc15" stroke-width="1.5"/>`;
             out += `<text x="${pad+bLen/2}" y="${y-30}" text-anchor="middle" fill="#facc15" font-size="9">q=${loadVal} kN/m</text>`;
-        } else if (type === 'tip') {
-            out += `<line x1="${pad+bLen}" y1="${y-22}" x2="${pad+bLen}" y2="${y-8}" stroke="#facc15" stroke-width="2" marker-end="url(#arr2)"/>`;
-            out += `<text x="${pad+bLen}" y="${y-26}" text-anchor="middle" fill="#facc15" font-size="9">P=${loadVal} kN</text>`;
-        } else {
+        }
+        if (type === 'tip' || type === 'both') {
+            const pLabel = type === 'both' ? `F=${F_kN||'?'} kN` : `P=${loadVal} kN`;
+            const yOff = type === 'both' ? y-38 : y-22;
+            out += `<line x1="${pad+bLen}" y1="${yOff}" x2="${pad+bLen}" y2="${y-8}" stroke="#60a5fa" stroke-width="2" marker-end="url(#arr2)"/>`;
+            out += `<text x="${pad+bLen}" y="${yOff-6}" text-anchor="middle" fill="#60a5fa" font-size="9">${pLabel}</text>`;
+        }
+        if (type === 'point') {
             const xp = pad + (a_mm / Lmm) * bLen;
             out += `<line x1="${xp}" y1="${y-22}" x2="${xp}" y2="${y-8}" stroke="#facc15" stroke-width="2" marker-end="url(#arr2)"/>`;
             out += `<text x="${xp}" y="${y-26}" text-anchor="middle" fill="#facc15" font-size="9">P=${loadVal} kN</text>`;
-            // a dimension line
             out += `<line x1="${pad}" y1="${y+36}" x2="${xp}" y2="${y+36}" stroke="#475569" stroke-width="1"/>`;
             out += `<text x="${(pad+xp)/2}" y="${y+46}" text-anchor="middle" fill="#94a3b8" font-size="8">a=${(a_mm/1000).toFixed(2)}m</text>`;
         }

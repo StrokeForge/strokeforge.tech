@@ -1,9 +1,9 @@
 {
   "id": "eng-019",
-  "title": "Simply Supported Beam",
-  "description": "Calculate deflection, reactions and bending moment for a simply supported beam under uniform load (UDL) or point load. SVG diagram with deflection curve and M-diagram.",
-  "category": "calculator",
-  "icon": "📐",
+  "title": "IP Protection Ratings (IEC 60529)",
+  "description": "Reference table for IP ingress protection codes per IEC 60529: solid particle and water protection levels IP20 to IP69K, with descriptions and typical applications.",
+  "category": "reference",
+  "icon": "🛡️",
   "difficulty": "beginner",
-  "topic": "nosniky"
+  "topic": "normy"
 }
