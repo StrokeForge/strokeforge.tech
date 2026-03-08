@@ -291,13 +291,10 @@
             svg.appendChild(T(icX-5,     ym+11, 'IN',  '#9ca3af', 8, 'end'));
             svg.appendChild(T(icX+icW+5, ym+11, 'OUT', '#9ca3af', 8, 'start'));
 
-            // GND pin: upward from IC top to floating GND symbol
+            // GND pin: downward from IC bottom to GND bus
             const gpx = icX+20;
-            svg.appendChild(L(gpx, icY, gpx, icY-20));
-            svg.appendChild(L(gpx-9, icY-20, gpx+9, icY-20, '#6b7280', 1.5)); // bar 1
-            svg.appendChild(L(gpx-6, icY-15, gpx+6, icY-15, '#6b7280', 1.2)); // bar 2
-            svg.appendChild(L(gpx-3, icY-10, gpx+3, icY-10, '#6b7280', 1));   // bar 3
-            svg.appendChild(T(gpx+12, icY-16, 'GND', '#9ca3af', 8, 'start'));
+            svg.appendChild(L(gpx, icY+icH, gpx, yg));
+            svg.appendChild(T(gpx+4, icY+icH+10, 'GND', '#9ca3af', 8, 'start'));
 
             // IC → Cout node
             svg.appendChild(L(icX+icW, ym, ox+210, ym));
