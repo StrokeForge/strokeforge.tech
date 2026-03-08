@@ -39,7 +39,7 @@ function renderProjects(projects) {
     grid.innerHTML = '';
 
     if (projects.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><h2>Žádné nástroje</h2><p>Brzy přibydou další.</p></div>';
+        grid.innerHTML = '<div class="empty-state"><h2>No tools found</h2><p>More coming soon.</p></div>';
         return;
     }
 
