@@ -196,11 +196,16 @@
 
     // ── Draw functions ───────────────────────────────────────────
     function drawComparator() {
-        const svg=mkSvg(220,115);
-        const ox=75,oy=58,h=52;
+        const svg=mkSvg(220,120);
+        const ox=75,oy=60,h=52,hw=Math.round(h*0.55);
         const amp=opamp(svg,ox,oy,h);
-        tx(svg,ox+14,oy-h/2-5,'Vs+',C.yellow,7,'middle');
-        tx(svg,ox+14,oy+h/2+7,'Vs−',C.gray,7,'middle');
+        // VS+ supply pin: from top of triangle body UP
+        const spx=ox+Math.round(hw*0.55);
+        ln(svg,spx,oy-h/2,spx,oy-h/2-14,C.yellow,1.2);
+        tx(svg,spx,oy-h/2-20,'Vs+',C.yellow,7,'middle');
+        // VS− supply pin: from bottom of triangle body DOWN
+        ln(svg,spx,oy+h/2,spx,oy+h/2+14,C.gray,1.2);
+        tx(svg,spx,oy+h/2+22,'Vs−',C.gray,7,'middle');
         ln(svg,18,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,10,amp.inP.y,'V1',C.green,8);
         ln(svg,18,amp.inN.y,amp.inN.x,amp.inN.y); tx(svg,10,amp.inN.y,'V2',C.orange,8);
         ln(svg,amp.out.x,amp.out.y,212,amp.out.y);
