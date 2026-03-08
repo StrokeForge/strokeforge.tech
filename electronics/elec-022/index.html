@@ -46,8 +46,9 @@
         tbody tr:hover { background: rgba(255,165,0,0.04); }
         tbody tr.hl { background: rgba(255,165,0,0.10); }
         tbody tr.hl td.awg { color: var(--primary-orange); font-weight: 800; }
-        tbody td { padding: 0.55rem 0.7rem; color: var(--light-gray); vertical-align: middle; text-align: right; }
+        tbody td { padding: 0.55rem 0.7rem; color: var(--light-gray); vertical-align: middle; text-align: right; white-space: nowrap; }
         tbody td:first-child, tbody td:last-child { text-align: left; }
+        tbody td:last-child { white-space: normal; }
         td.awg { font-weight: 700; color: var(--primary-orange); text-align: center; }
         td.use { font-size: 0.79rem; color: var(--text-gray); }
         td.cur-ok  { color: #4ade80; font-weight: 600; }
@@ -121,8 +122,8 @@
                             <th data-col="area_mm2">mm² <span class="sa">↕</span></th>
                             <th data-col="res_ohm_m">Ω/m <span class="sa">↕</span></th>
                             <th data-col="res_ohm_ft">Ω/ft <span class="sa">↕</span></th>
-                            <th data-col="cur_chassis">Max A (chassis) <span class="sa">↕</span></th>
-                            <th data-col="cur_power">Max A (power) <span class="sa">↕</span></th>
+                            <th data-col="cur_chassis" style="white-space:normal;text-align:center;min-width:56px;">Max A<br>(chassis) <span class="sa">↕</span></th>
+                            <th data-col="cur_power" style="white-space:normal;text-align:center;min-width:52px;">Max A<br>(power) <span class="sa">↕</span></th>
                             <th>Typical use</th>
                         </tr>
                     </thead>
