@@ -343,11 +343,11 @@
     }
 
     function fmtR(r) {
-        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/\.?0+$/,'') + ' MΩ';
-        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/\.?0+$/,'') + ' kΩ';
-        return r.toPrecision(3).replace(/\.?0+$/,'') + ' Ω';
+        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' MΩ';
+        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' kΩ';
+        return r.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' Ω';
     }
-    function fmtV(v) { return v.toPrecision(4).replace(/\.?0+$/,'') + ' V'; }
+    function fmtV(v) { return v.toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' V'; }
     function fmtP(p) {
         if (p >= 1) return p.toPrecision(3) + ' W';
         return (p*1000).toPrecision(3) + ' mW';

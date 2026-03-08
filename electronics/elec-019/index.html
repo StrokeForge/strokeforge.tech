@@ -291,9 +291,9 @@
 
     function fmtR(r) {
         if (!r || r <= 0) return '—';
-        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/\.?0+$/,'') + ' MΩ';
-        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/\.?0+$/,'') + ' kΩ';
-        return r.toPrecision(3).replace(/\.?0+$/,'') + ' Ω';
+        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' MΩ';
+        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' kΩ';
+        return r.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' Ω';
     }
 
     const PLATFORMS = [

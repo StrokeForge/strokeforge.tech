@@ -263,28 +263,28 @@
         if (val === null || !isFinite(val)) return { str:'—', unit:'' };
         var abs = Math.abs(val);
         if (id === 'u') {
-            if (abs >= 1000) return { str:(val/1000).toPrecision(4).replace(/\.?0+$/,''), unit:'kV' };
-            if (abs < 0.001) return { str:(val*1e6).toPrecision(3).replace(/\.?0+$/,''), unit:'μV' };
-            if (abs < 1)     return { str:(val*1000).toPrecision(3).replace(/\.?0+$/,''), unit:'mV' };
-            return { str:val.toPrecision(4).replace(/\.?0+$/,''), unit:'V' };
+            if (abs >= 1000) return { str:(val/1000).toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'kV' };
+            if (abs < 0.001) return { str:(val*1e6).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'μV' };
+            if (abs < 1)     return { str:(val*1000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'mV' };
+            return { str:val.toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'V' };
         }
         if (id === 'i') {
-            if (abs >= 1)    return { str:val.toPrecision(4).replace(/\.?0+$/,''), unit:'A' };
-            if (abs >= 0.001) return { str:(val*1000).toPrecision(3).replace(/\.?0+$/,''), unit:'mA' };
-            return { str:(val*1e6).toPrecision(3).replace(/\.?0+$/,''), unit:'μA' };
+            if (abs >= 1)    return { str:val.toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'A' };
+            if (abs >= 0.001) return { str:(val*1000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'mA' };
+            return { str:(val*1e6).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'μA' };
         }
         if (id === 'r') {
-            if (abs >= 1e6)  return { str:(val/1e6).toPrecision(3).replace(/\.?0+$/,''), unit:'MΩ' };
-            if (abs >= 1e3)  return { str:(val/1e3).toPrecision(3).replace(/\.?0+$/,''), unit:'kΩ' };
-            return { str:val.toPrecision(3).replace(/\.?0+$/,''), unit:'Ω' };
+            if (abs >= 1e6)  return { str:(val/1e6).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'MΩ' };
+            if (abs >= 1e3)  return { str:(val/1e3).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'kΩ' };
+            return { str:val.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'Ω' };
         }
         if (id === 'p') {
-            if (abs >= 1000) return { str:(val/1000).toPrecision(3).replace(/\.?0+$/,''), unit:'kW' };
-            if (abs >= 1)    return { str:val.toPrecision(3).replace(/\.?0+$/,''), unit:'W' };
-            if (abs >= 0.001) return { str:(val*1000).toPrecision(3).replace(/\.?0+$/,''), unit:'mW' };
-            return { str:(val*1e6).toPrecision(3).replace(/\.?0+$/,''), unit:'μW' };
+            if (abs >= 1000) return { str:(val/1000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'kW' };
+            if (abs >= 1)    return { str:val.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'W' };
+            if (abs >= 0.001) return { str:(val*1000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'mW' };
+            return { str:(val*1e6).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'μW' };
         }
-        return { str:val.toPrecision(4).replace(/\.?0+$/,''), unit:'' };
+        return { str:val.toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit:'' };
     }
 
     function solve(known) {

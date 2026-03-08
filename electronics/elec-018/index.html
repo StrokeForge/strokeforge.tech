@@ -256,9 +256,9 @@
     function gu(id) { return parseFloat(document.getElementById(id).value); }
 
     function fmtR(r) {
-        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/\.?0+$/,'') + ' MΩ';
-        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/\.?0+$/,'') + ' kΩ';
-        return r.toPrecision(3).replace(/\.?0+$/,'') + ' Ω';
+        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' MΩ';
+        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' kΩ';
+        return r.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' Ω';
     }
     function fmtTime(s) {
         if (!s) return '—';

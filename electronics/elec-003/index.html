@@ -215,18 +215,18 @@
     }
 
     function fmtV(v) {
-        if (Math.abs(v) >= 1000) return (v/1000).toPrecision(4).replace(/\.?0+$/,'') + ' kV';
-        return v.toPrecision(4).replace(/\.?0+$/,'') + ' V';
+        if (Math.abs(v) >= 1000) return (v/1000).toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' kV';
+        return v.toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' V';
     }
     function fmtR(r) {
-        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/\.?0+$/,'') + ' MΩ';
-        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/\.?0+$/,'') + ' kΩ';
-        return r.toPrecision(3).replace(/\.?0+$/,'') + ' Ω';
+        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' MΩ';
+        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' kΩ';
+        return r.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' Ω';
     }
     function fmtP(w) {
-        if (w < 0.001) return (w*1e6).toPrecision(3).replace(/\.?0+$/,'') + ' μW';
-        if (w < 1)     return (w*1000).toPrecision(3).replace(/\.?0+$/,'') + ' mW';
-        return w.toPrecision(3).replace(/\.?0+$/,'') + ' W';
+        if (w < 0.001) return (w*1e6).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' μW';
+        if (w < 1)     return (w*1000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' mW';
+        return w.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' W';
     }
     function getVal(id) { var el = document.getElementById(id); return el ? parseFloat(el.value) : NaN; }
 
@@ -270,7 +270,7 @@
                          val: fmtR(currentMode==='r2' ? r2 : r1), unit: '' });
         }
         items.push({ label: 'U<sub>out</sub>' + (isFinite(rl) ? ' (with load)' : ''), val: fmtV(uout), unit: '' });
-        items.push({ label: 'Divider current', val: (i_total*1000).toPrecision(3).replace(/\.?0+$/,''), unit: 'mA' });
+        items.push({ label: 'Divider current', val: (i_total*1000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit: 'mA' });
         items.push({ label: 'Total power', val: fmtP(p_total), unit: '' });
         items.push({ label: 'Power on R1', val: fmtP(p_r1), unit: '' });
         items.push({ label: 'Power on R2', val: fmtP(p_r2), unit: '' });

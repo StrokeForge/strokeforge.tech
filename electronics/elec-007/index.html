@@ -221,13 +221,13 @@
     function fmtR(r) {
         if (r >= 1e6) {
             const v = r / 1e6;
-            return (Number.isInteger(v) ? v : v.toPrecision(3).replace(/\.?0+$/,'')) + ' MΩ';
+            return (Number.isInteger(v) ? v : v.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '')) + ' MΩ';
         }
         if (r >= 1e3) {
             const v = r / 1e3;
-            return (Number.isInteger(v) ? v : v.toPrecision(3).replace(/\.?0+$/,'')) + ' kΩ';
+            return (Number.isInteger(v) ? v : v.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '')) + ' kΩ';
         }
-        return (Number.isInteger(r) ? r : r.toPrecision(3).replace(/\.?0+$/,'')) + ' Ω';
+        return (Number.isInteger(r) ? r : r.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '')) + ' Ω';
     }
 
     // ── Lookup ─────────────────────────────────────────────────────────────

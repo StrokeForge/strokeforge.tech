@@ -286,27 +286,27 @@
     }
 
     function fmtR(r) {
-        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/\.?0+$/,'') + ' MΩ';
-        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/\.?0+$/,'') + ' kΩ';
-        return r.toPrecision(3).replace(/\.?0+$/,'') + ' Ω';
+        if (r >= 1e6) return (r/1e6).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' MΩ';
+        if (r >= 1e3) return (r/1e3).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' kΩ';
+        return r.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' Ω';
     }
 
     function fmtP(p) {
-        if (p >= 1) return p.toPrecision(3).replace(/\.?0+$/,'') + ' W';
-        if (p >= 0.001) return (p*1000).toPrecision(3).replace(/\.?0+$/,'') + ' mW';
-        return (p*1e6).toPrecision(3).replace(/\.?0+$/,'') + ' µW';
+        if (p >= 1) return p.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' W';
+        if (p >= 0.001) return (p*1000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' mW';
+        return (p*1e6).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' µW';
     }
 
     function fmtV(v) {
-        if (Math.abs(v) >= 1000) return (v/1000).toPrecision(3).replace(/\.?0+$/,'') + ' kV';
-        if (Math.abs(v) >= 1)    return v.toPrecision(3).replace(/\.?0+$/,'') + ' V';
-        return (v*1000).toPrecision(3).replace(/\.?0+$/,'') + ' mV';
+        if (Math.abs(v) >= 1000) return (v/1000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' kV';
+        if (Math.abs(v) >= 1)    return v.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' V';
+        return (v*1000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' mV';
     }
 
     function fmtI(i) {
-        if (Math.abs(i) >= 1)      return i.toPrecision(3).replace(/\.?0+$/,'') + ' A';
-        if (Math.abs(i) >= 0.001)  return (i*1000).toPrecision(3).replace(/\.?0+$/,'') + ' mA';
-        return (i*1e6).toPrecision(3).replace(/\.?0+$/,'') + ' µA';
+        if (Math.abs(i) >= 1)      return i.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' A';
+        if (Math.abs(i) >= 0.001)  return (i*1000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' mA';
+        return (i*1e6).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' µA';
     }
 
     // Standard wattage ratings

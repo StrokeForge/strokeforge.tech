@@ -240,15 +240,15 @@
     function gu(id) { return parseFloat(document.getElementById(id).value); }
 
     function fmtFreq(f) {
-        if (f >= 1e6) return (f/1e6).toPrecision(4).replace(/\.?0+$/,'') + ' MHz';
-        if (f >= 1e3) return (f/1e3).toPrecision(4).replace(/\.?0+$/,'') + ' kHz';
-        return f.toPrecision(4).replace(/\.?0+$/,'') + ' Hz';
+        if (f >= 1e6) return (f/1e6).toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' MHz';
+        if (f >= 1e3) return (f/1e3).toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' kHz';
+        return f.toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' Hz';
     }
     function fmtTime(s) {
-        if (s >= 1)    return s.toPrecision(4).replace(/\.?0+$/,'') + ' s';
-        if (s >= 1e-3) return (s*1e3).toPrecision(4).replace(/\.?0+$/,'') + ' ms';
-        if (s >= 1e-6) return (s*1e6).toPrecision(4).replace(/\.?0+$/,'') + ' µs';
-        return (s*1e9).toPrecision(4).replace(/\.?0+$/,'') + ' ns';
+        if (s >= 1)    return s.toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' s';
+        if (s >= 1e-3) return (s*1e3).toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' ms';
+        if (s >= 1e-6) return (s*1e6).toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' µs';
+        return (s*1e9).toPrecision(4).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' ns';
     }
 
     function gainLP(ratio) { return 1 / Math.sqrt(1 + ratio * ratio); }

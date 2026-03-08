@@ -244,14 +244,14 @@
     }
 
     function fmtR(ohms) {
-        if (ohms >= 1000000) return (ohms/1000000).toPrecision(3).replace(/\.?0+$/,'') + ' MΩ';
-        if (ohms >= 1000)    return (ohms/1000).toPrecision(3).replace(/\.?0+$/,'')    + ' kΩ';
-        return ohms.toPrecision(3).replace(/\.?0+$/,'') + ' Ω';
+        if (ohms >= 1000000) return (ohms/1000000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' MΩ';
+        if (ohms >= 1000)    return (ohms/1000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '')    + ' kΩ';
+        return ohms.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' Ω';
     }
 
     function fmtP(mw) {
-        if (mw >= 1000) return (mw/1000).toPrecision(3).replace(/\.?0+$/,'') + ' W';
-        return mw.toPrecision(3).replace(/\.?0+$/,'') + ' mW';
+        if (mw >= 1000) return (mw/1000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' W';
+        return mw.toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, '') + ' mW';
     }
 
     function recPower(mw) {
