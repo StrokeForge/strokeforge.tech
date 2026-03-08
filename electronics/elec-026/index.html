@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Op-Amp Configurations | StrokeForge Electronics</title>
+    <meta name="description" content="Quick reference for 8 common operational amplifier configurations with SVG circuit diagrams, formulas and gain calculator.">
+    <meta name="keywords" content="op-amp configurations, operational amplifier, inverting amplifier, non-inverting amplifier, voltage follower, comparator, summing amplifier, differential amplifier">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/electronics/elec-026/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 980px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .config-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+        @media (max-width: 780px) { .config-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 500px) { .config-grid { grid-template-columns: 1fr; } }
+
+        .cfg-card {
+            background: var(--darker-bg); border: 1px solid var(--border-gray);
+            border-radius: 10px; padding: 1.1rem 1.2rem;
+            display: flex; flex-direction: column; gap: 0.6rem;
+        }
+        .cfg-card.has-calc { border-color: rgba(255,107,53,0.35); }
+        .cfg-title { font-size: 0.9rem; font-weight: 700; color: var(--light-gray); }
+        .cfg-badge { display: inline-block; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 4px; background: rgba(255,107,53,0.15); color: var(--primary-orange); margin-left: 0.4rem; vertical-align: middle; }
+        .cfg-svg { width: 100%; overflow-x: auto; }
+        .cfg-formula {
+            background: rgba(0,0,0,0.25); border-radius: 6px;
+            padding: 0.55rem 0.75rem; font-family: monospace;
+            font-size: 0.82rem; color: var(--light-gray); line-height: 1.75;
+            white-space: pre-wrap;
+        }
+        .cfg-desc { font-size: 0.78rem; color: var(--text-gray); line-height: 1.6; }
+
+        .calc-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-top: 0.2rem; }
+        .calc-row label { font-size: 0.75rem; color: var(--text-gray); white-space: nowrap; }
+        .calc-inp {
+            width: 72px; background: var(--card-bg); border: 1px solid var(--border-gray);
+            color: var(--light-gray); border-radius: 6px; padding: 0.3rem 0.5rem;
+            font-size: 0.85rem; outline: none; transition: border-color 0.2s;
+        }
+        .calc-inp:focus { border-color: var(--primary-orange); }
+        .calc-result { font-size: 0.82rem; color: var(--primary-orange); font-weight: 700; margin-top: 0.25rem; min-height: 1.2em; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html">Engineering</a>
+                <a href="/electronics.html" class="active">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>〰️ Op-Amp Configurations</h1>
+        <p>Quick reference for 8 common operational amplifier circuit configurations — diagrams, formulas and gain calculator.</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/electronics.html" class="back-button">← Back to Electronics</a>
+
+        <div class="card">
+            <h2>Circuit configurations</h2>
+            <div class="config-grid" id="config-grid"></div>
+        </div>
+
+        <div class="card">
+            <h2>Good to know</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Ideal op-amp assumptions</h3>
+                    <ul>
+                        <li>Infinite input impedance (no input current)</li>
+                        <li>Zero output impedance</li>
+                        <li>Infinite open-loop gain</li>
+                        <li>Infinite bandwidth</li>
+                        <li>Output limited by supply rails (Vs+, Vs−)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Virtual ground rule</h3>
+                    <p>In a closed-loop configuration with negative feedback, the op-amp drives its output until V+ ≈ V−. This "virtual short" is the key to analysing inverting and summing circuits.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Gain sign convention</h3>
+                    <ul>
+                        <li><strong>Positive gain</strong> — output in phase with input</li>
+                        <li><strong>Negative gain</strong> — output inverted (180° phase shift)</li>
+                        <li>Gain &lt; 1 is possible (voltage follower = gain 1)</li>
+                        <li>Gain is set by external resistors, not the op-amp itself</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Common op-amp ICs</h3>
+                    <ul>
+                        <li><strong>LM741</strong> — classic general purpose, ±15 V</li>
+                        <li><strong>LM358</strong> — dual, single supply, 3–32 V</li>
+                        <li><strong>TL071 / TL081</strong> — JFET input, low noise</li>
+                        <li><strong>MCP6001</strong> — rail-to-rail, 1.8–6 V (MCU-friendly)</li>
+                        <li><strong>LM393</strong> — comparator (open-collector output)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    const NS = 'http://www.w3.org/2000/svg';
+    const C = { orange:'#ff6b35', gray:'#6b7280', light:'#9ca3af', wire:'#cbd5e1', green:'#4ade80', blue:'#60a5fa', yellow:'#fbbf24' };
+
+    function mkSvg(w,h) {
+        const s=document.createElementNS(NS,'svg');
+        s.setAttribute('viewBox',`0 0 ${w} ${h}`);
+        s.setAttribute('width','100%');
+        s.style.display='block';
+        return s;
+    }
+    function el(svg,tag,attrs,text) {
+        const e=document.createElementNS(NS,tag);
+        Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
+        if(text!==undefined) e.textContent=text;
+        svg.appendChild(e);
+        return e;
+    }
+    function ln(svg,x1,y1,x2,y2,col,w) {
+        return el(svg,'line',{x1,y1,x2,y2,stroke:col||C.wire,'stroke-width':w||1.5,'stroke-linecap':'round'});
+    }
+    function tx(svg,x,y,t,col,sz,anc) {
+        return el(svg,'text',{x,y,fill:col||C.light,'font-size':sz||9,'font-family':'monospace','text-anchor':anc||'middle','dominant-baseline':'middle'},t);
+    }
+    function zigzag(svg,x1,y,x2,col) {
+        const steps=6,zh=6,zw=(x2-x1)/steps;
+        let pts=`${x1},${y}`;
+        for(let i=0;i<=steps;i++) pts+=` ${x1+i*zw},${y+(i%2===0?-zh:zh)}`;
+        pts+=` ${x2},${y}`;
+        el(svg,'polyline',{points:pts,stroke:col||C.orange,'stroke-width':1.8,fill:'none','stroke-linejoin':'round'});
+    }
+    function zigzagV(svg,x,y1,y2,col) {
+        const steps=6,zh=6,zw=(y2-y1)/steps;
+        let pts=`${x},${y1}`;
+        for(let i=0;i<=steps;i++) pts+=` ${x+(i%2===0?-zh:zh)},${y1+i*zw}`;
+        pts+=` ${x},${y2}`;
+        el(svg,'polyline',{points:pts,stroke:col||C.orange,'stroke-width':1.8,fill:'none','stroke-linejoin':'round'});
+    }
+    function gnd(svg,x,y) {
+        ln(svg,x,y,x,y+9,C.gray,1.5);
+        ln(svg,x-10,y+9,x+10,y+9,C.gray,2);
+        ln(svg,x-6,y+13,x+6,y+13,C.gray,1.5);
+        ln(svg,x-3,y+17,x+3,y+17,C.gray,1);
+    }
+    // op-amp triangle pointing right; returns {inP, inN, out} pin coords
+    function opamp(svg,ox,oy,h) {
+        h=h||54;
+        const hw=Math.round(h*0.55);
+        el(svg,'polygon',{
+            points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
+            fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5
+        });
+        tx(svg,ox+9,oy-h/4,'+',C.green,9,'middle');
+        tx(svg,ox+9,oy+h/4,'−',C.orange,11,'middle');
+        el(svg,'circle',{cx:ox+hw,cy:oy,r:2,fill:C.wire});
+        return {
+            inP:{x:ox,y:Math.round(oy-h/4)},
+            inN:{x:ox,y:Math.round(oy+h/4)},
+            out:{x:ox+hw,y:oy}
+        };
+    }
+    // horizontal capacitor at (x, y) — two vertical bars
+    function capH(svg,x,y,col) {
+        ln(svg,x,y-10,x,y+10,col||C.blue,2);
+        ln(svg,x+7,y-10,x+7,y+10,col||C.blue,2);
+    }
+
+    // ── Draw functions ───────────────────────────────────────────
+    function drawComparator() {
+        const svg=mkSvg(220,110),amp=opamp(svg,75,55,52);
+        ln(svg,18,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,10,amp.inP.y,'V1',C.green,8);
+        ln(svg,18,amp.inN.y,amp.inN.x,amp.inN.y); tx(svg,10,amp.inN.y,'V2',C.orange,8);
+        ln(svg,amp.out.x,amp.out.y,212,amp.out.y);
+        tx(svg,202,amp.out.y-9,'Vout',C.light,8);
+        return svg;
+    }
+    function drawFollower() {
+        const svg=mkSvg(220,110),amp=opamp(svg,75,55,52);
+        ln(svg,18,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,10,amp.inP.y,'Vin',C.green,8);
+        ln(svg,amp.out.x,amp.out.y,210,amp.out.y); tx(svg,202,amp.out.y-9,'Vout',C.light,8);
+        ln(svg,amp.out.x,amp.out.y,amp.out.x,92);
+        ln(svg,amp.out.x,92,amp.inN.x-8,92);
+        ln(svg,amp.inN.x-8,92,amp.inN.x-8,amp.inN.y);
+        ln(svg,amp.inN.x-8,amp.inN.y,amp.inN.x,amp.inN.y);
+        return svg;
+    }
+    function drawNonInv() {
+        const svg=mkSvg(240,135),amp=opamp(svg,82,62,52);
+        ln(svg,18,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,10,amp.inP.y,'Vin',C.green,8);
+        ln(svg,amp.out.x,amp.out.y,232,amp.out.y); tx(svg,224,amp.out.y-9,'Vout',C.light,8);
+        const fbx=amp.inN.x-14;
+        ln(svg,amp.out.x,amp.out.y,amp.out.x,105);
+        ln(svg,amp.out.x,105,fbx,105);
+        zigzagV(svg,fbx,105,amp.inN.y,C.blue);
+        tx(svg,fbx-14,(105+amp.inN.y)/2,'R2',C.blue,8);
+        ln(svg,amp.inN.x,amp.inN.y,fbx,amp.inN.y);
+        zigzagV(svg,fbx,amp.inN.y,amp.inN.y+30,C.orange);
+        tx(svg,fbx-14,amp.inN.y+15,'R1',C.orange,8);
+        gnd(svg,fbx,amp.inN.y+30);
+        return svg;
+    }
+    function drawInv() {
+        const svg=mkSvg(245,130),amp=opamp(svg,98,60,52);
+        ln(svg,14,amp.inN.y,36,amp.inN.y); tx(svg,8,amp.inN.y,'Vin',C.green,8);
+        zigzag(svg,36,amp.inN.y,68,amp.inN.y,C.orange);
+        tx(svg,52,amp.inN.y-12,'R1',C.orange,8);
+        ln(svg,68,amp.inN.y,amp.inN.x,amp.inN.y);
+        ln(svg,amp.inP.x,amp.inP.y,amp.inP.x-10,amp.inP.y);
+        gnd(svg,amp.inP.x-10,amp.inP.y);
+        ln(svg,amp.out.x,amp.out.y,235,amp.out.y); tx(svg,227,amp.out.y-9,'Vout',C.light,8);
+        ln(svg,amp.out.x,amp.out.y,amp.out.x,18);
+        ln(svg,amp.out.x,18,68,18);
+        zigzag(svg,68,18,120,18,C.blue);
+        tx(svg,94,9,'R2',C.blue,8);
+        ln(svg,120,18,amp.out.x,18);
+        ln(svg,68,18,68,amp.inN.y);
+        return svg;
+    }
+    function drawSumming() {
+        const svg=mkSvg(245,145);
+        const amp=opamp(svg,118,72,52);
+        const inputs=[{label:'V1',y:40,rl:'R1'},{label:'V2',y:72,rl:'R2'},{label:'Vn',y:104,rl:'Rn'}];
+        const jx=88;
+        inputs.forEach(inp=>{
+            ln(svg,14,inp.y,32,inp.y); tx(svg,8,inp.y,inp.label,C.green,8);
+            zigzag(svg,32,inp.y,62,inp.y,C.orange);
+            tx(svg,47,inp.y-11,inp.rl,C.orange,7);
+            ln(svg,62,inp.y,jx,inp.y);
+            ln(svg,jx,inp.y,jx,amp.inN.y);
+        });
+        tx(svg,8,86,'⋮',C.gray,9);
+        ln(svg,jx,amp.inN.y,amp.inN.x,amp.inN.y);
+        ln(svg,amp.inP.x,amp.inP.y,amp.inP.x-10,amp.inP.y);
+        gnd(svg,amp.inP.x-10,amp.inP.y);
+        ln(svg,amp.out.x,amp.out.y,235,amp.out.y); tx(svg,227,amp.out.y-9,'Vout',C.light,8);
+        ln(svg,amp.out.x,amp.out.y,amp.out.x,16);
+        ln(svg,amp.out.x,16,jx,16);
+        zigzag(svg,jx,16,jx+52,16,C.blue);
+        tx(svg,jx+26,7,'Rf',C.blue,8);
+        ln(svg,jx+52,16,amp.out.x,16);
+        ln(svg,jx,16,jx,amp.inN.y);
+        return svg;
+    }
+    function drawDiff() {
+        const svg=mkSvg(262,145);
+        const amp=opamp(svg,132,72,52);
+        ln(svg,14,amp.inN.y,38,amp.inN.y); tx(svg,8,amp.inN.y,'V1',C.green,8);
+        zigzag(svg,38,amp.inN.y,78,amp.inN.y,C.orange);
+        tx(svg,58,amp.inN.y-12,'R1',C.orange,7);
+        ln(svg,78,amp.inN.y,amp.inN.x,amp.inN.y);
+        ln(svg,14,amp.inP.y,38,amp.inP.y); tx(svg,8,amp.inP.y,'V2',C.yellow,8);
+        zigzag(svg,38,amp.inP.y,78,amp.inP.y,C.orange);
+        tx(svg,58,amp.inP.y+12,'R3',C.orange,7);
+        ln(svg,78,amp.inP.y,amp.inP.x,amp.inP.y);
+        ln(svg,78,amp.inP.y,78,amp.inP.y+22);
+        zigzagV(svg,78,amp.inP.y+22,amp.inP.y+46,C.blue);
+        tx(svg,66,amp.inP.y+34,'R4',C.blue,7);
+        gnd(svg,78,amp.inP.y+46);
+        ln(svg,amp.out.x,amp.out.y,252,amp.out.y); tx(svg,248,amp.out.y-8,'Vout',C.light,7);
+        ln(svg,amp.out.x,amp.out.y,amp.out.x,18);
+        ln(svg,amp.out.x,18,78,18);
+        zigzag(svg,78,18,120,18,C.blue);
+        tx(svg,99,9,'R2',C.blue,7);
+        ln(svg,120,18,amp.out.x,18);
+        ln(svg,78,18,78,amp.inN.y);
+        return svg;
+    }
+    function drawDifferentiator() {
+        const svg=mkSvg(240,130);
+        const amp=opamp(svg,102,62,52);
+        ln(svg,14,amp.inN.y,34,amp.inN.y); tx(svg,8,amp.inN.y,'Vin',C.green,8);
+        capH(svg,38,amp.inN.y,C.blue);
+        tx(svg,41,amp.inN.y-14,'C',C.blue,8);
+        ln(svg,45,amp.inN.y,amp.inN.x,amp.inN.y);
+        ln(svg,amp.inP.x,amp.inP.y,amp.inP.x-10,amp.inP.y);
+        gnd(svg,amp.inP.x-10,amp.inP.y);
+        ln(svg,amp.out.x,amp.out.y,230,amp.out.y); tx(svg,222,amp.out.y-9,'Vout',C.light,8);
+        const jx=45;
+        ln(svg,amp.out.x,amp.out.y,amp.out.x,18);
+        ln(svg,amp.out.x,18,jx,18);
+        zigzag(svg,jx,18,jx+52,18,C.orange);
+        tx(svg,jx+26,9,'R',C.orange,8);
+        ln(svg,jx+52,18,amp.out.x,18);
+        ln(svg,jx,18,jx,amp.inN.y);
+        return svg;
+    }
+    function drawIntegrator() {
+        const svg=mkSvg(240,130);
+        const amp=opamp(svg,102,62,52);
+        ln(svg,14,amp.inN.y,34,amp.inN.y); tx(svg,8,amp.inN.y,'Vin',C.green,8);
+        zigzag(svg,34,amp.inN.y,68,amp.inN.y,C.orange);
+        tx(svg,51,amp.inN.y-12,'R',C.orange,8);
+        ln(svg,68,amp.inN.y,amp.inN.x,amp.inN.y);
+        ln(svg,amp.inP.x,amp.inP.y,amp.inP.x-10,amp.inP.y);
+        gnd(svg,amp.inP.x-10,amp.inP.y);
+        ln(svg,amp.out.x,amp.out.y,230,amp.out.y); tx(svg,222,amp.out.y-9,'Vout',C.light,8);
+        const jx=68;
+        ln(svg,amp.out.x,amp.out.y,amp.out.x,18);
+        ln(svg,amp.out.x,18,jx+30,18);
+        capH(svg,jx+26,18,C.blue);
+        tx(svg,jx+29,7,'C',C.blue,8);
+        ln(svg,jx,18,jx+26,18);
+        ln(svg,jx+33,18,amp.out.x,18);
+        ln(svg,jx,18,jx,amp.inN.y);
+        return svg;
+    }
+
+    // ── Calc functions ───────────────────────────────────────────
+    function calcNonInv(id) {
+        const r1=parseFloat(document.getElementById(id+'-r1').value);
+        const r2=parseFloat(document.getElementById(id+'-r2').value);
+        const el=document.getElementById(id+'-res');
+        if(isNaN(r1)||isNaN(r2)||r1<=0){el.textContent='';return;}
+        el.textContent='Gain = '+(1+r2/r1).toFixed(3);
+    }
+    function calcInv(id) {
+        const r1=parseFloat(document.getElementById(id+'-r1').value);
+        const r2=parseFloat(document.getElementById(id+'-r2').value);
+        const el=document.getElementById(id+'-res');
+        if(isNaN(r1)||isNaN(r2)||r1<=0){el.textContent='';return;}
+        el.textContent='Gain = '+(-(r2/r1)).toFixed(3);
+    }
+
+    // ── Config data ──────────────────────────────────────────────
+    const CONFIGS=[
+        {id:'cmp', title:'Voltage Comparator',        draw:drawComparator,
+         formula:'Vout = Vs+  if V1 > V2\nVout = Vs−  if V1 < V2',
+         desc:'Open-loop. Output swings to supply rail. No feedback. Use dedicated comparator ICs (LM393) for speed and open-collector output.'},
+        {id:'flw', title:'Voltage Follower',           draw:drawFollower,
+         formula:'Vout = Vin\nGain = 1',
+         desc:'Unity-gain buffer. High input impedance, low output impedance. Used to isolate stages without loading the signal source.'},
+        {id:'ni',  title:'Non-Inverting Amplifier',    draw:drawNonInv,   calc:calcNonInv, badge:'Calculator',
+         formula:'Gain = 1 + R2 / R1\nVout = Vin × Gain',
+         desc:'Output in phase with input. Gain always ≥ 1. R1 to GND, R2 as feedback from output to − input.'},
+        {id:'inv', title:'Inverting Amplifier',        draw:drawInv,      calc:calcInv,    badge:'Calculator',
+         formula:'Gain = −R2 / R1\nVout = −Vin × R2 / R1',
+         desc:'Output is 180° inverted. Gain can be < 1. V+ is tied to GND (or bias resistor R1‖R2).'},
+        {id:'sum', title:'Inverting Summing Amp',      draw:drawSumming,
+         formula:'Vout = −Rf × (V1/R1\n         + V2/R2 + …)',
+         desc:'Sums multiple voltages with individual gains. V+ to GND. Used in audio mixers and R-2R DACs.'},
+        {id:'dif', title:'Differential Amplifier',     draw:drawDiff,
+         formula:'If R1=R3, R2=R4:\nVout = (R2/R1) × (V2 − V1)',
+         desc:'Amplifies the difference between two signals while rejecting common-mode noise. Basis of instrumentation amps.'},
+        {id:'der', title:'Differentiator',             draw:drawDifferentiator,
+         formula:'Vout = −R × C × dVin/dt',
+         desc:'Output proportional to the rate of change of input. Sensitive to high-frequency noise — add small R in series with C.'},
+        {id:'int', title:'Integrator',                 draw:drawIntegrator,
+         formula:'Vout = −(1/RC) × ∫Vin dt',
+         desc:'Output is time-integral of input. Converts square → triangle, triangle → sine. Add large R in parallel with C to prevent saturation.'},
+    ];
+
+    // ── Build grid ───────────────────────────────────────────────
+    function buildGrid() {
+        const grid=document.getElementById('config-grid');
+        CONFIGS.forEach(cfg=>{
+            const card=document.createElement('div');
+            card.className='cfg-card'+(cfg.calc?' has-calc':'');
+
+            const titleEl=document.createElement('div');
+            titleEl.className='cfg-title';
+            titleEl.textContent=cfg.title;
+            if(cfg.badge){
+                const b=document.createElement('span');
+                b.className='cfg-badge'; b.textContent=cfg.badge;
+                titleEl.appendChild(b);
+            }
+            card.appendChild(titleEl);
+
+            const wrap=document.createElement('div');
+            wrap.className='cfg-svg';
+            wrap.appendChild(cfg.draw());
+            card.appendChild(wrap);
+
+            const fml=document.createElement('div');
+            fml.className='cfg-formula';
+            fml.textContent=cfg.formula;
+            card.appendChild(fml);
+
+            if(cfg.calc){
+                const calcWrap=document.createElement('div');
+                calcWrap.innerHTML=`
+                    <div class="calc-row">
+                        <label>R1&nbsp;(Ω)</label>
+                        <input class="calc-inp" type="number" id="${cfg.id}-r1" placeholder="1000" min="1"
+                            oninput="${cfg.calc.name}('${cfg.id}')">
+                        <label>R2&nbsp;(Ω)</label>
+                        <input class="calc-inp" type="number" id="${cfg.id}-r2" placeholder="10000" min="0"
+                            oninput="${cfg.calc.name}('${cfg.id}')">
+                    </div>
+                    <div class="calc-result" id="${cfg.id}-res"></div>`;
+                card.appendChild(calcWrap);
+            }
+
+            const desc=document.createElement('div');
+            desc.className='cfg-desc';
+            desc.textContent=cfg.desc;
+            card.appendChild(desc);
+
+            grid.appendChild(card);
+        });
+    }
+
+    buildGrid();
+    </script>
+</body>
+</html>

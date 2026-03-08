@@ -1,0 +1,8 @@
+{
+  "id": "elec-026",
+  "title": "Op-Amp Configurations",
+  "category": "reference",
+  "description": "Quick reference for 8 common op-amp configurations: comparator, voltage follower, inverting and non-inverting amplifiers, summing amplifier, differential amplifier, differentiator and integrator. SVG diagrams, formulas and gain calculator.",
+  "icon": "〰️",
+  "difficulty": "intermediate"
+}

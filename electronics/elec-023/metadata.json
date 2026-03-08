@@ -1,8 +1,8 @@
 {
   "id": "elec-023",
-  "title": "Wire Color Codes ČSN / IEC / US",
+  "title": "Wire Color Codes",
   "category": "reference",
-  "description": "Wire color code reference for AC mains, DC power, automotive, and data wiring. Covers IEC 60446, ČSN (current and pre-2004), old DIN, and US NEC standards with color swatches. Includes CAN bus, USB, RS-485, and thermocouple colors.",
-  "icon": "🌈",
+  "description": "Wire color code reference for AC mains, DC power, automotive, and data wiring. Covers IEC 60446, ČSN (Czech), old DIN, and US NEC standards with color swatches and searchable table.",
+  "icon": "🔌",
   "difficulty": "beginner"
 }
