@@ -112,6 +112,11 @@
         <div class="card">
             <h2>Battery</h2>
             <div class="presets" id="bat-presets"></div>
+            <div style="background:rgba(251,146,60,0.08);border-left:3px solid #fb923c;border-radius:6px;padding:0.65rem 1rem;font-size:0.81rem;color:var(--text-gray);line-height:1.6;margin-bottom:1.1rem;">
+                ⚠ <strong style="color:#fb923c;">Batteries cannot be discharged to 0 V</strong> — this permanently damages the cell.
+                Enter only the <em>usable</em> capacity: Li-Ion&nbsp;/ LiPo ≈&nbsp;<strong>80%</strong> of rated mAh (cut-off 3.0–3.2&nbsp;V/cell),
+                Lead-acid ≈&nbsp;<strong>50%</strong>, NiMH ≈&nbsp;<strong>80%</strong>, Alkaline/primary Li ≈&nbsp;<strong>90%</strong>.
+            </div>
             <div class="input-grid">
                 <div class="field">
                     <label>Battery capacity</label>
@@ -310,6 +315,17 @@
                         <li>High discharge rates reduce capacity (Peukert effect)</li>
                         <li>Battery aging: expect 20–30% capacity loss over 2–3 years</li>
                         <li>Multiply result by 0.7–0.8 for a conservative estimate</li>
+                    </ul>
+                </div>
+                <div class="info-block" style="grid-column: 1/-1;">
+                    <h3>Cut-off voltage &amp; Depth of Discharge (DoD)</h3>
+                    <p style="margin-bottom:0.5rem;">Every battery chemistry has a minimum safe discharge voltage. Going below it causes irreversible capacity loss or cell failure — even a single deep discharge can render a Li-Ion/LiPo unusable.</p>
+                    <ul>
+                        <li><strong>Li-Ion / Li-Po:</strong> cut-off 3.0–3.2&nbsp;V/cell → use max <strong>80%</strong> of rated capacity (some BMS protect at 2.5&nbsp;V but capacity below 3.0&nbsp;V is negligible and damages cycle life)</li>
+                        <li><strong>Lead-acid (SLA/AGM):</strong> max 50% DoD for long cycle life; 80% DoD possible but shortens lifespan significantly</li>
+                        <li><strong>NiMH / NiCd:</strong> cut-off ~1.0&nbsp;V/cell → ~80% usable capacity</li>
+                        <li><strong>Alkaline (primary):</strong> can discharge to ~0.8&nbsp;V/cell → ~90% usable for most devices</li>
+                        <li><strong>CR2032 / primary Li (Li/MnO₂):</strong> ~2.0&nbsp;V cut-off → ~90% usable, self-discharge limits shelf life more than DoD</li>
                     </ul>
                 </div>
                 <div class="info-block">
