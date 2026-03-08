@@ -108,6 +108,11 @@
                 <button class="plat-tab" data-plat="esp8266">ESP8266</button>
             </div>
 
+            <div style="margin-bottom:0.75rem;">
+                <button id="pinout-toggle" onclick="togglePinout()" style="background:var(--card-bg);border:1px solid var(--border-gray);color:var(--text-gray);border-radius:8px;padding:0.45rem 0.9rem;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;">📌 Show pinout diagram</button>
+            </div>
+            <div id="pinout-container" style="display:none;overflow-x:auto;margin-bottom:1rem;background:var(--darker-bg);border:1px solid var(--border-gray);border-radius:10px;padding:0.75rem 0.5rem;"></div>
+
             <div class="legend" id="legend">
                 <span class="fn fn-dig">Digital</span>
                 <span class="fn fn-pwm">PWM</span>
@@ -375,6 +380,62 @@
         }
     };
 
+    // ── Pinout diagram ──────────────────────────────────────────────────────
+    function pinColor(row) {
+        const p = row.pin.toLowerCase(), n = row.name.toLowerCase();
+        if (p === 'gnd' || n === 'gnd') return '#888';
+        if (['5v','3v3','3.3v','vin','vcc','reset','rst','en','aref','ioref','enable'].some(x => p===x||n===x)) return '#fb923c';
+        if (n === 'flash' || p.includes('flash')) return '#ef4444';
+        const FC = { pwm:'#fcd34d', adc:'#c4b5fd', i2c:'#86efac', spi:'#e879f9', uart:'#fca5a5', int:'#a8a29e', touch:'#7dd3fc', dac:'#5eead4' };
+        for (const t of row.tags) if (FC[t]) return FC[t];
+        return '#60a5fa';
+    }
+    function drawPinout(platKey) {
+        const plat = PLATFORMS[platKey];
+        if (!plat) return;
+        const rows = plat.rows;
+        const half = Math.ceil(rows.length / 2);
+        const leftPins = rows.slice(0, half);
+        const rightPins = rows.slice(half);
+        const pitch = 22, svgW = 560, bx = 185, bw = 190, pinLen = 20, fs = 10;
+        const nRows = Math.max(leftPins.length, rightPins.length);
+        const svgH = nRows * pitch + 50;
+        const boardNames = { uno:'Arduino Uno R3', nano:'Arduino Nano', mega:'Arduino Mega 2560', esp32:'ESP32 DevKit', esp8266:'ESP8266 NodeMCU' };
+        let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${svgW} ${svgH}" style="display:block;width:100%;max-width:${svgW}px;margin:0 auto;">`;
+        s += `<rect x="${bx}" y="10" width="${bw}" height="${nRows*pitch+30}" rx="8" fill="#0e0e1a" stroke="#ff6b35" stroke-width="1.5"/>`;
+        s += `<text x="${bx+bw/2}" y="${10+(nRows*pitch+30)/2}" text-anchor="middle" dominant-baseline="middle" fill="#ff6b35" font-size="12" font-weight="bold" font-family="monospace">${boardNames[platKey]||platKey}</text>`;
+        function drawPin(row, i, side) {
+            const y = 25 + i * pitch;
+            const clr = pinColor(row);
+            const lbl = row.pin === row.name ? row.pin : `${row.pin} ${row.name}`;
+            if (side === 'L') {
+                const ex = bx, lx = bx - pinLen;
+                s += `<line x1="${ex}" y1="${y}" x2="${lx}" y2="${y}" stroke="${clr}" stroke-width="2"/>`;
+                s += `<circle cx="${ex}" cy="${y}" r="3" fill="${clr}"/>`;
+                s += `<text x="${lx-4}" y="${y}" text-anchor="end" dominant-baseline="middle" fill="${clr}" font-size="${fs}" font-family="monospace">${lbl}</text>`;
+            } else {
+                const ex = bx+bw, lx = ex + pinLen;
+                s += `<line x1="${ex}" y1="${y}" x2="${lx}" y2="${y}" stroke="${clr}" stroke-width="2"/>`;
+                s += `<circle cx="${ex}" cy="${y}" r="3" fill="${clr}"/>`;
+                s += `<text x="${lx+4}" y="${y}" text-anchor="start" dominant-baseline="middle" fill="${clr}" font-size="${fs}" font-family="monospace">${lbl}</text>`;
+            }
+        }
+        leftPins.forEach((row, i) => drawPin(row, i, 'L'));
+        rightPins.forEach((row, i) => drawPin(row, i, 'R'));
+        s += `</svg>`;
+        document.getElementById('pinout-container').innerHTML = s;
+    }
+    let pinoutVisible = false;
+    function togglePinout() {
+        pinoutVisible = !pinoutVisible;
+        const wrap = document.getElementById('pinout-container');
+        const btn  = document.getElementById('pinout-toggle');
+        wrap.style.display = pinoutVisible ? 'block' : 'none';
+        btn.textContent = pinoutVisible ? '▲ Hide pinout' : '📌 Show pinout diagram';
+        if (pinoutVisible) drawPinout(activePlat);
+    }
+    // ── End pinout diagram ───────────────────────────────────────────────────
+
     let activePlat = 'uno';
     let activeFn   = 'all';
 
@@ -418,6 +479,7 @@
         activeFn = 'all';
         document.querySelectorAll('.flt-btn').forEach(b => b.classList.toggle('active', b.dataset.fn === 'all'));
         render();
+        if (pinoutVisible) drawPinout(activePlat);
     });
 
     // Function filter
