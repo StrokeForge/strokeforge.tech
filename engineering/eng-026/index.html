@@ -120,69 +120,6 @@
                     <span class="conv-range">MPa — Range: 250 – 2500</span>
                 </div>
             </div>
-            <p style="font-size:0.72rem;color:#4b5563;margin-top:0.75rem;">* Conversions are per EN ISO 18265 Table A.1 (steel). Values outside the table range are extrapolated — use with caution.</p>
-        </div>
-
-        <!-- RESULTS -->
-        <div class="card">
-            <h2>Results</h2>
-            <div class="result-cards" id="resultCards">
-                <div class="result-card" id="rcHRC"><div class="rc-scale">Rockwell C</div><div class="rc-val" id="rvHRC">—</div><div class="rc-unit">HRC</div></div>
-                <div class="result-card" id="rcHV"><div class="rc-scale">Vickers</div><div class="rc-val" id="rvHV">—</div><div class="rc-unit">HV</div></div>
-                <div class="result-card" id="rcHB"><div class="rc-scale">Brinell</div><div class="rc-val" id="rvHB">—</div><div class="rc-unit">HB</div></div>
-                <div class="result-card" id="rcRm"><div class="rc-scale">Tensile strength</div><div class="rc-val" id="rvRm">—</div><div class="rc-unit">MPa</div></div>
-            </div>
-            <div style="margin-top:1.25rem;">
-                <svg id="chartSvg" width="100%" viewBox="0 0 500 160"></svg>
-                <p class="chart-label">HV vs HRC — operating point marked</p>
-            </div>
-        </div>
-
-        <!-- REFERENCE TABLE -->
-        <div class="card">
-            <h2>Reference table — EN ISO 18265 (steel, Table A.1)</h2>
-            <div style="overflow-x:auto;">
-                <table class="ref-table">
-                    <thead>
-                        <tr>
-                            <th>Application</th>
-                            <th>HRC</th><th>HV</th><th>HB (3000 kgf)</th><th>Rm (MPa)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="refBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- INFO -->
-        <div class="card">
-            <h2>Scale overview</h2>
-            <div class="info-grid">
-                <div class="info-block">
-                    <h3>HRC — Rockwell C</h3>
-                    <p>Indenter: 120° diamond cone (Brale). Load: 150 kgf. Range: ~20–68 HRC. Standard for hardened steels. Quick test, small indentation.</p>
-                </div>
-                <div class="info-block">
-                    <h3>HV — Vickers</h3>
-                    <p>Indenter: 136° square diamond pyramid. Continuous scale from very soft to very hard. Best for thin sections, case hardening depth, coatings. HV ≈ HB for HB &lt; 300.</p>
-                </div>
-                <div class="info-block">
-                    <h3>HB — Brinell</h3>
-                    <p>Indenter: 10 mm steel or carbide ball. Load 3000 kgf. Range: 80–450 HB. Large indentation — not for thin parts. Good for castings and forgings.</p>
-                </div>
-                <div class="info-block">
-                    <h3>Rm — Tensile strength</h3>
-                    <p>Estimated from hardness via empirical correlation. For steel: Rm ≈ 3.45 × HB (rough). More precise: per EN ISO 18265 table. <strong>Not a substitute for actual tensile testing.</strong></p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer class="footer">
-        <p>Designs from concept to reality | 2026</p>
-        <p style="margin-top:0.5rem;font-size:0.8rem">
-            <a href="https://www.printables.com/@TechMaster" target="_blank">Printables: @TechMaster</a>
-        </p>
     </footer>
 
     <script src="../../js/nav.js"></script>
