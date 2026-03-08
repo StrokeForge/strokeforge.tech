@@ -4,5 +4,6 @@
   "category": "calculator",
   "icon": "🔩",
   "description": "Browser-based calculator for bolt tightening torques per ISO 898-1. Select strength class and friction condition to get preload force and required torque for M3–M24.",
-  "difficulty": "beginner"
+  "difficulty": "beginner",
+  "topic": "spoje"
 }

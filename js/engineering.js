@@ -76,8 +76,8 @@ function initCategoryNavigation() {
             e.preventDefault();
             links.forEach(l => l.classList.remove('active'));
             this.classList.add('active');
-            const cat = this.getAttribute('data-category');
-            renderProjects(cat === 'all' ? allProjects : allProjects.filter(p => p.category === cat));
+            const topic = this.getAttribute('data-topic');
+            renderProjects(topic === 'all' ? allProjects : allProjects.filter(p => p.topic === topic));
         });
     });
 }

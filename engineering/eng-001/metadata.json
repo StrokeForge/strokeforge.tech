@@ -4,5 +4,6 @@
   "category": "calculator",
   "icon": "⚙️",
   "description": "Browser-based ISO 286-1 tolerance and fits calculator. Enter nominal diameter, select hole and shaft designations, get limit deviations, tolerance zones, and fit type.",
-  "difficulty": "beginner"
+  "difficulty": "beginner",
+  "topic": "normy"
 }

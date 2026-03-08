@@ -4,5 +4,6 @@
   "description": "Surface roughness converter and reference. Ra ↔ Rz ↔ N-grade per ISO 1302. Typical values for turning, milling, grinding, casting and other manufacturing processes.",
   "category": "manufacturing",
   "icon": "〰️",
-  "difficulty": "beginner"
+  "difficulty": "beginner",
+  "topic": "normy"
 }

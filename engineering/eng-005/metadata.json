@@ -4,5 +4,6 @@
   "category": "calculator",
   "description": "Interactive engineering material selection wizard. Answer 5 questions about load type, manufacturing process, environment, strength, and weight — the system recommends the best materials and explains why.",
   "icon": "🎯",
-  "difficulty": "beginner"
+  "difficulty": "beginner",
+  "topic": "materialy"
 }

@@ -1,1 +1,9 @@
-{"id":"eng-010","title":"Cantilever Deflection Calculator","description":"Calculate tip deflection, support reaction and fixed-end moment for cantilever beams with uniform distributed load and point load at tip. Checks L/180 limit.","category":"calculator","icon":"🏗️","difficulty":"intermediate"}
+{
+  "id": "eng-010",
+  "title": "Cantilever Deflection Calculator",
+  "description": "Calculate tip deflection, support reaction and fixed-end moment for cantilever beams with uniform distributed load and point load at tip. Checks L/180 limit.",
+  "category": "calculator",
+  "icon": "🏗️",
+  "difficulty": "intermediate",
+  "topic": "nosniky"
+}

@@ -4,5 +4,6 @@
   "description": "Check fillet welds under tension, shear and bending per ČSN EN 1993-1-8 (EC3). Computes σ⊥, τ⊥, τ‖ stresses, comparison stress, and PASS/FAIL verdict for S235–S460 steel grades.",
   "category": "calculator",
   "icon": "🔧",
-  "difficulty": "intermediate"
+  "difficulty": "intermediate",
+  "topic": "spoje"
 }

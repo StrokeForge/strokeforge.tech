@@ -1,1 +1,9 @@
-{"id":"eng-007","title":"Bolt Shear & Bearing Calculator","description":"Calculate shear and bearing resistance of bolts per EC3. Single and double shear, bolt grade 4.6–12.9, plate thickness and material input.","category":"calculator","icon":"🔩","difficulty":"intermediate"}
+{
+  "id": "eng-007",
+  "title": "Bolt Shear & Bearing Calculator",
+  "description": "Calculate shear and bearing resistance of bolts per EC3. Single and double shear, bolt grade 4.6–12.9, plate thickness and material input.",
+  "category": "calculator",
+  "icon": "🔩",
+  "difficulty": "intermediate",
+  "topic": "spoje"
+}

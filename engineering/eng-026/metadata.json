@@ -4,5 +4,6 @@
   "description": "Convert hardness values between Brinell (HB), Rockwell C (HRC), Vickers (HV) and tensile strength Rm per EN ISO 18265. Enter any value, get all others.",
   "category": "materials",
   "icon": "💎",
-  "difficulty": "beginner"
+  "difficulty": "beginner",
+  "topic": "tepelne"
 }

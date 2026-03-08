@@ -4,5 +4,6 @@
   "description": "Reference database of structural steel grades S235 to S460 per EN 10025. Yield strength by thickness, sub-grades, EC3 design values and material constants.",
   "category": "materials",
   "icon": "🔩",
-  "difficulty": "beginner"
+  "difficulty": "beginner",
+  "topic": "materialy"
 }

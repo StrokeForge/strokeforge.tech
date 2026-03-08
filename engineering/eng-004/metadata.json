@@ -4,5 +4,6 @@
   "category": "reference",
   "description": "Reference table of 90+ engineering materials: structural, stainless and tool steels, aluminium alloys, cast iron, copper, brass, titanium and technical plastics. Cross-reference ČSN / EN / W.Nr / DIN / AISI, weldability and machinability.",
   "icon": "🔩",
-  "difficulty": "beginner"
+  "difficulty": "beginner",
+  "topic": "materialy"
 }

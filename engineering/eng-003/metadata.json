@@ -4,5 +4,6 @@
   "category": "reference",
   "icon": "📐",
   "description": "Complete ISO metric thread dimensions table: nominal diameter, pitch (coarse + fine), pitch diameter, minor diameter, stress area, and wrench sizes for M1–M68.",
-  "difficulty": "beginner"
+  "difficulty": "beginner",
+  "topic": "zavity"
 }

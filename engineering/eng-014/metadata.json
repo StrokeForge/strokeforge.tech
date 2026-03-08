@@ -4,5 +4,6 @@
   "description": "Look up standard parallel key dimensions (b × h) for a given shaft diameter per DIN 6885 Form A. Check key against surface pressure p = 2M / (d · lₑ · t) and shear τ = 2M / (d · lₑ · b).",
   "category": "calculator",
   "icon": "🔑",
-  "difficulty": "intermediate"
+  "difficulty": "intermediate",
+  "topic": "strojni"
 }

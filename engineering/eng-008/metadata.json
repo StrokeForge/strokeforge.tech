@@ -1,1 +1,9 @@
-{"id":"eng-008","title":"Bolt Strength Classes 4.6–12.9","description":"Reference table of bolt strength classes per ISO 898-1. Yield strength fyb and ultimate strength fub for grades 4.6 through 12.9.","category":"reference","icon":"🔩","difficulty":"beginner"}
+{
+  "id": "eng-008",
+  "title": "Bolt Strength Classes 4.6–12.9",
+  "description": "Reference table of bolt strength classes per ISO 898-1. Yield strength fyb and ultimate strength fub for grades 4.6 through 12.9.",
+  "category": "reference",
+  "icon": "🔩",
+  "difficulty": "beginner",
+  "topic": "spoje"
+}
