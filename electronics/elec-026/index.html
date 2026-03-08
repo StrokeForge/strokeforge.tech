@@ -218,30 +218,34 @@
         const svg=mkSvg(220,110),amp=opamp(svg,75,55,52);
         ln(svg,18,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,10,amp.inP.y,'Vin',C.green,8);
         ln(svg,amp.out.x,amp.out.y,210,amp.out.y); tx(svg,202,amp.out.y-9,'Vout',C.light,8);
-        // feedback: output → down → left past triangle → up to − level → right to − input
-        const fby=92, fbxL=amp.inN.x-12;
-        ln(svg,amp.out.x,amp.out.y,amp.out.x,fby);
-        ln(svg,amp.out.x,fby,fbxL,fby);
+        // feedback: junction on Vout wire → down → left past triangle → up to − level → right to − input
+        const fby=92, fbxL=amp.inN.x-12, fdx=amp.out.x+14;
+        el(svg,'circle',{cx:fdx,cy:amp.out.y,r:2.5,fill:C.wire});
+        ln(svg,fdx,amp.out.y,fdx,fby);
+        ln(svg,fdx,fby,fbxL,fby);
         ln(svg,fbxL,fby,fbxL,amp.inN.y);
         ln(svg,fbxL,amp.inN.y,amp.inN.x,amp.inN.y);
         return svg;
     }
     function drawNonInv() {
-        const svg=mkSvg(240,120),amp=opamp(svg,88,50,52);
-        // + input: Vin
-        ln(svg,15,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,7,amp.inP.y,'Vin',C.green,8);
-        // output wire
-        ln(svg,amp.out.x,amp.out.y,225,amp.out.y); tx(svg,217,amp.out.y-9,'Vout',C.light,8);
-        // feedback dot on output wire
-        const fdx=amp.out.x+22, jy=100, jx=amp.inN.x;
+        const svg=mkSvg(240,118),amp=opamp(svg,90,50,52);
+        // Vin → + input
+        ln(svg,12,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,6,amp.inP.y,'Vin',C.green,8);
+        // output wire + Vout
+        ln(svg,amp.out.x,amp.out.y,226,amp.out.y); tx(svg,218,amp.out.y-9,'Vout',C.light,8);
+        // feedback dot on Vout wire
+        const fdx=amp.out.x+18, jy=95, jx=72; // jx well left of triangle (triangle at ox=90)
         el(svg,'circle',{cx:fdx,cy:amp.out.y,r:2.5,fill:C.wire});
-        ln(svg,fdx,amp.out.y,fdx,jy);           // wire from dot DOWN to jy
-        // R2: horizontal from − input x to feedback dot x (at jy level)
+        ln(svg,fdx,amp.out.y,fdx,jy);            // feedback dot DOWN to jy
+        // R2: jx → fdx horizontal
         zigzag(svg,jx,jy,fdx,jy,C.blue);
         tx(svg,(jx+fdx)/2,jy-11,'R2',C.blue,8);
-        ln(svg,jx,jy,jx,amp.inN.y);             // wire from junction UP to − input
-        // R1: horizontal from GND to junction
-        const gx=40;
+        // junction dot + wire UP to − input (clear of triangle)
+        el(svg,'circle',{cx:jx,cy:jy,r:2.5,fill:C.wire});
+        ln(svg,jx,jy,jx,amp.inN.y);              // UP (stays left of triangle at x=90)
+        ln(svg,jx,amp.inN.y,amp.inN.x,amp.inN.y); // right to − input pin
+        // R1: GND → jx horizontal
+        const gx=28;
         zigzag(svg,gx,jy,jx,jy,C.orange);
         tx(svg,(gx+jx)/2,jy-11,'R1',C.orange,8);
         gnd(svg,gx,jy);
