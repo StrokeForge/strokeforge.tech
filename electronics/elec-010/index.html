@@ -579,51 +579,71 @@
             return;
         }
 
-        // Standard voltage regulator circuit
-        // Vin → IN
-        svg.appendChild(line(30,70,100,70,'#6b7280'));
-        if (Vin) svg.appendChild(txt(30,58,Vin+'V','#facc15',10,'middle'));
-        svg.appendChild(txt(50,76,'Vin','#6b7280',8,'middle'));
+        // ── Standard: Vin → LM317 → Vout, R1 between OUT–ADJ, R2 between ADJ–GND ──
+        const ym=62, icL=78, icR=182, icT=ym-25, icB=ym+25, icCx=130;
+        const nx=226;  // x of R1/R2 vertical chain
 
-        // LM317 block
-        svg.appendChild(el('rect',{x:100,y:45,width:90,height:60,fill:'#1a2433',stroke:'#fb923c','stroke-width':2,rx:6}));
-        svg.appendChild(txt(145,68,'LM317','#fb923c',12,'middle'));
-        svg.appendChild(txt(100,80,'IN','#6b7280',8,'start'));
-        svg.appendChild(txt(186,80,'OUT','#6b7280',8,'end'));
-        svg.appendChild(txt(145,95,'ADJ','#60a5fa',8,'middle'));
+        // Input terminal + wire
+        svg.appendChild(el('circle',{cx:18,cy:ym,r:3,fill:'#9ca3af'}));
+        svg.appendChild(line(18,ym,icL,ym));
+        svg.appendChild(txt(18,ym-13,'Input','#9ca3af',8,'middle'));
+        if(Vin) svg.appendChild(txt(18,ym-24,Vin+'V','#facc15',9,'middle'));
 
-        // OUT → wire right
-        svg.appendChild(line(190,70,270,70,'#6b7280'));
-        if (Vout) svg.appendChild(txt(300,70,fmtV(Vout),'#facc15',10,'middle'));
-        svg.appendChild(txt(310,78,'Vout','#6b7280',8,'middle'));
+        // LM317 IC block
+        svg.appendChild(el('rect',{x:icL,y:icT,width:icR-icL,height:icB-icT,fill:'#1a2433',stroke:'#fb923c','stroke-width':2,rx:5}));
+        svg.appendChild(txt(icCx,ym-8,'LM317','#fb923c',12,'middle'));
+        svg.appendChild(txt(icL+7,ym+15,'IN','#9ca3af',7,'start'));
+        svg.appendChild(txt(icR-7,ym+15,'OUT','#9ca3af',7,'end'));
+        svg.appendChild(txt(icCx,icB-6,'ADJ','#60a5fa',7,'middle'));
 
-        // R1: ADJ to output rail (bottom of R1 connects to OUT rail, top to ADJ)
-        // ADJ down to R1
-        svg.appendChild(line(145,105,145,135,'#60a5fa'));
-        // R1 box
-        svg.appendChild(box(145,152,40,22,'#4ade80','R1', R1?fmtR(R1):'240Ω'));
-        // R1 bottom to GND rail
-        svg.appendChild(line(145,163,145,185,'#6b7280'));
+        // IC OUT → junction dot → output terminal
+        svg.appendChild(line(icR,ym,nx,ym));
+        svg.appendChild(el('circle',{cx:nx,cy:ym,r:3,fill:'#9ca3af'}));
+        svg.appendChild(line(nx,ym,318,ym));
+        svg.appendChild(el('circle',{cx:318,cy:ym,r:3,fill:'#9ca3af'}));
+        svg.appendChild(txt(318,ym-13,'Output','#9ca3af',8,'middle'));
+        if(Vout) svg.appendChild(txt(318,ym-24,fmtV(Vout),'#facc15',9,'middle'));
 
-        // Wire from OUT rail down to ADJ junction
-        svg.appendChild(line(270,70,270,135,'#6b7280'));
-        // Connect OUT rail down to R1 top via horizontal
-        svg.appendChild(line(145,135,270,135,'#6b7280'));
+        // R1: OUT junction → ADJ junction (vertical zigzag)
+        const r1top=ym+8, r1bot=ym+46;
+        svg.appendChild(line(nx,ym,nx,r1top));
+        const r1zh=6, r1zw=(r1bot-r1top)/6;
+        let r1pts=`${nx},${r1top}`;
+        for(let i=0;i<=6;i++) r1pts+=` ${nx+(i%2===0?-r1zh:r1zh)},${r1top+i*r1zw}`;
+        r1pts+=` ${nx},${r1bot}`;
+        svg.appendChild(el('polyline',{points:r1pts,stroke:'#4ade80','stroke-width':1.8,fill:'none','stroke-linejoin':'round'}));
+        svg.appendChild(txt(nx+12,(r1top+r1bot)/2,'R1','#4ade80',9,'start'));
+        if(R1) svg.appendChild(txt(nx+12,(r1top+r1bot)/2+11,fmtR(R1),'#4ade80',8,'start'));
 
-        // R2 box below horizontal junction
-        // Tap from junction to R2
-        svg.appendChild(line(220,135,220,152,'#6b7280'));
-        svg.appendChild(box(220,163,44,22,'#60a5fa','R2', R2e24?fmtR(R2e24):(R2?fmtR(R2):'?')));
-        svg.appendChild(line(220,174,220,185,'#6b7280'));
+        // ADJ junction
+        const adjY=r1bot+18;
+        svg.appendChild(line(nx,r1bot,nx,adjY));
+        svg.appendChild(el('circle',{cx:nx,cy:adjY,r:3,fill:'#60a5fa'}));
 
-        // GND rail
-        svg.appendChild(line(30,185,310,185,'#6b7280',1));
-        svg.appendChild(txt(30,192,'GND','#6b7280',8,'middle'));
+        // ADJ wire: IC bottom → down → horizontal to junction
+        svg.appendChild(line(icCx,icB,icCx,adjY));
+        svg.appendChild(line(icCx,adjY,nx,adjY));
+        svg.appendChild(txt((icCx+nx)/2,adjY-9,'ADJ','#60a5fa',7,'middle'));
 
-        // GND from Vin side
-        svg.appendChild(line(30,70,30,185,'#6b7280'));
-        // GND from Vout side
-        svg.appendChild(line(270,135,270,185,'#6b7280'));
+        // R2: ADJ junction → GND (vertical zigzag)
+        const r2top=adjY+8, r2bot=adjY+46;
+        svg.appendChild(line(nx,adjY,nx,r2top));
+        const r2zh=6, r2zw=(r2bot-r2top)/6;
+        let r2pts=`${nx},${r2top}`;
+        for(let i=0;i<=6;i++) r2pts+=` ${nx+(i%2===0?-r2zh:r2zh)},${r2top+i*r2zw}`;
+        r2pts+=` ${nx},${r2bot}`;
+        svg.appendChild(el('polyline',{points:r2pts,stroke:'#60a5fa','stroke-width':1.8,fill:'none','stroke-linejoin':'round'}));
+        const r2disp=R2e24?fmtR(R2e24):(R2?fmtR(R2):'?');
+        svg.appendChild(txt(nx+12,(r2top+r2bot)/2,'R2','#60a5fa',9,'start'));
+        svg.appendChild(txt(nx+12,(r2top+r2bot)/2+11,r2disp,'#60a5fa',8,'start'));
+
+        // GND symbol
+        const gwy=r2bot+8;
+        svg.appendChild(line(nx,r2bot,nx,gwy));
+        svg.appendChild(line(nx-10,gwy,nx+10,gwy,'#6b7280',2));
+        svg.appendChild(line(nx-6,gwy+4,nx+6,gwy+4,'#6b7280',1.5));
+        svg.appendChild(line(nx-3,gwy+8,nx+3,gwy+8,'#6b7280',1));
+        svg.appendChild(txt(nx,gwy+17,'GND','#6b7280',8,'middle'));
     }
 
     // ── Common Vout table ─────────────────────────────────────────────────
