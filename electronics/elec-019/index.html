@@ -29,7 +29,7 @@
         .field-row { display: flex; gap: 0.5rem; align-items: center; }
         .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
         .inp:focus { border-color: var(--primary-orange); }
-        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; flex-shrink: 0; }
         .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
         .hint { font-size: 0.72rem; color: var(--text-gray); }
 
@@ -162,26 +162,25 @@
 
         <!-- RESULTS -->
         <div class="card" id="results-card" style="display:none">
-            <h2>Results</h2>
+            <h2>Results <span id="res-mode-badge" style="font-size:0.72rem;font-weight:400;color:var(--text-gray);margin-left:0.5rem;"></span></h2>
             <div class="res-main">
-                <div class="res-block">
-                    <div class="lbl">R1 (series, top)</div>
-                    <div class="val" id="res-r1">—</div>
-                    <div class="sub">Connects Vin to divider mid-point</div>
-                    <div class="e24" id="res-r1-e24">—</div>
+                <div class="res-block" id="res-vout-block">
+                    <div class="lbl" id="res-vout-lbl">Vout (at Vin max)</div>
+                    <div class="val ok" id="res-vout">—</div>
+                    <div class="sub" id="res-vout-sub">ADC input voltage</div>
                 </div>
-                <div class="res-block">
-                    <div class="lbl">R2 (shunt, to GND)</div>
-                    <div class="val" id="res-r2">—</div>
-                    <div class="sub">Connects mid-point to GND → ADC pin</div>
-                    <div class="e24" id="res-r2-e24">—</div>
+                <div class="res-block" id="res-r-block">
+                    <div class="lbl" id="res-r-lbl">Calculated resistor</div>
+                    <div class="val" id="res-r-calc">—</div>
+                    <div class="sub" id="res-r-sub">—</div>
+                    <div class="e24" id="res-r-e24">—</div>
                 </div>
             </div>
             <div class="res-grid">
-                <div class="rg"><div class="lbl">Actual Vout (at Vin max)</div><div class="val ok" id="res-vout">—</div></div>
+                <div class="rg"><div class="lbl">R1 (series, top)</div><div class="val" id="res-r1">—</div></div>
+                <div class="rg"><div class="lbl">R2 (shunt, to GND)</div><div class="val" id="res-r2">—</div></div>
                 <div class="rg"><div class="lbl">ADC count (at Vin max)</div><div class="val" id="res-adc">—</div></div>
                 <div class="rg"><div class="lbl">Resolution (mV/count)</div><div class="val" id="res-res">—</div></div>
-                <div class="rg"><div class="lbl">Divider ratio</div><div class="val" id="res-ratio">—</div></div>
                 <div class="rg"><div class="lbl">Current through divider</div><div class="val" id="res-cur">—</div></div>
                 <div class="rg"><div class="lbl">ADC utilisation</div><div class="val ok" id="res-util">—</div></div>
             </div>
@@ -342,7 +341,6 @@
 
         if (!vin || !vref || vin <= 0 || vref <= 0) { rc.style.display='none'; return; }
 
-        // Target ratio: Vout/Vin = vref/vin (use 95% of vref for safety margin)
         const targetVout = vref * 0.95;
         const ratio = targetVout / vin; // R2/(R1+R2)
 
@@ -350,38 +348,85 @@
         const R1v = g('r1'), R1u = gu('r1unit');
         const R2v = g('r2'), R2u = gu('r2unit');
 
-        if (r1Locked && R1v) {
+        // ── Determine mode ────────────────────────────────────────────────────
+        const haveR1 = r1Locked && R1v;
+        const haveR2 = r2Locked && R2v;
+
+        let mode; // 'both' | 'r1' | 'r2' | 'auto'
+        if (haveR1 && haveR2) {
+            mode = 'both';
+            R1 = R1v * R1u;
+            R2 = R2v * R2u;
+        } else if (haveR1) {
+            mode = 'r1';
             R1 = R1v * R1u;
             R2 = R1 * ratio / (1 - ratio);
-        } else if (r2Locked && R2v) {
+        } else if (haveR2) {
+            mode = 'r2';
             R2 = R2v * R2u;
             R1 = R2 * (1 - ratio) / ratio;
         } else {
-            // Auto: use R2=10kΩ as base
+            mode = 'auto';
             R2 = 10e3;
             R1 = R2 * (1 - ratio) / ratio;
         }
 
         if (R1 <= 0 || R2 <= 0 || !isFinite(R1) || !isFinite(R2)) { rc.style.display='none'; return; }
 
+        // When both values are user-supplied use them as-is; otherwise snap to E24
         const R1e24 = nearestE24(R1);
         const R2e24 = nearestE24(R2);
-        const Vout  = vin * R2 / (R1 + R2);
-        const VoutE24 = vin * R2e24 / (R1e24 + R2e24);
-        const adcCount = Math.round(VoutE24 / vref * maxCounts);
-        const resolution = vin / adcCount * 1000; // mV per count
-        const divCurrent = vin / (R1 + R2) * 1000; // mA
-        const utilPct = (VoutE24 / vref * 100);
+        const Vout     = vin * R2 / (R1 + R2);                        // exact
+        const VoutDisp = (mode === 'both') ? Vout
+                       : vin * R2e24 / (R1e24 + R2e24);               // E24-rounded
+        const R1disp   = (mode === 'both' || mode === 'r1') ? R1 : R1e24;
+        const R2disp   = (mode === 'both' || mode === 'r2') ? R2 : R2e24;
 
-        document.getElementById('res-r1').textContent    = fmtR(R1);
-        document.getElementById('res-r1-e24').textContent = R1e24 ? 'E24: ' + fmtR(R1e24) : '';
-        document.getElementById('res-r2').textContent    = fmtR(R2);
-        document.getElementById('res-r2-e24').textContent = R2e24 ? 'E24: ' + fmtR(R2e24) : '';
-        document.getElementById('res-vout').textContent  = VoutE24.toFixed(3) + ' V';
-        document.getElementById('res-adc').textContent   = adcCount + ' / ' + maxCounts;
-        document.getElementById('res-res').textContent   = resolution.toFixed(2) + ' mV/count';
-        document.getElementById('res-ratio').textContent = (R2/(R1+R2)).toFixed(4) + ' (' + vin.toFixed(1) + '→' + VoutE24.toFixed(2) + 'V)';
-        document.getElementById('res-cur').textContent   = divCurrent.toFixed(2) + ' mA';
+        const adcCount  = Math.round(VoutDisp / vref * maxCounts);
+        const resolution = adcCount > 0 ? vin / adcCount * 1000 : 0;
+        const divCurrent = vin / (R1 + R2) * 1000;
+        const utilPct    = VoutDisp / vref * 100;
+
+        // ── Mode badge & top blocks ───────────────────────────────────────────
+        const badges = { both:'R1 & R2 known → showing Vout', r1:'R1 fixed → R2 calculated', r2:'R2 fixed → R1 calculated', auto:'Auto (R2 = 10 kΩ base)' };
+        document.getElementById('res-mode-badge').textContent = '— ' + badges[mode];
+
+        if (mode === 'both') {
+            document.getElementById('res-vout-lbl').textContent = 'Vout (your divider at Vin max)';
+            document.getElementById('res-vout-sub').textContent = `ADC input = ${VoutDisp.toFixed(3)} V`;
+            document.getElementById('res-r-lbl').textContent    = 'Divider ratio';
+            document.getElementById('res-r-calc').textContent   = (R2/(R1+R2)).toFixed(4);
+            document.getElementById('res-r-sub').textContent    = `R1=${fmtR(R1)} / R2=${fmtR(R2)}`;
+            document.getElementById('res-r-e24').textContent    = '';
+        } else if (mode === 'r1') {
+            document.getElementById('res-vout-lbl').textContent = 'Vout (at Vin max)';
+            document.getElementById('res-vout-sub').textContent = 'ADC input voltage';
+            document.getElementById('res-r-lbl').textContent    = 'R2 needed (calculated)';
+            document.getElementById('res-r-calc').textContent   = fmtR(R2);
+            document.getElementById('res-r-sub').textContent    = 'Connects mid-point to GND';
+            document.getElementById('res-r-e24').textContent    = R2e24 ? 'E24: ' + fmtR(R2e24) : '';
+        } else if (mode === 'r2') {
+            document.getElementById('res-vout-lbl').textContent = 'Vout (at Vin max)';
+            document.getElementById('res-vout-sub').textContent = 'ADC input voltage';
+            document.getElementById('res-r-lbl').textContent    = 'R1 needed (calculated)';
+            document.getElementById('res-r-calc').textContent   = fmtR(R1);
+            document.getElementById('res-r-sub').textContent    = 'Connects Vin to mid-point';
+            document.getElementById('res-r-e24').textContent    = R1e24 ? 'E24: ' + fmtR(R1e24) : '';
+        } else {
+            document.getElementById('res-vout-lbl').textContent = 'Vout (at Vin max)';
+            document.getElementById('res-vout-sub').textContent = 'ADC input voltage';
+            document.getElementById('res-r-lbl').textContent    = 'R1 needed (calculated)';
+            document.getElementById('res-r-calc').textContent   = fmtR(R1);
+            document.getElementById('res-r-sub').textContent    = 'R2 = 10 kΩ (auto base)';
+            document.getElementById('res-r-e24').textContent    = R1e24 ? 'E24: ' + fmtR(R1e24) : '';
+        }
+
+        document.getElementById('res-vout').textContent = VoutDisp.toFixed(3) + ' V';
+        document.getElementById('res-r1').textContent   = fmtR(R1disp);
+        document.getElementById('res-r2').textContent   = fmtR(R2disp);
+        document.getElementById('res-adc').textContent  = adcCount + ' / ' + maxCounts;
+        document.getElementById('res-res').textContent  = resolution.toFixed(2) + ' mV/count';
+        document.getElementById('res-cur').textContent  = divCurrent.toFixed(2) + ' mA';
 
         const utilEl = document.getElementById('res-util');
         utilEl.textContent = utilPct.toFixed(1) + '%';
@@ -391,15 +436,15 @@
         document.getElementById('adc-bar-pct').textContent = utilPct.toFixed(1) + '%';
 
         let notes = '';
-        if (VoutE24 > vref) notes += `<div class="err-box">Vout (${VoutE24.toFixed(2)}V) exceeds ADC reference (${vref}V) — this will damage the ADC input! Increase R1 or reduce Vin.</div>`;
-        if (VoutE24 > vref * 0.98) notes += `<div class="warn-box">Vout is very close to Vref — a small overvoltage could damage the ADC. Add a Zener or reduce the divider ratio slightly.</div>`;
-        if (utilPct < 60) notes += `<div class="warn-box">ADC utilisation is low (${utilPct.toFixed(0)}%). Consider adjusting R1/R2 to use more of the ADC range for better resolution.</div>`;
+        if (VoutDisp > vref) notes += `<div class="err-box">Vout (${VoutDisp.toFixed(2)} V) exceeds ADC reference (${vref} V) — this will damage the ADC input! Increase R1 or reduce Vin.</div>`;
+        else if (VoutDisp > vref * 0.98) notes += `<div class="warn-box">Vout is very close to Vref — a small overvoltage could damage the ADC. Add a Zener or adjust the ratio slightly.</div>`;
+        if (utilPct < 60 && VoutDisp <= vref) notes += `<div class="warn-box">ADC utilisation is low (${utilPct.toFixed(0)}%). Consider adjusting R1/R2 to use more of the ADC range for better resolution.</div>`;
         if (R2 > 100e3) notes += `<div class="warn-box">R2 is very high (${fmtR(R2)}). ADC input impedance may cause reading errors. Keep R2 ≤ 10–100 kΩ depending on platform.</div>`;
-        if (vin < vref) notes += `<div class="info-box">Vin (${vin}V) is already within ADC range (${vref}V) — a voltage divider is not needed. Connect directly to ADC (with a small series resistor for protection).</div>`;
+        if (vin < vref) notes += `<div class="info-box">Vin (${vin} V) is already within ADC range (${vref} V) — a voltage divider is not needed. Connect directly to ADC (with a small series resistor for protection).</div>`;
         document.getElementById('res-notes').innerHTML = notes;
 
         rc.style.display='';
-        drawCircuit(R1, R2, vin, VoutE24);
+        drawCircuit(R1disp, R2disp, vin, VoutDisp);
     }
 
     function drawCircuit(R1, R2, vin, vout) {
