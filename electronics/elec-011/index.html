@@ -121,8 +121,13 @@
         <div class="card">
             <h2>Typical wiring</h2>
             <div class="svg-wrap">
-                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" width="640" height="200"></svg>
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 210" style="width:100%;max-width:660px;height:auto;display:block;margin:0 auto;"></svg>
             </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
     </footer>
 
     <script src="../../js/nav.js"></script>
@@ -234,127 +239,98 @@
     (function drawCircuit() {
         const svg = document.getElementById('circuit-svg');
         const ns = 'http://www.w3.org/2000/svg';
+
         function el(tag, attrs, text) {
             const e = document.createElementNS(ns, tag);
             Object.entries(attrs).forEach(([k,v]) => e.setAttribute(k,v));
             if (text !== undefined) e.textContent = text;
             return e;
         }
-        function line(x1,y1,x2,y2,col,w) {
+        function L(x1,y1,x2,y2,col,w) {
             return el('line',{x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'round'});
         }
-        function txt(x,y,t,col,sz,anc) {
+        function T(x,y,t,col,sz,anc) {
             return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);
         }
-        function cap(cx,cy,col) {
-            const g = document.createElementNS(ns,'g');
-            g.appendChild(line(cx-10,cy-3,cx+10,cy-3,col||'#60a5fa',2));
-            g.appendChild(line(cx-10,cy+3,cx+10,cy+3,col||'#60a5fa',2));
-            return g;
+
+        // Draw one complete circuit starting at ox
+        function draw(ox, titleTxt, icTxt, vinTxt, voutTxt, titleCol) {
+            const ym = 105;   // main signal line y
+            const yg = 185;   // GND bus y
+
+            // Title
+            svg.appendChild(T(ox+148, 14, titleTxt, titleCol, 11, 'middle'));
+
+            // Left vertical (Vin rail to GND)
+            svg.appendChild(T(ox+10, ym-15, vinTxt, '#facc15', 9, 'start'));
+            svg.appendChild(L(ox+10, ym, ox+10, yg));
+
+            // Vin → Cin tap
+            svg.appendChild(L(ox+10, ym, ox+65, ym));
+
+            // ── Cin (centered at x=ox+48) ──
+            const cx1 = ox+48;
+            svg.appendChild(L(cx1, ym, cx1, ym+10));                              // down to cap
+            svg.appendChild(L(cx1-12, ym+10, cx1+12, ym+10, '#4ade80', 2.5));    // plate 1
+            svg.appendChild(L(cx1-12, ym+17, cx1+12, ym+17, '#4ade80', 2.5));    // plate 2
+            svg.appendChild(L(cx1, ym+17, cx1, yg));                              // down to GND
+            svg.appendChild(T(cx1, ym+28, 'Cin',    '#4ade80', 8, 'middle'));
+            svg.appendChild(T(cx1, ym+39, '0.33µF', '#6b7280', 7, 'middle'));
+
+            // Cin → IC
+            svg.appendChild(L(ox+65, ym, ox+92, ym));
+
+            // ── IC block (x: ox+92 to ox+182, y: ym-24 to ym+20) ──
+            const icX = ox+92, icY = ym-24, icW = 90, icH = 44;
+            svg.appendChild(el('rect',{x:icX, y:icY, width:icW, height:icH,
+                fill:'#1a2433', stroke:'#fb923c', 'stroke-width':2, rx:6}));
+            svg.appendChild(T(icX+icW/2, ym-4, icTxt, '#fb923c', 13, 'middle'));
+
+            // Pin labels — strictly OUTSIDE the IC box
+            svg.appendChild(T(icX-4,    ym+8, 'IN',  '#9ca3af', 8, 'end'));    // left of box
+            svg.appendChild(T(icX+icW+4, ym+8, 'OUT', '#9ca3af', 8, 'start')); // right of box
+
+            // GND pin: up from top of IC to floating GND symbol
+            const gpx = icX+24;
+            svg.appendChild(L(gpx, icY, gpx, icY-18));                         // up from IC
+            svg.appendChild(L(gpx-9, icY-18, gpx+9, icY-18, '#6b7280', 1.5)); // GND bar 1
+            svg.appendChild(L(gpx-6, icY-13, gpx+6, icY-13, '#6b7280', 1.2)); // GND bar 2
+            svg.appendChild(L(gpx-3, icY-8,  gpx+3, icY-8,  '#6b7280', 1));   // GND bar 3
+            svg.appendChild(T(gpx+13, icY-14, 'GND', '#9ca3af', 8, 'start'));
+
+            // IC → Cout
+            svg.appendChild(L(icX+icW, ym, ox+218, ym));
+
+            // ── Cout (centered at x=ox+205) ──
+            const cx2 = ox+205;
+            svg.appendChild(L(cx2, ym, cx2, ym+10));
+            svg.appendChild(L(cx2-12, ym+10, cx2+12, ym+10, '#60a5fa', 2.5));
+            svg.appendChild(L(cx2-12, ym+17, cx2+12, ym+17, '#60a5fa', 2.5));
+            svg.appendChild(L(cx2, ym+17, cx2, yg));
+            svg.appendChild(T(cx2, ym+28, 'Cout',  '#60a5fa', 8, 'middle'));
+            svg.appendChild(T(cx2, ym+39, '0.1µF', '#6b7280', 7, 'middle'));
+
+            // Cout → Load
+            svg.appendChild(L(ox+218, ym, ox+238, ym));
+
+            // ── Load box ──
+            svg.appendChild(el('rect',{x:ox+238, y:ym-14, width:42, height:28,
+                fill:'#1f2937', stroke:'#6b7280', 'stroke-width':1.5, rx:4}));
+            svg.appendChild(T(ox+259, ym, 'Load', '#6b7280', 9, 'middle'));
+
+            // Load → right rail
+            const rx = ox+295;
+            svg.appendChild(L(ox+280, ym, rx, ym));
+            svg.appendChild(L(rx, ym, rx, yg));
+            svg.appendChild(T(rx, ym-15, voutTxt, '#facc15', 9, 'end'));
+
+            // ── GND bus ──
+            svg.appendChild(L(ox+10, yg, rx, yg, '#6b7280', 1));
+            svg.appendChild(T(ox+148, yg+13, 'GND', '#6b7280', 8, 'middle'));
         }
 
-        // 78xx circuit
-        const ox = 30;
-        svg.appendChild(txt(ox+120, 16, '78xx — Positive Regulator', '#4ade80', 11, 'middle'));
-
-        // Vin line
-        svg.appendChild(line(ox,50,ox+60,50,'#6b7280'));
-        svg.appendChild(txt(ox,38,'Vin','#facc15',10,'middle'));
-
-        // Cin
-        svg.appendChild(cap(ox+35,67,'#4ade80'));
-        svg.appendChild(line(ox+35,50,ox+35,64,'#6b7280'));
-        svg.appendChild(line(ox+35,70,ox+35,120,'#6b7280'));
-        svg.appendChild(txt(ox+52,67,'Cin','#4ade80',8,'start'));
-        svg.appendChild(txt(ox+52,78,'0.33µF','#6b7280',7,'start'));
-
-        // IC block
-        svg.appendChild(el('rect',{x:ox+60,y:32,width:80,height:40,fill:'#1a2433',stroke:'#fb923c','stroke-width':2,rx:6}));
-        svg.appendChild(txt(ox+100,46,'78xx','#fb923c',12,'middle'));
-        svg.appendChild(txt(ox+60,58,'IN','#6b7280',8,'start'));
-        svg.appendChild(txt(ox+60,42,'GND','#6b7280',8,'start'));
-        svg.appendChild(txt(ox+136,58,'OUT','#6b7280',8,'end'));
-
-        // GND pin down
-        svg.appendChild(line(ox+80,32,ox+80,22,'#6b7280'));
-        svg.appendChild(line(ox+80,22,ox+100,22,'#6b7280'));
-        svg.appendChild(line(ox+100,22,ox+100,18,'#6b7280'));
-        // GND symbol
-        svg.appendChild(line(ox+93,18,ox+107,18,'#6b7280',1.5));
-        svg.appendChild(line(ox+96,21,ox+104,21,'#6b7280',1));
-        svg.appendChild(line(ox+99,24,ox+101,24,'#6b7280',0.8));
-
-        // Out line
-        svg.appendChild(line(ox+140,50,ox+200,50,'#6b7280'));
-        svg.appendChild(txt(ox+210,38,'Vout','#facc15',10,'middle'));
-
-        // Cout
-        svg.appendChild(cap(ox+175,67,'#60a5fa'));
-        svg.appendChild(line(ox+175,50,ox+175,64,'#6b7280'));
-        svg.appendChild(line(ox+175,70,ox+175,120,'#6b7280'));
-        svg.appendChild(txt(ox+192,67,'Cout','#60a5fa',8,'start'));
-        svg.appendChild(txt(ox+192,78,'0.1µF','#6b7280',7,'start'));
-
-        // GND rail
-        svg.appendChild(line(ox,120,ox+240,120,'#6b7280',1));
-        svg.appendChild(line(ox,50,ox,120,'#6b7280'));
-        svg.appendChild(line(ox+240,50,ox+240,120,'#6b7280'));
-        svg.appendChild(txt(ox,132,'GND','#6b7280',8,'middle'));
-
-        // Load
-        svg.appendChild(el('rect',{x:ox+200,y:38,width:40,height:24,fill:'#1f2937',stroke:'#6b7280','stroke-width':1.5,rx:4}));
-        svg.appendChild(txt(ox+220,50,'Load','#6b7280',9,'middle'));
-
-        // 79xx circuit (right side)
-        const ox2 = 370;
-        svg.appendChild(txt(ox2+120, 16, '79xx — Negative Regulator', '#60a5fa', 11, 'middle'));
-
-        // Vin- line
-        svg.appendChild(line(ox2,50,ox2+60,50,'#6b7280'));
-        svg.appendChild(txt(ox2,38,'Vin−','#facc15',10,'middle'));
-
-        // Cin
-        svg.appendChild(cap(ox2+35,67,'#4ade80'));
-        svg.appendChild(line(ox2+35,50,ox2+35,64,'#6b7280'));
-        svg.appendChild(line(ox2+35,70,ox2+35,120,'#6b7280'));
-        svg.appendChild(txt(ox2+52,67,'Cin','#4ade80',8,'start'));
-        svg.appendChild(txt(ox2+52,78,'0.33µF','#6b7280',7,'start'));
-
-        // IC block
-        svg.appendChild(el('rect',{x:ox2+60,y:32,width:80,height:40,fill:'#1a2433',stroke:'#fb923c','stroke-width':2,rx:6}));
-        svg.appendChild(txt(ox2+100,46,'79xx','#fb923c',12,'middle'));
-        svg.appendChild(txt(ox2+60,58,'IN','#6b7280',8,'start'));
-        svg.appendChild(txt(ox2+60,42,'GND','#6b7280',8,'start'));
-        svg.appendChild(txt(ox2+136,58,'OUT','#6b7280',8,'end'));
-
-        // GND pin up (79xx GND is pin 1)
-        svg.appendChild(line(ox2+80,32,ox2+80,22,'#6b7280'));
-        svg.appendChild(line(ox2+80,22,ox2+100,22,'#6b7280'));
-        svg.appendChild(line(ox2+100,22,ox2+100,18,'#6b7280'));
-        svg.appendChild(line(ox2+93,18,ox2+107,18,'#6b7280',1.5));
-        svg.appendChild(line(ox2+96,21,ox2+104,21,'#6b7280',1));
-        svg.appendChild(line(ox2+99,24,ox2+101,24,'#6b7280',0.8));
-
-        // Out line
-        svg.appendChild(line(ox2+140,50,ox2+200,50,'#6b7280'));
-        svg.appendChild(txt(ox2+210,38,'Vout−','#facc15',10,'middle'));
-
-        // Cout
-        svg.appendChild(cap(ox2+175,67,'#60a5fa'));
-        svg.appendChild(line(ox2+175,50,ox2+175,64,'#6b7280'));
-        svg.appendChild(line(ox2+175,70,ox2+175,120,'#6b7280'));
-        svg.appendChild(txt(ox2+192,67,'Cout','#60a5fa',8,'start'));
-        svg.appendChild(txt(ox2+192,78,'0.1µF','#6b7280',7,'start'));
-
-        // GND rail
-        svg.appendChild(line(ox2,120,ox2+240,120,'#6b7280',1));
-        svg.appendChild(line(ox2,50,ox2,120,'#6b7280'));
-        svg.appendChild(line(ox2+240,50,ox2+240,120,'#6b7280'));
-        svg.appendChild(txt(ox2,132,'GND','#6b7280',8,'middle'));
-
-        // Load
-        svg.appendChild(el('rect',{x:ox2+200,y:38,width:40,height:24,fill:'#1f2937',stroke:'#6b7280','stroke-width':1.5,rx:4}));
-        svg.appendChild(txt(ox2+220,50,'Load','#6b7280',9,'middle'));
+        draw(10,  '78xx — Positive Regulator', '78xx', 'Vin',  'Vout',  '#4ade80');
+        draw(345, '79xx — Negative Regulator', '79xx', 'Vin−', 'Vout−', '#60a5fa');
     })();
 
     // ── Init ──────────────────────────────────────────────────────────────
