@@ -663,7 +663,7 @@
                 svg.appendChild(el('rect', {x:cx-fw/2, y:top+wh, width:fw, height:fh, fill, stroke, 'stroke-width':1.5}));
                 // labels
                 const lbl = secType === 'ipe' ? 'IPE' : secType === 'hea' ? 'HEA' : 'HEB';
-                svg.appendChild(txt(cx, cy, lbl, '#fb923c', 10));
+                svg.appendChild(txt(cx + fw/2 + 10, cy, lbl, '#fb923c', 9, 'start'));
                 svg.appendChild(el('line', {x1:cx-fw/2-4, y1:top-fh, x2:cx-fw/2-4, y2:top+wh+fh, stroke:'#60a5fa', 'stroke-width':0.8}));
                 svg.appendChild(txt(cx-fw/2-13, cy, 'h', '#60a5fa', 9));
                 break;
