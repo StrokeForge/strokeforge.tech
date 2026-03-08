@@ -571,11 +571,12 @@
             svg.appendChild(box(255,80,40,20,'#4ade80','Rsc', R2 ? fmtR(R2) : '?'));
             svg.appendChild(line(275,80,310,80,'#6b7280'));
             svg.appendChild(txt(310,80,'Load →','#6b7280',9,'start'));
-            // ADJ wire down to Rsc mid
-            svg.appendChild(line(140,105,140,140,'#60a5fa'));
-            svg.appendChild(line(140,140,255,140,'#60a5fa'));
-            svg.appendChild(line(255,140,255,90,'#60a5fa'));
-            svg.appendChild(txt(185,135,'ADJ','#60a5fa',8,'middle'));
+            // ADJ wire: IC bottom → down → right to junction after Rsc
+            svg.appendChild(line(140,105,140,145,'#60a5fa'));
+            svg.appendChild(line(140,145,275,145,'#60a5fa'));
+            svg.appendChild(line(275,145,275,80,'#60a5fa'));
+            svg.appendChild(el('circle',{cx:275,cy:80,r:3,fill:'#60a5fa'}));
+            svg.appendChild(txt(200,138,'ADJ','#60a5fa',8,'middle'));
             return;
         }
 
