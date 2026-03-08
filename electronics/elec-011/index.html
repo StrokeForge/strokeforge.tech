@@ -121,7 +121,7 @@
         <div class="card">
             <h2>Typical wiring</h2>
             <div class="svg-wrap">
-                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 200" style="width:100%;max-width:680px;height:auto;display:block;margin:0 auto;"></svg>
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 730 200" style="width:100%;max-width:730px;height:auto;display:block;margin:0 auto;"></svg>
             </div>
         </div>
     </main>
@@ -291,10 +291,9 @@
             svg.appendChild(T(icX-5,     ym+11, 'IN',  '#9ca3af', 8, 'end'));
             svg.appendChild(T(icX+icW+5, ym+11, 'OUT', '#9ca3af', 8, 'start'));
 
-            // GND pin: downward from IC bottom to GND bus
-            const gpx = icX+20;
+            // GND pin: center of IC bottom → GND bus (middle pin on TO-220)
+            const gpx = icX + icW/2;
             svg.appendChild(L(gpx, icY+icH, gpx, yg));
-            svg.appendChild(T(gpx+4, icY+icH+10, 'GND', '#9ca3af', 8, 'start'));
 
             // IC → Cout node
             svg.appendChild(L(icX+icW, ym, ox+210, ym));
@@ -330,7 +329,7 @@
         }
 
         draw(10,  '78xx — Positive Regulator', '78xx', 'Vin',  'Vout',  '#4ade80');
-        draw(340, '79xx — Negative Regulator', '79xx', 'Vin−', 'Vout−', '#60a5fa');
+        draw(380, '79xx — Negative Regulator', '79xx', 'Vin−', 'Vout−', '#60a5fa');
     })();
 
     // ── Init ──────────────────────────────────────────────────────────────
