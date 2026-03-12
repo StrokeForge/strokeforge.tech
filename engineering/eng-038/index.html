@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steel Hardness by Heat Treatment | StrokeForge Engineering</title>
+    <meta name="description" content="Achievable hardness reference for 20 common Czech and EN steels. Delivery condition, after quenching, after tempering and case hardening. Filter by category or treatment.">
+    <meta name="keywords" content="steel hardness, tvrdost oceli, kalitelnost, HRC tabulka, 12050, 14220, 42CrMo4, tepelné zpracování tabulka, quench hardness">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-038/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+.tool-wrap { max-width: 1060px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Filters */
+        .filter-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.2rem; align-items: center; }
+        .filter-group { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .filter-label { font-size: 0.77rem; color: var(--text-gray); align-self: center; white-space: nowrap; }
+        .fb { padding: 0.35rem 0.85rem; border-radius: 6px; border: 1px solid var(--border-gray); background: none; color: var(--text-gray); cursor: pointer; font-size: 0.78rem; font-weight: 600; transition: all 0.18s; }
+        .fb.active { background: var(--primary-orange); color: #000; border-color: var(--primary-orange); }
+        .fb:not(.active):hover { border-color: var(--primary-orange); color: var(--light-gray); }
+
+        /* Search */
+        .search-wrap { position: relative; }
+        .search-inp { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.45rem 0.85rem 0.45rem 2rem; font-size: 0.85rem; outline: none; width: 200px; transition: border-color 0.2s; }
+        .search-inp:focus { border-color: var(--primary-orange); }
+        .search-icon { position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); color: var(--text-gray); font-size: 0.85rem; pointer-events: none; }
+
+        /* Count badge */
+        .count-badge { background: rgba(249,115,22,0.12); color: var(--primary-orange); border: 1px solid rgba(249,115,22,0.25); border-radius: 5px; padding: 0.1rem 0.5rem; font-size: 0.75rem; font-weight: 700; margin-left: 0.5rem; }
+
+        /* Table */
+        .tbl-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        thead th { background: var(--darker-bg); color: var(--text-gray); font-size: 0.74rem; font-weight: 700; padding: 0.6rem 0.7rem; text-align: left; border-bottom: 2px solid var(--border-gray); white-space: nowrap; }
+        thead th.center { text-align: center; }
+        tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
+        tbody tr:hover { background: rgba(255,255,255,0.03); }
+        tbody tr.hidden { display: none; }
+        td { padding: 0.6rem 0.7rem; vertical-align: middle; }
+
+        /* Steel name */
+        .steel-cs { font-weight: 700; color: var(--primary-orange); font-size: 0.86rem; }
+        .steel-en { font-size: 0.74rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        /* Category badge */
+        .cat-badge { font-size: 0.68rem; font-weight: 700; padding: 0.12rem 0.45rem; border-radius: 4px; white-space: nowrap; display: inline-block; }
+        .cat-struct   { background: rgba(96,165,250,0.12); color:#60a5fa; border:1px solid rgba(96,165,250,0.25); }
+        .cat-through  { background: rgba(249,115,22,0.12); color:#f97316; border:1px solid rgba(249,115,22,0.3); }
+        .cat-case     { background: rgba(167,139,250,0.12); color:#a78bfa; border:1px solid rgba(167,139,250,0.3); }
+        .cat-nitriding{ background: rgba(52,211,153,0.12); color:#34d399; border:1px solid rgba(52,211,153,0.3); }
+        .cat-tool     { background: rgba(248,113,113,0.12); color:#f87171; border:1px solid rgba(248,113,113,0.3); }
+        .cat-stainless{ background: rgba(209,213,219,0.12); color:#d1d5db; border:1px solid rgba(209,213,219,0.3); }
+
+        /* Hardness value cells */
+        .hrd-cell { text-align: center; }
+        .hrd-val { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 0.88rem; }
+        .hrd-na  { color: var(--text-gray); font-size: 0.78rem; }
+
+        /* Mini hardness bar inside cell */
+        .mini-bar-wrap { display: flex; align-items: center; gap: 0.4rem; }
+        .mini-bar-track { flex: 1; background: rgba(255,255,255,0.07); border-radius: 3px; height: 5px; min-width: 60px; }
+        .mini-bar-fill { height: 100%; border-radius: 3px; }
+
+        /* Notes */
+        .note-cell { font-size: 0.74rem; color: var(--text-gray); max-width: 200px; }
+
+        /* Info */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.6; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+        .info-block code { background: rgba(255,255,255,0.07); padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.82rem; color: var(--light-gray); }
+
+        details.card summary { cursor: pointer; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; }
+        details.card[open] summary { margin-bottom: 1rem; }
+        .related-link { display:inline-flex;align-items:center;gap:0.4rem;background:var(--darker-bg);border:1px solid var(--border-gray);border-radius:7px;padding:0.45rem 0.9rem;font-size:0.81rem;color:var(--text-gray);text-decoration:none;transition:border-color 0.2s,color 0.2s; }
+        .related-link:hover { border-color:var(--primary-orange);color:var(--light-gray); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Steel Hardness by Heat Treatment</h1>
+        <p>Achievable hardness for common Czech / EN steels · delivery · quenched · tempered</p>
+    </div>
+
+    <div class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <div class="card">
+            <h2>Hardness Reference Table <span class="count-badge" id="count">20</span></h2>
+
+            <div class="filter-row">
+                <span class="filter-label">Category:</span>
+                <div class="filter-group" id="cat-filters">
+                    <button class="fb active" data-cat="all">All</button>
+                    <button class="fb" data-cat="struct">Structural</button>
+                    <button class="fb" data-cat="through">Through-hardening</button>
+                    <button class="fb" data-cat="case">Case-hardening</button>
+                    <button class="fb" data-cat="nitriding">Nitriding</button>
+                    <button class="fb" data-cat="tool">Tool</button>
+                    <button class="fb" data-cat="stainless">Stainless</button>
+                </div>
+            </div>
+            <div class="filter-row" style="margin-bottom:1.2rem;">
+                <span class="filter-label">Treatment:</span>
+                <div class="filter-group" id="tz-filters">
+                    <button class="fb active" data-tz="all">All</button>
+                    <button class="fb" data-tz="qt">Quench &amp; Temper</button>
+                    <button class="fb" data-tz="case">Case Hardening</button>
+                    <button class="fb" data-tz="nitriding">Nitriding</button>
+                    <button class="fb" data-tz="anneal">Annealing only</button>
+                </div>
+                <div class="search-wrap" style="margin-left:auto;">
+                    <span class="search-icon">🔍</span>
+                    <input class="search-inp" type="text" id="search" placeholder="Steel, grade…">
+                </div>
+            </div>
+
+            <div class="tbl-wrap">
+                <table id="steel-table">
+                    <thead>
+                        <tr>
+                            <th>Czech / EN grade</th>
+                            <th>Category</th>
+                            <th class="center">Delivery<br>HB</th>
+                            <th class="center">Quenched<br>max HRC</th>
+                            <th class="center">Low temper<br>150–250 °C</th>
+                            <th class="center">QT / High temp.<br>550–650 °C</th>
+                            <th class="center">Surface<br>(case/nitride)</th>
+                            <th class="center">Hardness bar (max)</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="steel-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="card" style="padding:1.2rem 2rem;">
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+                <span style="font-size:0.78rem;color:var(--text-gray);margin-right:0.3rem;">Categories:</span>
+                <span class="cat-badge cat-struct">Structural</span>
+                <span class="cat-badge cat-through">Through-hardening</span>
+                <span class="cat-badge cat-case">Case-hardening</span>
+                <span class="cat-badge cat-nitriding">Nitriding</span>
+                <span class="cat-badge cat-tool">Tool</span>
+                <span class="cat-badge cat-stainless">Stainless</span>
+                <span style="font-size:0.75rem;color:var(--text-gray);margin-left:1rem;">— = not applicable / no significant hardening</span>
+            </div>
+        </div>
+
+        <!-- Info -->
+        <details class="card">
+            <summary>Notes &amp; References</summary>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Reading the table</h3>
+                    <ul>
+                        <li><strong>Delivery HB:</strong> hardness in normalised/annealed delivery state</li>
+                        <li><strong>Quenched max HRC:</strong> maximum achievable after quenching (no tempering)</li>
+                        <li><strong>Low temper (150–250 °C):</strong> maintains most hardness, reduces brittleness</li>
+                        <li><strong>QT/High temper (550–650 °C):</strong> quench + high temper (zušlechťování)</li>
+                        <li><strong>Surface:</strong> case or nitriding surface hardness; core remains tough</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Hardenability factors</h3>
+                    <ul>
+                        <li>Carbon content is the primary factor (min. ≈ 0.30% for through-hardening)</li>
+                        <li>Alloying (Cr, Mo, Ni, Mn) increases hardenability — deeper through-hardening</li>
+                        <li>Quenching medium: water &gt; oil &gt; air — faster cooling = higher hardness, more distortion</li>
+                        <li>Section size: large sections may not harden fully through without high-alloy steel</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>HRC ↔ HB approximate conversion</h3>
+                    <ul>
+                        <li>HRC 20 ≈ HB 241</li>
+                        <li>HRC 30 ≈ HB 286</li>
+                        <li>HRC 40 ≈ HB 371</li>
+                        <li>HRC 50 ≈ HB 481</li>
+                        <li>HRC 60 ≈ HB 613</li>
+                        <li>HRC 65 ≈ HB 721</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Related pages</h3>
+                    <p style="margin-bottom:0.6rem;">Heat treatment methods overview:</p>
+                    <a href="/engineering/eng-037/" class="related-link">🔥 eng-037 — Heat Treatment Overview</a>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <footer>
+        <p>StrokeForge Engineering — reference tools for mechanical design</p>
+    </footer>
+
+    <script>
+    // cat: struct | through | case | nitriding | tool | stainless
+    // tz:  qt | case | nitriding | anneal
+    // hardness values: null = N/A
+    const STEELS = [
+        // Structural
+        { cs:'11 373', en:'S235JR', cat:'struct', tz:'anneal',
+          hb_del:120, hrc_q:null, hrc_lt:null, hrc_qt:null, hrc_surf:null,
+          note:'No hardening. Stress relief annealing only.' },
+        { cs:'11 500', en:'S355J2', cat:'struct', tz:'anneal',
+          hb_del:165, hrc_q:null, hrc_lt:null, hrc_qt:null, hrc_surf:null,
+          note:'No significant hardening. Weldable structural steel.' },
+        { cs:'11 600', en:'E295 (St50)', cat:'struct', tz:'anneal',
+          hb_del:175, hrc_q:null, hrc_lt:null, hrc_qt:null, hrc_surf:null,
+          note:'Low-alloy, normalised. Limited hardenability.' },
+        // Through-hardening
+        { cs:'12 050', en:'C45 / 1.0503', cat:'through', tz:'qt',
+          hb_del:207, hrc_q:56, hrc_lt:52, hrc_qt:28,
+          hrc_surf:null,
+          note:'Most common engineering steel. Good machinability. Induction hardening possible.' },
+        { cs:'12 060', en:'C60 / 1.0601', cat:'through', tz:'qt',
+          hb_del:229, hrc_q:62, hrc_lt:58, hrc_qt:30,
+          hrc_surf:null,
+          note:'Higher carbon — harder but more brittle. Springs, rails, wear parts.' },
+        { cs:'14 331', en:'34Cr4 / 1.7033', cat:'through', tz:'qt',
+          hb_del:207, hrc_q:57, hrc_lt:53, hrc_qt:35,
+          hrc_surf:null,
+          note:'Chromium improves hardenability. Used for bolts, shafts up to ∅50 mm.' },
+        { cs:'15 130', en:'34CrMo4 / 1.7220', cat:'through', tz:'qt',
+          hb_del:217, hrc_q:58, hrc_lt:54, hrc_qt:36,
+          hrc_surf:null,
+          note:'Cr+Mo steel. Better hardenability, good fatigue strength.' },
+        { cs:'15 142', en:'42CrMo4 / 1.7225', cat:'through', tz:'qt',
+          hb_del:229, hrc_q:59, hrc_lt:55, hrc_qt:38,
+          hrc_surf:null,
+          note:'Standard QT steel. Shafts, gears, connecting rods. Through-hardened up to ∅100 mm.' },
+        { cs:'15 241', en:'34CrNiMo6 / 1.6582', cat:'through', tz:'qt',
+          hb_del:248, hrc_q:59, hrc_lt:56, hrc_qt:40,
+          hrc_surf:null,
+          note:'High-strength QT steel. Large cross-sections. Crankshafts, heavy machinery.' },
+        { cs:'16 341', en:'36CrNiMo4 / 1.6511', cat:'through', tz:'qt',
+          hb_del:248, hrc_q:58, hrc_lt:55, hrc_qt:42,
+          hrc_surf:null,
+          note:'Ni+Cr+Mo. Very high toughness after QT. Aerospace, heavy shafts.' },
+        // Case-hardening
+        { cs:'12 020', en:'C10 / 1.0301', cat:'case', tz:'case',
+          hb_del:131, hrc_q:null, hrc_lt:null, hrc_qt:null,
+          hrc_surf:58,
+          note:'Low-C base steel. Carburised to 0.8% C surface. Simple case-hardened parts.' },
+        { cs:'14 220', en:'16MnCr5 / 1.7131', cat:'case', tz:'case',
+          hb_del:207, hrc_q:null, hrc_lt:null, hrc_qt:null,
+          hrc_surf:60,
+          note:'Standard case-hardening steel. Gears, pins, camshafts. Case depth 0.5–2 mm.' },
+        { cs:'14 260', en:'20MnCr5 / 1.7147', cat:'case', tz:'case',
+          hb_del:217, hrc_q:null, hrc_lt:null, hrc_qt:null,
+          hrc_surf:62,
+          note:'Higher hardenability than 16MnCr5. Larger gears, heavier loads.' },
+        { cs:'16 220', en:'17CrNi6-6 / 1.5918', cat:'case', tz:'case',
+          hb_del:229, hrc_q:null, hrc_lt:null, hrc_qt:null,
+          hrc_surf:62,
+          note:'Ni improves case toughness. High-performance gears, aerospace transmissions.' },
+        // Nitriding
+        { cs:'14 109', en:'34CrAlNi7 / 1.8550', cat:'nitriding', tz:'nitriding',
+          hb_del:248, hrc_q:null, hrc_lt:null, hrc_qt:null,
+          hrc_surf:70,
+          note:'Classic nitriding steel. 900–1100 HV surface (≈ 70 HRC). Very low distortion.' },
+        { cs:'15 230', en:'31CrMoV9 / 1.8519', cat:'nitriding', tz:'nitriding',
+          hb_del:248, hrc_q:null, hrc_lt:null, hrc_qt:null,
+          hrc_surf:68,
+          note:'Mo+V nitriding steel. High surface hardness, excellent fatigue resistance.' },
+        // Tool steels
+        { cs:'19 191', en:'100Cr6 / 1.3505', cat:'tool', tz:'qt',
+          hb_del:207, hrc_q:66, hrc_lt:63, hrc_qt:null,
+          hrc_surf:null,
+          note:'Bearing steel. Very high hardness and wear resistance. Bearings, gauges.' },
+        { cs:'19 312', en:'X38CrMoV5-1 / 1.2343', cat:'tool', tz:'qt',
+          hb_del:229, hrc_q:55, hrc_lt:52, hrc_qt:46,
+          hrc_surf:null,
+          note:'Hot work tool steel. Die casting dies, extrusion tools. Tempered at 550–620 °C.' },
+        { cs:'19 421', en:'X153CrMoV12 / 1.2379', cat:'tool', tz:'qt',
+          hb_del:255, hrc_q:64, hrc_lt:62, hrc_qt:null,
+          hrc_surf:null,
+          note:'Cold work tool steel. High wear resistance. Blanking dies, cutting tools.' },
+        // Stainless
+        { cs:'17 240', en:'X5CrNi18-10 / 304', cat:'stainless', tz:'anneal',
+          hb_del:201, hrc_q:null, hrc_lt:null, hrc_qt:null,
+          hrc_surf:null,
+          note:'Austenitic — cannot be hardened by heat treatment. Work hardening possible.' },
+    ];
+
+    const CAT_LABELS = {
+        struct:'Structural', through:'Through-hardening', case:'Case-hardening',
+        nitriding:'Nitriding', tool:'Tool', stainless:'Stainless'
+    };
+    const CAT_CLASSES = {
+        struct:'cat-struct', through:'cat-through', case:'cat-case',
+        nitriding:'cat-nitriding', tool:'cat-tool', stainless:'cat-stainless'
+    };
+
+    function hrcColor(v) {
+        if (v === null) return '';
+        if (v < 20) return '#4ade80';
+        if (v < 40) return '#fbbf24';
+        if (v < 55) return '#f97316';
+        return '#f87171';
+    }
+
+    function hrdCell(v, unit='HRC') {
+        if (v === null) return `<td class="hrd-cell"><span class="hrd-na">—</span></td>`;
+        const col = hrcColor(v);
+        return `<td class="hrd-cell"><span class="hrd-val" style="color:${col}">${v}</span></td>`;
+    }
+
+    function barCell(s) {
+        // use max of all hardness values
+        const vals = [s.hrc_q, s.hrc_lt, s.hrc_qt, s.hrc_surf].filter(v=>v!==null);
+        if (!vals.length) return `<td class="hrd-cell"><span class="hrd-na">—</span></td>`;
+        const maxV = Math.max(...vals);
+        const pct = (maxV / 70 * 100).toFixed(1);
+        const col = hrcColor(maxV);
+        return `<td>
+            <div class="mini-bar-wrap">
+                <div class="mini-bar-track">
+                    <div class="mini-bar-fill" style="width:${pct}%;background:${col};"></div>
+                </div>
+                <span style="font-size:0.72rem;color:${col};white-space:nowrap;">${maxV} HRC</span>
+            </div>
+        </td>`;
+    }
+
+    function renderRow(s) {
+        return `<tr data-cat="${s.cat}" data-tz="${s.tz}" data-search="${s.cs} ${s.en} ${CAT_LABELS[s.cat]}".toLowerCase()>
+            <td>
+                <div class="steel-cs">${s.cs}</div>
+                <div class="steel-en">${s.en}</div>
+            </td>
+            <td><span class="cat-badge ${CAT_CLASSES[s.cat]}">${CAT_LABELS[s.cat]}</span></td>
+            <td class="hrd-cell"><span class="hrd-val" style="color:#9ca3af">${s.hb_del}</span></td>
+            ${hrdCell(s.hrc_q)}
+            ${hrdCell(s.hrc_lt)}
+            ${hrdCell(s.hrc_qt)}
+            ${hrdCell(s.hrc_surf)}
+            ${barCell(s)}
+            <td class="note-cell">${s.note}</td>
+        </tr>`;
+    }
+
+    function applyFilters() {
+        const cat = document.querySelector('#cat-filters .fb.active').dataset.cat;
+        const tz  = document.querySelector('#tz-filters .fb.active').dataset.tz;
+        const q   = document.getElementById('search').value.toLowerCase();
+        const rows = document.querySelectorAll('#steel-body tr');
+        let count = 0;
+        rows.forEach(row => {
+            const matchCat = cat === 'all' || row.dataset.cat === cat;
+            const matchTz  = tz  === 'all' || row.dataset.tz  === tz;
+            const text = row.textContent.toLowerCase();
+            const matchQ = !q || text.includes(q);
+            const show = matchCat && matchTz && matchQ;
+            row.classList.toggle('hidden', !show);
+            if (show) count++;
+        });
+        document.getElementById('count').textContent = count;
+    }
+
+    // Render table
+    document.getElementById('steel-body').innerHTML = STEELS.map(renderRow).join('');
+
+    // Fix data-search on rows after render
+    document.querySelectorAll('#steel-body tr').forEach((row, i) => {
+        const s = STEELS[i];
+        row.setAttribute('data-search', (s.cs+' '+s.en).toLowerCase());
+    });
+
+    // Filter buttons
+    document.querySelectorAll('#cat-filters .fb').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('#cat-filters .fb').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active'); applyFilters();
+        });
+    });
+    document.querySelectorAll('#tz-filters .fb').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('#tz-filters .fb').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active'); applyFilters();
+        });
+    });
+    document.getElementById('search').addEventListener('input', applyFilters);
+    </script>
+    <script src="../../js/nav.js"></script>
+</body>
+</html>

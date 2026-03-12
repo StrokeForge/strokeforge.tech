@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extension Spring Calculator — DIN EN 13906 | StrokeForge Engineering</title>
+    <meta name="description" content="Extension spring calculator per DIN EN 13906-2. Spring rate k, Wahl corrected shear stress τ, initial tension F0, free length, working lengths at F1/F2.">
+    <meta name="keywords" content="extension spring calculator, tension spring, tahová pružina, spring rate, Wahl factor, initial tension, DIN EN 13906-2, pružina kalkulátor">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-039/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 960px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .input-grid   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        .input-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 640px) { .input-grid { grid-template-columns: 1fr 1fr; } .input-grid-2 { grid-template-columns: 1fr; } }
+        @media (max-width: 400px) { .input-grid { grid-template-columns: 1fr; } }
+
+        .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; min-width: 0; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; flex-shrink: 0; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        /* Side layout: inputs | SVG */
+        .side-layout { display: grid; grid-template-columns: 1fr 150px; gap: 2rem; align-items: start; }
+        @media (max-width: 600px) { .side-layout { grid-template-columns: 1fr; } }
+
+        /* Results table */
+        .res-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .res-table th { padding: 0.5rem 0.9rem; text-align: left; color: var(--text-gray); border-bottom: 1px solid var(--border-gray); font-size: 0.75rem; font-weight: 600; }
+        .res-table td { padding: 0.55rem 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .res-table td:first-child  { color: var(--primary-orange); font-weight: 600; font-family: monospace; width: 130px; }
+        .res-table td:nth-child(2) { color: var(--light-gray); font-weight: 700; font-size: 0.95rem; }
+        .res-table td:nth-child(3) { color: var(--text-gray); font-size: 0.8rem; width: 60px; }
+        .res-table td:nth-child(4) { color: var(--text-gray); font-size: 0.78rem; font-family: monospace; }
+        .res-table tr:last-child td { border-bottom: none; }
+        .res-table .sec-head td { color: var(--text-gray); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border-gray); }
+
+        /* Utilisation bar */
+        .bar-wrap   { margin: 0.5rem 0 0; }
+        .bar-track  { height: 10px; background: var(--darker-bg); border-radius: 99px; overflow: hidden; }
+        .bar-fill   { height: 100%; border-radius: 99px; transition: width 0.4s, background 0.4s; }
+        .bar-label  { font-size: 0.78rem; color: var(--text-gray); margin-top: 0.35rem; display: flex; justify-content: space-between; }
+
+        /* Verdict */
+        .verdict { display: inline-block; padding: 0.3rem 1rem; border-radius: 6px; font-size: 0.88rem; font-weight: 700; margin-top: 0.5rem; }
+        .verdict.pass { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+        .verdict.fail { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+        .verdict.warn { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.82rem; line-height: 2.0; display: block; margin-top: 0.4rem; }
+
+        .related-link { display:inline-flex;align-items:center;gap:0.4rem;background:var(--darker-bg);border:1px solid var(--border-gray);border-radius:7px;padding:0.45rem 0.9rem;font-size:0.81rem;color:var(--text-gray);text-decoration:none;transition:border-color 0.2s,color 0.2s; }
+        .related-link:hover { border-color:var(--primary-orange);color:var(--light-gray); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Extension Spring Calculator</h1>
+        <p>Spring rate · shear stress (Wahl) · initial tension · free length · per DIN EN 13906-2</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- INPUT -->
+        <div class="card">
+            <h2>Spring geometry &amp; loading</h2>
+            <div class="side-layout">
+                <div>
+                    <div class="input-grid" style="margin-bottom:1rem;">
+                        <div class="field">
+                            <label>Wire diameter <i>d</i></label>
+                            <div class="field-row">
+                                <input type="number" id="dw" class="inp" value="2.5" min="0.1" step="0.1" oninput="calc()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Mean coil diameter <i>D</i></label>
+                            <div class="field-row">
+                                <input type="number" id="Dm" class="inp" value="20" min="1" step="0.5" oninput="calc()">
+                                <span class="unit">mm</span>
+                            </div>
+                            <span class="hint">D = D<sub>outer</sub> − d</span>
+                        </div>
+                        <div class="field">
+                            <label>Active coils <i>n</i></label>
+                            <div class="field-row">
+                                <input type="number" id="na" class="inp" value="10" min="2" step="0.5" oninput="calc()">
+                                <span class="unit">—</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Initial tension <i>F</i><sub>0</sub></label>
+                            <div class="field-row">
+                                <input type="number" id="F0" class="inp" value="15" min="0" step="0.5" oninput="calc()">
+                                <span class="unit">N</span>
+                            </div>
+                            <span class="hint">Built-in pretension (typ. 10–40 N)</span>
+                        </div>
+                        <div class="field">
+                            <label>Hook type</label>
+                            <select id="hooks" class="sel" onchange="calc()">
+                                <option value="standard" selected>Standard loops (h = D)</option>
+                                <option value="half">Half loops (h = D/2)</option>
+                                <option value="extended">Extended hooks (h = 1.5D)</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Material</label>
+                            <select id="mat" class="sel" onchange="onMatChange()">
+                                <option value="81500">Spring steel EN 10270-1 SH</option>
+                                <option value="81500crv">Cr-V steel 51CrV4 EN 10270-2</option>
+                                <option value="73000">Stainless 1.4310 EN 10270-3</option>
+                                <option value="43000">Phosphor bronze CuSn6</option>
+                                <option value="custom">Custom G / τ_allow</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="customRow" style="display:none;margin-bottom:1rem;">
+                        <div class="input-grid-2">
+                            <div class="field">
+                                <label>Shear modulus <i>G</i></label>
+                                <div class="field-row">
+                                    <input type="number" id="Gcust" class="inp" value="81500" step="500" oninput="calc()">
+                                    <span class="unit">MPa</span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>τ<sub>allow</sub> (static)</label>
+                                <div class="field-row">
+                                    <input type="number" id="tauAllow" class="inp" value="700" step="10" oninput="calc()">
+                                    <span class="unit">MPa</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-grid-2">
+                        <div class="field">
+                            <label>Working force F<sub>1</sub> (min)</label>
+                            <div class="field-row">
+                                <input type="number" id="F1" class="inp" value="40" min="0" step="1" oninput="calc()">
+                                <span class="unit">N</span>
+                            </div>
+                            <span class="hint">Must be ≥ F<sub>0</sub></span>
+                        </div>
+                        <div class="field">
+                            <label>Working force F<sub>2</sub> (max)</label>
+                            <div class="field-row">
+                                <input type="number" id="F2" class="inp" value="120" min="0" step="1" oninput="calc()">
+                                <span class="unit">N</span>
+                            </div>
+                            <span class="hint">Design maximum load</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spring SVG -->
+                <svg id="springSvg" width="150" height="240" viewBox="0 0 150 240"></svg>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card">
+            <h2>Results</h2>
+            <table class="res-table">
+                <thead><tr><th>Parameter</th><th>Value</th><th>Unit</th><th>Formula / note</th></tr></thead>
+                <tbody id="resBody"></tbody>
+            </table>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Formulas &amp; notes</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Spring rate</h3>
+                    <span class="mono">k = G · d⁴ / (8 · D³ · n)</span>
+                    <p>G = shear modulus, d = wire diameter, D = mean coil diameter, n = active coils.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Shear stress (Wahl corrected)</h3>
+                    <span class="mono">C = D / d  (spring index)<br>K_W = (4C−1)/(4C−4) + 0.615/C<br>τ = K_W · 8·F·D / (π·d³)</span>
+                    <p>K_W corrects for wire curvature and direct shear. Valid for C = 4…12.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Free length &amp; extension</h3>
+                    <span class="mono">L₀ = (n+1)·d + 2·h_hook<br>δ = (F − F₀) / k<br>L_F = L₀ + δ</span>
+                    <p>h_hook = hook length (D, D/2 or 1.5D depending on hook type). Initial tension F₀ must be overcome before extension starts.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Initial tension</h3>
+                    <span class="mono">τ₀ = K_W · 8·F₀·D / (π·d³)<br>τ₀ typical: 20–45% of τ_allow</span>
+                    <p>Initial tension is built in during coiling. Too high = brittle hooks; too low = spring doesn't stay closed under vibration.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Material G &amp; strength</h3>
+                    <ul>
+                        <li>Spring steel EN 10270-1: G = 81 500 MPa</li>
+                        <li>Cr-V 51CrV4: G = 81 500 MPa</li>
+                        <li>Stainless 1.4310: G = 73 000 MPa</li>
+                        <li>Phosphor bronze: G = 43 000 MPa</li>
+                        <li>τ_allow = 0.45 × Rm (static loading)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Design tips</h3>
+                    <ul>
+                        <li>Spring index C = 4…12 (preferred 6…9)</li>
+                        <li>Active coils n ≥ 3</li>
+                        <li>Hook stress is often the limiting factor — inspect hook bend stress separately</li>
+                        <li>Extension springs are susceptible to fatigue at hooks</li>
+                        <li>Related: <a href="/engineering/eng-015/" class="related-link" style="display:inline;padding:0;background:none;border:none;">🌀 eng-015 Compression Spring</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>StrokeForge Engineering — reference tools for mechanical design</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ─── MATERIAL DATA ────────────────────────────────────────────────────────────
+    // G [MPa], Rm table by wire diameter
+    const MAT_G = {
+        '81500':   81500,
+        '81500crv':81500,
+        '73000':   73000,
+        '43000':   43000,
+    };
+    // Rm [MPa] by d breakpoints for EN 10270-1 / EN 10270-2 spring steel
+    function getRm(d, matKey) {
+        if (matKey === 'custom') return parseFloat(document.getElementById('tauAllow').value) / 0.45 || 1550;
+        if (matKey === '43000') { // phosphor bronze — flat Rm
+            return d <= 0.5 ? 700 : d <= 1 ? 640 : d <= 2 ? 580 : d <= 4 ? 530 : d <= 8 ? 490 : 460;
+        }
+        if (matKey === '73000') { // stainless 1.4310
+            return d <= 0.5 ? 1700 : d <= 1 ? 1580 : d <= 2 ? 1450 : d <= 4 ? 1310 : d <= 6 ? 1220 : d <= 10 ? 1130 : 1030;
+        }
+        // Spring steel EN 10270-1 / Cr-V EN 10270-2 (similar Rm)
+        return d <= 0.5 ? 2150 : d <= 1 ? 2000 : d <= 2 ? 1900 : d <= 4 ? 1750 : d <= 6 ? 1650 : d <= 10 ? 1550 : 1450;
+    }
+
+    function getG() {
+        const m = document.getElementById('mat').value;
+        if (m === 'custom') return parseFloat(document.getElementById('Gcust').value) || 81500;
+        return MAT_G[m] || 81500;
+    }
+
+    function onMatChange() {
+        const isCustom = document.getElementById('mat').value === 'custom';
+        document.getElementById('customRow').style.display = isCustom ? '' : 'none';
+        calc();
+    }
+
+    function hookLen(D, type) {
+        if (type === 'half')     return D / 2;
+        if (type === 'extended') return 1.5 * D;
+        return D; // standard
+    }
+
+    function fmt(v, dec) { return isFinite(v) ? v.toFixed(dec) : '—'; }
+
+    function row(sym, val, unit, note, colorClass) {
+        const col = colorClass ? ` style="color:${colorClass}"` : '';
+        return `<tr><td>${sym}</td><td${col}>${val}</td><td>${unit||''}</td><td>${note||''}</td></tr>`;
+    }
+    function secHead(title) {
+        return `<tr class="sec-head"><td colspan="4">${title}</td></tr>`;
+    }
+
+    function calc() {
+        const d  = parseFloat(document.getElementById('dw').value) || 0;
+        const D  = parseFloat(document.getElementById('Dm').value) || 0;
+        const n  = parseFloat(document.getElementById('na').value) || 0;
+        const F0 = parseFloat(document.getElementById('F0').value) || 0;
+        const F1 = parseFloat(document.getElementById('F1').value) || 0;
+        const F2 = parseFloat(document.getElementById('F2').value) || 0;
+        const hookType = document.getElementById('hooks').value;
+        const matKey   = document.getElementById('mat').value;
+
+        const G  = getG();
+        const Rm = getRm(d, matKey);
+        const tauAllow = 0.45 * Rm;
+
+        // Spring index
+        const C   = D > 0 && d > 0 ? D / d : 0;
+        // Wahl factor
+        const KW  = C > 1 ? (4*C-1)/(4*C-4) + 0.615/C : 1;
+        // Spring rate [N/mm]
+        const k   = (G * d**4) / (8 * D**3 * n);
+        // Free length
+        const hh  = hookLen(D, hookType);
+        const L0  = (n + 1) * d + 2 * hh;
+        // Shear stress function
+        const tau = (F) => KW * 8 * F * D / (Math.PI * d**3);
+        // Initial tension stress
+        const tau0  = tau(F0);
+        // Working stresses
+        const tau1  = tau(F1);
+        const tau2  = tau(F2);
+        // Extensions
+        const delta1 = F1 > F0 ? (F1 - F0) / k : 0;
+        const delta2 = F2 > F0 ? (F2 - F0) / k : 0;
+        const L1 = L0 + delta1;
+        const L2 = L0 + delta2;
+        // Utilisation
+        const eta2 = tauAllow > 0 ? tau2 / tauAllow : 0;
+        const etaPct = eta2 * 100;
+
+        // Warnings
+        const warnC     = C < 4 || C > 12;
+        const warnF1    = F1 < F0;
+        const warnStress= tau2 > tauAllow;
+
+        // Color helper
+        const stressCol = (t) => t > tauAllow ? '#f87171' : t > 0.8*tauAllow ? '#fbbf24' : '#4ade80';
+
+        // Build results table
+        let html = '';
+        html += secHead('Spring geometry');
+        html += row('C = D/d',   fmt(C,2),        '—',   'Spring index (ideal: 6…9)');
+        html += row('K_W',       fmt(KW,3),        '—',   'Wahl correction factor');
+        html += row('k',         fmt(k,2),         'N/mm','G·d⁴ / (8·D³·n)');
+        html += row('L₀',        fmt(L0,1),        'mm',  `(n+1)·d + 2·${hookType==='standard'?'D':hookType==='half'?'D/2':'1.5D'}`);
+
+        html += secHead('Initial tension');
+        html += row('F₀',        fmt(F0,1),        'N',   'Built-in pretension');
+        html += row('τ₀',        fmt(tau0,1)+' MPa','',  `${fmt(tau0/tauAllow*100,1)} % of τ_allow`);
+
+        html += secHead('At F₁ = ' + F1 + ' N');
+        html += row('τ₁',        fmt(tau1,1),      'MPa', `η = ${fmt(tau1/tauAllow*100,1)} %`, stressCol(tau1));
+        html += row('δ₁',        fmt(delta1,2),    'mm',  `(F₁−F₀)/k`);
+        html += row('L₁',        fmt(L1,1),        'mm',  'L₀ + δ₁');
+
+        html += secHead('At F₂ = ' + F2 + ' N  (governing)');
+        html += row('τ₂',        fmt(tau2,1),      'MPa', `η = ${fmt(etaPct,1)} %`, stressCol(tau2));
+        html += row('δ₂',        fmt(delta2,2),    'mm',  `(F₂−F₀)/k`);
+        html += row('L₂',        fmt(L2,1),        'mm',  'L₀ + δ₂');
+
+        html += secHead('Material');
+        html += row('G',         fmt(G,0),         'MPa', document.getElementById('mat').options[document.getElementById('mat').selectedIndex].text.split(' ').slice(0,3).join(' '));
+        html += row('R_m',       fmt(Rm,0),        'MPa', `for d = ${d} mm`);
+        html += row('τ_allow',   fmt(tauAllow,1),  'MPa', '0.45 × Rm  (static)');
+
+        // Utilisation bar + verdict
+        const barColor = etaPct > 100 ? '#f87171' : etaPct > 80 ? '#f59e0b' : '#4ade80';
+        html += `<tr><td colspan="4" style="padding-top:0.75rem;">
+            <div class="bar-wrap">
+                <div class="bar-track"><div class="bar-fill" style="width:${Math.min(etaPct,100)}%;background:${barColor};"></div></div>
+                <div class="bar-label"><span>Utilisation η = τ₂ / τ_allow</span><span>${fmt(etaPct,1)} %</span></div>
+            </div>`;
+        const vClass = etaPct > 100 ? 'fail' : etaPct > 80 ? 'warn' : 'pass';
+        const vText  = etaPct > 100 ? '✗ FAIL — stress exceeds limit' : etaPct > 80 ? '⚠ WARN — utilisation > 80%' : '✓ PASS';
+        html += `<span class="verdict ${vClass}">${vText}</span>`;
+        if (warnC)   html += `<div style="font-size:0.78rem;color:#f59e0b;margin-top:0.4rem;">⚠ Spring index C = ${fmt(C,1)} outside ideal range 4–12</div>`;
+        if (warnF1)  html += `<div style="font-size:0.78rem;color:#f59e0b;margin-top:0.4rem;">⚠ F₁ &lt; F₀ — spring not extended at F₁</div>`;
+        html += `</td></tr>`;
+
+        document.getElementById('resBody').innerHTML = html;
+
+        drawSpring(d, D, n, L0, L2, delta2, hookType, etaPct);
+    }
+
+    // ─── SVG Spring ───────────────────────────────────────────────────────────────
+    function drawSpring(d, D, n, L0, L2, delta2, hookType, etaPct) {
+        const svg = document.getElementById('springSvg');
+        const ns  = 'http://www.w3.org/2000/svg';
+        svg.innerHTML = '';
+        const W = 150, H = 240;
+        const cx = 75;
+        const springColor = etaPct > 100 ? '#f87171' : etaPct > 80 ? '#fbbf24' : '#f97316';
+        const gray = '#9ca3af', blue = '#60a5fa', light = '#e5e7eb';
+
+        function ln(x1,y1,x2,y2,col,w) {
+            const e=document.createElementNS(ns,'line');
+            e.setAttribute('x1',x1);e.setAttribute('y1',y1);e.setAttribute('x2',x2);e.setAttribute('y2',y2);
+            e.setAttribute('stroke',col||gray);e.setAttribute('stroke-width',w||1.5);svg.appendChild(e);
+        }
+        function txt(x,y,t,col,size,anchor) {
+            const e=document.createElementNS(ns,'text');
+            e.setAttribute('x',x);e.setAttribute('y',y);e.setAttribute('fill',col||light);
+            e.setAttribute('font-size',size||10);e.setAttribute('text-anchor',anchor||'middle');
+            e.setAttribute('dominant-baseline','middle');e.textContent=t;svg.appendChild(e);
+        }
+        function arrow(x1,y1,x2,y2,col) {
+            ln(x1,y1,x2,y2,col,2);
+            const angle=Math.atan2(y2-y1,x2-x1),s=7;
+            const p=document.createElementNS(ns,'polygon');
+            p.setAttribute('points',`${x2},${y2} ${x2-s*Math.cos(angle-0.4)},${y2-s*Math.sin(angle-0.4)} ${x2-s*Math.cos(angle+0.4)},${y2-s*Math.sin(angle+0.4)}`);
+            p.setAttribute('fill',col);svg.appendChild(p);
+        }
+
+        // Draw extension spring as zigzag coil pattern
+        const topY = 28, botY = 200;
+        const coilH = (botY - topY);
+        const nCoils = Math.max(Math.round(n), 3);
+        const r = Math.min(28, D * 1.2); // visual radius
+
+        // Top hook
+        const pathTop = document.createElementNS(ns,'path');
+        pathTop.setAttribute('d',`M ${cx},${topY-14} L ${cx},${topY}`);
+        pathTop.setAttribute('stroke',springColor);pathTop.setAttribute('stroke-width','2');pathTop.setAttribute('fill','none');
+        svg.appendChild(pathTop);
+        // Hook circle (top)
+        const hCircT = document.createElementNS(ns,'circle');
+        hCircT.setAttribute('cx',cx+r/2);hCircT.setAttribute('cy',topY-7);
+        hCircT.setAttribute('r',r/2);hCircT.setAttribute('fill','none');
+        hCircT.setAttribute('stroke',springColor);hCircT.setAttribute('stroke-width','2');
+        svg.appendChild(hCircT);
+
+        // Spring body — sinusoidal zigzag
+        const pts = [];
+        const bodyTop = topY + 4, bodyBot = botY - 4;
+        const bodyH = bodyBot - bodyTop;
+        const steps = nCoils * 8;
+        for (let i = 0; i <= steps; i++) {
+            const frac = i / steps;
+            const y = bodyTop + frac * bodyH;
+            const x = cx + r * Math.sin(frac * nCoils * 2 * Math.PI);
+            pts.push(`${x},${y}`);
+        }
+        const springPath = document.createElementNS(ns,'polyline');
+        springPath.setAttribute('points', pts.join(' '));
+        springPath.setAttribute('fill','none');springPath.setAttribute('stroke',springColor);
+        springPath.setAttribute('stroke-width','2.5');svg.appendChild(springPath);
+
+        // Bottom hook
+        const pathBot = document.createElementNS(ns,'path');
+        pathBot.setAttribute('d',`M ${cx},${botY} L ${cx},${botY+14}`);
+        pathBot.setAttribute('stroke',springColor);pathBot.setAttribute('stroke-width','2');pathBot.setAttribute('fill','none');
+        svg.appendChild(pathBot);
+        const hCircB = document.createElementNS(ns,'circle');
+        hCircB.setAttribute('cx',cx-r/2);hCircB.setAttribute('cy',botY+7);
+        hCircB.setAttribute('r',r/2);hCircB.setAttribute('fill','none');
+        hCircB.setAttribute('stroke',springColor);hCircB.setAttribute('stroke-width','2');
+        svg.appendChild(hCircB);
+
+        // Force arrows
+        arrow(cx, topY-26, cx, topY-16, blue);
+        arrow(cx, botY+26, cx, botY+16, blue);
+        txt(cx+16, topY-22, 'F', blue, 10, 'start');
+        txt(cx+16, botY+22, 'F', blue, 10, 'start');
+
+        // L0 dimension
+        ln(cx+38, topY, cx+38, botY, gray, 1);
+        ln(cx+33, topY, cx+43, topY, gray, 1);
+        ln(cx+33, botY, cx+43, botY, gray, 1);
+        txt(cx+52, (topY+botY)/2, `L₀`, gray, 9);
+
+        // D dimension
+        ln(cx-r, topY+bodyH/2, cx+r, topY+bodyH/2, gray, 1, '3,2');
+        txt(cx, topY+bodyH/2-10, 'D', gray, 9);
+
+        // n label
+        txt(cx, H-8, `n = ${n}  d = ${d} mm`, gray, 9);
+    }
+
+    // Initial render
+    calc();
+    </script>
+</body>
+</html>

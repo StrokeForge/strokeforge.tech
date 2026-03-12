@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATEX — Explosive Atmosphere Classifications | StrokeForge Engineering</title>
+    <meta name="description" content="ATEX 2014/34/EU reference table. Equipment categories 1G–3G, 1D–2D, zones 0/1/2/20/21/22, equipment groups IIA/IIB/IIC, temperature classes T1–T6, protection types Ex d/e/i/n/p/m/t.">
+    <meta name="keywords" content="ATEX, Ex zones, explosive atmosphere, IEC 60079, zone 0 1 2, temperature class, equipment group, IIA IIB IIC, Ex d Ex e Ex i, nebezpečné prostředí">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-044/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 1060px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+        .card h2 .norm-tag { font-size: 0.72rem; font-weight: 400; color: var(--text-gray); margin-left: 0.6rem; background: var(--darker-bg); border: 1px solid var(--border-gray); border-radius: 4px; padding: 0.1rem 0.45rem; vertical-align: middle; }
+
+        /* Filter tabs */
+        .filter-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; align-items: center; }
+        .filter-group { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .filter-label { font-size: 0.77rem; color: var(--text-gray); align-self: center; white-space: nowrap; }
+        .fb { padding: 0.35rem 0.85rem; border-radius: 6px; border: 1px solid var(--border-gray); background: none; color: var(--text-gray); cursor: pointer; font-size: 0.78rem; font-weight: 600; transition: all 0.18s; }
+        .fb.active { background: var(--primary-orange); color: #000; border-color: var(--primary-orange); }
+        .fb:not(.active):hover { border-color: var(--primary-orange); color: var(--light-gray); }
+
+        /* Section jump nav */
+        .section-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+        .sec-btn { padding: 0.4rem 1rem; border-radius: 7px; border: 1px solid var(--border-gray); background: var(--darker-bg); color: var(--text-gray); cursor: pointer; font-size: 0.8rem; text-decoration: none; transition: all 0.18s; }
+        .sec-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+
+        /* Tables */
+        .tbl-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        thead th { background: var(--darker-bg); color: var(--text-gray); font-size: 0.74rem; font-weight: 700; padding: 0.6rem 0.75rem; text-align: left; border-bottom: 2px solid var(--border-gray); white-space: nowrap; }
+        thead th.center { text-align: center; }
+        tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
+        tbody tr:hover { background: rgba(255,255,255,0.03); }
+        tbody tr.hidden { display: none; }
+        td { padding: 0.65rem 0.75rem; vertical-align: middle; }
+        .center { text-align: center; }
+
+        /* Zone badge */
+        .zone-badge { font-size: 0.75rem; font-weight: 800; padding: 0.15rem 0.55rem; border-radius: 5px; display: inline-block; white-space: nowrap; letter-spacing: 0.03em; }
+        .zone-0  { background: rgba(248,113,113,0.18); color:#f87171; border:1px solid rgba(248,113,113,0.4); }
+        .zone-1  { background: rgba(251,191,36,0.15); color:#fbbf24; border:1px solid rgba(251,191,36,0.35); }
+        .zone-2  { background: rgba(74,222,128,0.13); color:#4ade80; border:1px solid rgba(74,222,128,0.3); }
+        .zone-20 { background: rgba(248,113,113,0.18); color:#f87171; border:1px solid rgba(248,113,113,0.4); }
+        .zone-21 { background: rgba(251,191,36,0.15); color:#fbbf24; border:1px solid rgba(251,191,36,0.35); }
+        .zone-22 { background: rgba(74,222,128,0.13); color:#4ade80; border:1px solid rgba(74,222,128,0.3); }
+
+        /* Category badge */
+        .cat-badge { font-size: 0.72rem; font-weight: 700; padding: 0.12rem 0.5rem; border-radius: 4px; display: inline-block; white-space: nowrap; }
+        .cat-1 { background: rgba(248,113,113,0.15); color:#f87171; border:1px solid rgba(248,113,113,0.35); }
+        .cat-2 { background: rgba(251,191,36,0.13); color:#fbbf24; border:1px solid rgba(251,191,36,0.3); }
+        .cat-3 { background: rgba(74,222,128,0.12); color:#4ade80; border:1px solid rgba(74,222,128,0.28); }
+
+        /* Group / temp badge */
+        .grp-badge { font-size: 0.72rem; font-weight: 700; padding: 0.12rem 0.5rem; border-radius: 4px; display: inline-block; white-space: nowrap; }
+        .grp-i  { background: rgba(96,165,250,0.12); color:#60a5fa; border:1px solid rgba(96,165,250,0.28); }
+        .grp-iia{ background: rgba(74,222,128,0.12); color:#4ade80; border:1px solid rgba(74,222,128,0.28); }
+        .grp-iib{ background: rgba(251,191,36,0.13); color:#fbbf24; border:1px solid rgba(251,191,36,0.3); }
+        .grp-iic{ background: rgba(248,113,113,0.15); color:#f87171; border:1px solid rgba(248,113,113,0.35); }
+
+        .temp-badge { font-size: 0.75rem; font-weight: 700; padding: 0.12rem 0.5rem; border-radius: 4px; display: inline-block; }
+
+        /* Protection type cards */
+        .prot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 1rem; }
+        .prot-card { background: var(--darker-bg); border: 1px solid var(--border-gray); border-radius: 8px; padding: 1rem 1.2rem; }
+        .prot-card:hover { border-color: rgba(249,115,22,0.4); }
+        .prot-code { font-size: 1rem; font-weight: 800; color: var(--primary-orange); font-family: monospace; }
+        .prot-name { font-size: 0.8rem; color: var(--light-gray); font-weight: 600; margin: 0.2rem 0 0.5rem; }
+        .prot-desc { font-size: 0.78rem; color: var(--text-gray); line-height: 1.55; }
+        .prot-meta { font-size: 0.72rem; color: var(--text-gray); margin-top: 0.5rem; }
+        .prot-meta span { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 0.1rem 0.35rem; margin-right: 0.25rem; }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+
+        /* Compatibility matrix */
+        .compat-yes { color: #4ade80; font-weight: 700; text-align: center; font-size: 0.9rem; }
+        .compat-no  { color: #6b7280; text-align: center; font-size: 0.82rem; }
+
+        /* Env filter */
+        .env-hidden { display: none; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>ATEX — Explosive Atmosphere Classifications</h1>
+        <p>Zones · equipment categories · equipment groups · temperature classes · protection types · ATEX 2014/34/EU · IEC 60079</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- JUMP NAV -->
+        <div class="section-nav">
+            <a class="sec-btn" href="#sec-zones">① Zones</a>
+            <a class="sec-btn" href="#sec-categories">② Equipment categories</a>
+            <a class="sec-btn" href="#sec-compat">③ Cat ↔ Zone compatibility</a>
+            <a class="sec-btn" href="#sec-groups">④ Equipment groups</a>
+            <a class="sec-btn" href="#sec-temp">⑤ Temperature classes T1–T6</a>
+            <a class="sec-btn" href="#sec-prot">⑥ Protection types</a>
+        </div>
+
+        <!-- ① ZONES ──────────────────────────────────────────────────────────── -->
+        <div class="card" id="sec-zones">
+            <h2>① Explosive atmosphere zones <span class="norm-tag">IEC 60079-10 / ATEX 1999/92/EC</span></h2>
+
+            <div class="filter-row">
+                <span class="filter-label">Environment:</span>
+                <div class="filter-group" id="zoneEnvGroup">
+                    <button class="fb active" onclick="filterZones('all',this)">All</button>
+                    <button class="fb" onclick="filterZones('gas',this)">Gas / Vapour</button>
+                    <button class="fb" onclick="filterZones('dust',this)">Dust</button>
+                </div>
+            </div>
+
+            <div class="tbl-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Zone</th>
+                            <th>Environment</th>
+                            <th>Frequency / Duration</th>
+                            <th>Description</th>
+                            <th>Typical locations</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-env="gas">
+                            <td><span class="zone-badge zone-0">Zone 0</span></td>
+                            <td>Gas / Vapour</td>
+                            <td>Continuously or long periods (&gt;1 000 h/yr)</td>
+                            <td>Explosive atmosphere present continuously or for long periods</td>
+                            <td>Interior of tanks, vessels, pipelines with flammable liquids</td>
+                        </tr>
+                        <tr data-env="gas">
+                            <td><span class="zone-badge zone-1">Zone 1</span></td>
+                            <td>Gas / Vapour</td>
+                            <td>Occasionally during normal operation (10–1 000 h/yr)</td>
+                            <td>Explosive atmosphere likely to occur in normal operation</td>
+                            <td>Areas around Zone 0, pump rooms, flammable liquid handling</td>
+                        </tr>
+                        <tr data-env="gas">
+                            <td><span class="zone-badge zone-2">Zone 2</span></td>
+                            <td>Gas / Vapour</td>
+                            <td>Rarely and only briefly (&lt;10 h/yr)</td>
+                            <td>Explosive atmosphere not likely in normal operation; if it occurs, only infrequently and briefly</td>
+                            <td>Areas surrounding Zone 1, storage areas, normal plant areas</td>
+                        </tr>
+                        <tr data-env="dust">
+                            <td><span class="zone-badge zone-20">Zone 20</span></td>
+                            <td>Dust</td>
+                            <td>Continuously or long periods</td>
+                            <td>Explosive dust cloud present continuously or frequently</td>
+                            <td>Inside dust collection equipment, silos, hoppers, mills</td>
+                        </tr>
+                        <tr data-env="dust">
+                            <td><span class="zone-badge zone-21">Zone 21</span></td>
+                            <td>Dust</td>
+                            <td>Occasionally during normal operation</td>
+                            <td>Explosive dust cloud likely to occur in normal operation</td>
+                            <td>Filling/emptying areas, conveyor transfer points, baghouses</td>
+                        </tr>
+                        <tr data-env="dust">
+                            <td><span class="zone-badge zone-22">Zone 22</span></td>
+                            <td>Dust</td>
+                            <td>Rarely and only briefly</td>
+                            <td>Explosive dust cloud unlikely in normal operation; if occurs, only briefly</td>
+                            <td>Areas surrounding Zone 21, dust storage rooms</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ② EQUIPMENT CATEGORIES ──────────────────────────────────────────── -->
+        <div class="card" id="sec-categories">
+            <h2>② Equipment categories <span class="norm-tag">ATEX 2014/34/EU Annex I</span></h2>
+
+            <div class="tbl-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Environment</th>
+                            <th>Zone(s) suitable for</th>
+                            <th>Required protection level</th>
+                            <th>Fault tolerance</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="cat-badge cat-1">Category 1G</span></td>
+                            <td>Gas / Vapour</td>
+                            <td><span class="zone-badge zone-0">Z 0</span> <span class="zone-badge zone-1">Z 1</span> <span class="zone-badge zone-2">Z 2</span></td>
+                            <td>Very high — EPL Ga</td>
+                            <td>Safe even with two independent faults</td>
+                            <td>Highest protection; intrinsically safe Ex ia, Ex ma</td>
+                        </tr>
+                        <tr>
+                            <td><span class="cat-badge cat-2">Category 2G</span></td>
+                            <td>Gas / Vapour</td>
+                            <td><span class="zone-badge zone-1">Z 1</span> <span class="zone-badge zone-2">Z 2</span></td>
+                            <td>High — EPL Gb</td>
+                            <td>Safe even with one expected fault</td>
+                            <td>Ex d, Ex e, Ex ib, Ex p, Ex q, Ex o</td>
+                        </tr>
+                        <tr>
+                            <td><span class="cat-badge cat-3">Category 3G</span></td>
+                            <td>Gas / Vapour</td>
+                            <td><span class="zone-badge zone-2">Z 2</span></td>
+                            <td>Normal — EPL Gc</td>
+                            <td>Safe during normal operation</td>
+                            <td>Ex n, Ex ic, Ex pz</td>
+                        </tr>
+                        <tr>
+                            <td><span class="cat-badge cat-1">Category 1D</span></td>
+                            <td>Dust</td>
+                            <td><span class="zone-badge zone-20">Z 20</span> <span class="zone-badge zone-21">Z 21</span> <span class="zone-badge zone-22">Z 22</span></td>
+                            <td>Very high — EPL Da</td>
+                            <td>Safe even with two independent faults</td>
+                            <td>Ex ia (dust), Ex ma (dust)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="cat-badge cat-2">Category 2D</span></td>
+                            <td>Dust</td>
+                            <td><span class="zone-badge zone-21">Z 21</span> <span class="zone-badge zone-22">Z 22</span></td>
+                            <td>High — EPL Db</td>
+                            <td>Safe even with one expected fault</td>
+                            <td>Ex tb (dust-tight enclosure), Ex ib (dust)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="cat-badge cat-3">Category 3D</span></td>
+                            <td>Dust</td>
+                            <td><span class="zone-badge zone-22">Z 22</span></td>
+                            <td>Normal — EPL Dc</td>
+                            <td>Safe during normal operation</td>
+                            <td>Ex tc, Ex ic (dust)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="grp-badge grp-i">Category M1</span></td>
+                            <td>Mining (firedamp)</td>
+                            <td>Mines — underground</td>
+                            <td>Very high — EPL Ma</td>
+                            <td>Safe even during explosive atmosphere (stays energised)</td>
+                            <td>Group I, must remain functional in presence of firedamp</td>
+                        </tr>
+                        <tr>
+                            <td><span class="grp-badge grp-i">Category M2</span></td>
+                            <td>Mining (firedamp)</td>
+                            <td>Mines — underground</td>
+                            <td>High — EPL Mb</td>
+                            <td>Safe with one expected fault; de-energised in explosive atm.</td>
+                            <td>Group I, equipment can be switched off when hazard arises</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ③ COMPATIBILITY MATRIX ──────────────────────────────────────────── -->
+        <div class="card" id="sec-compat">
+            <h2>③ Category ↔ Zone compatibility matrix</h2>
+            <div class="tbl-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Equipment category</th>
+                            <th class="center">Zone 0</th>
+                            <th class="center">Zone 1</th>
+                            <th class="center">Zone 2</th>
+                            <th class="center">Zone 20</th>
+                            <th class="center">Zone 21</th>
+                            <th class="center">Zone 22</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="cat-badge cat-1">1G</span></td>
+                            <td class="compat-yes">✓</td><td class="compat-yes">✓</td><td class="compat-yes">✓</td>
+                            <td class="compat-no">—</td><td class="compat-no">—</td><td class="compat-no">—</td>
+                        </tr>
+                        <tr>
+                            <td><span class="cat-badge cat-2">2G</span></td>
+                            <td class="compat-no">—</td><td class="compat-yes">✓</td><td class="compat-yes">✓</td>
+                            <td class="compat-no">—</td><td class="compat-no">—</td><td class="compat-no">—</td>
+                        </tr>
+                        <tr>
+                            <td><span class="cat-badge cat-3">3G</span></td>
+                            <td class="compat-no">—</td><td class="compat-no">—</td><td class="compat-yes">✓</td>
+                            <td class="compat-no">—</td><td class="compat-no">—</td><td class="compat-no">—</td>
+                        </tr>
+                        <tr>
+                            <td><span class="cat-badge cat-1">1D</span></td>
+                            <td class="compat-no">—</td><td class="compat-no">—</td><td class="compat-no">—</td>
+                            <td class="compat-yes">✓</td><td class="compat-yes">✓</td><td class="compat-yes">✓</td>
+                        </tr>
+                        <tr>
+                            <td><span class="cat-badge cat-2">2D</span></td>
+                            <td class="compat-no">—</td><td class="compat-no">—</td><td class="compat-no">—</td>
+                            <td class="compat-no">—</td><td class="compat-yes">✓</td><td class="compat-yes">✓</td>
+                        </tr>
+                        <tr>
+                            <td><span class="cat-badge cat-3">3D</span></td>
+                            <td class="compat-no">—</td><td class="compat-no">—</td><td class="compat-no">—</td>
+                            <td class="compat-no">—</td><td class="compat-no">—</td><td class="compat-yes">✓</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size:0.76rem;color:var(--text-gray);margin-top:0.75rem;">✓ = permitted &nbsp;|&nbsp; Higher category equipment is always permitted in lower-risk zones (e.g. Cat 1G can replace Cat 2G or 3G).</p>
+        </div>
+
+        <!-- ④ EQUIPMENT GROUPS ──────────────────────────────────────────────── -->
+        <div class="card" id="sec-groups">
+            <h2>④ Equipment groups &amp; representative gases <span class="norm-tag">IEC 60079-0</span></h2>
+            <div class="tbl-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Group</th>
+                            <th>Application</th>
+                            <th>MESG (mm)</th>
+                            <th>MIC ratio</th>
+                            <th>Ignition hazard</th>
+                            <th>Representative substances</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="grp-badge grp-i">Group I</span></td>
+                            <td>Mining — underground coal mines (firedamp / methane)</td>
+                            <td>&gt; 0.9</td>
+                            <td>&gt; 0.8</td>
+                            <td style="color:#60a5fa;font-size:0.8rem;">Lowest (mine-specific)</td>
+                            <td>Methane (CH₄), firedamp</td>
+                        </tr>
+                        <tr>
+                            <td><span class="grp-badge grp-iia">Group IIA</span></td>
+                            <td>Surface industries — least hazardous gas</td>
+                            <td>&gt; 0.9</td>
+                            <td>&gt; 0.8</td>
+                            <td style="color:#4ade80;font-size:0.8rem;">Low</td>
+                            <td>Propane, butane, methane, acetone, ammonia, benzene, toluene</td>
+                        </tr>
+                        <tr>
+                            <td><span class="grp-badge grp-iib">Group IIB</span></td>
+                            <td>Surface industries — intermediate hazard</td>
+                            <td>0.5–0.9</td>
+                            <td>0.45–0.8</td>
+                            <td style="color:#fbbf24;font-size:0.8rem;">Medium</td>
+                            <td>Ethylene, cyclopropane, diethyl ether, town gas</td>
+                        </tr>
+                        <tr>
+                            <td><span class="grp-badge grp-iic">Group IIC</span></td>
+                            <td>Surface industries — most hazardous gas</td>
+                            <td>&lt; 0.5</td>
+                            <td>&lt; 0.45</td>
+                            <td style="color:#f87171;font-size:0.8rem;">Highest</td>
+                            <td>Hydrogen (H₂), acetylene (C₂H₂), carbon disulfide (CS₂)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size:0.76rem;color:var(--text-gray);margin-top:0.75rem;">MESG = Maximum Experimental Safe Gap &nbsp;|&nbsp; MIC = Minimum Igniting Current ratio (vs. methane) &nbsp;|&nbsp; IIC equipment is also suitable for IIA and IIB locations.</p>
+        </div>
+
+        <!-- ⑤ TEMPERATURE CLASSES ───────────────────────────────────────────── -->
+        <div class="card" id="sec-temp">
+            <h2>⑤ Temperature classes T1–T6 <span class="norm-tag">IEC 60079-0</span></h2>
+            <div class="tbl-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Class</th>
+                            <th class="center">Max. surface temp. (°C)</th>
+                            <th>Suitable for gases with auto-ignition temp. (&gt;)</th>
+                            <th>Example gases / substances</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tempTbody"></tbody>
+                </table>
+            </div>
+            <p style="font-size:0.76rem;color:var(--text-gray);margin-top:0.75rem;">T6 equipment (max 85 °C) is the most restrictive and can be used anywhere T1–T5 equipment is required. Equipment must be marked with its temperature class (or max. surface temperature in °C).</p>
+        </div>
+
+        <!-- ⑥ PROTECTION TYPES ──────────────────────────────────────────────── -->
+        <div class="card" id="sec-prot">
+            <h2>⑥ Protection types (Ex designations) <span class="norm-tag">IEC 60079 series</span></h2>
+
+            <div class="filter-row">
+                <span class="filter-label">Environment:</span>
+                <div class="filter-group" id="protEnvGroup">
+                    <button class="fb active" onclick="filterProt('all',this)">All</button>
+                    <button class="fb" onclick="filterProt('gas',this)">Gas primary</button>
+                    <button class="fb" onclick="filterProt('dust',this)">Dust primary</button>
+                    <button class="fb" onclick="filterProt('both',this)">Both</button>
+                </div>
+            </div>
+
+            <div class="prot-grid" id="protGrid"></div>
+        </div>
+
+        <!-- INFO ──────────────────────────────────────────────────────────────── -->
+        <div class="card">
+            <h2>Marking &amp; identification</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>ATEX marking example</h3>
+                    <p style="font-family:monospace;font-size:0.88rem;color:var(--light-gray);line-height:2.2;">
+                        <span style="color:#f97316;">⑥Ex</span> &nbsp;
+                        <span style="color:#60a5fa;">d</span>
+                        <span style="color:#4ade80;">IIB</span>
+                        <span style="color:#fbbf24;">T4</span>
+                        &nbsp;<span style="color:#a78bfa;">Gb</span>
+                    </p>
+                    <ul>
+                        <li><strong style="color:#f97316;">⑥Ex</strong> — ATEX conformity mark</li>
+                        <li><strong style="color:#60a5fa;">d</strong> — Protection type (flameproof)</li>
+                        <li><strong style="color:#4ade80;">IIB</strong> — Equipment group</li>
+                        <li><strong style="color:#fbbf24;">T4</strong> — Temperature class (max 135 °C)</li>
+                        <li><strong style="color:#a78bfa;">Gb</strong> — Equipment Protection Level</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>EPL — Equipment Protection Level</h3>
+                    <ul>
+                        <li><strong>Ma / Da</strong> — Very high (two independent faults)</li>
+                        <li><strong>Mb / Db</strong> — High (one expected fault)</li>
+                        <li><strong>Gc / Dc</strong> — Enhanced (normal operation)</li>
+                    </ul>
+                    <p style="margin-top:0.5rem;">EPL suffix: <strong>a</strong> = gas/vapour, <strong>b</strong> = dust, no suffix = mining.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Directives &amp; standards</h3>
+                    <ul>
+                        <li><strong>ATEX 2014/34/EU</strong> — Equipment &amp; protective systems</li>
+                        <li><strong>ATEX 1999/92/EC (DSEAR)</strong> — Workplace safety / zoning</li>
+                        <li><strong>IEC 60079-0</strong> — General requirements</li>
+                        <li><strong>IEC 60079-10</strong> — Classification of hazardous areas (gas)</li>
+                        <li><strong>IEC 60079-11</strong> — Intrinsic safety Ex i</li>
+                        <li><strong>IEC 61241-10</strong> — Dust zone classification</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Key design rules</h3>
+                    <ul>
+                        <li>Select equipment category matching or exceeding zone requirement</li>
+                        <li>Equipment group must match gas group (IIC covers IIA+IIB)</li>
+                        <li>Temperature class must exceed auto-ignition temp. of present gases</li>
+                        <li>Zone classification is the responsibility of the plant operator (ATEX 1999/92/EC)</li>
+                        <li>Equipment certification is by Notified Body for Cat 1 &amp; 2; self-cert for Cat 3</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>StrokeForge Engineering — reference tools for mechanical design</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ─── TEMPERATURE CLASSES ──────────────────────────────────────────────────────
+    const TEMP_DATA = [
+        { cls:'T1', max:450, ait:'>450', col:'#4ade80', examples:'Hydrogen, acetylene (AIT 305–406 °C) NOT included — use T3+' },
+        { cls:'T2', max:300, ait:'>300', col:'#a3e635', examples:'Acetylene (305 °C), ethylene (425 °C), methanol (385 °C)' },
+        { cls:'T3', max:200, ait:'>200', col:'#fbbf24', examples:'Gasoline (280 °C), diesel (~250 °C), hydrogen sulphide (270 °C)' },
+        { cls:'T4', max:135, ait:'>135', col:'#f97316', examples:'Diethyl ether (160 °C), acetaldehyde (175 °C)' },
+        { cls:'T5', max:100, ait:'>100', col:'#f87171', examples:'Carbon disulfide (102 °C)' },
+        { cls:'T6', max:85,  ait:'>85',  col:'#ef4444', examples:'Ethyl nitrite (~90 °C) — most restrictive class' },
+    ];
+
+    (function renderTemp() {
+        const tbody = document.getElementById('tempTbody');
+        TEMP_DATA.forEach(t => {
+            const fillW = (t.max / 450 * 100).toFixed(0);
+            tbody.innerHTML += `<tr>
+                <td><span class="temp-badge" style="background:${t.col}22;color:${t.col};border:1px solid ${t.col}55;font-weight:800;font-size:0.78rem;padding:0.12rem 0.5rem;border-radius:4px;">${t.cls}</span></td>
+                <td class="center">
+                    <div style="display:flex;align-items:center;gap:0.5rem;justify-content:center;">
+                        <div style="flex:1;background:rgba(255,255,255,0.07);border-radius:3px;height:5px;min-width:60px;max-width:100px;">
+                            <div style="width:${fillW}%;height:100%;border-radius:3px;background:${t.col};"></div>
+                        </div>
+                        <strong style="color:${t.col};font-variant-numeric:tabular-nums;">${t.max} °C</strong>
+                    </div>
+                </td>
+                <td style="color:var(--light-gray);font-size:0.82rem;">${t.ait} °C</td>
+                <td style="font-size:0.78rem;color:var(--text-gray);">${t.examples}</td>
+            </tr>`;
+        });
+    })();
+
+    // ─── PROTECTION TYPES ─────────────────────────────────────────────────────────
+    const PROT_TYPES = [
+        {
+            code:'Ex d', name:'Flameproof enclosure',
+            env:'gas', std:'IEC 60079-1',
+            epl:'Gb', cat:'2G',
+            desc:'Enclosure withstands internal explosion and prevents ignition of surrounding atmosphere. Joints have defined flame paths.',
+        },
+        {
+            code:'Ex e', name:'Increased safety',
+            env:'gas', std:'IEC 60079-7',
+            epl:'Gb', cat:'2G',
+            desc:'Additional measures to prevent excessive temperature and occurrence of arcs or sparks on internal or external parts. Used for terminal boxes, motors, luminaires.',
+        },
+        {
+            code:'Ex ia', name:'Intrinsic safety (a)',
+            env:'both', std:'IEC 60079-11',
+            epl:'Ga / Da', cat:'1G / 1D',
+            desc:'Energy in circuit limited so that ignition cannot occur, even with two faults. Requires associated apparatus (Zener barriers or galvanic isolators). Highest protection level.',
+        },
+        {
+            code:'Ex ib', name:'Intrinsic safety (b)',
+            env:'both', std:'IEC 60079-11',
+            epl:'Gb / Db', cat:'2G / 2D',
+            desc:'Energy limited so that ignition cannot occur with one fault. Common in instrumentation, sensors, transmitters.',
+        },
+        {
+            code:'Ex ic', name:'Intrinsic safety (c)',
+            env:'both', std:'IEC 60079-11',
+            epl:'Gc / Dc', cat:'3G / 3D',
+            desc:'Energy limited so that ignition cannot occur in normal operation.',
+        },
+        {
+            code:'Ex n', name:'Non-sparking / non-incendive',
+            env:'gas', std:'IEC 60079-15',
+            epl:'Gc', cat:'3G',
+            desc:'Equipment does not produce arcs, sparks or hot surfaces capable of causing ignition in normal operation. Zone 2 only. Lowest cost protection method.',
+        },
+        {
+            code:'Ex p', name:'Pressurised / purged enclosure',
+            env:'gas', std:'IEC 60079-2',
+            epl:'Gb / Gc', cat:'2G / 3G',
+            desc:'Enclosure filled with protective gas (clean air or inert gas) at pressure above surrounding atmosphere. Used for large motors, analysers, control panels.',
+        },
+        {
+            code:'Ex m', name:'Encapsulation',
+            env:'gas', std:'IEC 60079-18',
+            epl:'Ga / Gb', cat:'1G / 2G',
+            desc:'Potential ignition sources enclosed in compound so they cannot ignite surrounding atmosphere. Used for electronic components, coils, solenoids.',
+        },
+        {
+            code:'Ex o', name:'Oil immersion',
+            env:'gas', std:'IEC 60079-6',
+            epl:'Gb', cat:'2G',
+            desc:'Ignition-capable parts submerged in oil to prevent ignition of overlying or surrounding atmosphere. Used for power transformers, switchgear.',
+        },
+        {
+            code:'Ex q', name:'Powder filling',
+            env:'gas', std:'IEC 60079-5',
+            epl:'Gb', cat:'2G',
+            desc:'Enclosure filled with quartz sand or similar granular material to prevent arc or excessively hot surface from igniting surrounding atmosphere.',
+        },
+        {
+            code:'Ex t', name:'Dust ignition-proof enclosure',
+            env:'dust', std:'IEC 60079-31',
+            epl:'Da / Db / Dc', cat:'1D / 2D / 3D',
+            desc:'Enclosure prevents ingress of dust and limits surface temperature. IP6X required for Zone 20/21; IP5X for Zone 22. Primary dust protection method.',
+        },
+        {
+            code:'Ex h', name:'Non-electrical equipment',
+            env:'both', std:'IEC 60079-36/37',
+            epl:'Ga/Gb/Gc', cat:'All',
+            desc:'Protection concepts for non-electrical ignition sources: friction, hot surfaces, mechanical sparks, static electricity. Covers gearboxes, valves, fans.',
+        },
+    ];
+
+    const ENV_COLORS = { gas:'#60a5fa', dust:'#fbbf24', both:'#a78bfa' };
+    const ENV_LABELS = { gas:'Gas', dust:'Dust', both:'Gas + Dust' };
+    let activeProtEnv = 'all';
+
+    function filterProt(env, btn) {
+        activeProtEnv = env;
+        document.querySelectorAll('#protEnvGroup .fb').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderProt();
+    }
+
+    function renderProt() {
+        const grid = document.getElementById('protGrid');
+        grid.innerHTML = '';
+        PROT_TYPES.forEach(p => {
+            const show = activeProtEnv === 'all' || p.env === activeProtEnv || (activeProtEnv === 'both' && p.env === 'both');
+            if (!show) return;
+            const ec = ENV_COLORS[p.env] || '#9ca3af';
+            const el = ENV_LABELS[p.env] || p.env;
+            grid.innerHTML += `
+            <div class="prot-card">
+                <div class="prot-code">${p.code}</div>
+                <div class="prot-name">${p.name}</div>
+                <div class="prot-desc">${p.desc}</div>
+                <div class="prot-meta" style="margin-top:0.6rem;">
+                    <span style="color:${ec};">${el}</span>
+                    <span>EPL: ${p.epl}</span>
+                    <span>Cat: ${p.cat}</span>
+                    <span style="opacity:0.7;">${p.std}</span>
+                </div>
+            </div>`;
+        });
+    }
+
+    // ─── ZONE FILTER ─────────────────────────────────────────────────────────────
+    function filterZones(env, btn) {
+        document.querySelectorAll('#zoneEnvGroup .fb').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('[data-env]').forEach(tr => {
+            tr.classList.toggle('hidden', env !== 'all' && tr.dataset.env !== env);
+        });
+    }
+
+    renderProt();
+    </script>
+</body>
+</html>

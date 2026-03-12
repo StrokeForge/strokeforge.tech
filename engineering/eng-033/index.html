@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riveted Joint Calculator | StrokeForge Engineering</title>
+    <meta name="description" content="Riveted joint strength calculator — rivet shear, plate bearing and net section checks. Supports single and double shear configurations.">
+    <meta name="keywords" content="riveted joint calculator, nýtovaný spoj, rivet shear, bearing stress, net section, nýt výpočet, střihové napětí, otlačení">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-033/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+.tool-wrap { max-width: 900px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Mode toggle */
+        .mode-toggle { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem; }
+        .mode-btn { flex: 1; padding: 0.65rem 0.5rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.84rem; font-weight: 600; transition: all 0.2s; text-align: center; border-right: 1px solid var(--border-gray); }
+        .mode-btn:last-child { border-right: none; }
+        .mode-btn.active { background: var(--primary-orange); color: #000; }
+        .mode-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        /* Inputs */
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); }
+
+        /* Results — three check cells stacked */
+        .check-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 640px) { .check-grid { grid-template-columns: 1fr; } }
+        .check-cell { background: var(--darker-bg); border-radius: 10px; padding: 1rem 1.1rem; border: 1px solid var(--border-gray); }
+        .check-cell .ch-title { font-size: 0.78rem; color: var(--primary-orange); font-weight: 600; margin-bottom: 0.6rem; }
+        .check-cell .ch-row { display: flex; justify-content: space-between; font-size: 0.81rem; color: var(--text-gray); margin-bottom: 0.25rem; }
+        .check-cell .ch-row .cv { color: var(--light-gray); font-weight: 600; font-variant-numeric: tabular-nums; }
+        .check-cell .ch-row .cv.green  { color: #4ade80; }
+        .check-cell .ch-row .cv.red    { color: #f87171; }
+        .check-cell .ch-row .cv.orange { color: var(--primary-orange); }
+        .ch-bar-wrap { background: rgba(255,255,255,0.07); border-radius: 4px; height: 6px; margin-top: 0.6rem; overflow: hidden; }
+        .ch-bar { height: 100%; border-radius: 4px; transition: width 0.4s, background 0.3s; }
+        .ch-verdict { font-size: 0.75rem; font-weight: 700; margin-top: 0.5rem; }
+        .ch-verdict.pass { color: #4ade80; }
+        .ch-verdict.fail { color: #f87171; }
+        .ch-verdict.na   { color: var(--text-gray); }
+
+        /* Overall verdict */
+        .result-verdict { border-radius: 10px; padding: 1.1rem 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
+        .result-verdict.pass { background: rgba(74,222,128,0.1); border: 2px solid #4ade80; }
+        .result-verdict.fail { background: rgba(248,113,113,0.1); border: 2px solid #f87171; }
+        .result-verdict.na   { background: rgba(100,116,139,0.1); border: 2px solid var(--border-gray); }
+        .verdict-icon { font-size: 2rem; }
+        .verdict-text { font-size: 1.1rem; font-weight: 700; }
+        .verdict-sub  { font-size: 0.82rem; color: var(--text-gray); margin-top: 0.2rem; }
+
+        /* Warnings */
+        .warn-box { border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.82rem; margin-top: 0.6rem; display: none; }
+        .warn-box.show { display: block; }
+        .warn-box.err  { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #f87171; }
+        .warn-box.warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #f59e0b; }
+        .warn-box.info { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); color: #93c5fd; }
+
+        /* Diagram */
+        .diagram-wrap { display: flex; justify-content: center; padding: 0.5rem 0; }
+        svg text { font-family: inherit; }
+
+        /* Info */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.6; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+        .info-block code { background: rgba(255,255,255,0.07); padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.82rem; color: var(--light-gray); }
+
+        details.card summary { cursor: pointer; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; }
+        details.card[open] summary { margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Riveted Joint Calculator</h1>
+        <p>Rivet shear · plate bearing · net section — single and double shear</p>
+    </div>
+
+    <div class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- Inputs -->
+        <div class="card">
+            <h2>Joint Configuration</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn active" data-mode="single">➡ Single Shear</button>
+                <button class="mode-btn" data-mode="double">⇌ Double Shear</button>
+            </div>
+
+            <div class="input-grid">
+                <div class="field">
+                    <label>Rivet diameter <i>d</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="d" value="10" min="2" step="0.5">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">Nominal shank diameter</span>
+                </div>
+                <div class="field">
+                    <label>Number of rivets <i>n</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="n" value="4" min="1" step="1">
+                        <span class="unit">—</span>
+                    </div>
+                    <span class="hint">Total rivets in joint</span>
+                </div>
+                <div class="field">
+                    <label>Rivets per row <i>n<sub>r</sub></i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="nr" value="2" min="1" step="1">
+                        <span class="unit">—</span>
+                    </div>
+                    <span class="hint">For net section check</span>
+                </div>
+                <div class="field">
+                    <label>Plate thickness <i>t</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="t" value="8" min="1" step="0.5">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">Thinnest plate (bearing)</span>
+                </div>
+                <div class="field">
+                    <label>Plate width <i>b</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="b" value="80" min="1" step="1">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">Gross plate width</span>
+                </div>
+                <div class="field">
+                    <label>Applied force <i>F</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="force" value="40" min="0" step="0.1">
+                        <span class="unit">kN</span>
+                    </div>
+                    <span class="hint">Design value (factored)</span>
+                </div>
+                <div class="field">
+                    <label>Material</label>
+                    <div class="field-row">
+                        <select class="sel" id="material">
+                            <option value="235">S235 — fy = 235 / fu = 360 MPa</option>
+                            <option value="275">S275 — fy = 275 / fu = 430 MPa</option>
+                            <option value="355" selected>S355 — fy = 355 / fu = 490 MPa</option>
+                            <option value="460">S460 — fy = 460 / fu = 570 MPa</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>γ<sub>M2</sub> (rivet/bearing)</label>
+                    <div class="field-row">
+                        <select class="sel" id="gM2">
+                            <option value="1.25" selected>1.25 — standard</option>
+                            <option value="1.0">1.0 — accidental</option>
+                        </select>
+                    </div>
+                    <span class="hint">Partial safety factor</span>
+                </div>
+                <div class="field">
+                    <label>γ<sub>M0</sub> (net section)</label>
+                    <div class="field-row">
+                        <select class="sel" id="gM0">
+                            <option value="1.0" selected>1.0 — standard</option>
+                            <option value="1.1">1.1 — elevated risk</option>
+                        </select>
+                    </div>
+                    <span class="hint">EN 1993-1-1 §6.1</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="card">
+            <h2>Results</h2>
+
+            <div class="result-verdict na" id="verdict-box">
+                <div class="verdict-icon" id="verdict-icon">—</div>
+                <div>
+                    <div class="verdict-text" id="verdict-text">Enter values</div>
+                    <div class="verdict-sub" id="verdict-sub"></div>
+                </div>
+            </div>
+
+            <div class="check-grid">
+                <!-- Shear -->
+                <div class="check-cell">
+                    <div class="ch-title">① Rivet Shear</div>
+                    <div class="ch-row"><span>A<sub>s</sub> per rivet</span><span class="cv" id="As">—</span></div>
+                    <div class="ch-row"><span>τ applied</span><span class="cv" id="tau">—</span></div>
+                    <div class="ch-row"><span>τ<sub>Rd</sub></span><span class="cv orange" id="tauRd">—</span></div>
+                    <div class="ch-row"><span>η shear</span><span class="cv" id="etaS">—</span></div>
+                    <div class="ch-bar-wrap"><div class="ch-bar" id="bar-s" style="width:0%"></div></div>
+                    <div class="ch-verdict na" id="verd-s">—</div>
+                </div>
+                <!-- Bearing -->
+                <div class="check-cell">
+                    <div class="ch-title">② Plate Bearing (otlačení)</div>
+                    <div class="ch-row"><span>A<sub>ot</sub> per rivet</span><span class="cv" id="Aot">—</span></div>
+                    <div class="ch-row"><span>σ<sub>ot</sub> applied</span><span class="cv" id="sigOt">—</span></div>
+                    <div class="ch-row"><span>σ<sub>ot,Rd</sub></span><span class="cv orange" id="sigOtRd">—</span></div>
+                    <div class="ch-row"><span>η bearing</span><span class="cv" id="etaB">—</span></div>
+                    <div class="ch-bar-wrap"><div class="ch-bar" id="bar-b" style="width:0%"></div></div>
+                    <div class="ch-verdict na" id="verd-b">—</div>
+                </div>
+                <!-- Net section -->
+                <div class="check-cell">
+                    <div class="ch-title">③ Net Section</div>
+                    <div class="ch-row"><span>A<sub>net</sub></span><span class="cv" id="Anet">—</span></div>
+                    <div class="ch-row"><span>σ<sub>net</sub> applied</span><span class="cv" id="sigNet">—</span></div>
+                    <div class="ch-row"><span>σ<sub>Rd</sub> = fy/γM0</span><span class="cv orange" id="sigNetRd">—</span></div>
+                    <div class="ch-row"><span>η net section</span><span class="cv" id="etaN">—</span></div>
+                    <div class="ch-bar-wrap"><div class="ch-bar" id="bar-n" style="width:0%"></div></div>
+                    <div class="ch-verdict na" id="verd-n">—</div>
+                </div>
+            </div>
+
+            <div class="warn-box warn" id="w-geom">Rivet hole too large relative to plate width — net section very small.</div>
+            <div class="warn-box warn" id="w-pitch">Rivet spacing may be insufficient — verify minimum pitch ≥ 3d per EC3.</div>
+            <div class="warn-box info" id="w-double">Double shear: two shear planes active — rivet capacity doubled.</div>
+        </div>
+
+        <!-- SVG Diagram -->
+        <div class="card">
+            <h2>Diagram</h2>
+            <div class="diagram-wrap">
+                <svg id="diagram" width="540" height="260" viewBox="0 0 540 260"></svg>
+            </div>
+        </div>
+
+        <!-- Method info -->
+        <details class="card">
+            <summary>Method — Rivet Joint Checks</summary>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>① Rivet shear</h3>
+                    <p>Shear area per rivet:</p>
+                    <p><code>As = π × d² / 4</code></p>
+                    <p>Applied shear stress:</p>
+                    <p><code>τ = F / (n × m × As)</code></p>
+                    <p>Design resistance (0.6 × fu):</p>
+                    <p><code>τ<sub>Rd</sub> = 0.6 × fu / γM2</code></p>
+                    <p><i>m = shear planes (1 or 2)</i></p>
+                </div>
+                <div class="info-block">
+                    <h3>② Plate bearing (otlačení)</h3>
+                    <p>Bearing area per rivet:</p>
+                    <p><code>A<sub>ot</sub> = d × t</code></p>
+                    <p>Applied bearing stress:</p>
+                    <p><code>σ<sub>ot</sub> = F / (n × d × t)</code></p>
+                    <p>Design resistance:</p>
+                    <p><code>σ<sub>ot,Rd</sub> = 2.5 × fu / γM2</code></p>
+                </div>
+                <div class="info-block">
+                    <h3>③ Net section</h3>
+                    <p>Net area at critical row:</p>
+                    <p><code>A<sub>net</sub> = (b − n<sub>r</sub> × d) × t</code></p>
+                    <p>Applied normal stress:</p>
+                    <p><code>σ<sub>net</sub> = F / A<sub>net</sub></code></p>
+                    <p>Design resistance:</p>
+                    <p><code>σ<sub>Rd</sub> = fy / γM0</code></p>
+                </div>
+                <div class="info-block">
+                    <h3>Shear planes</h3>
+                    <ul>
+                        <li><strong>Single shear (m=1):</strong> lap joint — one shear plane per rivet</li>
+                        <li><strong>Double shear (m=2):</strong> butt joint with cover plates — two shear planes, higher capacity</li>
+                        <li>Governing failure mode = highest utilisation</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <footer>
+        <p>StrokeForge Engineering — reference tools for mechanical design</p>
+    </footer>
+
+    <script>
+    // Material: [fy, fu] MPa
+    const MAT = {
+        '235': [235, 360],
+        '275': [275, 430],
+        '355': [355, 490],
+        '460': [460, 570],
+    };
+
+    let activeMode = 'single'; // single | double
+
+    function fmt1(v) { return v.toFixed(1); }
+    function fmt2(v) { return v.toFixed(2); }
+
+    function setCheck(barId, verdId, eta, valId) {
+        const pct  = eta * 100;
+        const bar  = document.getElementById(barId);
+        const verd = document.getElementById(verdId);
+        const valEl = document.getElementById(valId);
+        bar.style.width      = Math.min(pct, 100) + '%';
+        bar.style.background = pct > 100 ? '#f87171' : pct > 80 ? '#f59e0b' : '#4ade80';
+        if (eta <= 0) {
+            verd.className = 'ch-verdict na'; verd.textContent = '—';
+            if (valEl) { valEl.className = 'cv'; valEl.textContent = '—'; }
+        } else if (eta <= 1.0) {
+            verd.className = 'ch-verdict pass'; verd.textContent = `✓ PASS  η = ${fmt1(pct)} %`;
+            if (valEl) { valEl.className = 'cv ' + (pct > 80 ? 'orange' : 'green'); valEl.textContent = fmt1(pct) + ' %'; }
+        } else {
+            verd.className = 'ch-verdict fail'; verd.textContent = `✗ FAIL  η = ${fmt1(pct)} %`;
+            if (valEl) { valEl.className = 'cv red'; valEl.textContent = fmt1(pct) + ' %'; }
+        }
+    }
+
+    function calculate() {
+        const d    = parseFloat(document.getElementById('d').value)     || 0;
+        const n    = parseFloat(document.getElementById('n').value)     || 1;
+        const nr   = parseFloat(document.getElementById('nr').value)    || 1;
+        const t    = parseFloat(document.getElementById('t').value)     || 0;
+        const b    = parseFloat(document.getElementById('b').value)     || 0;
+        const F    = parseFloat(document.getElementById('force').value) || 0;
+        const [fy, fu] = MAT[document.getElementById('material').value];
+        const gM2  = parseFloat(document.getElementById('gM2').value);
+        const gM0  = parseFloat(document.getElementById('gM0').value);
+        const m    = (activeMode === 'double') ? 2 : 1;
+
+        // Warn: hide all
+        ['w-geom','w-pitch','w-double'].forEach(id => document.getElementById(id).classList.remove('show'));
+        if (activeMode === 'double') document.getElementById('w-double').classList.add('show');
+
+        const FN = F * 1000; // kN → N
+
+        // ① Rivet shear
+        const As      = Math.PI * d * d / 4;      // mm²
+        const tauAppl = (n * m * As) > 0 ? FN / (n * m * As) : 0;
+        const tauRd   = 0.6 * fu / gM2;
+        const etaS    = tauRd > 0 ? tauAppl / tauRd : 0;
+
+        // ② Plate bearing
+        const Aot      = d * t;                    // mm² per rivet
+        const sigOtAppl= (n * Aot) > 0 ? FN / (n * Aot) : 0;
+        const sigOtRd  = 2.5 * fu / gM2;
+        const etaB     = sigOtRd > 0 ? sigOtAppl / sigOtRd : 0;
+
+        // ③ Net section
+        const Anet     = (b - nr * d) * t;
+        const sigNetAppl = Anet > 0 ? FN / Anet : 0;
+        const sigNetRd = fy / gM0;
+        const etaN     = sigNetRd > 0 ? sigNetAppl / sigNetRd : 0;
+
+        // Warnings
+        if (Anet < 0.5 * b * t) document.getElementById('w-geom').classList.add('show');
+        if (b / (nr + 1) < 3 * d) document.getElementById('w-pitch').classList.add('show');
+
+        // Update cells
+        document.getElementById('As').textContent     = fmt1(As) + ' mm²';
+        document.getElementById('tau').textContent    = fmt1(tauAppl) + ' MPa';
+        document.getElementById('tauRd').textContent  = fmt1(tauRd)   + ' MPa';
+        setCheck('bar-s', 'verd-s', etaS, 'etaS');
+
+        document.getElementById('Aot').textContent    = fmt1(Aot)       + ' mm²';
+        document.getElementById('sigOt').textContent  = fmt1(sigOtAppl) + ' MPa';
+        document.getElementById('sigOtRd').textContent= fmt1(sigOtRd)   + ' MPa';
+        setCheck('bar-b', 'verd-b', etaB, 'etaB');
+
+        document.getElementById('Anet').textContent   = fmt1(Anet > 0 ? Anet : 0)    + ' mm²';
+        document.getElementById('sigNet').textContent = fmt1(sigNetAppl) + ' MPa';
+        document.getElementById('sigNetRd').textContent = fmt1(sigNetRd) + ' MPa';
+        setCheck('bar-n', 'verd-n', etaN, 'etaN');
+
+        // Overall verdict
+        const allEta = [etaS, etaB, etaN].filter(e => e > 0);
+        const maxEta = allEta.length ? Math.max(...allEta) : 0;
+        const verdict = document.getElementById('verdict-box');
+        const vIcon   = document.getElementById('verdict-icon');
+        const vText   = document.getElementById('verdict-text');
+        const vSub    = document.getElementById('verdict-sub');
+
+        if (maxEta === 0) {
+            verdict.className = 'result-verdict na';
+            vIcon.textContent = '—'; vText.textContent = 'Enter values'; vSub.textContent = '';
+        } else if (maxEta <= 1.0) {
+            verdict.className = 'result-verdict pass';
+            vIcon.textContent = '✅';
+            vText.textContent = 'PASS — all checks satisfied';
+            const govName = etaS >= etaB && etaS >= etaN ? 'rivet shear' : etaB >= etaN ? 'bearing' : 'net section';
+            vSub.textContent = `Governing: ${govName}  η = ${fmt1(maxEta * 100)} %`;
+        } else {
+            verdict.className = 'result-verdict fail';
+            vIcon.textContent = '❌';
+            const failChecks = [];
+            if (etaS > 1) failChecks.push('shear');
+            if (etaB > 1) failChecks.push('bearing');
+            if (etaN > 1) failChecks.push('net section');
+            vText.textContent = 'FAIL — ' + failChecks.join(', ');
+            vSub.textContent  = `Max η = ${fmt1(maxEta * 100)} %`;
+        }
+
+        drawDiagram(d, n, nr, t, b, activeMode, maxEta, etaS, etaB, etaN);
+    }
+
+    // --- SVG Diagram ---
+    function drawDiagram(d, n, nr, t, b, mode, maxEta, etaS, etaB, etaN) {
+        const svg = document.getElementById('diagram');
+        svg.innerHTML = '';
+        const ns    = 'http://www.w3.org/2000/svg';
+        const orange = '#f97316', gray = '#9ca3af', light = '#e5e7eb', blue = '#60a5fa', green = '#4ade80', red = '#f87171', yellow = '#fbbf24';
+        const W = 540, H = 260;
+
+        function ln(x1,y1,x2,y2,col,w) {
+            const e = document.createElementNS(ns,'line');
+            e.setAttribute('x1',x1); e.setAttribute('y1',y1); e.setAttribute('x2',x2); e.setAttribute('y2',y2);
+            e.setAttribute('stroke',col||gray); e.setAttribute('stroke-width',w||1.8); svg.appendChild(e);
+        }
+        function rect(x,y,w,h,col,fill,rx) {
+            const e = document.createElementNS(ns,'rect');
+            e.setAttribute('x',x); e.setAttribute('y',y); e.setAttribute('width',w); e.setAttribute('height',h);
+            e.setAttribute('stroke',col||gray); e.setAttribute('fill',fill||'none'); e.setAttribute('stroke-width',1.8);
+            if (rx) e.setAttribute('rx',rx); svg.appendChild(e);
+        }
+        function circ(cx,cy,r,fill,stroke,sw) {
+            const e = document.createElementNS(ns,'circle');
+            e.setAttribute('cx',cx); e.setAttribute('cy',cy); e.setAttribute('r',r);
+            e.setAttribute('fill',fill||'none'); if (stroke) { e.setAttribute('stroke',stroke); e.setAttribute('stroke-width',sw||1.5); } svg.appendChild(e);
+        }
+        function txt(x,y,t,col,size,anchor,weight) {
+            const e = document.createElementNS(ns,'text');
+            e.setAttribute('x',x); e.setAttribute('y',y); e.setAttribute('fill',col||light);
+            e.setAttribute('font-size',size||11); e.setAttribute('text-anchor',anchor||'middle');
+            e.setAttribute('dominant-baseline','middle'); if (weight) e.setAttribute('font-weight',weight);
+            e.textContent = t; svg.appendChild(e);
+        }
+        function arrow(x1,y1,x2,y2,col,w) {
+            ln(x1,y1,x2,y2,col,w||2.5);
+            const angle = Math.atan2(y2-y1,x2-x1);
+            const s = 9;
+            const p = document.createElementNS(ns,'polygon');
+            p.setAttribute('points',`${x2},${y2} ${x2-s*Math.cos(angle-0.4)},${y2-s*Math.sin(angle-0.4)} ${x2-s*Math.cos(angle+0.4)},${y2-s*Math.sin(angle+0.4)}`);
+            p.setAttribute('fill',col); svg.appendChild(p);
+        }
+
+        const weldColor = maxEta > 1 ? red : maxEta > 0.8 ? yellow : orange;
+
+        if (mode === 'single') {
+            // Single shear — lap joint view (side elevation)
+            const topY = 90, botY = 140, plateH = 32, plateW = 220;
+            const cx = W / 2;
+
+            // Top plate (left side)
+            rect(cx - plateW, topY, plateW, plateH, gray, '#1e1e1e');
+            txt(cx - plateW/2, topY + plateH/2, 'PLATE A', gray, 10);
+
+            // Bottom plate (right side)
+            rect(cx, botY, plateW, plateH, gray, '#1a1a1a');
+            txt(cx + plateW/2, botY + plateH/2, 'PLATE B', gray, 10);
+
+            // Overlap zone
+            const ovlapW = 80;
+            rect(cx - ovlapW/2, topY, ovlapW, plateH + (botY - topY) + plateH, gray, 'rgba(255,255,255,0.03)');
+
+            // Rivets in overlap — show nr rivets in a row
+            const nVis = Math.min(nr, 4);
+            const spacing = ovlapW / (nVis + 1);
+            const ry = topY + plateH + (botY - topY) / 2;
+            for (let i = 0; i < nVis; i++) {
+                const rx = cx - ovlapW/2 + spacing * (i + 1);
+                circ(rx, ry, d/2 + 1, 'rgba(249,115,22,0.2)', weldColor, 2);
+                circ(rx, ry, 3, weldColor);
+                // Shear plane indicator
+                ln(rx - d - 4, ry, rx + d + 4, ry, red, 1);
+            }
+
+            // Force arrows
+            arrow(cx - plateW - 40, topY + plateH/2, cx - plateW - 8, topY + plateH/2, blue);
+            arrow(cx + plateW + 8,  botY + plateH/2, cx + plateW + 40, botY + plateH/2, blue);
+            txt(cx - plateW - 52, topY + plateH/2, 'F', blue, 12, 'middle', '700');
+            txt(cx + plateW + 52, botY + plateH/2, 'F', blue, 12, 'middle', '700');
+
+            // Labels
+            txt(cx, topY - 12, `Single shear (m = 1)  ·  d = ${d} mm  ·  n = ${n}`, gray, 10);
+            txt(cx, botY + plateH + 18, 'Shear plane', red, 9);
+
+        } else {
+            // Double shear — butt joint with cover plates
+            const midY = 108, midH = 32, plateW = 160, coverH = 22, gap = 10;
+            const cx = W / 2;
+
+            // Main plate left
+            rect(cx - plateW - gap/2, midY, plateW, midH, gray, '#1e1e1e');
+            txt(cx - plateW/2 - gap/2, midY + midH/2, 'PLATE A', gray, 10);
+
+            // Main plate right
+            rect(cx + gap/2, midY, plateW, midH, gray, '#1a1a1a');
+            txt(cx + plateW/2 + gap/2, midY + midH/2, 'PLATE B', gray, 10);
+
+            // Cover plates (top and bottom)
+            const coverW = 100;
+            rect(cx - coverW/2, midY - coverH - 4, coverW, coverH, '#60a5fa', 'rgba(96,165,250,0.1)');
+            rect(cx - coverW/2, midY + midH + 4,   coverW, coverH, '#60a5fa', 'rgba(96,165,250,0.1)');
+            txt(cx, midY - coverH/2 - 4, 'cover', '#60a5fa', 9);
+            txt(cx, midY + midH + coverH/2 + 4, 'cover', '#60a5fa', 9);
+
+            // Rivets — 2 planes shown
+            const nVis = Math.min(nr, 3);
+            const spacing = coverW / (nVis + 1);
+            for (let i = 0; i < nVis; i++) {
+                const rx = cx - coverW/2 + spacing * (i + 1);
+                const ry = midY + midH/2;
+                // Vertical rivet
+                ln(rx, midY - coverH - 4, rx, midY + midH + coverH + 4, weldColor, d/2);
+                circ(rx, midY - coverH/2 - 4, 3, weldColor);
+                circ(rx, midY + midH + coverH/2 + 4, 3, weldColor);
+                // Two shear planes
+                ln(rx - d - 4, midY,          rx + d + 4, midY,          red, 1);
+                ln(rx - d - 4, midY + midH,   rx + d + 4, midY + midH,   red, 1);
+            }
+
+            // Force arrows
+            arrow(cx - plateW - gap/2 - 40, midY + midH/2, cx - plateW - gap/2 - 6, midY + midH/2, blue);
+            arrow(cx + plateW + gap/2 + 6,  midY + midH/2, cx + plateW + gap/2 + 40, midY + midH/2, blue);
+            txt(cx - plateW - gap/2 - 52, midY + midH/2, 'F', blue, 12, 'middle', '700');
+            txt(cx + plateW + gap/2 + 52, midY + midH/2, 'F', blue, 12, 'middle', '700');
+
+            txt(cx, midY - coverH - 24, `Double shear (m = 2)  ·  d = ${d} mm  ·  n = ${n}`, gray, 10);
+            txt(cx, midY + midH + coverH + 22, '2 shear planes', red, 9);
+        }
+
+        // Check result legend
+        const checks = [
+            { label: 'Shear', eta: etaS },
+            { label: 'Bearing', eta: etaB },
+            { label: 'Net sec.', eta: etaN },
+        ];
+        checks.forEach((c, i) => {
+            const lx = 14 + i * 110;
+            const col = c.eta > 1 ? red : c.eta > 0.8 ? yellow : green;
+            const sym = c.eta > 1 ? '✗' : '✓';
+            txt(lx, H - 12, `${sym} ${c.label}: ${fmt1(c.eta * 100)} %`, col, 9.5, 'start');
+        });
+    }
+
+    function fmt1(v) { return isFinite(v) ? v.toFixed(1) : '—'; }
+
+    // Mode buttons
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeMode = btn.dataset.mode;
+            calculate();
+        });
+    });
+
+    // All inputs
+    ['d','n','nr','t','b','force','material','gM2','gM0'].forEach(id => {
+        document.getElementById(id).addEventListener('input', calculate);
+    });
+
+    calculate();
+    </script>
+    <script src="../../js/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "id": "eng-029",
+  "title": "Bearing Load Ratings C / C0",
+  "description": "Reference table of dynamic (C) and static (C0) load ratings for deep groove ball bearings 6000–6320 and cylindrical roller bearings NU 2200–2320. Filter by series and bore diameter.",
+  "category": "machine-elements",
+  "icon": "⚙️",
+  "difficulty": "beginner",
+  "topic": "strojni"
+}

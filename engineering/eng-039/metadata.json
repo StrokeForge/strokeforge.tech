@@ -1,0 +1,9 @@
+{
+  "id": "eng-039",
+  "title": "Extension Spring Calculator",
+  "description": "Extension (tension) spring calculator per DIN EN 13906-2. Spring rate k, shear stress τ (Wahl corrected), initial tension, free length, working length at F1/F2.",
+  "category": "machine-elements",
+  "icon": "🔗",
+  "difficulty": "intermediate",
+  "topic": "pruziny"
+}

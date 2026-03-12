@@ -1,0 +1,9 @@
+{
+  "id": "eng-038",
+  "title": "Steel Hardness by Heat Treatment",
+  "description": "Achievable hardness for 20 common Czech/EN steels: delivery condition, after quenching and after tempering. Filter by steel category or heat treatment method.",
+  "category": "reference",
+  "icon": "💎",
+  "difficulty": "beginner",
+  "topic": "tepelne-zpracovani"
+}

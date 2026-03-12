@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buckling Stability (Euler) | StrokeForge Engineering</title>
+    <meta name="description" content="Euler column buckling calculator. Enter column length, boundary conditions (cases I–IV), cross-section and material to get slenderness λ, critical force Fcr and stability check.">
+    <meta name="keywords" content="Euler buckling, vzpěrná stabilita, critical force, slenderness, štíhlost, Fcr, column buckling, vzpěr, EC3 buckling">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-034/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+.tool-wrap { max-width: 900px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Mode toggle */
+        .mode-toggle { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem; }
+        .mode-btn { flex: 1; padding: 0.65rem 0.4rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; text-align: center; border-right: 1px solid var(--border-gray); line-height: 1.3; }
+        .mode-btn:last-child { border-right: none; }
+        .mode-btn.active { background: var(--primary-orange); color: #000; }
+        .mode-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        /* Inputs */
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); }
+
+        /* Cross-section panels */
+        .section-panel { display: none; }
+        .section-panel.active { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+        @media (max-width: 600px) { .section-panel.active { grid-template-columns: 1fr 1fr; } }
+
+        /* Results */
+        .result-verdict { border-radius: 10px; padding: 1.1rem 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
+        .result-verdict.pass { background: rgba(74,222,128,0.1); border: 2px solid #4ade80; }
+        .result-verdict.fail { background: rgba(248,113,113,0.1); border: 2px solid #f87171; }
+        .result-verdict.na   { background: rgba(100,116,139,0.1); border: 2px solid var(--border-gray); }
+        .verdict-icon { font-size: 2rem; }
+        .verdict-text { font-size: 1.1rem; font-weight: 700; }
+        .verdict-sub  { font-size: 0.82rem; color: var(--text-gray); margin-top: 0.2rem; }
+
+        .res-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 520px) { .res-grid { grid-template-columns: 1fr 1fr; } }
+        .res-cell { background: var(--darker-bg); border-radius: 8px; padding: 0.85rem 1rem; }
+        .res-cell .lbl { font-size: 0.7rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .res-cell .val { font-size: 1.05rem; font-weight: 700; color: var(--light-gray); font-variant-numeric: tabular-nums; }
+        .res-cell .val.orange { color: var(--primary-orange); }
+        .res-cell .val.green  { color: #4ade80; }
+        .res-cell .val.red    { color: #f87171; }
+
+        /* Utilisation bar */
+        .util-bar-wrap { background: rgba(255,255,255,0.07); border-radius: 6px; height: 10px; margin-top: 0.75rem; overflow: hidden; }
+        .util-bar { height: 100%; border-radius: 6px; transition: width 0.4s ease, background 0.3s; }
+
+        /* Warnings */
+        .warn-box { border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.82rem; margin-top: 0.6rem; display: none; }
+        .warn-box.show { display: block; }
+        .warn-box.err  { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #f87171; }
+        .warn-box.warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #f59e0b; }
+        .warn-box.info { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); color: #93c5fd; }
+
+        /* Diagram */
+        .diagram-wrap { display: flex; justify-content: center; padding: 0.5rem 0; }
+        svg text { font-family: inherit; }
+
+        /* Info */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.6; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+        .info-block code { background: rgba(255,255,255,0.07); padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.82rem; color: var(--light-gray); }
+
+        details.card summary { cursor: pointer; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; }
+        details.card[open] summary { margin-bottom: 1rem; }
+
+        /* Euler case badge */
+        .case-badge { display: inline-block; background: var(--primary-orange); color: #000; border-radius: 5px; padding: 0.1rem 0.5rem; font-size: 0.75rem; font-weight: 700; margin-left: 0.4rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Buckling Stability (Euler)</h1>
+        <p>Critical force F<sub>cr</sub>, slenderness λ and stability check — Euler cases I–IV</p>
+    </div>
+
+    <div class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- Inputs -->
+        <div class="card">
+            <h2>Boundary Conditions <span class="case-badge" id="case-badge">Case I</span></h2>
+            <div class="mode-toggle">
+                <button class="mode-btn active" data-case="1" data-beta="1.0">Case I<br><small>pin – pin</small></button>
+                <button class="mode-btn" data-case="2" data-beta="2.0">Case II<br><small>fixed – free</small></button>
+                <button class="mode-btn" data-case="3" data-beta="0.7">Case III<br><small>fixed – pin</small></button>
+                <button class="mode-btn" data-case="4" data-beta="0.5">Case IV<br><small>fixed – fixed</small></button>
+            </div>
+
+            <div class="input-grid">
+                <div class="field">
+                    <label>Column length <i>L</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="L" value="2000" min="1" step="10">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">Geometric length between supports</span>
+                </div>
+                <div class="field">
+                    <label>Applied force <i>F</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="force" value="50" min="0" step="0.1">
+                        <span class="unit">kN</span>
+                    </div>
+                    <span class="hint">Design compressive load</span>
+                </div>
+                <div class="field">
+                    <label>Material</label>
+                    <div class="field-row">
+                        <select class="sel" id="material">
+                            <option value="210000,235">Steel S235 — E = 210 GPa</option>
+                            <option value="210000,275">Steel S275 — E = 210 GPa</option>
+                            <option value="210000,355" selected>Steel S355 — E = 210 GPa</option>
+                            <option value="210000,460">Steel S460 — E = 210 GPa</option>
+                            <option value="70000,240">Aluminium EN AW — E = 70 GPa</option>
+                            <option value="11000,30">Timber C24 — E = 11 GPa</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cross-section selector -->
+            <div style="margin-top:1.2rem;">
+                <div class="field">
+                    <label>Cross-section type</label>
+                    <div class="field-row" style="max-width:280px;">
+                        <select class="sel" id="sec-type" onchange="switchSection()">
+                            <option value="rect">Rectangle b × h</option>
+                            <option value="circle">Solid circle ∅d</option>
+                            <option value="hollow">Hollow circle ∅D / ∅d</option>
+                            <option value="custom">Custom — enter I and A</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Rectangle -->
+                <div class="section-panel active" id="panel-rect">
+                    <div class="field">
+                        <label>Width <i>b</i></label>
+                        <div class="field-row"><input class="inp" type="number" id="r-b" value="50" min="1" step="1"><span class="unit">mm</span></div>
+                    </div>
+                    <div class="field">
+                        <label>Height <i>h</i> (buckling dir.)</label>
+                        <div class="field-row"><input class="inp" type="number" id="r-h" value="30" min="1" step="1"><span class="unit">mm</span></div>
+                        <span class="hint">I = b·h³/12 (about weak axis)</span>
+                    </div>
+                </div>
+
+                <!-- Circle -->
+                <div class="section-panel" id="panel-circle">
+                    <div class="field">
+                        <label>Diameter <i>d</i></label>
+                        <div class="field-row"><input class="inp" type="number" id="c-d" value="40" min="1" step="0.5"><span class="unit">mm</span></div>
+                        <span class="hint">I = π·d⁴/64</span>
+                    </div>
+                </div>
+
+                <!-- Hollow circle -->
+                <div class="section-panel" id="panel-hollow">
+                    <div class="field">
+                        <label>Outer diameter <i>D</i></label>
+                        <div class="field-row"><input class="inp" type="number" id="h-D" value="60" min="1" step="0.5"><span class="unit">mm</span></div>
+                    </div>
+                    <div class="field">
+                        <label>Inner diameter <i>d</i></label>
+                        <div class="field-row"><input class="inp" type="number" id="h-d" value="50" min="1" step="0.5"><span class="unit">mm</span></div>
+                        <span class="hint">I = π·(D⁴−d⁴)/64</span>
+                    </div>
+                </div>
+
+                <!-- Custom -->
+                <div class="section-panel" id="panel-custom">
+                    <div class="field">
+                        <label>Moment of inertia <i>I</i></label>
+                        <div class="field-row"><input class="inp" type="number" id="cu-I" value="100000" min="1" step="100"><span class="unit">mm⁴</span></div>
+                    </div>
+                    <div class="field">
+                        <label>Cross-section area <i>A</i></label>
+                        <div class="field-row"><input class="inp" type="number" id="cu-A" value="1200" min="1" step="10"><span class="unit">mm²</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="card">
+            <h2>Results</h2>
+
+            <div class="result-verdict na" id="verdict-box">
+                <div class="verdict-icon" id="verdict-icon">—</div>
+                <div>
+                    <div class="verdict-text" id="verdict-text">Enter values</div>
+                    <div class="verdict-sub" id="verdict-sub"></div>
+                </div>
+            </div>
+
+            <div class="res-grid">
+                <div class="res-cell">
+                    <div class="lbl">Effective length L<sub>eff</sub> = β·L</div>
+                    <div class="val orange" id="Leff">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Moment of inertia <i>I</i></div>
+                    <div class="val" id="I-val">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Cross-section area <i>A</i></div>
+                    <div class="val" id="A-val">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Radius of gyration <i>i</i></div>
+                    <div class="val" id="i-val">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Slenderness λ = L<sub>eff</sub> / i</div>
+                    <div class="val" id="lambda">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Critical force F<sub>cr</sub></div>
+                    <div class="val" id="Fcr">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Applied force <i>F</i></div>
+                    <div class="val" id="F-val">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Utilisation η = F / F<sub>cr</sub></div>
+                    <div class="val" id="eta">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Reserve capacity</div>
+                    <div class="val" id="reserve">—</div>
+                </div>
+            </div>
+
+            <div class="util-bar-wrap">
+                <div class="util-bar" id="util-bar" style="width:0%"></div>
+            </div>
+
+            <div class="warn-box info"  id="w-elastic">Elastic buckling (Euler) governs — λ above limiting slenderness λ<sub>lim</sub>.</div>
+            <div class="warn-box warn"  id="w-inelastic">λ below λ<sub>lim</sub> — inelastic / material failure may govern before elastic buckling. Verify per EC3 §6.3.</div>
+            <div class="warn-box warn"  id="w-high">Utilisation &gt; 80% — consider larger cross-section or shorter effective length.</div>
+            <div class="warn-box err"   id="w-hollow">Inner diameter ≥ outer diameter — invalid hollow section.</div>
+        </div>
+
+        <!-- SVG Diagram -->
+        <div class="card">
+            <h2>Diagram</h2>
+            <div class="diagram-wrap">
+                <svg id="diagram" width="540" height="290" viewBox="0 0 540 290"></svg>
+            </div>
+        </div>
+
+        <!-- Method info -->
+        <details class="card">
+            <summary>Method — Euler Buckling Theory</summary>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Critical force</h3>
+                    <p>Euler formula for elastic buckling:</p>
+                    <p><code>F<sub>cr</sub> = π² × E × I / L<sub>eff</sub>²</code></p>
+                    <p>where L<sub>eff</sub> = β × L is the effective (buckling) length.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Slenderness</h3>
+                    <p>Radius of gyration: <code>i = √(I / A)</code></p>
+                    <p>Slenderness ratio: <code>λ = L<sub>eff</sub> / i</code></p>
+                    <p>Limiting slenderness: <code>λ<sub>lim</sub> = π × √(E / f<sub>y</sub>)</code></p>
+                    <p>Euler formula valid for <code>λ &gt; λ<sub>lim</sub></code></p>
+                </div>
+                <div class="info-block">
+                    <h3>Boundary conditions β</h3>
+                    <ul>
+                        <li><strong>Case I</strong> — pin–pin: β = 1.0</li>
+                        <li><strong>Case II</strong> — fixed–free: β = 2.0</li>
+                        <li><strong>Case III</strong> — fixed–pin: β = 0.7</li>
+                        <li><strong>Case IV</strong> — fixed–fixed: β = 0.5</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Notes</h3>
+                    <ul>
+                        <li>Calculator uses pure Euler elastic buckling — conservative for stocky columns</li>
+                        <li>For full EC3 buckling check use reduction factor χ per §6.3.1</li>
+                        <li>Imperfections and residual stresses are not included</li>
+                        <li>Verify the buckling plane — use minimum I</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <footer>
+        <p>StrokeForge Engineering — reference tools for mechanical design</p>
+    </footer>
+
+    <script>
+    let activeBeta = 1.0;
+    let activeCase = 1;
+
+    function switchSection() {
+        const type = document.getElementById('sec-type').value;
+        ['rect','circle','hollow','custom'].forEach(t => {
+            document.getElementById('panel-' + t).classList.toggle('active', t === type);
+        });
+        calculate();
+    }
+
+    function getSection() {
+        const type = document.getElementById('sec-type').value;
+        let I = 0, A = 0;
+        if (type === 'rect') {
+            const b = parseFloat(document.getElementById('r-b').value) || 0;
+            const h = parseFloat(document.getElementById('r-h').value) || 0;
+            I = b * h * h * h / 12;
+            A = b * h;
+        } else if (type === 'circle') {
+            const d = parseFloat(document.getElementById('c-d').value) || 0;
+            I = Math.PI * d * d * d * d / 64;
+            A = Math.PI * d * d / 4;
+        } else if (type === 'hollow') {
+            const D = parseFloat(document.getElementById('h-D').value) || 0;
+            const d = parseFloat(document.getElementById('h-d').value) || 0;
+            if (d >= D) return { I: 0, A: 0, invalid: true };
+            I = Math.PI * (D * D * D * D - d * d * d * d) / 64;
+            A = Math.PI * (D * D - d * d) / 4;
+        } else {
+            I = parseFloat(document.getElementById('cu-I').value) || 0;
+            A = parseFloat(document.getElementById('cu-A').value) || 0;
+        }
+        return { I, A, invalid: false };
+    }
+
+    function fmt1(v) { return isFinite(v) ? v.toFixed(1) : '—'; }
+    function fmt2(v) { return isFinite(v) ? v.toFixed(2) : '—'; }
+    function fmtE(v) { // scientific for large values
+        if (!isFinite(v) || v === 0) return '—';
+        if (v >= 1e6) return (v / 1e6).toFixed(2) + ' ×10⁶';
+        if (v >= 1e3) return (v / 1e3).toFixed(1) + ' ×10³';
+        return v.toFixed(1);
+    }
+
+    function calculate() {
+        const L     = parseFloat(document.getElementById('L').value)     || 0;
+        const F     = parseFloat(document.getElementById('force').value) || 0;
+        const matStr= document.getElementById('material').value;
+        const [E, fy] = matStr.split(',').map(Number);
+        const beta  = activeBeta;
+        const sec   = getSection();
+
+        // Hide all warnings
+        ['w-elastic','w-inelastic','w-high','w-hollow'].forEach(id => document.getElementById(id).classList.remove('show'));
+
+        if (sec.invalid) {
+            document.getElementById('w-hollow').classList.add('show');
+            return;
+        }
+
+        const { I, A } = sec;
+        const Leff = beta * L;
+        const i    = (A > 0) ? Math.sqrt(I / A) : 0;
+        const lam  = (i > 0) ? Leff / i : 0;
+        const Fcr  = (Leff > 0) ? (Math.PI * Math.PI * E * I) / (Leff * Leff) : 0; // N
+        const FcrKN= Fcr / 1000;
+        const FN   = F * 1000;
+        const eta  = (Fcr > 0 && F > 0) ? FN / Fcr : 0;
+        const etaPct = eta * 100;
+        const reserve = (1 - eta) * 100;
+
+        // Limiting slenderness
+        const lamLim = fy > 0 ? Math.PI * Math.sqrt(E / fy) : 999;
+
+        // Warnings
+        if (lam > lamLim) document.getElementById('w-elastic').classList.add('show');
+        else              document.getElementById('w-inelastic').classList.add('show');
+        if (etaPct > 80 && etaPct <= 100) document.getElementById('w-high').classList.add('show');
+
+        // Update DOM
+        document.getElementById('Leff').textContent  = fmt1(Leff) + ' mm';
+        document.getElementById('I-val').textContent = fmtE(I) + ' mm⁴';
+        document.getElementById('A-val').textContent = fmt1(A) + ' mm²';
+        document.getElementById('i-val').textContent = fmt1(i) + ' mm';
+        document.getElementById('lambda').textContent= fmt1(lam) + (lam > lamLim ? ' ✓' : ' ⚠');
+        document.getElementById('Fcr').textContent   = fmt2(FcrKN) + ' kN';
+        document.getElementById('F-val').textContent = fmt2(F) + ' kN';
+
+        const etaEl = document.getElementById('eta');
+        etaEl.textContent = F > 0 ? fmt1(etaPct) + ' %' : '—';
+        etaEl.className   = 'val ' + (etaPct > 100 ? 'red' : etaPct > 80 ? 'orange' : (F > 0 ? 'green' : ''));
+        document.getElementById('reserve').textContent = (F > 0 && reserve >= 0) ? fmt1(reserve) + ' %' : '—';
+
+        // Bar
+        const barW     = F > 0 ? Math.min(etaPct, 100) : 0;
+        const barColor = etaPct > 100 ? '#f87171' : etaPct > 80 ? '#f59e0b' : '#4ade80';
+        const bar      = document.getElementById('util-bar');
+        bar.style.width      = barW + '%';
+        bar.style.background = barColor;
+
+        // Verdict
+        const verdict = document.getElementById('verdict-box');
+        const vIcon   = document.getElementById('verdict-icon');
+        const vText   = document.getElementById('verdict-text');
+        const vSub    = document.getElementById('verdict-sub');
+
+        if (F === 0) {
+            verdict.className = 'result-verdict na';
+            vIcon.textContent = '—'; vText.textContent = 'No applied force';
+            vSub.textContent  = `F\u209Acr = ${fmt2(FcrKN)} kN  ·  λ = ${fmt1(lam)}`;
+        } else if (eta <= 1.0) {
+            verdict.className = 'result-verdict pass';
+            vIcon.textContent = '✅';
+            vText.textContent = 'PASS — column stable';
+            vSub.textContent  = `η = ${fmt1(etaPct)} % ≤ 100 %  ·  F\u209Acr = ${fmt2(FcrKN)} kN  ·  λ = ${fmt1(lam)}`;
+        } else {
+            verdict.className = 'result-verdict fail';
+            vIcon.textContent = '❌';
+            vText.textContent = 'FAIL — column buckles';
+            vSub.textContent  = `η = ${fmt1(etaPct)} % > 100 %  ·  F\u209Acr = ${fmt2(FcrKN)} kN`;
+        }
+
+        drawDiagram(activeCase, beta, L, Leff, eta, lam, lamLim, FcrKN, F);
+    }
+
+    // --- SVG Diagram ---
+    function drawDiagram(caseNum, beta, L, Leff, eta, lam, lamLim, FcrKN, F) {
+        const svg = document.getElementById('diagram');
+        svg.innerHTML = '';
+        const ns     = 'http://www.w3.org/2000/svg';
+        const orange = '#f97316', gray = '#9ca3af', light = '#e5e7eb', blue = '#60a5fa',
+              green = '#4ade80', red = '#f87171', yellow = '#fbbf24', purple = '#a78bfa';
+        const W = 540, H = 290;
+
+        function ln(x1,y1,x2,y2,col,w,dash) {
+            const e = document.createElementNS(ns,'line');
+            e.setAttribute('x1',x1); e.setAttribute('y1',y1); e.setAttribute('x2',x2); e.setAttribute('y2',y2);
+            e.setAttribute('stroke',col||gray); e.setAttribute('stroke-width',w||1.8);
+            if (dash) e.setAttribute('stroke-dasharray', dash);
+            svg.appendChild(e);
+        }
+        function txt(x,y,t,col,size,anchor,weight) {
+            const e = document.createElementNS(ns,'text');
+            e.setAttribute('x',x); e.setAttribute('y',y); e.setAttribute('fill',col||light);
+            e.setAttribute('font-size',size||11); e.setAttribute('text-anchor',anchor||'middle');
+            e.setAttribute('dominant-baseline','middle'); if (weight) e.setAttribute('font-weight',weight);
+            e.textContent = t; svg.appendChild(e);
+        }
+        function rect(x,y,w,h,col,fill,rx) {
+            const e = document.createElementNS(ns,'rect');
+            e.setAttribute('x',x); e.setAttribute('y',y); e.setAttribute('width',w); e.setAttribute('height',h);
+            e.setAttribute('stroke',col||gray); e.setAttribute('fill',fill||'none'); e.setAttribute('stroke-width',1.8);
+            if (rx) e.setAttribute('rx', rx); svg.appendChild(e);
+        }
+        function arrow(x1,y1,x2,y2,col,w) {
+            ln(x1,y1,x2,y2,col,w||2.5);
+            const angle = Math.atan2(y2-y1,x2-x1), s = 9;
+            const p = document.createElementNS(ns,'polygon');
+            p.setAttribute('points',`${x2},${y2} ${x2-s*Math.cos(angle-0.4)},${y2-s*Math.sin(angle-0.4)} ${x2-s*Math.cos(angle+0.4)},${y2-s*Math.sin(angle+0.4)}`);
+            p.setAttribute('fill',col); svg.appendChild(p);
+        }
+        function pin(x,y,up) { // pinned support
+            const dir = up ? -1 : 1;
+            const p = document.createElementNS(ns,'polygon');
+            p.setAttribute('points',`${x},${y} ${x-12},${y+dir*20} ${x+12},${y+dir*20}`);
+            p.setAttribute('fill','none'); p.setAttribute('stroke',gray); p.setAttribute('stroke-width',1.5);
+            svg.appendChild(p);
+            ln(x-16, y+dir*22, x+16, y+dir*22, gray, 1.5);
+        }
+        function fixed(x,y,up) { // fixed support
+            const dir = up ? -1 : 1;
+            rect(x-18, y, 36, dir*18, gray, 'rgba(100,116,139,0.2)');
+            for (let i = 0; i < 4; i++) ln(x-18+i*12, y, x-24+i*12, y+dir*14, gray, 1);
+        }
+        function free_end(x,y) { // free end (cantilever)
+            ln(x-18, y, x+18, y, gray, 1.5);
+            txt(x, y - 10, 'free', gray, 9);
+        }
+
+        const colX = 180; // column centre x
+        const colW = 16;
+        const colTop = 40, colBot = 240;
+        const colH = colBot - colTop;
+        const colColor = eta > 1 ? red : eta > 0.8 ? yellow : orange;
+
+        // Buckled shape (sinusoidal dashed line)
+        const amp = 28;
+        const pts = [];
+        const steps = 60;
+        for (let i = 0; i <= steps; i++) {
+            const frac = i / steps;
+            const y = colTop + frac * colH;
+            let dx = 0;
+            if (caseNum === 1) dx = amp * Math.sin(Math.PI * frac);
+            else if (caseNum === 2) dx = amp * (1 - Math.cos(Math.PI * frac / 2));
+            else if (caseNum === 3) dx = amp * Math.sin(Math.PI * frac * 0.7) * (caseNum === 3 ? 1 : 1);
+            else if (caseNum === 4) dx = amp * Math.sin(Math.PI * 2 * frac) * 0.5;
+            // case 3: half-sine
+            if (caseNum === 3) dx = amp * Math.sin(Math.PI * frac);
+            pts.push(`${colX + dx},${y}`);
+        }
+        const pathEl = document.createElementNS(ns, 'path');
+        const d = 'M ' + pts.join(' L ');
+        pathEl.setAttribute('d', d);
+        pathEl.setAttribute('stroke', eta > 0 ? colColor : gray);
+        pathEl.setAttribute('stroke-width', '2');
+        pathEl.setAttribute('fill', 'none');
+        pathEl.setAttribute('stroke-dasharray', '5,3');
+        pathEl.setAttribute('opacity', '0.6');
+        svg.appendChild(pathEl);
+
+        // Column straight line
+        ln(colX, colTop, colX, colBot, colColor, colW);
+
+        // Supports based on case
+        if (caseNum === 1) {
+            pin(colX, colTop, true);   // top: pin
+            pin(colX, colBot, false);  // bot: pin
+        } else if (caseNum === 2) {
+            free_end(colX, colTop);    // top: free
+            fixed(colX, colBot, false);// bot: fixed
+        } else if (caseNum === 3) {
+            pin(colX, colTop, true);   // top: pin
+            fixed(colX, colBot, false);// bot: fixed
+        } else {
+            fixed(colX, colTop, true); // top: fixed
+            fixed(colX, colBot, false);// bot: fixed
+        }
+
+        // Force arrow at top
+        const arrowTopY = caseNum === 2 ? colTop + 2 : colTop - 32;
+        if (caseNum !== 2) {
+            arrow(colX, arrowTopY, colX, colTop, blue);
+            txt(colX + 16, arrowTopY + 8, 'F', blue, 12, 'start', '700');
+        } else {
+            // cantilever — reaction at base
+            arrow(colX, colBot - 32, colX, colBot, blue);
+            txt(colX + 16, colBot - 28, 'F', blue, 12, 'start', '700');
+        }
+
+        // Dimension L
+        const dimX = colX - 50;
+        ln(dimX, colTop, dimX, colBot, gray, 1);
+        ln(dimX - 5, colTop, dimX + 5, colTop, gray, 1);
+        ln(dimX - 5, colBot, dimX + 5, colBot, gray, 1);
+        txt(dimX - 18, (colTop + colBot) / 2, 'L', gray, 11);
+
+        // Effective length bracket
+        let leffTop = colTop, leffBot = colBot;
+        if (caseNum === 2) { leffTop = colTop; leffBot = colBot; }
+        else if (caseNum === 3) { leffTop = colTop; leffBot = colBot; }
+        else if (caseNum === 4) { leffTop = colTop + colH * 0.25; leffBot = colBot - colH * 0.25; }
+        const dimX2 = colX + 46;
+        ln(dimX2, leffTop, dimX2, leffBot, purple, 1, '4,2');
+        ln(dimX2 - 5, leffTop, dimX2 + 5, leffTop, purple, 1);
+        ln(dimX2 - 5, leffBot, dimX2 + 5, leffBot, purple, 1);
+        txt(dimX2 + 14, (leffTop + leffBot) / 2 - 7, 'Leff', purple, 9, 'start');
+        txt(dimX2 + 14, (leffTop + leffBot) / 2 + 7, `β·L`, purple, 9, 'start');
+
+        // Info panel on right
+        const ix = 310, iy = 50, iw = 210, rowH = 22;
+        rect(ix, iy, iw, 180, 'none', 'rgba(255,255,255,0.03)', 8);
+        const rows = [
+            [`Case ${caseNum} — β = ${beta}`,  orange],
+            [`L = ${(L/1000).toFixed(3)} m`,   gray],
+            [`Leff = ${(Leff/1000).toFixed(3)} m`, purple],
+            [`λ = ${isFinite(lam) ? lam.toFixed(1) : '—'}`, lam > 100 ? red : lam > 60 ? yellow : green],
+            [`Fcr = ${isFinite(FcrKN) ? FcrKN.toFixed(1) : '—'} kN`, blue],
+            [`F = ${F} kN`,                    light],
+            [`η = ${F > 0 && isFinite(eta) ? (eta*100).toFixed(1) : '—'} %`, eta > 1 ? red : eta > 0.8 ? yellow : green],
+        ];
+        rows.forEach((r, i) => txt(ix + iw/2, iy + 16 + i * rowH, r[0], r[1], 10.5));
+
+        // β legend
+        const cases = [{n:1,b:'1.0',label:'pin–pin'},{n:2,b:'2.0',label:'fixed–free'},{n:3,b:'0.7',label:'fixed–pin'},{n:4,b:'0.5',label:'fixed–fix'}];
+        const ly = 245;
+        txt(W / 2, ly - 4, 'β factors: ', gray, 9, 'middle');
+        cases.forEach((c,i) => {
+            const lx = 80 + i * 100;
+            const col = c.n === caseNum ? orange : gray;
+            txt(lx, ly + 12, `Case ${c.n}: β=${c.b}`, col, 9, 'middle', c.n === caseNum ? '700' : undefined);
+            txt(lx, ly + 26, `(${c.label})`, col, 8, 'middle');
+        });
+    }
+
+    // Mode buttons (boundary conditions)
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeBeta = parseFloat(btn.dataset.beta);
+            activeCase = parseInt(btn.dataset.case);
+            document.getElementById('case-badge').textContent = 'Case ' + activeCase;
+            calculate();
+        });
+    });
+
+    // All inputs
+    ['L','force','material','r-b','r-h','c-d','h-D','h-d','cu-I','cu-A'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', calculate);
+    });
+
+    calculate();
+    </script>
+    <script src="../../js/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "id": "eng-043",
+  "title": "Copper Alloys — Brass, Bronze, Cupronickel",
+  "description": "Material database for copper alloys per EN 1652 / EN 1982. CuZn (brass), CuSn (tin bronze), CuAl (aluminium bronze), CuNi, CuBe — mechanical properties, machinability, applications.",
+  "category": "materials",
+  "icon": "🔶",
+  "difficulty": "beginner",
+  "topic": "materialy"
+}

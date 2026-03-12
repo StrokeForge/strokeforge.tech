@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bearing Load Ratings C / C0 | StrokeForge Engineering</title>
+    <meta name="description" content="Reference table of dynamic (C) and static (C0) load ratings for deep groove ball bearings 6000–6320 and cylindrical roller bearings NU 2200–2320. Filter by series and bore diameter.">
+    <meta name="keywords" content="bearing load rating C C0, deep groove ball bearing 6000 6200 6300, cylindrical roller bearing NU 2200 2300, SKF FAG, dynamic load rating, static load rating, ložiska tabulka">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-029/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 960px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Filter bar */
+        .filter-bar { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.25rem; }
+        .series-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .ser-btn {
+            background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray);
+            border-radius: 6px; padding: 0.38rem 0.85rem; font-size: 0.82rem; font-family: monospace;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .ser-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .ser-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; }
+
+        .search-wrap { flex: 1; min-width: 160px; max-width: 260px; position: relative; }
+        .search-inp {
+            width: 100%; background: var(--darker-bg); border: 1px solid var(--border-gray);
+            color: var(--light-gray); border-radius: 7px; padding: 0.42rem 0.8rem 0.42rem 2rem;
+            font-size: 0.88rem; outline: none; transition: border-color 0.2s; box-sizing: border-box;
+        }
+        .search-inp:focus { border-color: var(--primary-orange); }
+        .search-icon { position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); color: var(--text-gray); font-size: 0.8rem; pointer-events: none; }
+
+        /* Table */
+        .table-wrap { overflow-x: auto; }
+        .bear-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        .bear-table th {
+            background: rgba(255,107,53,0.08); color: var(--primary-orange);
+            font-size: 0.76rem; font-weight: 600; padding: 0.5rem 0.75rem;
+            text-align: left; border-bottom: 1px solid var(--border-gray);
+            white-space: nowrap;
+        }
+        .bear-table th.num { text-align: right; }
+        .bear-table td { padding: 0.46rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--light-gray); }
+        .bear-table td.desig { font-family: monospace; font-weight: 600; color: var(--primary-orange); white-space: nowrap; }
+        .bear-table td.num { text-align: right; font-family: monospace; font-size: 0.85rem; }
+        .bear-table td.c-val { text-align: right; font-family: monospace; color: #60a5fa; font-weight: 600; }
+        .bear-table td.c0-val { text-align: right; font-family: monospace; color: #4ade80; font-weight: 600; }
+        .bear-table tr:last-child td { border-bottom: none; }
+        .bear-table tr:hover td { background: rgba(255,107,53,0.04); }
+        .bear-table .hidden { display: none; }
+
+        /* Summary strip */
+        .count-strip { font-size: 0.78rem; color: var(--text-gray); margin-bottom: 0.75rem; }
+        .count-strip strong { color: var(--light-gray); }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); }
+
+        /* Series badge in table */
+        .tag { display: inline-block; font-size: 0.68rem; font-family: monospace; font-weight: 700;
+               padding: 0.1rem 0.4rem; border-radius: 3px; margin-left: 0.35rem; vertical-align: middle; }
+        .tag-ball  { background: rgba(96,165,250,0.15); color: #60a5fa; }
+        .tag-roll  { background: rgba(74,222,128,0.15); color: #4ade80; }
+
+        .related-link { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem;
+                        color: var(--primary-orange); text-decoration: none; transition: opacity 0.2s; }
+        .related-link:hover { opacity: 0.8; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>⚙️ Bearing Load Ratings C / C0</h1>
+        <p>Deep groove ball bearings 6000–6320 · Cylindrical roller bearings NU 2200–2320 · SKF/FAG typical values</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- TABLE CARD -->
+        <div class="card">
+            <h2>Load rating table</h2>
+
+            <div class="filter-bar">
+                <div class="series-tabs" id="serTabs"></div>
+                <div class="search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input class="search-inp" type="text" id="searchInp" placeholder="Designation or bore…" oninput="applyFilter()">
+                </div>
+            </div>
+
+            <div class="count-strip" id="countStrip"></div>
+
+            <div class="table-wrap">
+                <table class="bear-table" id="bearTable">
+                    <thead>
+                        <tr>
+                            <th>Designation</th>
+                            <th class="num">d&nbsp;[mm]</th>
+                            <th class="num">D&nbsp;[mm]</th>
+                            <th class="num">B&nbsp;[mm]</th>
+                            <th class="num">C&nbsp;[kN]</th>
+                            <th class="num">C₀&nbsp;[kN]</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bearBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Good to know</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>C — Dynamic load rating</h3>
+                    <p>The load under which a group of identical bearings will reach a basic rating life of <span class="mono">L₁₀ = 1 000 000 rev</span> (i.e. 90 % of bearings survive). Used in the ISO 281 life formula:</p>
+                    <p style="margin-top:0.5rem"><span class="mono">L₁₀ = (C / P)ᵖ &nbsp;&nbsp; [10⁶ rev]</span></p>
+                    <p style="margin-top:0.4rem; font-size:0.78rem">p = 3 (ball), p = 10/3 (roller)</p>
+                </div>
+                <div class="info-block">
+                    <h3>C₀ — Static load rating</h3>
+                    <p>The load that causes a permanent deformation of <span class="mono">0.0001 × d</span> at the most loaded contact. Used when the bearing is stationary, oscillating slowly, or subject to shock loads:</p>
+                    <p style="margin-top:0.5rem"><span class="mono">s₀ = C₀ / P₀ &nbsp;&nbsp; [–]</span></p>
+                    <p style="margin-top:0.4rem; font-size:0.78rem">Recommended s₀ ≥ 1 (normal), ≥ 2 (shock)</p>
+                </div>
+                <div class="info-block">
+                    <h3>Series overview</h3>
+                    <ul>
+                        <li><strong>6000</strong> — extra-light, low load, high speed</li>
+                        <li><strong>6200</strong> — light, general purpose (most common)</li>
+                        <li><strong>6300</strong> — medium, higher radial loads</li>
+                        <li><strong>NU 22xx</strong> — medium cylindrical roller, moderate load</li>
+                        <li><strong>NU 23xx</strong> — heavy cylindrical roller, high radial load</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Designation system</h3>
+                    <ul>
+                        <li><strong>62xx</strong> — last two digits = bore code (×5 mm for ≥ 04)</li>
+                        <li><strong>6200–6203</strong> — bore: 10, 12, 15, 17 mm (special)</li>
+                        <li><strong>NU</strong> — cylindrical roller, inner ring free to move axially</li>
+                        <li>Suffix <strong>-2RS</strong> — rubber seals; <strong>-ZZ</strong> — metal shields</li>
+                        <li>Values are typical (SKF/FAG); verify with manufacturer datasheet</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="margin-top:1.1rem; padding-top:1rem; border-top:1px solid var(--border-gray)">
+                <a href="/engineering/eng-021/" class="related-link">⚙️ Use these values in: Bearing Life Calculator (L10 / L10h) →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ── Bearing data ──────────────────────────────────────────────────────
+    // Fields: [designation, d, D, B, C_kN, C0_kN, series, type]
+    const BEARINGS = [
+        // ── 6000 series (deep groove ball) ──
+        ['6000', 10,  26,  8,  4.62, 1.96, '6000', 'ball'],
+        ['6001', 12,  28,  8,  5.10, 2.36, '6000', 'ball'],
+        ['6002', 15,  32,  9,  5.59, 2.85, '6000', 'ball'],
+        ['6003', 17,  35, 10,  6.00, 3.25, '6000', 'ball'],
+        ['6004', 20,  42, 12,  9.95, 5.00, '6000', 'ball'],
+        ['6005', 25,  47, 12, 11.2,  5.85, '6000', 'ball'],
+        ['6006', 30,  55, 13, 13.3,  6.95, '6000', 'ball'],
+        ['6007', 35,  62, 14, 15.9,  8.50, '6000', 'ball'],
+        ['6008', 40,  68, 15, 17.0,  9.50, '6000', 'ball'],
+        ['6009', 45,  75, 16, 21.0, 11.6,  '6000', 'ball'],
+        ['6010', 50,  80, 16, 21.8, 12.5,  '6000', 'ball'],
+        ['6011', 55,  90, 18, 28.1, 16.3,  '6000', 'ball'],
+        ['6012', 60,  95, 18, 29.6, 17.8,  '6000', 'ball'],
+        ['6013', 65, 100, 18, 30.7, 19.3,  '6000', 'ball'],
+        ['6014', 70, 110, 20, 38.0, 23.6,  '6000', 'ball'],
+        ['6015', 75, 115, 20, 39.7, 25.5,  '6000', 'ball'],
+        ['6016', 80, 125, 22, 48.8, 31.5,  '6000', 'ball'],
+        ['6017', 85, 130, 22, 50.0, 33.5,  '6000', 'ball'],
+        ['6018', 90, 140, 24, 57.2, 37.5,  '6000', 'ball'],
+        ['6019', 95, 145, 24, 58.5, 40.0,  '6000', 'ball'],
+        ['6020',100, 150, 24, 60.5, 43.0,  '6000', 'ball'],
+
+        // ── 6200 series (deep groove ball) ──
+        ['6200', 10,  30,  9,  5.40, 2.36, '6200', 'ball'],
+        ['6201', 12,  32, 10,  6.82, 3.05, '6200', 'ball'],
+        ['6202', 15,  35, 11,  7.65, 3.72, '6200', 'ball'],
+        ['6203', 17,  40, 12,  9.56, 4.75, '6200', 'ball'],
+        ['6204', 20,  47, 14, 12.8,  6.55, '6200', 'ball'],
+        ['6205', 25,  52, 15, 14.8,  7.80, '6200', 'ball'],
+        ['6206', 30,  62, 16, 19.5, 11.2,  '6200', 'ball'],
+        ['6207', 35,  72, 17, 25.5, 15.3,  '6200', 'ball'],
+        ['6208', 40,  80, 18, 29.1, 17.8,  '6200', 'ball'],
+        ['6209', 45,  85, 19, 32.5, 20.4,  '6200', 'ball'],
+        ['6210', 50,  90, 20, 35.1, 23.2,  '6200', 'ball'],
+        ['6211', 55, 100, 21, 43.6, 29.2,  '6200', 'ball'],
+        ['6212', 60, 110, 22, 52.7, 36.0,  '6200', 'ball'],
+        ['6213', 65, 120, 23, 57.2, 40.0,  '6200', 'ball'],
+        ['6214', 70, 125, 24, 60.5, 44.0,  '6200', 'ball'],
+        ['6215', 75, 130, 25, 66.3, 49.5,  '6200', 'ball'],
+        ['6216', 80, 140, 26, 71.5, 53.0,  '6200', 'ball'],
+        ['6217', 85, 150, 28, 83.2, 63.0,  '6200', 'ball'],
+        ['6218', 90, 160, 30, 95.6, 73.5,  '6200', 'ball'],
+        ['6219', 95, 170, 32,108,   83.5,  '6200', 'ball'],
+        ['6220',100, 180, 34,122,   96.5,  '6200', 'ball'],
+
+        // ── 6300 series (deep groove ball) ──
+        ['6300', 10,  35, 11,  8.06, 3.35, '6300', 'ball'],
+        ['6301', 12,  37, 12,  9.72, 4.20, '6300', 'ball'],
+        ['6302', 15,  42, 13, 11.4,  5.20, '6300', 'ball'],
+        ['6303', 17,  47, 14, 13.5,  6.55, '6300', 'ball'],
+        ['6304', 20,  52, 15, 15.9,  7.80, '6300', 'ball'],
+        ['6305', 25,  62, 17, 22.5, 11.4,  '6300', 'ball'],
+        ['6306', 30,  72, 19, 28.1, 15.0,  '6300', 'ball'],
+        ['6307', 35,  80, 21, 33.5, 18.0,  '6300', 'ball'],
+        ['6308', 40,  90, 23, 40.5, 22.8,  '6300', 'ball'],
+        ['6309', 45, 100, 25, 52.7, 30.0,  '6300', 'ball'],
+        ['6310', 50, 110, 27, 61.8, 36.0,  '6300', 'ball'],
+        ['6311', 55, 120, 29, 71.5, 42.5,  '6300', 'ball'],
+        ['6312', 60, 130, 31, 81.9, 50.0,  '6300', 'ball'],
+        ['6313', 65, 140, 33, 92.3, 57.2,  '6300', 'ball'],
+        ['6314', 70, 150, 35,104,   66.3,  '6300', 'ball'],
+        ['6315', 75, 160, 37,112,   73.5,  '6300', 'ball'],
+        ['6316', 80, 170, 39,124,   83.2,  '6300', 'ball'],
+        ['6317', 85, 180, 41,136,   93.0,  '6300', 'ball'],
+        ['6318', 90, 190, 43,146,  104,    '6300', 'ball'],
+        ['6319', 95, 200, 45,160,  114,    '6300', 'ball'],
+        ['6320',100, 215, 47,174,  130,    '6300', 'ball'],
+
+        // ── NU 22xx series (cylindrical roller) ──
+        ['NU 2204', 20,  47, 18, 18.3, 16.0, 'NU22', 'roller'],
+        ['NU 2205', 25,  52, 18, 20.4, 18.3, 'NU22', 'roller'],
+        ['NU 2206', 30,  62, 20, 28.1, 26.5, 'NU22', 'roller'],
+        ['NU 2207', 35,  72, 23, 38.5, 36.5, 'NU22', 'roller'],
+        ['NU 2208', 40,  80, 23, 45.5, 44.0, 'NU22', 'roller'],
+        ['NU 2209', 45,  85, 23, 49.4, 48.0, 'NU22', 'roller'],
+        ['NU 2210', 50,  90, 23, 52.0, 52.0, 'NU22', 'roller'],
+        ['NU 2211', 55, 100, 25, 63.7, 63.7, 'NU22', 'roller'],
+        ['NU 2212', 60, 110, 28, 79.3, 80.0, 'NU22', 'roller'],
+        ['NU 2213', 65, 120, 31, 99.0,102,   'NU22', 'roller'],
+        ['NU 2214', 70, 125, 31,103,  108,   'NU22', 'roller'],
+        ['NU 2215', 75, 130, 31,106,  114,   'NU22', 'roller'],
+        ['NU 2216', 80, 140, 33,119,  130,   'NU22', 'roller'],
+        ['NU 2217', 85, 150, 36,140,  156,   'NU22', 'roller'],
+        ['NU 2218', 90, 160, 40,165,  186,   'NU22', 'roller'],
+        ['NU 2219', 95, 170, 43,186,  212,   'NU22', 'roller'],
+        ['NU 2220',100, 180, 46,208,  242,   'NU22', 'roller'],
+
+        // ── NU 23xx series (cylindrical roller) ──
+        ['NU 2304', 20,  52, 21, 25.0, 21.6, 'NU23', 'roller'],
+        ['NU 2305', 25,  62, 24, 38.5, 33.5, 'NU23', 'roller'],
+        ['NU 2306', 30,  72, 27, 48.8, 44.0, 'NU23', 'roller'],
+        ['NU 2307', 35,  80, 31, 65.5, 60.0, 'NU23', 'roller'],
+        ['NU 2308', 40,  90, 33, 78.0, 72.0, 'NU23', 'roller'],
+        ['NU 2309', 45, 100, 36, 99.0, 95.0, 'NU23', 'roller'],
+        ['NU 2310', 50, 110, 40,118,  116,   'NU23', 'roller'],
+        ['NU 2311', 55, 120, 43,140,  140,   'NU23', 'roller'],
+        ['NU 2312', 60, 130, 46,163,  166,   'NU23', 'roller'],
+        ['NU 2313', 65, 140, 48,183,  190,   'NU23', 'roller'],
+        ['NU 2314', 70, 150, 51,204,  216,   'NU23', 'roller'],
+        ['NU 2315', 75, 160, 55,229,  245,   'NU23', 'roller'],
+        ['NU 2316', 80, 170, 58,253,  275,   'NU23', 'roller'],
+        ['NU 2317', 85, 180, 60,276,  305,   'NU23', 'roller'],
+        ['NU 2318', 90, 190, 64,305,  345,   'NU23', 'roller'],
+        ['NU 2319', 95, 200, 67,332,  382,   'NU23', 'roller'],
+        ['NU 2320',100, 215, 73,380,  450,   'NU23', 'roller'],
+    ];
+
+    const SERIES = [
+        {id:'all',  label:'All'},
+        {id:'6000', label:'6000'},
+        {id:'6200', label:'6200'},
+        {id:'6300', label:'6300'},
+        {id:'NU22', label:'NU 22xx'},
+        {id:'NU23', label:'NU 23xx'},
+    ];
+
+    let activeSeries = 'all';
+
+    // ── Build series tabs ─────────────────────────────────────────────────
+    function buildTabs() {
+        const wrap = document.getElementById('serTabs');
+        SERIES.forEach(s => {
+            const btn = document.createElement('button');
+            btn.className = 'ser-btn' + (s.id === 'all' ? ' active' : '');
+            btn.textContent = s.label;
+            btn.onclick = () => {
+                activeSeries = s.id;
+                document.querySelectorAll('.ser-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                applyFilter();
+            };
+            wrap.appendChild(btn);
+        });
+    }
+
+    // ── Build table rows ──────────────────────────────────────────────────
+    function buildRows() {
+        const tbody = document.getElementById('bearBody');
+        tbody.innerHTML = '';
+        BEARINGS.forEach(b => {
+            const [desig, d, D, B, C, C0, series, type] = b;
+            const tr = document.createElement('tr');
+            tr.dataset.series = series;
+            tr.dataset.desig  = desig.toLowerCase();
+            tr.dataset.bore   = String(d);
+            const tagClass = type === 'ball' ? 'tag-ball' : 'tag-roll';
+            const tagLabel = type === 'ball' ? 'ball' : 'roller';
+            tr.innerHTML = `
+                <td class="desig">${desig}</td>
+                <td class="num">${d}</td>
+                <td class="num">${D}</td>
+                <td class="num">${B}</td>
+                <td class="c-val">${C % 1 === 0 ? C : C.toFixed(1)}</td>
+                <td class="c0-val">${C0 % 1 === 0 ? C0 : C0.toFixed(1)}</td>
+                <td><span class="tag ${tagClass}">${tagLabel}</span></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // ── Filter ────────────────────────────────────────────────────────────
+    function applyFilter() {
+        const query = document.getElementById('searchInp').value.trim().toLowerCase();
+        const rows  = document.querySelectorAll('#bearBody tr');
+        let visible = 0;
+        rows.forEach(tr => {
+            const serMatch = activeSeries === 'all' || tr.dataset.series === activeSeries;
+            const txtMatch = !query
+                || tr.dataset.desig.includes(query)
+                || tr.dataset.bore.includes(query);
+            const show = serMatch && txtMatch;
+            tr.classList.toggle('hidden', !show);
+            if (show) visible++;
+        });
+        document.getElementById('countStrip').innerHTML =
+            `Showing <strong>${visible}</strong> of <strong>${BEARINGS.length}</strong> bearings`;
+    }
+
+    buildTabs();
+    buildRows();
+    applyFilter();
+    </script>
+</body>
+</html>

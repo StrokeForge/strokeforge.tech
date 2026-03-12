@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed-Fixed Beam Calculator | StrokeForge Engineering</title>
+    <meta name="description" content="Fixed-fixed beam calculator. Reactions, fixing moments MA/MB, max deflection and full bending moment diagram for UDL, central or eccentric point load.">
+    <meta name="keywords" content="fixed beam calculator, oboustranně vetknutý nosník, beam reactions, bending moment diagram, deflection, MA MB, vetknutý nosník výpočet">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-035/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+.tool-wrap { max-width: 900px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .mode-toggle { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem; }
+        .mode-btn { flex: 1; padding: 0.65rem 0.5rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.84rem; font-weight: 600; transition: all 0.2s; text-align: center; border-right: 1px solid var(--border-gray); line-height: 1.3; }
+        .mode-btn:last-child { border-right: none; }
+        .mode-btn.active { background: var(--primary-orange); color: #000; }
+        .mode-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); }
+
+        .extra-field { display: none; }
+        .extra-field.show { display: flex; }
+
+        .section-panel { display: none; }
+        .section-panel.active { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+        @media (max-width: 600px) { .section-panel.active { grid-template-columns: 1fr 1fr; } }
+
+        .res-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 520px) { .res-grid { grid-template-columns: 1fr 1fr; } }
+        .res-cell { background: var(--darker-bg); border-radius: 8px; padding: 0.85rem 1rem; }
+        .res-cell .lbl { font-size: 0.7rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .res-cell .val { font-size: 1.05rem; font-weight: 700; color: var(--light-gray); font-variant-numeric: tabular-nums; }
+        .res-cell .val.orange { color: var(--primary-orange); }
+        .res-cell .val.green  { color: #4ade80; }
+        .res-cell .val.red    { color: #f87171; }
+        .res-cell .val.blue   { color: #60a5fa; }
+        .res-cell .val.purple { color: #a78bfa; }
+
+        .warn-box { border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.82rem; margin-top: 0.6rem; display: none; }
+        .warn-box.show { display: block; }
+        .warn-box.warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #f59e0b; }
+        .warn-box.info { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); color: #93c5fd; }
+        .warn-box.err  { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #f87171; }
+
+        .diagram-wrap { display: flex; justify-content: center; padding: 0.5rem 0; }
+        svg text { font-family: inherit; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.6; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+        .info-block code { background: rgba(255,255,255,0.07); padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.82rem; color: var(--light-gray); }
+
+        details.card summary { cursor: pointer; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; }
+        details.card[open] summary { margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Fixed-Fixed Beam Calculator</h1>
+        <p>Reactions · fixing moments M<sub>A</sub>/M<sub>B</sub> · deflection · M-diagram</p>
+    </div>
+
+    <div class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- Inputs -->
+        <div class="card">
+            <h2>Load Type</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn active" data-mode="udl">▬ Uniform Load (UDL)</button>
+                <button class="mode-btn" data-mode="center">↓ Central Point Load</button>
+                <button class="mode-btn" data-mode="eccentric">↓ Eccentric Point Load</button>
+            </div>
+
+            <div class="input-grid">
+                <div class="field">
+                    <label>Beam length <i>L</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="L" value="3000" min="1" step="10">
+                        <span class="unit">mm</span>
+                    </div>
+                </div>
+                <div class="field" id="field-w">
+                    <label>Distributed load <i>w</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="w" value="10" min="0" step="0.1">
+                        <span class="unit">kN/m</span>
+                    </div>
+                    <span class="hint">Design value (factored)</span>
+                </div>
+                <div class="field extra-field" id="field-P" style="display:none">
+                    <label id="P-label">Point load <i>P</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="P" value="30" min="0" step="0.1">
+                        <span class="unit">kN</span>
+                    </div>
+                    <span class="hint">Design value (factored)</span>
+                </div>
+                <div class="field extra-field" id="field-a" style="display:none">
+                    <label>Distance from A: <i>a</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="a" value="1000" min="1" step="10">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">a + b = L</span>
+                </div>
+                <div class="field">
+                    <label>Material / E-modulus</label>
+                    <div class="field-row">
+                        <select class="sel" id="material">
+                            <option value="210000">Steel — E = 210 GPa</option>
+                            <option value="70000">Aluminium — E = 70 GPa</option>
+                            <option value="11000">Timber C24 — E = 11 GPa</option>
+                            <option value="30000">Concrete — E = 30 GPa</option>
+                            <option value="custom">Custom…</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field extra-field" id="field-E" style="display:none">
+                    <label>Custom E-modulus</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="E-custom" value="210000" min="1" step="1000">
+                        <span class="unit">MPa</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cross-section for deflection -->
+            <div style="margin-top:1.2rem;">
+                <div class="field">
+                    <label>Cross-section (for deflection)</label>
+                    <div class="field-row" style="max-width:280px;">
+                        <select class="sel" id="sec-type" onchange="switchSection()">
+                            <option value="rect">Rectangle b × h</option>
+                            <option value="circle">Solid circle ∅d</option>
+                            <option value="hollow">Hollow circle ∅D / ∅d</option>
+                            <option value="ipe">IPE profile</option>
+                            <option value="custom">Custom — enter I</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="section-panel active" id="panel-rect">
+                    <div class="field">
+                        <label>Width <i>b</i></label>
+                        <div class="field-row"><input class="inp" type="number" id="r-b" value="100" min="1" step="1"><span class="unit">mm</span></div>
+                    </div>
+                    <div class="field">
+                        <label>Height <i>h</i></label>
+                        <div class="field-row"><input class="inp" type="number" id="r-h" value="200" min="1" step="1"><span class="unit">mm</span></div>
+                        <span class="hint">I = b·h³/12</span>
+                    </div>
+                </div>
+                <div class="section-panel" id="panel-circle">
+                    <div class="field">
+                        <label>Diameter <i>d</i></label>
+                        <div class="field-row"><input class="inp" type="number" id="c-d" value="80" min="1" step="0.5"><span class="unit">mm</span></div>
+                        <span class="hint">I = π·d⁴/64</span>
+                    </div>
+                </div>
+                <div class="section-panel" id="panel-hollow">
+                    <div class="field">
+                        <label>Outer ∅ <i>D</i></label>
+                        <div class="field-row"><input class="inp" type="number" id="h-D" value="100" min="1" step="0.5"><span class="unit">mm</span></div>
+                    </div>
+                    <div class="field">
+                        <label>Inner ∅ <i>d</i></label>
+                        <div class="field-row"><input class="inp" type="number" id="h-d" value="80" min="1" step="0.5"><span class="unit">mm</span></div>
+                    </div>
+                </div>
+                <div class="section-panel" id="panel-ipe">
+                    <div class="field">
+                        <label>IPE profile</label>
+                        <div class="field-row">
+                            <select class="sel" id="ipe-sel">
+                                <option value="170600">IPE 80 — I = 80.1 cm⁴</option>
+                                <option value="1320000">IPE 120 — I = 317.8 cm⁴</option>
+                                <option value="3170000">IPE 160 — I = 869 cm⁴</option>
+                                <option value="8690000">IPE 200 — I = 1943 cm⁴</option>
+                                <option value="19430000" selected>IPE 240 — I = 3892 cm⁴</option>
+                                <option value="38920000">IPE 300 — I = 8356 cm⁴</option>
+                                <option value="83560000">IPE 360 — I = 16270 cm⁴</option>
+                                <option value="162700000">IPE 400 — I = 23130 cm⁴</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-panel" id="panel-custom">
+                    <div class="field">
+                        <label>Moment of inertia <i>I</i></label>
+                        <div class="field-row"><input class="inp" type="number" id="cu-I" value="8690000" min="1" step="1000"><span class="unit">mm⁴</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="card">
+            <h2>Results</h2>
+            <div class="res-grid">
+                <div class="res-cell">
+                    <div class="lbl">Reaction R<sub>A</sub></div>
+                    <div class="val orange" id="RA">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Reaction R<sub>B</sub></div>
+                    <div class="val orange" id="RB">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Fixing moment M<sub>A</sub></div>
+                    <div class="val blue" id="MA">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Fixing moment M<sub>B</sub></div>
+                    <div class="val blue" id="MB">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Max span moment M<sub>span</sub></div>
+                    <div class="val green" id="Mspan">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Governing moment |M|<sub>max</sub></div>
+                    <div class="val red" id="Mmax">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Moment of inertia <i>I</i></div>
+                    <div class="val" id="I-val">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">EI stiffness</div>
+                    <div class="val" id="EI-val">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Max deflection <i>f</i><sub>max</sub></div>
+                    <div class="val purple" id="fmax">—</div>
+                </div>
+            </div>
+            <div class="warn-box info"  id="w-symm">Symmetric load — M<sub>A</sub> = M<sub>B</sub>, R<sub>A</sub> = R<sub>B</sub>.</div>
+            <div class="warn-box warn"  id="w-defl">Deflection &gt; L/300 — check serviceability limit state.</div>
+            <div class="warn-box err"   id="w-a">Distance <i>a</i> must be less than beam length L.</div>
+        </div>
+
+        <!-- SVG Diagram -->
+        <div class="card">
+            <h2>Bending Moment Diagram</h2>
+            <div class="diagram-wrap">
+                <svg id="diagram" width="560" height="320" viewBox="0 0 560 320"></svg>
+            </div>
+        </div>
+
+        <!-- Method info -->
+        <details class="card">
+            <summary>Formulas — Fixed-Fixed Beam</summary>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>UDL — w [kN/m]</h3>
+                    <ul>
+                        <li><code>R<sub>A</sub> = R<sub>B</sub> = wL/2</code></li>
+                        <li><code>M<sub>A</sub> = M<sub>B</sub> = −wL²/12</code></li>
+                        <li><code>M<sub>span</sub> = +wL²/24</code></li>
+                        <li><code>f<sub>max</sub> = wL⁴/(384EI)</code></li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Central point load — P</h3>
+                    <ul>
+                        <li><code>R<sub>A</sub> = R<sub>B</sub> = P/2</code></li>
+                        <li><code>M<sub>A</sub> = M<sub>B</sub> = −PL/8</code></li>
+                        <li><code>M<sub>span</sub> = +PL/8</code></li>
+                        <li><code>f<sub>max</sub> = PL³/(192EI)</code></li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Eccentric load — P at a</h3>
+                    <ul>
+                        <li><code>R<sub>A</sub> = Pb²(3a+b)/L³</code></li>
+                        <li><code>R<sub>B</sub> = Pa²(3b+a)/L³</code></li>
+                        <li><code>M<sub>A</sub> = −Pab²/L²</code></li>
+                        <li><code>M<sub>B</sub> = −Pa²b/L²</code></li>
+                        <li><code>f at P = Pa³b³/(3EIL³)</code></li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Sign convention</h3>
+                    <ul>
+                        <li>Positive moment = sagging (tension in bottom fibre)</li>
+                        <li>Negative moment = hogging (tension in top fibre)</li>
+                        <li>Fixing moments at walls are hogging (negative)</li>
+                        <li>Span moment is sagging (positive)</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <footer>
+        <p>StrokeForge Engineering — reference tools for mechanical design</p>
+    </footer>
+
+    <script>
+    let activeMode = 'udl';
+
+    function switchSection() {
+        const type = document.getElementById('sec-type').value;
+        ['rect','circle','hollow','ipe','custom'].forEach(t => {
+            document.getElementById('panel-' + t).classList.toggle('active', t === type);
+        });
+        calculate();
+    }
+
+    function getI() {
+        const type = document.getElementById('sec-type').value;
+        if (type === 'rect') {
+            const b = parseFloat(document.getElementById('r-b').value)||0;
+            const h = parseFloat(document.getElementById('r-h').value)||0;
+            return b * h * h * h / 12;
+        } else if (type === 'circle') {
+            const d = parseFloat(document.getElementById('c-d').value)||0;
+            return Math.PI * d**4 / 64;
+        } else if (type === 'hollow') {
+            const D = parseFloat(document.getElementById('h-D').value)||0;
+            const d = parseFloat(document.getElementById('h-d').value)||0;
+            if (d >= D) return -1;
+            return Math.PI * (D**4 - d**4) / 64;
+        } else if (type === 'ipe') {
+            return parseFloat(document.getElementById('ipe-sel').value)||0;
+        } else {
+            return parseFloat(document.getElementById('cu-I').value)||0;
+        }
+    }
+
+    function getE() {
+        const sel = document.getElementById('material').value;
+        if (sel === 'custom') return parseFloat(document.getElementById('E-custom').value)||210000;
+        return parseFloat(sel);
+    }
+
+    function fmt2(v) { return isFinite(v) ? v.toFixed(2) : '—'; }
+    function fmt3(v) { return isFinite(v) ? v.toFixed(3) : '—'; }
+    function fmtI(v) { if (!isFinite(v)||v<=0) return '—'; if(v>=1e6) return (v/1e6).toFixed(2)+' ×10⁶ mm⁴'; if(v>=1e3) return (v/1e3).toFixed(1)+' ×10³ mm⁴'; return v.toFixed(0)+' mm⁴'; }
+    function fmtEI(v) { if (!isFinite(v)||v<=0) return '—'; return (v/1e9).toFixed(2)+' kNm²'; }
+
+    function calculate() {
+        const L = parseFloat(document.getElementById('L').value)||0;
+        const E = getE();
+        const I = getI();
+        const EI = E * I; // N·mm²
+
+        ['w-symm','w-defl','w-a'].forEach(id => document.getElementById(id).classList.remove('show'));
+
+        if (I < 0) { document.getElementById('w-a').classList.add('show'); return; }
+
+        let RA=0, RB=0, MA=0, MB=0, Mspan=0, fmax=0;
+        let eccentric = false;
+        let aVal = 0, bVal = 0;
+
+        if (activeMode === 'udl') {
+            const w = (parseFloat(document.getElementById('w').value)||0); // kN/m
+            const wNmm = w / 1000; // N/mm
+            RA = wNmm * L / 2;              // N
+            RB = RA;
+            MA = -wNmm * L * L / 12;        // N·mm (hogging = neg)
+            MB = MA;
+            Mspan = wNmm * L * L / 24;      // N·mm (sagging = pos)
+            fmax = wNmm * L**4 / (384 * EI);// mm
+            document.getElementById('w-symm').classList.add('show');
+
+        } else if (activeMode === 'center') {
+            const P = (parseFloat(document.getElementById('P').value)||0) * 1000; // N
+            RA = P / 2;
+            RB = P / 2;
+            MA = -P * L / 8;
+            MB = MA;
+            Mspan = P * L / 8;
+            fmax = P * L**3 / (192 * EI);
+            document.getElementById('w-symm').classList.add('show');
+
+        } else { // eccentric
+            eccentric = true;
+            aVal = parseFloat(document.getElementById('a').value)||0;
+            bVal = L - aVal;
+            if (aVal <= 0 || aVal >= L) { document.getElementById('w-a').classList.add('show'); return; }
+            const P = (parseFloat(document.getElementById('P').value)||0) * 1000; // N
+            RA = P * bVal * bVal * (3 * aVal + bVal) / L**3;
+            RB = P * aVal * aVal * (3 * bVal + aVal) / L**3;
+            MA = -P * aVal * bVal * bVal / L**2;
+            MB = -P * aVal * aVal * bVal / L**2;
+            // Span moment at load point = RA*a + MA
+            Mspan = RA * aVal + MA;
+            // Deflection at load point
+            fmax = P * aVal**3 * bVal**3 / (3 * EI * L**3);
+        }
+
+        // Governing
+        const Mmax = Math.max(Math.abs(MA), Math.abs(MB), Math.abs(Mspan));
+
+        // Convert to kN·m for display
+        const toKNm = v => v / 1e6; // N·mm → kN·m
+
+        document.getElementById('RA').textContent    = fmt2(RA/1000) + ' kN';
+        document.getElementById('RB').textContent    = fmt2(RB/1000) + ' kN';
+        document.getElementById('MA').textContent    = fmt3(toKNm(MA)) + ' kNm';
+        document.getElementById('MB').textContent    = fmt3(toKNm(MB)) + ' kNm';
+        document.getElementById('Mspan').textContent = fmt3(toKNm(Mspan)) + ' kNm';
+        document.getElementById('Mmax').textContent  = fmt3(toKNm(Mmax)) + ' kNm';
+        document.getElementById('I-val').textContent = fmtI(I);
+        document.getElementById('EI-val').textContent= fmtEI(EI);
+        document.getElementById('fmax').textContent  = fmt3(fmax) + ' mm';
+
+        if (L > 0 && fmax > L / 300) document.getElementById('w-defl').classList.add('show');
+
+        drawDiagram(activeMode, L, RA, RB, MA, MB, Mspan, fmax, aVal, bVal,
+                    parseFloat(document.getElementById('w')?.value)||0,
+                    parseFloat(document.getElementById('P')?.value)||0);
+    }
+
+    // --- SVG Diagram ---
+    function drawDiagram(mode, L, RA, RB, MA, MB, Mspan, fmax, a, b, w, P) {
+        const svg = document.getElementById('diagram');
+        svg.innerHTML = '';
+        const ns    = 'http://www.w3.org/2000/svg';
+        const orange= '#f97316', gray='#9ca3af', light='#e5e7eb', blue='#60a5fa',
+              green='#4ade80', red='#f87171', yellow='#fbbf24', purple='#a78bfa';
+        const W=560, H=320;
+        const bx=60, ex=500, by=95, beamH=16; // beam x-start, x-end, y, height
+
+        function ln(x1,y1,x2,y2,col,w,dash) {
+            const e=document.createElementNS(ns,'line');
+            e.setAttribute('x1',x1);e.setAttribute('y1',y1);e.setAttribute('x2',x2);e.setAttribute('y2',y2);
+            e.setAttribute('stroke',col||gray);e.setAttribute('stroke-width',w||1.5);
+            if(dash)e.setAttribute('stroke-dasharray',dash);
+            svg.appendChild(e);
+        }
+        function txt(x,y,t,col,size,anchor,weight) {
+            const e=document.createElementNS(ns,'text');
+            e.setAttribute('x',x);e.setAttribute('y',y);e.setAttribute('fill',col||light);
+            e.setAttribute('font-size',size||11);e.setAttribute('text-anchor',anchor||'middle');
+            e.setAttribute('dominant-baseline','middle');if(weight)e.setAttribute('font-weight',weight);
+            e.textContent=t;svg.appendChild(e);
+        }
+        function arrow(x1,y1,x2,y2,col,sw) {
+            ln(x1,y1,x2,y2,col,sw||2.2);
+            const angle=Math.atan2(y2-y1,x2-x1),s=8;
+            const p=document.createElementNS(ns,'polygon');
+            p.setAttribute('points',`${x2},${y2} ${x2-s*Math.cos(angle-0.4)},${y2-s*Math.sin(angle-0.4)} ${x2-s*Math.cos(angle+0.4)},${y2-s*Math.sin(angle+0.4)}`);
+            p.setAttribute('fill',col);svg.appendChild(p);
+        }
+        function fixedWall(x, side) { // side: 'left' | 'right'
+            const w=14, h=50, hy=by-h/2+beamH/2;
+            const fillEl=document.createElementNS(ns,'rect');
+            const rx = side==='left' ? x-w : x;
+            fillEl.setAttribute('x',rx);fillEl.setAttribute('y',hy);
+            fillEl.setAttribute('width',w);fillEl.setAttribute('height',h);
+            fillEl.setAttribute('fill','rgba(100,116,139,0.25)');fillEl.setAttribute('stroke',gray);
+            fillEl.setAttribute('stroke-width','1.5');svg.appendChild(fillEl);
+            // hatching
+            const n=5;
+            for(let i=0;i<=n;i++){
+                const yy=hy+i*(h/n);
+                const x1=side==='left'?rx:rx+w, x2=side==='left'?rx-10:rx+w+10;
+                ln(x1,yy,x2,yy+8,gray,1);
+            }
+        }
+
+        const bLen = ex - bx; // beam length in px
+
+        // Beam
+        const beamEl=document.createElementNS(ns,'rect');
+        beamEl.setAttribute('x',bx);beamEl.setAttribute('y',by);
+        beamEl.setAttribute('width',bLen);beamEl.setAttribute('height',beamH);
+        beamEl.setAttribute('fill','#2a2a2a');beamEl.setAttribute('stroke',orange);
+        beamEl.setAttribute('stroke-width','2');svg.appendChild(beamEl);
+
+        // Fixed walls
+        fixedWall(bx, 'left');
+        fixedWall(ex, 'right');
+
+        // Load
+        if (mode==='udl') {
+            // UDL arrows
+            const nArr=12, spacing=bLen/(nArr+1);
+            for(let i=1;i<=nArr;i++){
+                const ax=bx+i*spacing;
+                arrow(ax,by-30,ax,by,blue,1.5);
+            }
+            ln(bx,by-30,ex,by-30,blue,1.5);
+            txt(W/2,by-42,`w = ${w} kN/m`,blue,10);
+        } else {
+            const px = mode==='center' ? (bx+ex)/2 : bx + (a/L)*bLen;
+            arrow(px,by-32,px,by,blue,2.2);
+            const Plab = mode==='center' ? `P = ${P} kN` : `P = ${P} kN`;
+            txt(px,by-44,Plab,blue,10);
+            if (mode==='eccentric') {
+                // dimension a
+                ln(bx,by+beamH+12,px,by+beamH+12,gray,1);
+                ln(bx,by+beamH+6,bx,by+beamH+18,gray,1);
+                ln(px,by+beamH+6,px,by+beamH+18,gray,1);
+                txt((bx+px)/2,by+beamH+24,`a = ${(a/1000).toFixed(2)} m`,gray,9);
+                ln(px,by+beamH+36,ex,by+beamH+36,gray,1);
+                ln(px,by+beamH+30,px,by+beamH+42,gray,1);
+                ln(ex,by+beamH+30,ex,by+beamH+42,gray,1);
+                txt((px+ex)/2,by+beamH+48,`b = ${(b/1000).toFixed(2)} m`,gray,9);
+            }
+        }
+
+        // Reaction arrows (upward)
+        arrow(bx,by+beamH+26,bx,by+beamH+4,green,2);
+        txt(bx,by+beamH+38,`R\u2090=${(RA/1000).toFixed(2)}kN`,green,9);
+        arrow(ex,by+beamH+26,ex,by+beamH+4,green,2);
+        txt(ex,by+beamH+38,`R\u2071=${(RB/1000).toFixed(2)}kN`,green,9);
+
+        // M-diagram — below beam
+        const mdY0 = by + (mode==='eccentric' ? 70 : 58); // baseline
+        const mScale = 50; // px per kNm (auto-scale)
+        const Mmax_kNm = Math.max(Math.abs(MA/1e6), Math.abs(MB/1e6), Math.abs(Mspan/1e6), 0.001);
+        const mS = 44 / Mmax_kNm; // max 44px
+
+        // Draw M-diagram as filled path
+        const pts = [];
+        const nSeg = 80;
+        for (let i=0; i<=nSeg; i++) {
+            const frac = i/nSeg;
+            const x = bx + frac*bLen;
+            const xm = frac*L; // mm
+            let M = 0;
+            if (mode==='udl') {
+                const wNmm = (w/1000);
+                M = MA + RA*xm - wNmm*xm*xm/2;
+            } else if (mode==='center') {
+                if (xm <= L/2) M = MA + RA*xm;
+                else M = MA + RA*xm - (RA*2)*(xm-L/2); // symmetric
+            } else {
+                if (xm <= a) M = MA + RA*xm;
+                else         M = MA + RA*xm - (P*1000)*(xm-a);
+            }
+            const dy = M/1e6 * mS; // kNm * scale
+            pts.push([x, mdY0 - dy]);
+        }
+        // Filled polygon
+        const polyPts = [`${bx},${mdY0}`].concat(pts.map(p=>p.join(','))).concat([`${ex},${mdY0}`]);
+        const polyEl=document.createElementNS(ns,'polygon');
+        polyEl.setAttribute('points',polyPts.join(' '));
+        polyEl.setAttribute('fill','rgba(96,165,250,0.12)');polyEl.setAttribute('stroke','none');
+        svg.appendChild(polyEl);
+        // Outline
+        const pathEl=document.createElementNS(ns,'polyline');
+        pathEl.setAttribute('points',pts.map(p=>p.join(',')).join(' '));
+        pathEl.setAttribute('fill','none');pathEl.setAttribute('stroke',blue);
+        pathEl.setAttribute('stroke-width','2');svg.appendChild(pathEl);
+        // Baseline
+        ln(bx,mdY0,ex,mdY0,gray,1,'3,2');
+
+        // Labels on M-diagram
+        txt(bx-8,mdY0-(MA/1e6)*mS,`${(MA/1e6).toFixed(2)}`,purple,8.5,'end');
+        txt(ex+8,mdY0-(MB/1e6)*mS,`${(MB/1e6).toFixed(2)}`,purple,8.5,'start');
+        const spanX = mode==='eccentric' ? bx+(a/L)*bLen : (bx+ex)/2;
+        const spanLabelY = mdY0-(Mspan/1e6)*mS - 8;
+        txt(spanX, spanLabelY, `${(Mspan/1e6).toFixed(2)} kNm`, green, 8.5);
+        txt(bx-8, mdY0-(MA/1e6)*mS-12, 'M\u2090', purple, 8, 'end');
+        txt(ex+8, mdY0-(MB/1e6)*mS-12, 'M\u2071', purple, 8, 'start');
+
+        // M-diagram title
+        txt(W/2, mdY0+16, 'Bending Moment Diagram M [kNm]', gray, 9);
+        // Horizontal dimension
+        ln(bx,mdY0+26,ex,mdY0+26,gray,1);
+        ln(bx,mdY0+20,bx,mdY0+32,gray,1);
+        ln(ex,mdY0+20,ex,mdY0+32,gray,1);
+        txt(W/2,mdY0+38,`L = ${(L/1000).toFixed(2)} m`, gray, 9);
+
+        // Deflection indicator
+        txt(W/2, H-14, `f\u2098\u2090\u02E3 = ${fmax.toFixed(3)} mm  (L/${L>0?(L/fmax).toFixed(0):'∞'})`, purple, 10);
+    }
+
+    // Mode buttons
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            activeMode = btn.dataset.mode;
+            const isUdl = activeMode==='udl';
+            const isPt  = !isUdl;
+            const isEcc = activeMode==='eccentric';
+            document.getElementById('field-w').style.display  = isUdl ? '' : 'none';
+            document.getElementById('field-P').style.display  = isPt  ? 'flex' : 'none';
+            document.getElementById('field-a').style.display  = isEcc ? 'flex' : 'none';
+            calculate();
+        });
+    });
+
+    // Material
+    document.getElementById('material').addEventListener('change', () => {
+        const isCustom = document.getElementById('material').value === 'custom';
+        document.getElementById('field-E').style.display = isCustom ? 'flex' : 'none';
+        calculate();
+    });
+
+    // All inputs
+    ['L','w','P','a','E-custom','r-b','r-h','c-d','h-D','h-d','ipe-sel','cu-I'].forEach(id => {
+        const el=document.getElementById(id);
+        if(el) el.addEventListener('input', calculate);
+    });
+
+    calculate();
+    </script>
+    <script src="../../js/nav.js"></script>
+</body>
+</html>

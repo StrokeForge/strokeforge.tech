@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copper Alloys — Brass, Bronze, Cupronickel | StrokeForge Engineering</title>
+    <meta name="description" content="Material database for copper alloys per EN 1652 / EN 1982. CuZn brass, CuSn tin bronze, CuAl aluminium bronze, CuNi cupronickel — mechanical properties, machinability, typical applications.">
+    <meta name="keywords" content="copper alloys, mosaz, bronz, CuZn, CuSn, CuAl, CuNi, CuBe, EN 1652, EN 1982, mechanical properties, machinability, měď slitiny">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-043/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 1080px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Filters */
+        .filter-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.2rem; align-items: center; }
+        .filter-group { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .filter-label { font-size: 0.77rem; color: var(--text-gray); align-self: center; white-space: nowrap; }
+        .fb { padding: 0.35rem 0.85rem; border-radius: 6px; border: 1px solid var(--border-gray); background: none; color: var(--text-gray); cursor: pointer; font-size: 0.78rem; font-weight: 600; transition: all 0.18s; }
+        .fb.active { background: var(--primary-orange); color: #000; border-color: var(--primary-orange); }
+        .fb:not(.active):hover { border-color: var(--primary-orange); color: var(--light-gray); }
+
+        /* Search */
+        .search-wrap { position: relative; }
+        .search-inp { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.45rem 0.85rem 0.45rem 2rem; font-size: 0.85rem; outline: none; width: 200px; transition: border-color 0.2s; }
+        .search-inp:focus { border-color: var(--primary-orange); }
+        .search-icon { position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); color: var(--text-gray); font-size: 0.85rem; pointer-events: none; }
+
+        /* Count badge */
+        .count-badge { background: rgba(249,115,22,0.12); color: var(--primary-orange); border: 1px solid rgba(249,115,22,0.25); border-radius: 5px; padding: 0.1rem 0.5rem; font-size: 0.75rem; font-weight: 700; margin-left: 0.5rem; }
+
+        /* Table */
+        .tbl-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        thead th { background: var(--darker-bg); color: var(--text-gray); font-size: 0.74rem; font-weight: 700; padding: 0.6rem 0.7rem; text-align: left; border-bottom: 2px solid var(--border-gray); white-space: nowrap; }
+        thead th.center { text-align: center; }
+        tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
+        tbody tr:hover { background: rgba(255,255,255,0.03); }
+        tbody tr.hidden { display: none; }
+        td { padding: 0.6rem 0.7rem; vertical-align: middle; }
+
+        /* Alloy name */
+        .alloy-en { font-weight: 700; color: var(--primary-orange); font-size: 0.86rem; }
+        .alloy-alt { font-size: 0.74rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        /* Type badge */
+        .cat-badge { font-size: 0.68rem; font-weight: 700; padding: 0.12rem 0.45rem; border-radius: 4px; white-space: nowrap; display: inline-block; }
+        .cat-brass  { background: rgba(251,191,36,0.12); color:#fbbf24; border:1px solid rgba(251,191,36,0.3); }
+        .cat-tin    { background: rgba(249,115,22,0.12); color:#f97316; border:1px solid rgba(249,115,22,0.3); }
+        .cat-al     { background: rgba(96,165,250,0.12); color:#60a5fa; border:1px solid rgba(96,165,250,0.25); }
+        .cat-ni     { background: rgba(52,211,153,0.12); color:#34d399; border:1px solid rgba(52,211,153,0.3); }
+        .cat-be     { background: rgba(248,113,113,0.12); color:#f87171; border:1px solid rgba(248,113,113,0.3); }
+
+        /* Value cells */
+        .val-cell { text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; font-size: 0.85rem; color: var(--light-gray); }
+        .val-na   { color: var(--text-gray); font-size: 0.78rem; font-weight: 400; }
+
+        /* Rating bars (machinability / formability) */
+        .rating-wrap { display: flex; align-items: center; gap: 0.4rem; }
+        .rating-track { flex: 1; background: rgba(255,255,255,0.07); border-radius: 3px; height: 5px; min-width: 55px; }
+        .rating-fill { height: 100%; border-radius: 3px; }
+
+        /* Notes */
+        .note-cell { font-size: 0.74rem; color: var(--text-gray); max-width: 210px; line-height: 1.45; }
+
+        /* Info */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+
+        /* Colour swatch */
+        .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 0.3rem; vertical-align: middle; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Copper Alloys — Brass · Bronze · Cupronickel</h1>
+        <p>Mechanical properties · machinability · formability · applications · per EN 1652 / EN 1982</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- FILTER CARD -->
+        <div class="card">
+            <h2>Filter <span class="count-badge" id="countBadge">—</span></h2>
+
+            <div class="filter-row">
+                <span class="filter-label">Type:</span>
+                <div class="filter-group" id="typeGroup">
+                    <button class="fb active" data-type="all" onclick="setFilter('type','all',this)">All</button>
+                    <button class="fb" data-type="brass" onclick="setFilter('type','brass',this)">CuZn — Mosaz</button>
+                    <button class="fb" data-type="tin" onclick="setFilter('type','tin',this)">CuSn — Cínový bronz</button>
+                    <button class="fb" data-type="al" onclick="setFilter('type','al',this)">CuAl — Hliníkový bronz</button>
+                    <button class="fb" data-type="ni" onclick="setFilter('type','ni',this)">CuNi — Kuproniklová</button>
+                    <button class="fb" data-type="be" onclick="setFilter('type','be',this)">CuBe — Berylliový bronz</button>
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <span class="filter-label">Machinability:</span>
+                <div class="filter-group" id="machGroup">
+                    <button class="fb active" data-mach="all" onclick="setFilter('mach','all',this)">All</button>
+                    <button class="fb" data-mach="excellent" onclick="setFilter('mach','excellent',this)">Excellent</button>
+                    <button class="fb" data-mach="good" onclick="setFilter('mach','good',this)">Good</button>
+                    <button class="fb" data-mach="fair" onclick="setFilter('mach','fair',this)">Fair</button>
+                    <button class="fb" data-mach="poor" onclick="setFilter('mach','poor',this)">Poor</button>
+                </div>
+                <div class="search-wrap" style="margin-left:auto;">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInp" class="search-inp" placeholder="Search…" oninput="applyFilters()">
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLE CARD -->
+        <div class="card">
+            <div class="tbl-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Designation (EN)</th>
+                            <th>Type</th>
+                            <th class="center">R<sub>m</sub> (MPa)</th>
+                            <th class="center">R<sub>p0.2</sub> (MPa)</th>
+                            <th class="center">A (%)</th>
+                            <th class="center">HB</th>
+                            <th>Machinability</th>
+                            <th>Formability</th>
+                            <th>Typical applications</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- INFO CARD -->
+        <div class="card">
+            <h2>Notes &amp; design guidelines</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>CuZn — Mosaz (Brass)</h3>
+                    <p>Nejrozšířenější skupina. Zvyšující se obsah Zn zlepšuje pevnost, snižuje tažnost. CuZn39Pb3 je nejlépe obrobitelný kov vůbec (referenční 100 %). Pozor na sezonní praskavost při napětí v prostředí amoniaku.</p>
+                </div>
+                <div class="info-block">
+                    <h3>CuSn — Cínový bronz (Tin Bronze)</h3>
+                    <p>Výborná korozní odolnost, vhodný pro ložiska a pouzdra (nízký koeficient tření). CuSn6 je standardní pružinový materiál. Odlévané varianty (EN 1982) mají nižší Rm než tvářené.</p>
+                </div>
+                <div class="info-block">
+                    <h3>CuAl — Hliníkový bronz</h3>
+                    <p>Vysoká pevnost (srovnatelná s nízkouhlíkovou ocelí), výborná korozní odolnost včetně mořské vody. Obtížněji obrobitelný. Používá se pro lodní vruty, hydraulické armatury, ložiska.</p>
+                </div>
+                <div class="info-block">
+                    <h3>CuNi — Kuproniklová slitina</h3>
+                    <p>Výborná odolnost vůči mořské vodě a erozi. Používá se pro výměníky tepla, kondenzátory, trubkovnice. CuNi30 je odolnější než CuNi10 — vyšší obsah Ni.</p>
+                </div>
+                <div class="info-block">
+                    <h3>CuBe — Berylliový bronz</h3>
+                    <p>Jediná tvrzená měděná slitina. Po precipitačním vytvrzení dosahuje Rm až 1 300 MPa. Nevytváří jiskry — vhodný pro nástroje v Ex prostředí. Pozor: prach a výpary CuBe jsou toxické (karcinogen).</p>
+                </div>
+                <div class="info-block">
+                    <h3>Obrobitelnost — referenční stupnice</h3>
+                    <ul>
+                        <li><strong>Excellent (&gt;80 %):</strong> CuZn39Pb3, CuZn36Pb3 — referenční materiál</li>
+                        <li><strong>Good (50–80 %):</strong> CuZn37, CuSn8, CuBe2</li>
+                        <li><strong>Fair (20–50 %):</strong> CuSn12, CuAl10Fe3</li>
+                        <li><strong>Poor (&lt;20 %):</strong> CuNi, CuAl10Ni5Fe4</li>
+                    </ul>
+                    <p style="margin-top:0.5rem;">Referenční standard: CuZn39Pb3 = 100 %.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>StrokeForge Engineering — reference tools for mechanical design</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ─── DATA ─────────────────────────────────────────────────────────────────────
+    // Fields: en, alt, type, Rm, Rp02, A, HB, mach (0-100), form (0-100), apps, norm
+    const ALLOYS = [
+        // ── CuZn — Mosaz ──────────────────────────────────────────────────────────
+        {
+            en: 'CuZn10', alt: 'Gilding metal',
+            type: 'brass',
+            Rm: '280–360', Rp02: '60–300', A: '45–5', HB: '60–110',
+            mach: 30, form: 95,
+            apps: 'Dekorativní předměty, mince, zlatění, klempíř. výrobky',
+            norm: 'EN 1652'
+        },
+        {
+            en: 'CuZn30', alt: 'Cartridge brass / mosaz 70/30',
+            type: 'brass',
+            Rm: '310–430', Rp02: '80–350', A: '42–4', HB: '65–130',
+            mach: 35, form: 90,
+            apps: 'Nábojnice, hluboce tažené díly, tepelné výměníky',
+            norm: 'EN 1652'
+        },
+        {
+            en: 'CuZn37', alt: 'Common brass / mosaz 63/37',
+            type: 'brass',
+            Rm: '340–470', Rp02: '100–380', A: '40–3', HB: '75–135',
+            mach: 55, form: 75,
+            apps: 'Plechy, trubky, tvarové díly, elektrotechnika',
+            norm: 'EN 1652'
+        },
+        {
+            en: 'CuZn39Pb3', alt: 'Free-cutting brass / automatová mosaz',
+            type: 'brass',
+            Rm: '390–490', Rp02: '150–430', A: '25–3', HB: '90–140',
+            mach: 100, form: 30,
+            apps: 'CNC soustružení, armatury, šroubové spoje, spojovací materiál',
+            norm: 'EN 1509'
+        },
+        {
+            en: 'CuZn40', alt: 'Muntz metal',
+            type: 'brass',
+            Rm: '360–500', Rp02: '120–420', A: '35–3', HB: '80–140',
+            mach: 50, form: 55,
+            apps: 'Lodní kování, kondenzátorové trubky, výkovky',
+            norm: 'EN 1652'
+        },
+        {
+            en: 'CuZn40Mn1Pb', alt: 'Naval brass / lodní mosaz',
+            type: 'brass',
+            Rm: '380–530', Rp02: '150–460', A: '30–3', HB: '90–150',
+            mach: 70, form: 45,
+            apps: 'Námořní armatury, šrouby, kování odolná mořské vodě',
+            norm: 'EN 1652'
+        },
+
+        // ── CuSn — Cínový bronz ───────────────────────────────────────────────────
+        {
+            en: 'CuSn4', alt: 'Phosphor bronze 4 %',
+            type: 'tin',
+            Rm: '300–550', Rp02: '100–500', A: '45–3', HB: '70–160',
+            mach: 50, form: 85,
+            apps: 'Pružiny, elektrické kontakty, pletivo, tažené trubky',
+            norm: 'EN 1652'
+        },
+        {
+            en: 'CuSn6', alt: 'Phosphor bronze 6 % / pružinový bronz',
+            type: 'tin',
+            Rm: '340–640', Rp02: '130–590', A: '40–2', HB: '80–185',
+            mach: 50, form: 80,
+            apps: 'Pružiny, pouzdra, kontakty, membrány, vodní armatury',
+            norm: 'EN 1652'
+        },
+        {
+            en: 'CuSn8', alt: 'Phosphor bronze 8 %',
+            type: 'tin',
+            Rm: '380–680', Rp02: '150–640', A: '35–2', HB: '90–200',
+            mach: 55, form: 65,
+            apps: 'Ložiska, pouzdra, ozubená kola, šnekové kola',
+            norm: 'EN 1652'
+        },
+        {
+            en: 'CuSn12', alt: 'Tin bronze 12 % (odlitek)',
+            type: 'tin',
+            Rm: '230–280', Rp02: '120–150', A: '8–5', HB: '80–100',
+            mach: 40, form: 20,
+            apps: 'Ložiska, kluzná pouzdra, šnekové kola, čerpadlová tělesa',
+            norm: 'EN 1982'
+        },
+
+        // ── CuAl — Hliníkový bronz ────────────────────────────────────────────────
+        {
+            en: 'CuAl8', alt: 'Aluminium bronze 8 %',
+            type: 'al',
+            Rm: '430–650', Rp02: '180–550', A: '30–5', HB: '110–190',
+            mach: 35, form: 55,
+            apps: 'Pouzdra, armatury, odolné součásti strojů',
+            norm: 'EN 1652'
+        },
+        {
+            en: 'CuAl10Fe3', alt: 'Aluminium bronze / kondurit',
+            type: 'al',
+            Rm: '530–700', Rp02: '200–600', A: '25–4', HB: '140–200',
+            mach: 30, form: 35,
+            apps: 'Lodní vruty, hydraulické armatury, ložiska vysoké zátěže',
+            norm: 'EN 1652'
+        },
+        {
+            en: 'CuAl10Ni5Fe4', alt: 'Nickel-aluminium bronze',
+            type: 'al',
+            Rm: '620–800', Rp02: '250–700', A: '20–3', HB: '160–230',
+            mach: 20, form: 25,
+            apps: 'Lodní vruty, podmořská technika, ventily, čerpadla v mořské vodě',
+            norm: 'EN 1982'
+        },
+
+        // ── CuNi — Kuproniklová ───────────────────────────────────────────────────
+        {
+            en: 'CuNi10Fe1Mn', alt: '90/10 Cupronickel',
+            type: 'ni',
+            Rm: '290–380', Rp02: '100–350', A: '35–10', HB: '75–120',
+            mach: 20, form: 70,
+            apps: 'Kondenzátorové trubky, výměníky tepla, mořská vodní potrubí',
+            norm: 'EN 1652'
+        },
+        {
+            en: 'CuNi30Mn1Fe', alt: '70/30 Cupronickel',
+            type: 'ni',
+            Rm: '340–440', Rp02: '120–380', A: '30–8', HB: '85–130',
+            mach: 20, form: 60,
+            apps: 'Vysoce korozně namáhané výměníky, kondenzátory, desalinizační zařízení',
+            norm: 'EN 1652'
+        },
+
+        // ── CuBe — Berylliový bronz ───────────────────────────────────────────────
+        {
+            en: 'CuBe2', alt: 'Beryllium copper / C17200',
+            type: 'be',
+            Rm: '500–1300', Rp02: '200–1200', A: '35–1', HB: '140–400',
+            mach: 65, form: 60,
+            apps: 'Pružiny, elektrické kontakty, nástroje do Ex prostředí, formy pro vstřikování',
+            norm: 'EN 1654'
+        },
+        {
+            en: 'CuBe0.5NiCo', alt: 'High-conductivity BeCu / C17500',
+            type: 'be',
+            Rm: '400–800', Rp02: '150–750', A: '20–3', HB: '110–240',
+            mach: 60, form: 55,
+            apps: 'Elektrické konektory, svářecí elektrody, výhřevné formy',
+            norm: 'EN 1654'
+        },
+    ];
+
+    // ─── STATE ────────────────────────────────────────────────────────────────────
+    let activeType = 'all';
+    let activeMach = 'all';
+
+    const MACH_RANGE = { excellent: [80, 100], good: [50, 79], fair: [20, 49], poor: [0, 19] };
+
+    function setFilter(dim, val, btn) {
+        if (dim === 'type') {
+            activeType = val;
+            document.querySelectorAll('#typeGroup .fb').forEach(b => b.classList.remove('active'));
+        } else {
+            activeMach = val;
+            document.querySelectorAll('#machGroup .fb').forEach(b => b.classList.remove('active'));
+        }
+        btn.classList.add('active');
+        applyFilters();
+    }
+
+    function applyFilters() {
+        const q = document.getElementById('searchInp').value.toLowerCase();
+        let count = 0;
+        document.querySelectorAll('#tblBody tr').forEach(tr => {
+            const t = tr.dataset.type;
+            const m = parseInt(tr.dataset.mach);
+            const txt = tr.textContent.toLowerCase();
+            const typeOk = activeType === 'all' || t === activeType;
+            let machOk = true;
+            if (activeMach !== 'all') {
+                const [lo, hi] = MACH_RANGE[activeMach];
+                machOk = m >= lo && m <= hi;
+            }
+            const qOk = !q || txt.includes(q);
+            const show = typeOk && machOk && qOk;
+            tr.classList.toggle('hidden', !show);
+            if (show) count++;
+        });
+        document.getElementById('countBadge').textContent = count;
+    }
+
+    // ─── RENDER ───────────────────────────────────────────────────────────────────
+    const TYPE_LABEL = { brass:'CuZn', tin:'CuSn', al:'CuAl', ni:'CuNi', be:'CuBe' };
+    const TYPE_CLASS = { brass:'cat-brass', tin:'cat-tin', al:'cat-al', ni:'cat-ni', be:'cat-be' };
+    const MACH_COLOR = { excellent:'#4ade80', good:'#a3e635', fair:'#fbbf24', poor:'#f87171' };
+    const FORM_COLOR = (v) => v >= 75 ? '#4ade80' : v >= 50 ? '#a3e635' : v >= 30 ? '#fbbf24' : '#f87171';
+
+    function machLabel(v) {
+        if (v >= 80) return 'Excellent';
+        if (v >= 50) return 'Good';
+        if (v >= 20) return 'Fair';
+        return 'Poor';
+    }
+    function machKey(v) {
+        if (v >= 80) return 'excellent';
+        if (v >= 50) return 'good';
+        if (v >= 20) return 'fair';
+        return 'poor';
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('tblBody');
+        tbody.innerHTML = '';
+        ALLOYS.forEach(a => {
+            const mc = machKey(a.mach);
+            const tr = document.createElement('tr');
+            tr.dataset.type = a.type;
+            tr.dataset.mach = a.mach;
+            tr.innerHTML = `
+                <td>
+                    <div class="alloy-en">${a.en}</div>
+                    <div class="alloy-alt">${a.alt}</div>
+                </td>
+                <td><span class="cat-badge ${TYPE_CLASS[a.type]}">${TYPE_LABEL[a.type]}</span></td>
+                <td class="val-cell">${a.Rm}</td>
+                <td class="val-cell">${a.Rp02}</td>
+                <td class="val-cell">${a.A}</td>
+                <td class="val-cell">${a.HB}</td>
+                <td>
+                    <div class="rating-wrap">
+                        <div class="rating-track">
+                            <div class="rating-fill" style="width:${a.mach}%;background:${MACH_COLOR[mc]||'#fbbf24'};"></div>
+                        </div>
+                        <span style="font-size:0.74rem;color:${MACH_COLOR[mc]};white-space:nowrap;">${machLabel(a.mach)} (${a.mach}%)</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="rating-wrap">
+                        <div class="rating-track">
+                            <div class="rating-fill" style="width:${a.form}%;background:${FORM_COLOR(a.form)};"></div>
+                        </div>
+                        <span style="font-size:0.74rem;color:${FORM_COLOR(a.form)};white-space:nowrap;">${a.form}%</span>
+                    </div>
+                </td>
+                <td class="note-cell">${a.apps}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+        applyFilters();
+    }
+
+    renderTable();
+    </script>
+</body>
+</html>

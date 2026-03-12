@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GD&T Geometric Tolerances ISO 1101 | StrokeForge Engineering</title>
+    <meta name="description" content="Quick reference for geometric tolerances per ISO 1101 / ASME Y14.5. All 14 symbols with descriptions, tolerance frame structure, and examples for form, orientation, location and runout.">
+    <meta name="keywords" content="GD&T geometric tolerances, ISO 1101, ASME Y14.5, straightness, flatness, roundness, cylindricity, parallelism, perpendicularity, angularity, position, concentricity, symmetry, runout, geometrické tolerance">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-030/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 960px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Filter tabs */
+        .cat-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .cat-btn {
+            background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray);
+            border-radius: 6px; padding: 0.38rem 0.9rem; font-size: 0.82rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .cat-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .cat-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; }
+
+        /* Symbols grid */
+        .sym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+
+        .sym-card {
+            background: var(--darker-bg); border: 1px solid var(--border-gray);
+            border-radius: 10px; padding: 1rem 1.1rem;
+            display: flex; flex-direction: column; gap: 0.55rem;
+            transition: border-color 0.2s;
+        }
+        .sym-card:hover { border-color: rgba(255,107,53,0.4); }
+        .sym-card.hidden { display: none; }
+
+        .sym-header { display: flex; align-items: center; gap: 0.75rem; }
+        .sym-icon { width: 44px; height: 44px; flex-shrink: 0; }
+        .sym-name { font-size: 0.92rem; font-weight: 700; color: var(--light-gray); }
+        .sym-iso  { font-size: 0.72rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        .sym-badge {
+            display: inline-block; font-size: 0.66rem; font-weight: 700;
+            padding: 0.12rem 0.5rem; border-radius: 3px; margin-top: 0.1rem;
+        }
+        .badge-form   { background: rgba(96,165,250,0.15); color: #60a5fa; }
+        .badge-orient { background: rgba(74,222,128,0.15); color: #4ade80; }
+        .badge-loc    { background: rgba(167,139,250,0.15); color: #a78bfa; }
+        .badge-run    { background: rgba(251,191,36,0.15);  color: #fbbf24; }
+
+        .sym-desc { font-size: 0.8rem; color: var(--text-gray); line-height: 1.6; }
+
+        .sym-row { display: flex; gap: 0.5rem; font-size: 0.78rem; }
+        .sym-row .lbl { color: var(--text-gray); min-width: 60px; flex-shrink: 0; }
+        .sym-row .val { color: var(--light-gray); font-family: monospace; }
+
+        .datum-note { font-size: 0.73rem; color: #fbbf24; margin-top: 0.1rem; }
+
+        /* Tolerance frame illustration */
+        .frame-card {
+            background: var(--darker-bg); border-radius: 10px; padding: 1.25rem 1.5rem;
+        }
+        .frame-svg-wrap { display: flex; justify-content: center; margin-bottom: 1rem; }
+        .frame-legend { display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.75rem; font-size: 0.8rem; }
+        .frame-legend .num { color: var(--primary-orange); font-weight: 700; font-family: monospace; text-align: center; }
+        .frame-legend .txt { color: var(--text-gray); }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+
+        .sep { border: none; border-top: 1px solid var(--border-gray); margin: 1rem 0; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>📐 GD&amp;T Geometric Tolerances</h1>
+        <p>ISO 1101 / ASME Y14.5 · All 14 symbols · Tolerance frame structure · Datum references</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- SYMBOLS CARD -->
+        <div class="card">
+            <h2>Tolerance symbols</h2>
+            <div class="cat-tabs" id="catTabs"></div>
+            <div class="sym-grid" id="symGrid"></div>
+        </div>
+
+        <!-- TOLERANCE FRAME -->
+        <div class="card">
+            <h2>Tolerance frame (feature control frame)</h2>
+            <div class="frame-card">
+                <div class="frame-svg-wrap" id="frameSvg"></div>
+                <div class="frame-legend">
+                    <span class="num">①</span><span class="txt">Geometric characteristic symbol</span>
+                    <span class="num">②</span><span class="txt">Tolerance value [mm] — preceded by Ø if cylindrical zone</span>
+                    <span class="num">③</span><span class="txt">Material condition modifier: <strong style="color:#60a5fa">M</strong> = MMC, <strong style="color:#4ade80">L</strong> = LMC (ASME only)</span>
+                    <span class="num">④⑤⑥</span><span class="txt">Primary / secondary / tertiary datum references (if required)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Good to know</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>ISO 1101 vs ASME Y14.5</h3>
+                    <ul>
+                        <li>Both use the same 14 symbols — notation differs slightly</li>
+                        <li>ISO uses <strong>⊙</strong> for position; ASME uses <strong>⊕</strong></li>
+                        <li>ISO concentricity = axis; ASME concentricity deprecated (use position or runout)</li>
+                        <li>Datums: ISO uses capital letters in triangle; ASME in square frame</li>
+                        <li>Unless specified otherwise, assume ISO in European drawings</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Datum reference frame (DRF)</h3>
+                    <ul>
+                        <li>3-2-1 rule: primary datum constrains 3 DOF, secondary 2, tertiary 1</li>
+                        <li>Datums are theoretical perfect planes / axes / points</li>
+                        <li>Form tolerances (straightness, flatness…) never require a datum</li>
+                        <li>Location and orientation tolerances usually require 1–3 datums</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Reading a tolerance frame</h3>
+                    <p>Example: <span style="font-family:monospace;color:var(--light-gray)">| ⊕ | Ø 0.05 | A | B |</span></p>
+                    <ul style="margin-top:0.4rem">
+                        <li>Position tolerance</li>
+                        <li>Cylindrical tolerance zone Ø 0.05 mm</li>
+                        <li>Relative to datums A (primary) and B (secondary)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Envelope principle (ISO)</h3>
+                    <ul>
+                        <li>By default ISO uses independency principle — form and size are independent</li>
+                        <li>Add <strong style="color:var(--light-gray)">Ⓔ</strong> to invoke envelope principle (perfect form at MMC)</li>
+                        <li>ASME Y14.5 applies envelope principle by default</li>
+                        <li>Always check which standard applies before interpreting a drawing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    const NS = 'http://www.w3.org/2000/svg';
+
+    // ── Symbol SVG generators ─────────────────────────────────────────────
+    function mkSvg(w, h) {
+        const s = document.createElementNS(NS, 'svg');
+        s.setAttribute('viewBox', `0 0 ${w} ${h}`);
+        s.setAttribute('width', w);
+        s.setAttribute('height', h);
+        return s;
+    }
+    function el(svg, tag, attrs, text) {
+        const e = document.createElementNS(NS, tag);
+        Object.entries(attrs).forEach(([k,v]) => e.setAttribute(k,v));
+        if (text !== undefined) e.textContent = text;
+        svg.appendChild(e);
+        return e;
+    }
+    function ln(svg,x1,y1,x2,y2,col,w) {
+        return el(svg,'line',{x1,y1,x2,y2,stroke:col||'#9ca3af','stroke-width':w||1.8,'stroke-linecap':'round'});
+    }
+
+    const W=44,H=44,CX=22,CY=22,R=16;
+    const COL = { stroke:'#e5e7eb', form:'#60a5fa', orient:'#4ade80', loc:'#a78bfa', run:'#fbbf24' };
+
+    function symSvg(drawFn, catCol) {
+        const svg = mkSvg(W, H);
+        el(svg, 'rect', {x:0,y:0,width:W,height:H,fill:'rgba(0,0,0,0)',rx:4});
+        drawFn(svg, catCol || COL.stroke);
+        return svg;
+    }
+
+    const DRAWS = {
+        straightness: (svg, col) => {
+            // horizontal line with small arrows indicating straight
+            ln(svg,6,CY,38,CY,col,2);
+            ln(svg,6,CY-7,6,CY+7,col,1.5);
+            ln(svg,38,CY-7,38,CY+7,col,1.5);
+        },
+        flatness: (svg, col) => {
+            ln(svg,8,CY+5,36,CY+5,col,2);
+            ln(svg,12,CY-5,40,CY-5,col,2);
+            ln(svg,8,CY+5,12,CY-5,col,1.2);
+            ln(svg,36,CY+5,40,CY-5,col,1.2);
+        },
+        roundness: (svg, col) => {
+            el(svg,'circle',{cx:CX,cy:CY,r:R,fill:'none',stroke:col,'stroke-width':2});
+        },
+        cylindricity: (svg, col) => {
+            // cylinder outline
+            el(svg,'ellipse',{cx:CX,cy:10,rx:10,ry:4,fill:'none',stroke:col,'stroke-width':1.8});
+            el(svg,'ellipse',{cx:CX,cy:34,rx:10,ry:4,fill:'none',stroke:col,'stroke-width':1.8});
+            ln(svg,12,10,12,34,col,1.8);
+            ln(svg,32,10,32,34,col,1.8);
+        },
+        parallelism: (svg, col) => {
+            ln(svg,8,14,36,14,col,2);
+            ln(svg,8,22,36,22,col,2);
+            ln(svg,8,30,36,30,col,2);
+        },
+        perpendicularity: (svg, col) => {
+            ln(svg,10,36,34,36,col,2);
+            ln(svg,CX,10,CX,36,col,2);
+        },
+        angularity: (svg, col) => {
+            // angle symbol ∠
+            ln(svg,10,34,CX,10,col,2);
+            ln(svg,10,34,34,34,col,2);
+        },
+        position: (svg, col) => {
+            // ⊕ circle with cross
+            el(svg,'circle',{cx:CX,cy:CY,r:R,fill:'none',stroke:col,'stroke-width':2});
+            ln(svg,CX,CY-R,CX,CY+R,col,1.8);
+            ln(svg,CX-R,CY,CX+R,CY,col,1.8);
+        },
+        concentricity: (svg, col) => {
+            el(svg,'circle',{cx:CX,cy:CY,r:R,fill:'none',stroke:col,'stroke-width':2});
+            el(svg,'circle',{cx:CX,cy:CY,r:7,fill:'none',stroke:col,'stroke-width':1.5});
+            el(svg,'circle',{cx:CX,cy:CY,r:2,fill:col});
+        },
+        symmetry: (svg, col) => {
+            // ≡ three horizontal lines
+            [10,18,26].forEach(y => ln(svg,10,y,34,y,col,2));
+        },
+        'circular-runout': (svg, col) => {
+            el(svg,'circle',{cx:CX,cy:CY,r:R,fill:'none',stroke:col,'stroke-width':2});
+            // arrow
+            el(svg,'line',{x1:CX+R-2,y1:CY-8,x2:CX+R+2,y2:CY+8,stroke:col,'stroke-width':2,'stroke-linecap':'round'});
+            el(svg,'polygon',{points:`${CX+R+4},${CY+6} ${CX+R-4},${CY+10} ${CX+R+2},${CY+14}`,fill:col});
+        },
+        'total-runout': (svg, col) => {
+            // cylinder with double arrow
+            el(svg,'ellipse',{cx:CX,cy:12,rx:12,ry:4,fill:'none',stroke:col,'stroke-width':1.8});
+            el(svg,'ellipse',{cx:CX,cy:32,rx:12,ry:4,fill:'none',stroke:col,'stroke-width':1.8});
+            ln(svg,10,12,10,32,col,1.8);
+            ln(svg,34,12,34,32,col,1.8);
+            // double-headed arrow
+            ln(svg,38,CY-8,38,CY+8,col,2);
+            el(svg,'polygon',{points:'36,14 40,14 38,8',fill:col});
+            el(svg,'polygon',{points:'36,30 40,30 38,36',fill:col});
+        },
+        profile_line: (svg, col) => {
+            // arc + tolerance band
+            el(svg,'path',{d:`M 8,${CY+6} Q ${CX},${CY-12} 36,${CY+6}`,fill:'none',stroke:col,'stroke-width':2});
+            el(svg,'path',{d:`M 8,${CY+12} Q ${CX},${CY-6} 36,${CY+12}`,fill:'none',stroke:col,'stroke-width':1,'stroke-dasharray':'3,2'});
+            el(svg,'path',{d:`M 8,${CY} Q ${CX},${CY-18} 36,${CY}`,fill:'none',stroke:col,'stroke-width':1,'stroke-dasharray':'3,2'});
+        },
+        profile_surface: (svg, col) => {
+            el(svg,'path',{d:`M 6,${CY} C 14,${CY-14} 30,${CY+14} 38,${CY}`,fill:'none',stroke:col,'stroke-width':2});
+            el(svg,'path',{d:`M 6,${CY-6} C 14,${CY-20} 30,${CY+8} 38,${CY-6}`,fill:'none',stroke:col,'stroke-width':1,'stroke-dasharray':'3,2'});
+            el(svg,'path',{d:`M 6,${CY+6} C 14,${CY-8} 30,${CY+20} 38,${CY+6}`,fill:'none',stroke:col,'stroke-width':1,'stroke-dasharray':'3,2'});
+        },
+    };
+
+    // ── Tolerance data ────────────────────────────────────────────────────
+    const TOLERANCES = [
+        // FORM (no datum required)
+        {
+            id:'straightness', cat:'form', name:'Straightness',
+            isoSymbol:'—', isoCode:'ISO 1101 §9.2', asmeSym:'—',
+            desc:'Controls how straight a line element on a surface or an axis of a feature must be.',
+            frame:'no datum', zone:'Two parallel lines / two parallel planes / cylinder Ø',
+            example:'Shaft axis must lie within a Ø 0.02 mm cylindrical zone.'
+        },
+        {
+            id:'flatness', cat:'form', name:'Flatness',
+            isoSymbol:'⏥', isoCode:'ISO 1101 §9.3', asmeSym:'⏥',
+            desc:'Controls how flat a surface must be — all points within two parallel planes.',
+            frame:'no datum', zone:'Two parallel planes',
+            example:'Mounting face: flatness 0.05 mm — machined surface after milling.'
+        },
+        {
+            id:'roundness', cat:'form', name:'Roundness (Circularity)',
+            isoSymbol:'○', isoCode:'ISO 1101 §9.4', asmeSym:'○',
+            desc:'Controls the roundness of a cross-sectional circle. Every point on the circle lies between two concentric circles.',
+            frame:'no datum', zone:'Two concentric circles (annular zone)',
+            example:'Bearing bore: roundness 0.003 mm.'
+        },
+        {
+            id:'cylindricity', cat:'form', name:'Cylindricity',
+            isoSymbol:'⌭', isoCode:'ISO 1101 §9.5', asmeSym:'⌭',
+            desc:'Simultaneously controls roundness, straightness and taper of a cylindrical surface.',
+            frame:'no datum', zone:'Two coaxial cylinders',
+            example:'Precision shaft journal: cylindricity 0.005 mm.'
+        },
+        {
+            id:'profile_line', cat:'form', name:'Profile of a Line',
+            isoSymbol:'⌒', isoCode:'ISO 1101 §9.6', asmeSym:'⌒',
+            desc:'Controls the shape of a curved line element. Can be used with or without datum.',
+            frame:'optional', zone:'Uniform-width band along a theoretical curve',
+            example:'Cam profile: line profile 0.1 mm relative to datum A.'
+        },
+        {
+            id:'profile_surface', cat:'form', name:'Profile of a Surface',
+            isoSymbol:'⌓', isoCode:'ISO 1101 §9.7', asmeSym:'⌓',
+            desc:'Controls the shape of a 3D surface. The most powerful GD&T control — often replaces multiple individual tolerances.',
+            frame:'optional', zone:'Uniform-width band around a theoretical surface',
+            example:'Die cavity: surface profile 0.08 mm relative to datums A|B|C.'
+        },
+
+        // ORIENTATION (datum required)
+        {
+            id:'parallelism', cat:'orientation', name:'Parallelism',
+            isoSymbol:'∥', isoCode:'ISO 1101 §10.2', asmeSym:'∥',
+            desc:'Controls how parallel a surface or axis is to a datum plane or datum axis.',
+            frame:'1–2 datums', zone:'Two parallel planes / cylinder Ø (for axis)',
+            example:'Top face: parallelism 0.02 mm relative to datum A (bottom face).'
+        },
+        {
+            id:'perpendicularity', cat:'orientation', name:'Perpendicularity',
+            isoSymbol:'⊥', isoCode:'ISO 1101 §10.3', asmeSym:'⊥',
+            desc:'Controls how perpendicular (90°) a surface or axis is to a datum.',
+            frame:'1–2 datums', zone:'Two parallel planes / cylinder Ø (for axis)',
+            example:'Bore axis: perpendicularity Ø 0.03 mm relative to datum A.'
+        },
+        {
+            id:'angularity', cat:'orientation', name:'Angularity',
+            isoSymbol:'∠', isoCode:'ISO 1101 §10.4', asmeSym:'∠',
+            desc:'Controls how accurately a feature is oriented at a specified angle (other than 0° or 90°) relative to a datum.',
+            frame:'1–2 datums', zone:'Two parallel planes at the specified angle',
+            example:'Inclined face (30°): angularity 0.05 mm relative to datum A.'
+        },
+
+        // LOCATION (datum required)
+        {
+            id:'position', cat:'location', name:'Position (True Position)',
+            isoSymbol:'⊕', isoCode:'ISO 1101 §11.2', asmeSym:'⊕',
+            desc:'Controls the location of a feature (hole, slot, boss) relative to datums. Most widely used GD&T control.',
+            frame:'1–3 datums', zone:'Cylinder Ø (for hole axis) / two parallel planes',
+            example:'Bolt hole: ⊕ Ø 0.1 ⓜ | A | B | C — MMC bonus tolerance applies.'
+        },
+        {
+            id:'concentricity', cat:'location', name:'Concentricity / Coaxiality',
+            isoSymbol:'◎', isoCode:'ISO 1101 §11.3', asmeSym:'◎',
+            desc:'Controls that the median points of a surface lie within a cylindrical (or circular) zone coaxial with the datum axis.',
+            frame:'1 datum axis', zone:'Cylinder Ø (3D) / circle Ø (2D)',
+            example:'Stepped shaft: coaxiality Ø 0.02 mm relative to datum axis A.'
+        },
+        {
+            id:'symmetry', cat:'location', name:'Symmetry',
+            isoSymbol:'≡', isoCode:'ISO 1101 §11.4', asmeSym:'≡',
+            desc:'Controls that the median plane of a feature is coincident with the datum median plane. Rarely used — often replaced by position.',
+            frame:'1 datum', zone:'Two parallel planes symmetric about datum',
+            example:'Key slot: symmetry 0.05 mm relative to datum axis A.'
+        },
+
+        // RUNOUT
+        {
+            id:'circular-runout', cat:'runout', name:'Circular Runout',
+            isoSymbol:'↗', isoCode:'ISO 1101 §12.2', asmeSym:'↗',
+            desc:'Controls surface variation at any single cross-section as the part rotates 360° about the datum axis. 2D check.',
+            frame:'1–2 datums (axis)', zone:'Annular band at each cross-section',
+            example:'Impeller hub: circular runout 0.02 mm relative to bearing datums A–B.'
+        },
+        {
+            id:'total-runout', cat:'runout', name:'Total Runout',
+            isoSymbol:'⇗', isoCode:'ISO 1101 §12.3', asmeSym:'⇗',
+            desc:'Controls all surface variation across the entire cylindrical surface as the part rotates. 3D check — stricter than circular runout.',
+            frame:'1–2 datums (axis)', zone:'Two coaxial cylinders (entire surface)',
+            example:'Precision spindle: total runout 0.01 mm — combines cylindricity + coaxiality.'
+        },
+    ];
+
+    const CATEGORIES = [
+        {id:'all',         label:'All'},
+        {id:'form',        label:'Form',        badge:'badge-form'},
+        {id:'orientation', label:'Orientation',  badge:'badge-orient'},
+        {id:'location',    label:'Location',     badge:'badge-loc'},
+        {id:'runout',      label:'Runout',        badge:'badge-run'},
+    ];
+
+    const BADGE_MAP = { form:'badge-form', orientation:'badge-orient', location:'badge-loc', runout:'badge-run' };
+    const CAT_LABEL = { form:'Form', orientation:'Orientation', location:'Location', runout:'Runout' };
+    const COL_MAP   = { form:COL.form, orientation:COL.orient, location:COL.loc, runout:COL.run };
+
+    let activecat = 'all';
+
+    // ── Build category tabs ───────────────────────────────────────────────
+    function buildTabs() {
+        const wrap = document.getElementById('catTabs');
+        CATEGORIES.forEach(c => {
+            const btn = document.createElement('button');
+            btn.className = 'cat-btn' + (c.id === 'all' ? ' active' : '');
+            btn.textContent = c.label;
+            btn.onclick = () => {
+                activecat = c.id;
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                applyFilter();
+            };
+            wrap.appendChild(btn);
+        });
+    }
+
+    // ── Build symbol cards ────────────────────────────────────────────────
+    function buildCards() {
+        const grid = document.getElementById('symGrid');
+        TOLERANCES.forEach(t => {
+            const card = document.createElement('div');
+            card.className = 'sym-card';
+            card.dataset.cat = t.cat;
+
+            const drawFn = DRAWS[t.id];
+            const col    = COL_MAP[t.cat];
+            const svg    = drawFn ? symSvg(drawFn, col) : mkSvg(W,H);
+            svg.classList.add('sym-icon');
+
+            const header = document.createElement('div');
+            header.className = 'sym-header';
+            const iconWrap = document.createElement('div');
+            iconWrap.appendChild(svg);
+            const nameWrap = document.createElement('div');
+            nameWrap.innerHTML = `
+                <div class="sym-name">${t.name}</div>
+                <div class="sym-iso">${t.isoCode}</div>
+                <span class="sym-badge ${BADGE_MAP[t.cat]}">${CAT_LABEL[t.cat]}</span>`;
+            header.appendChild(iconWrap);
+            header.appendChild(nameWrap);
+            card.appendChild(header);
+
+            const desc = document.createElement('div');
+            desc.className = 'sym-desc';
+            desc.textContent = t.desc;
+            card.appendChild(desc);
+
+            const hr = document.createElement('hr');
+            hr.className = 'sep';
+            card.appendChild(hr);
+
+            const rows = [
+                {lbl:'Datum', val: t.frame},
+                {lbl:'Zone',  val: t.zone},
+                {lbl:'Example', val: t.example},
+            ];
+            rows.forEach(r => {
+                const row = document.createElement('div');
+                row.className = 'sym-row';
+                row.innerHTML = `<span class="lbl">${r.lbl}</span><span class="val">${r.val}</span>`;
+                card.appendChild(row);
+            });
+
+            grid.appendChild(card);
+        });
+    }
+
+    // ── Filter ────────────────────────────────────────────────────────────
+    function applyFilter() {
+        document.querySelectorAll('#symGrid .sym-card').forEach(c => {
+            c.classList.toggle('hidden', activecat !== 'all' && c.dataset.cat !== activecat);
+        });
+    }
+
+    // ── Draw tolerance frame illustration ─────────────────────────────────
+    function buildFrame() {
+        const wrap = document.getElementById('frameSvg');
+        const svg  = document.createElementNS(NS, 'svg');
+        svg.setAttribute('viewBox', '0 0 420 70');
+        svg.setAttribute('width', '100%');
+        svg.style.maxWidth = '420px';
+
+        const h = 40, y0 = 15;
+        const cells = [
+            {x:0,   w:50,  num:'①', fill:'rgba(96,165,250,0.08)'},   // symbol
+            {x:50,  w:80,  num:'②③', fill:'rgba(74,222,128,0.06)'},  // tolerance + modifier
+            {x:130, w:50,  num:'④', fill:'rgba(251,191,36,0.06)'},    // datum A
+            {x:180, w:50,  num:'⑤', fill:'rgba(251,191,36,0.04)'},    // datum B
+            {x:230, w:50,  num:'⑥', fill:'rgba(251,191,36,0.02)'},    // datum C
+        ];
+
+        // Draw cells
+        cells.forEach(c => {
+            el(svg,'rect',{x:c.x,y:y0,width:c.w,height:h,fill:c.fill,stroke:'#374151','stroke-width':1.5});
+        });
+        // outer heavy border
+        el(svg,'rect',{x:0,y:y0,width:280,height:h,fill:'none',stroke:'#6b7280','stroke-width':2});
+
+        // Cell contents
+        el(svg,'text',{x:25,y:y0+h/2+1,fill:'#60a5fa','font-size':18,'text-anchor':'middle','dominant-baseline':'middle','font-family':'serif'},'⊕');
+        el(svg,'text',{x:90,y:y0+h/2-3,fill:'#e5e7eb','font-size':13,'text-anchor':'middle','dominant-baseline':'middle','font-family':'monospace'},'Ø 0.05');
+        el(svg,'text',{x:90,y:y0+h/2+11,fill:'#60a5fa','font-size':9,'text-anchor':'middle','dominant-baseline':'middle','font-family':'monospace'},'Ⓜ');
+        el(svg,'text',{x:155,y:y0+h/2,fill:'#fbbf24','font-size':14,'text-anchor':'middle','dominant-baseline':'middle','font-family':'monospace','font-weight':700},'A');
+        el(svg,'text',{x:205,y:y0+h/2,fill:'#fbbf24','font-size':14,'text-anchor':'middle','dominant-baseline':'middle','font-family':'monospace','font-weight':700},'B');
+        el(svg,'text',{x:255,y:y0+h/2,fill:'#fbbf24','font-size':14,'text-anchor':'middle','dominant-baseline':'middle','font-family':'monospace','font-weight':700},'C');
+
+        // Number labels below
+        const nums = [{x:25,t:'①'},{x:90,t:'②③'},{x:155,t:'④'},{x:205,t:'⑤'},{x:255,t:'⑥'}];
+        nums.forEach(n => {
+            el(svg,'text',{x:n.x,y:y0+h+12,fill:'#ff6b35','font-size':10,'text-anchor':'middle','dominant-baseline':'middle','font-family':'monospace'},n.t);
+        });
+
+        wrap.appendChild(svg);
+    }
+
+    buildTabs();
+    buildCards();
+    buildFrame();
+    applyFilter();
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "id": "eng-031",
+  "title": "Machining Accuracy by Method",
+  "description": "Reference table of achievable IT grades and surface roughness Ra for common machining methods: roughing, finishing, grinding, honing, lapping, and more. Includes typical applications.",
+  "category": "reference",
+  "icon": "🔧",
+  "difficulty": "beginner",
+  "topic": "obrabeni"
+}

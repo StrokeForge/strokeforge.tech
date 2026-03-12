@@ -1,0 +1,9 @@
+{
+  "id": "eng-036",
+  "title": "Shear Stress Calculator",
+  "description": "Shear stress τ distribution across cross-section. Rectangle, solid circle, hollow circle and I-profile. Shows τ(y) diagram, maximum and average stress with PASS/FAIL check.",
+  "category": "beams",
+  "icon": "✂️",
+  "difficulty": "intermediate",
+  "topic": "pruznost-pevnost"
+}

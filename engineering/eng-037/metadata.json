@@ -1,0 +1,9 @@
+{
+  "id": "eng-037",
+  "title": "Heat Treatment Overview",
+  "description": "Quick reference for steel heat treatment methods: quenching, tempering, annealing, case hardening, nitriding, induction hardening. Temperature ranges, achievable hardness and typical steels.",
+  "category": "reference",
+  "icon": "🔥",
+  "difficulty": "beginner",
+  "topic": "tepelne-zpracovani"
+}

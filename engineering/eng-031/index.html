@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machining Accuracy by Method | StrokeForge Engineering</title>
+    <meta name="description" content="Reference table of achievable IT grades and surface roughness Ra for common machining methods: roughing, finishing, grinding, honing, lapping, and more.">
+    <meta name="keywords" content="machining accuracy IT grade, surface roughness Ra, roughing finishing grinding honing lapping, ISO tolerance grade, přesnost obrábění IT Ra, honování lapování broušení">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-031/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 960px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Filter tabs */
+        .cat-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+        .cat-btn {
+            background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray);
+            border-radius: 6px; padding: 0.38rem 0.85rem; font-size: 0.82rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .cat-btn:hover { border-color: var(--primary-orange); color: var(--light-gray); }
+        .cat-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; }
+
+        /* Main table */
+        .table-wrap { overflow-x: auto; }
+        .mach-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+        .mach-table th {
+            background: rgba(255,107,53,0.08); color: var(--primary-orange);
+            font-size: 0.75rem; font-weight: 600; padding: 0.5rem 0.8rem;
+            text-align: left; border-bottom: 1px solid var(--border-gray); white-space: nowrap;
+        }
+        .mach-table td { padding: 0.48rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+        .mach-table tr:last-child td { border-bottom: none; }
+        .mach-table tr:hover td { background: rgba(255,107,53,0.04); }
+        .mach-table .hidden { display: none; }
+
+        .mach-table td.method { color: var(--light-gray); font-weight: 600; white-space: nowrap; }
+        .mach-table td.sub    { color: var(--text-gray); font-size: 0.8rem; padding-left: 1.8rem; }
+
+        /* IT bar */
+        .it-bar { display: flex; align-items: center; gap: 0.5rem; }
+        .it-range {
+            height: 8px; border-radius: 4px; min-width: 4px;
+            background: var(--primary-orange); opacity: 0.75;
+        }
+        .it-label { font-family: monospace; font-size: 0.8rem; color: var(--light-gray); white-space: nowrap; }
+
+        /* Ra cell */
+        .ra-val { font-family: monospace; font-size: 0.82rem; color: #60a5fa; }
+
+        /* Category badge */
+        .cat-badge {
+            display: inline-block; font-size: 0.67rem; font-weight: 700;
+            padding: 0.1rem 0.45rem; border-radius: 3px; white-space: nowrap;
+        }
+        .badge-cut    { background: rgba(251,146,60,0.15); color: #fb923c; }
+        .badge-grind  { background: rgba(96,165,250,0.15); color: #60a5fa; }
+        .badge-fine   { background: rgba(74,222,128,0.15); color: #4ade80; }
+        .badge-form   { background: rgba(167,139,250,0.15); color: #a78bfa; }
+        .badge-special{ background: rgba(251,191,36,0.15);  color: #fbbf24; }
+
+        .app-text { font-size: 0.78rem; color: var(--text-gray); }
+
+        /* IT grade reference */
+        .it-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(68px,1fr)); gap: 0.4rem; margin-top: 0.75rem; }
+        .it-cell { background: var(--darker-bg); border-radius: 5px; padding: 0.4rem 0.3rem; text-align: center; }
+        .it-cell .grade { font-size: 0.72rem; font-weight: 700; color: var(--primary-orange); font-family: monospace; }
+        .it-cell .tol   { font-size: 0.68rem; color: var(--text-gray); font-family: monospace; }
+        .it-cell .use   { font-size: 0.62rem; color: #4b5563; margin-top: 0.1rem; }
+
+        /* Ra scale */
+        .ra-scale { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.75rem; }
+        .ra-row   { display: flex; align-items: center; gap: 0.75rem; font-size: 0.78rem; }
+        .ra-bar   { flex: 1; height: 6px; border-radius: 3px; background: #1f2937; overflow: hidden; }
+        .ra-fill  { height: 100%; border-radius: 3px; background: #60a5fa; }
+        .ra-lbl   { font-family: monospace; color: var(--text-gray); min-width: 90px; }
+        .ra-desc  { color: #4b5563; font-size: 0.72rem; min-width: 80px; }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>🔧 Machining Accuracy by Method</h1>
+        <p>Achievable IT tolerance grades and surface roughness Ra · Typical applications</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- MAIN TABLE -->
+        <div class="card">
+            <h2>Methods overview</h2>
+            <div class="cat-tabs" id="catTabs"></div>
+            <div class="table-wrap">
+                <table class="mach-table">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Category</th>
+                            <th>IT grade</th>
+                            <th>Ra&nbsp;[µm]</th>
+                            <th>Typical application</th>
+                        </tr>
+                    </thead>
+                    <tbody id="machBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- IT GRADE REFERENCE -->
+        <div class="card">
+            <h2>IT grade reference (ISO 286-1) — example for ∅ 50 mm</h2>
+            <div id="itGrid"></div>
+        </div>
+
+        <!-- Ra SCALE -->
+        <div class="card">
+            <h2>Surface roughness Ra scale</h2>
+            <div id="raScale"></div>
+            <p style="font-size:0.78rem;color:var(--text-gray);margin-top:0.9rem">
+                Ra = arithmetic mean deviation of the surface profile (ISO 4287). Lower Ra = smoother surface.
+                Note: Ra alone is insufficient — always specify the measurement cutoff length λc.
+            </p>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Good to know</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>IT grade system (ISO 286)</h3>
+                    <ul>
+                        <li>IT01, IT0, IT1 — gauge making, precision instruments</li>
+                        <li>IT2–IT5 — precision fits, bearings, spindles</li>
+                        <li>IT6–IT8 — standard engineering fits (most common)</li>
+                        <li>IT9–IT11 — general machining, loose fits</li>
+                        <li>IT12–IT18 — sheet metal, castings, free machining</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Ra vs Rz vs Rmax</h3>
+                    <ul>
+                        <li><span class="mono">Ra</span> — arithmetic average deviation (most common)</li>
+                        <li><span class="mono">Rz</span> — average peak-to-valley (≈ 4–7 × Ra)</li>
+                        <li><span class="mono">Rmax</span> — maximum single peak-to-valley</li>
+                        <li>For sealing surfaces use Rz; for fatigue use Rmax</li>
+                        <li>Older DIN/Czech drawings use <span class="mono">Rz</span> as primary</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Rule of thumb: IT → Ra</h3>
+                    <p>Approximate relationship between IT grade and Ra for general machining:</p>
+                    <p style="margin-top:0.45rem"><span class="mono">Ra ≈ 0.05 × IT_tolerance [µm]</span></p>
+                    <ul style="margin-top:0.4rem">
+                        <li>IT6 at ∅50 mm → tolerance ≈ 16 µm → Ra ≈ 0.8 µm</li>
+                        <li>IT8 at ∅50 mm → tolerance ≈ 39 µm → Ra ≈ 1.6 µm</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Cost vs accuracy</h3>
+                    <ul>
+                        <li>Each step tighter ≈ 30–50 % cost increase</li>
+                        <li>IT6 and finer require grinding or fine boring</li>
+                        <li>IT4 and finer require honing, lapping, or superfinishing</li>
+                        <li>Specify the loosest tolerance that satisfies the function</li>
+                        <li>Cylindricity and roundness add cost independently of IT</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ── Data ──────────────────────────────────────────────────────────────
+    // [method, sub (optional), cat, itFrom, itTo, raFrom, raTo, application]
+    const METHODS = [
+        // Cutting — turning
+        ['Rough turning',        null,    'cut', 11, 14, 12.5, 50,   'Stock removal, castings, forgings — pre-machining step'],
+        ['Semi-finish turning',  null,    'cut',  9, 11,  3.2, 12.5, 'General turning before finishing; structural parts'],
+        ['Finish turning',       null,    'cut',  7,  9,  0.8,  3.2, 'Shafts, bushings — direct use for H7/h6 fits'],
+        ['Fine turning (diamond)',null,   'cut',  5,  7,  0.1,  0.8, 'Aluminium and non-ferrous precision components'],
+
+        // Cutting — milling
+        ['Rough milling',        null,    'cut', 11, 14, 12.5, 50,   'Pockets, faces — bulk material removal'],
+        ['Finish milling',       null,    'cut',  8, 10,  1.6,  6.3, 'Flat surfaces, contours — direct assembly use'],
+        ['Fine milling',         null,    'cut',  6,  8,  0.4,  1.6, 'Moulds, precision faces; requires rigid setup'],
+
+        // Cutting — drilling & boring
+        ['Drilling',             null,    'cut', 11, 13,  6.3, 25,   'Through holes — followed by reaming or boring for precision'],
+        ['Reaming',              null,    'cut',  6,  9,  0.8,  3.2, 'H7 holes in steel and cast iron — standard precision holes'],
+        ['Rough boring',         null,    'cut',  9, 11,  3.2, 12.5, 'Pre-machining for precision bores'],
+        ['Fine boring',          null,    'cut',  6,  8,  0.4,  1.6, 'Precision bearing housings, H6 bores'],
+        ['Diamond boring',       null,    'cut',  5,  7,  0.1,  0.4, 'Aluminium/bronze: engine cylinders, hydraulic bores'],
+
+        // Grinding
+        ['Rough grinding',       null,    'grind', 8, 10,  1.6,  6.3, 'Removing surface scale, weld seams'],
+        ['Finish cylindrical grinding', null, 'grind', 5, 7, 0.2, 0.8, 'Bearing seats, shaft journals — standard precision'],
+        ['Fine cylindrical grinding',   null, 'grind', 4, 6, 0.05, 0.2,'High-precision shafts, gauge pins'],
+        ['Finish surface grinding',     null, 'grind', 6, 8, 0.4, 1.6, 'Flat reference surfaces, fixture plates'],
+        ['Fine surface grinding',       null, 'grind', 4, 6, 0.05, 0.4,'Precision gauges, precision slideways'],
+        ['Profile / form grinding',     null, 'grind', 5, 7, 0.2, 0.8, 'Thread grinding, gear grinding, form tools'],
+
+        // Fine finishing
+        ['Honing',               null,    'fine',  4,  6, 0.025, 0.4, 'Engine cylinders, hydraulic cylinders, bearing bores'],
+        ['Superfinishing (ELID)',null,    'fine',  3,  5, 0.006, 0.1, 'Rolling element raceways, precision spindles'],
+        ['Lapping',              null,    'fine',  3,  5, 0.006, 0.1, 'Gauge blocks, valve seats, optical flats'],
+        ['Polishing',            null,    'fine',  4,  6, 0.006, 0.1, 'Decorative surfaces, corrosion resistance, mould cavities'],
+
+        // Forming
+        ['Die casting',          null,    'form', 11, 14,  1.6, 12.5, 'Aluminium / zinc housings, brackets — near-net shape'],
+        ['Sand casting',         null,    'form', 14, 17, 12.5, 100,  'Large parts — always requires machining allowance'],
+        ['Precision investment casting', null, 'form', 11, 14, 1.6, 12.5, 'Complex shapes in steel/Ti — reduced machining'],
+        ['Hot forging',          null,    'form', 12, 15, 12.5, 50,   'High-strength parts — crankshafts, connecting rods'],
+        ['Cold forging / extrusion',null, 'form', 9,  11,  0.8,  3.2, 'Bolts, sockets — high surface quality without machining'],
+        ['Sheet metal stamping', null,    'form', 10, 13,  1.6,  6.3, 'Blanking, bending — holes ±0.1 mm typical'],
+
+        // Special
+        ['EDM (Wire / Sinker)',  null,    'special', 6, 9, 0.4, 6.3, 'Hard materials, complex profiles, injection moulds'],
+        ['Laser cutting',        null,    'special', 9,12, 3.2,25,   'Sheet metal — kerf ≈ 0.1–0.3 mm; edge quality varies'],
+        ['Waterjet cutting',     null,    'special',10,13, 3.2,12.5, 'No HAZ — composites, stone, thick steel up to 200 mm'],
+        ['Electrochemical machining (ECM)', null, 'special', 6, 8, 0.1, 0.8, 'Turbine blades, rifle barrels — no tool wear'],
+    ];
+
+    const CATEGORIES = [
+        {id:'all',     label:'All'},
+        {id:'cut',     label:'Cutting'},
+        {id:'grind',   label:'Grinding'},
+        {id:'fine',    label:'Fine finishing'},
+        {id:'form',    label:'Forming'},
+        {id:'special', label:'Special'},
+    ];
+
+    const BADGE = {
+        cut:    ['badge-cut',    'Cutting'],
+        grind:  ['badge-grind',  'Grinding'],
+        fine:   ['badge-fine',   'Fine finishing'],
+        form:   ['badge-form',   'Forming'],
+        special:['badge-special','Special'],
+    };
+
+    // IT tolerance values for ∅50 mm (ISO 286-1, series 30–50 mm)
+    const IT_REF = [
+        {grade:'IT3',  tol:4,    use:'gauges'},
+        {grade:'IT4',  tol:7,    use:'gauges'},
+        {grade:'IT5',  tol:11,   use:'precision'},
+        {grade:'IT6',  tol:16,   use:'bearings'},
+        {grade:'IT7',  tol:25,   use:'H7/h6'},
+        {grade:'IT8',  tol:39,   use:'H8/h8'},
+        {grade:'IT9',  tol:62,   use:'general'},
+        {grade:'IT10', tol:100,  use:'general'},
+        {grade:'IT11', tol:160,  use:'loose'},
+        {grade:'IT12', tol:250,  use:'castings'},
+        {grade:'IT13', tol:390,  use:'castings'},
+        {grade:'IT14', tol:620,  use:'raw'},
+    ];
+
+    // Ra scale rows
+    const RA_ROWS = [
+        {lbl:'Ra 0.006–0.025 µm', pct:5,  desc:'Lapping / superfinish'},
+        {lbl:'Ra 0.025–0.1 µm',   pct:12, desc:'Honing / fine grind'},
+        {lbl:'Ra 0.1–0.4 µm',     pct:22, desc:'Fine grinding'},
+        {lbl:'Ra 0.4–0.8 µm',     pct:35, desc:'Finish grind/turn'},
+        {lbl:'Ra 0.8–1.6 µm',     pct:45, desc:'Finish milling/turn'},
+        {lbl:'Ra 1.6–3.2 µm',     pct:55, desc:'Semi-finish turn'},
+        {lbl:'Ra 3.2–6.3 µm',     pct:65, desc:'Rough grinding'},
+        {lbl:'Ra 6.3–12.5 µm',    pct:78, desc:'Rough milling/turn'},
+        {lbl:'Ra 12.5–25 µm',     pct:88, desc:'Rough turning'},
+        {lbl:'Ra 25–100 µm',      pct:100,desc:'Sand casting / rough'},
+    ];
+
+    let activeCat = 'all';
+
+    // ── IT bar helper ─────────────────────────────────────────────────────
+    // IT scale: 3→14, map to visual width 8–100 %
+    function itBarWidth(it) {
+        return Math.round(8 + (it - 3) / 11 * 92);
+    }
+    function itBar(from, to) {
+        const w1 = itBarWidth(from), w2 = itBarWidth(to);
+        const barW = Math.max(w2 - w1, 4);
+        const col = from <= 5 ? '#4ade80' : from <= 8 ? '#60a5fa' : from <= 11 ? '#fb923c' : '#6b7280';
+        return `<div class="it-bar">
+            <div style="width:${w1}%"></div>
+            <div class="it-range" style="width:${barW}%;background:${col}"></div>
+            <div style="flex:1"></div>
+            <span class="it-label">IT${from}–IT${to}</span>
+        </div>`;
+    }
+
+    // ── Build tabs ────────────────────────────────────────────────────────
+    function buildTabs() {
+        const wrap = document.getElementById('catTabs');
+        CATEGORIES.forEach(c => {
+            const btn = document.createElement('button');
+            btn.className = 'cat-btn' + (c.id === 'all' ? ' active' : '');
+            btn.textContent = c.label;
+            btn.onclick = () => {
+                activeCat = c.id;
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                applyFilter();
+            };
+            wrap.appendChild(btn);
+        });
+    }
+
+    // ── Build table rows ──────────────────────────────────────────────────
+    function buildRows() {
+        const tbody = document.getElementById('machBody');
+        METHODS.forEach(m => {
+            const [method, sub, cat, itFrom, itTo, raFrom, raTo, app] = m;
+            const [badgeClass, badgeLabel] = BADGE[cat];
+            const isSubRow = !!sub;
+            const tr = document.createElement('tr');
+            tr.dataset.cat = cat;
+            const raStr = raFrom < 0.1
+                ? `${raFrom}–${raTo}`
+                : `${raFrom}–${raTo}`;
+            tr.innerHTML = `
+                <td class="method${isSubRow?' sub':''}">${isSubRow ? sub : method}</td>
+                <td><span class="cat-badge ${badgeClass}">${badgeLabel}</span></td>
+                <td style="min-width:160px">${itBar(itFrom, itTo)}</td>
+                <td class="ra-val">${raFrom}–${raTo}</td>
+                <td class="app-text">${app}</td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // ── Filter ────────────────────────────────────────────────────────────
+    function applyFilter() {
+        document.querySelectorAll('#machBody tr').forEach(tr => {
+            tr.classList.toggle('hidden', activeCat !== 'all' && tr.dataset.cat !== activeCat);
+        });
+    }
+
+    // ── IT grade grid ─────────────────────────────────────────────────────
+    function buildItGrid() {
+        const grid = document.getElementById('itGrid');
+        const wrap = document.createElement('div');
+        wrap.className = 'it-grid';
+        IT_REF.forEach(it => {
+            const cell = document.createElement('div');
+            cell.className = 'it-cell';
+            cell.innerHTML = `
+                <div class="grade">${it.grade}</div>
+                <div class="tol">${it.tol} µm</div>
+                <div class="use">${it.use}</div>`;
+            wrap.appendChild(cell);
+        });
+        grid.appendChild(wrap);
+        const note = document.createElement('p');
+        note.style.cssText = 'font-size:0.75rem;color:var(--text-gray);margin-top:0.75rem';
+        note.textContent = 'Values shown for nominal diameter ∅ 30–50 mm. Tolerance increases with diameter.';
+        grid.appendChild(note);
+    }
+
+    // ── Ra scale ──────────────────────────────────────────────────────────
+    function buildRaScale() {
+        const wrap = document.getElementById('raScale');
+        const scale = document.createElement('div');
+        scale.className = 'ra-scale';
+        RA_ROWS.forEach(r => {
+            const row = document.createElement('div');
+            row.className = 'ra-row';
+            row.innerHTML = `
+                <span class="ra-lbl">${r.lbl}</span>
+                <div class="ra-bar"><div class="ra-fill" style="width:${r.pct}%"></div></div>
+                <span class="ra-desc">${r.desc}</span>`;
+            scale.appendChild(row);
+        });
+        wrap.appendChild(scale);
+    }
+
+    buildTabs();
+    buildRows();
+    buildItGrid();
+    buildRaScale();
+    applyFilter();
+    </script>
+</body>
+</html>

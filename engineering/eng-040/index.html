@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V-Belt Drive Calculator | StrokeForge Engineering</title>
+    <meta name="description" content="V-belt drive calculator: transmission ratio, belt velocity, belt length, wrap angles, tight/slack side tensions F1/F2, shaft load and belt sag. SPZ, SPA, SPB, SPC profiles.">
+    <meta name="keywords" content="V-belt calculator, klínový řemen, belt length, wrap angle, belt tension, shaft load, SPZ SPA SPB SPC, řemenový převod výpočet">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-040/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+.tool-wrap { max-width: 900px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); }
+
+        /* Results table — same style as eng-015/eng-039 */
+        .res-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .res-table th { padding: 0.5rem 0.9rem; text-align: left; color: var(--text-gray); border-bottom: 1px solid var(--border-gray); font-size: 0.75rem; font-weight: 600; }
+        .res-table td { padding: 0.55rem 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .res-table td:first-child  { color: var(--primary-orange); font-weight: 600; font-family: monospace; width: 130px; }
+        .res-table td:nth-child(2) { color: var(--light-gray); font-weight: 700; font-size: 0.95rem; }
+        .res-table td:nth-child(3) { color: var(--text-gray); font-size: 0.8rem; width: 60px; }
+        .res-table td:nth-child(4) { color: var(--text-gray); font-size: 0.78rem; font-family: monospace; }
+        .res-table tr:last-child td { border-bottom: none; }
+        .res-table .sec-head td { color: var(--text-gray); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border-gray); }
+
+        /* Verdict */
+        .verdict { display: inline-block; padding: 0.3rem 1rem; border-radius: 6px; font-size: 0.88rem; font-weight: 700; margin-top: 0.5rem; }
+        .verdict.pass { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+        .verdict.fail { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+        .verdict.warn { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+
+        /* Diagram */
+        .diagram-wrap { display: flex; justify-content: center; padding: 0.5rem 0; }
+        svg text { font-family: inherit; }
+
+        /* Info */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.6; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+        .info-block code { background: rgba(255,255,255,0.07); padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.82rem; color: var(--light-gray); }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.82rem; line-height: 2.0; display: block; margin-top: 0.4rem; }
+
+        details.card summary { cursor: pointer; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; }
+        details.card[open] summary { margin-bottom: 1rem; }
+
+        /* Profile table */
+        .profile-tbl { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 0.5rem; }
+        .profile-tbl th { padding: 0.35rem 0.6rem; text-align: left; color: var(--text-gray); border-bottom: 1px solid var(--border-gray); font-size: 0.72rem; }
+        .profile-tbl td { padding: 0.35rem 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text-gray); }
+        .profile-tbl td:first-child { color: var(--primary-orange); font-weight: 700; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>V-Belt Drive Calculator</h1>
+        <p>Belt length · wrap angle · tensions F<sub>1</sub>/F<sub>2</sub> · shaft load · belt sag</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- INPUT -->
+        <div class="card">
+            <h2>Drive geometry &amp; loading</h2>
+            <div class="input-grid" style="margin-bottom:1rem;">
+                <div class="field">
+                    <label>Driver pulley ∅ <i>d</i><sub>1</sub></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="d1" value="100" min="20" step="1" oninput="calc()">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">Pitch diameter (datum)</span>
+                </div>
+                <div class="field">
+                    <label>Driven pulley ∅ <i>d</i><sub>2</sub></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="d2" value="250" min="20" step="1" oninput="calc()">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">Pitch diameter (datum)</span>
+                </div>
+                <div class="field">
+                    <label>Centre distance <i>a</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="a" value="400" min="50" step="5" oninput="calc()">
+                        <span class="unit">mm</span>
+                    </div>
+                    <span class="hint">Recom.: 0.7(d1+d2) … 2(d1+d2)</span>
+                </div>
+                <div class="field">
+                    <label>Driver speed <i>n</i><sub>1</sub></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="n1" value="1450" min="1" step="10" oninput="calc()">
+                        <span class="unit">rpm</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Transmitted power <i>P</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="P" value="3.5" min="0" step="0.1" oninput="calc()">
+                        <span class="unit">kW</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Belt profile</label>
+                    <div class="field-row">
+                        <select class="sel" id="profile" onchange="calc()">
+                            <option value="63,SPZ">SPZ — d<sub>1,min</sub> = 63 mm</option>
+                            <option value="90,SPA" selected>SPA — d<sub>1,min</sub> = 90 mm</option>
+                            <option value="140,SPB">SPB — d<sub>1,min</sub> = 140 mm</option>
+                            <option value="224,SPC">SPC — d<sub>1,min</sub> = 224 mm</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Eff. friction coeff. μ'</label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="mu" value="0.51" min="0.1" step="0.01" oninput="calc()">
+                        <span class="unit">—</span>
+                    </div>
+                    <span class="hint">V-belt typical: 0.45–0.65</span>
+                </div>
+                <div class="field">
+                    <label>Number of belts <i>z</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="z" value="1" min="1" step="1" oninput="calc()">
+                        <span class="unit">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card">
+            <h2>Results</h2>
+            <table class="res-table">
+                <thead><tr><th>Parameter</th><th>Value</th><th>Unit</th><th>Formula / note</th></tr></thead>
+                <tbody id="resBody"></tbody>
+            </table>
+        </div>
+
+        <!-- SVG Diagram -->
+        <div class="card">
+            <h2>Diagram</h2>
+            <div class="diagram-wrap">
+                <svg id="diagram" width="560" height="260" viewBox="0 0 560 260"></svg>
+            </div>
+        </div>
+
+        <!-- Method info -->
+        <details class="card">
+            <summary>Formulas &amp; V-belt profiles</summary>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Geometry</h3>
+                    <span class="mono">i = d₂/d₁ = n₁/n₂<br>v = π·d₁·n₁/60 000  [m/s]<br>L = 2a + π(d₁+d₂)/2 + (d₂−d₁)²/(4a)<br>α₁ = 180° − 60°·(d₂−d₁)/a</span>
+                </div>
+                <div class="info-block">
+                    <h3>Belt tensions (Euler)</h3>
+                    <span class="mono">F₁ − F₂ = P·1000/v  [N]<br>F₁/F₂ = e^(μ'·α₁_rad)<br>F₀ = (F₁+F₂)/2<br>F_shaft ≈ 2·F₀·sin(α₁/2)</span>
+                    <p>μ' = effective friction (incl. wedge effect of V-groove). Typical: 0.45–0.65 for rubber on cast iron.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Belt sag</h3>
+                    <span class="mono">e = √(a² − ((d₂−d₁)/2)²)<br>f_rec = 0.016 · e  [mm]</span>
+                    <p>Recommended sag (free span): ~1.5–2% of span length. Check by pressing belt at midspan. Too tight → bearing overload; too loose → slip.</p>
+                </div>
+                <div class="info-block">
+                    <h3>V-Belt profiles (ISO 4184)</h3>
+                    <table class="profile-tbl">
+                        <thead><tr><th>Profile</th><th>d₁_min</th><th>v_max</th><th>P range</th></tr></thead>
+                        <tbody>
+                            <tr><td>SPZ</td><td>63 mm</td><td>50 m/s</td><td>0.2–3 kW</td></tr>
+                            <tr><td>SPA</td><td>90 mm</td><td>50 m/s</td><td>0.7–10 kW</td></tr>
+                            <tr><td>SPB</td><td>140 mm</td><td>50 m/s</td><td>2–25 kW</td></tr>
+                            <tr><td>SPC</td><td>224 mm</td><td>50 m/s</td><td>7–90 kW</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="info-block">
+                    <h3>Design tips</h3>
+                    <ul>
+                        <li>Minimum wrap angle: α₁ ≥ 120° for reliable power transmission</li>
+                        <li>Belt speed: 5–30 m/s ideal; v_max = 50 m/s for narrow V-belts</li>
+                        <li>Centre distance: 0.7(d₁+d₂) … 2(d₁+d₂)</li>
+                        <li>Standard belt lengths per DIN 7753 — round calculated L to nearest standard</li>
+                        <li>Use multiple belts for high power — minimise z to reduce shaft load</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Notes on μ'</h3>
+                    <p>The effective friction coefficient μ' accounts for the wedge action of the V-groove: <code>μ' = μ / sin(β/2)</code> where β ≈ 40° groove angle, μ ≈ 0.35 rubber/cast iron.</p>
+                    <p>This gives μ' ≈ 0.35 / sin(20°) ≈ 1.02 — but in practice slip losses reduce effective μ' to 0.45–0.65. Use 0.51 as default.</p>
+                </div>
+            </div>
+        </details>
+    </main>
+
+    <footer>
+        <p>StrokeForge Engineering — reference tools for mechanical design</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    function fmt(v, dec) { return isFinite(v) && !isNaN(v) ? v.toFixed(dec) : '—'; }
+    function row(sym, val, unit, note, col) {
+        const s = col ? ` style="color:${col}"` : '';
+        return `<tr><td>${sym}</td><td${s}>${val}</td><td>${unit||''}</td><td>${note||''}</td></tr>`;
+    }
+    function secHead(t) {
+        return `<tr class="sec-head"><td colspan="4">${t}</td></tr>`;
+    }
+
+    function calc() {
+        const d1  = parseFloat(document.getElementById('d1').value) || 0;
+        const d2  = parseFloat(document.getElementById('d2').value) || 0;
+        const a   = parseFloat(document.getElementById('a').value)  || 0;
+        const n1  = parseFloat(document.getElementById('n1').value) || 0;
+        const P   = parseFloat(document.getElementById('P').value)  || 0;  // kW
+        const mu  = parseFloat(document.getElementById('mu').value) || 0.51;
+        const z   = parseInt(document.getElementById('z').value)    || 1;
+        const profVal  = document.getElementById('profile').value;
+        const [dmin_s, profName] = profVal.split(',');
+        const dmin = parseFloat(dmin_s);
+
+        // Geometry
+        const i    = d1 > 0 ? d2 / d1 : 0;
+        const n2   = n1 > 0 && i > 0 ? n1 / i : 0;
+        const v    = Math.PI * d1 * n1 / 60000;  // m/s  (d1 in mm, n1 in rpm)
+        // Belt length (open drive)
+        const L    = 2*a + Math.PI*(d1+d2)/2 + (d2-d1)**2/(4*a);
+        // Wrap angles
+        const sinA = (d2-d1)/(2*a);
+        const alpha1_rad = Math.PI - 2*Math.asin(Math.min(sinA, 0.999));
+        const alpha2_rad = Math.PI + 2*Math.asin(Math.min(sinA, 0.999));
+        const alpha1_deg = alpha1_rad * 180 / Math.PI;
+        const alpha2_deg = alpha2_rad * 180 / Math.PI;
+        // Free span
+        const e    = Math.sqrt(a*a - ((d2-d1)/2)**2);
+        const f_rec= 0.016 * e;
+
+        // Tensions
+        const Ptot = P * 1000;  // W total
+        const Pone = Ptot / z;  // per belt
+        const dF   = v > 0 ? Pone / v : 0;  // F1-F2 per belt
+        const emuA = Math.exp(mu * alpha1_rad);
+        const F2   = dF / (emuA - 1);
+        const F1   = F2 + dF;
+        const F0   = (F1 + F2) / 2;
+        // Shaft load (one belt)
+        const Fshaft_one = 2 * F0 * Math.sin(alpha1_rad / 2);
+        const Fshaft_tot = Fshaft_one * z;
+
+        // Warnings
+        const warnWrap  = alpha1_deg < 120;
+        const warnSpeed = v > 50;
+        const warnDmin  = d1 < dmin;
+        const warnCentre= a < 0.7*(d1+d2) || a > 2*(d1+d2);
+        const warnSlip  = F2 < 0;
+
+        // Build table
+        let html = '';
+        html += secHead('Kinematics');
+        html += row('i',          fmt(i,3),         '—',   'd₂ / d₁ = n₁ / n₂');
+        html += row('n₂',         fmt(n2,1),        'rpm', `n₁ / i = ${fmt(n1,0)} / ${fmt(i,3)}`);
+        html += row('v',          fmt(v,2),         'm/s', 'π·d₁·n₁ / 60 000', v > 50 ? '#f87171' : v > 30 ? '#fbbf24' : '#4ade80');
+
+        html += secHead('Belt geometry');
+        html += row('L',          fmt(L,0),         'mm',  '2a + π(d₁+d₂)/2 + (d₂−d₁)²/(4a)');
+        html += row('α₁',         fmt(alpha1_deg,1),'°',   'Wrap on small pulley', alpha1_deg < 120 ? '#f87171' : alpha1_deg < 150 ? '#fbbf24' : '#4ade80');
+        html += row('α₂',         fmt(alpha2_deg,1),'°',   'Wrap on large pulley');
+        html += row('e',          fmt(e,1),         'mm',  'Free span ≈ centre distance');
+        html += row('f_rec',      fmt(f_rec,1),     'mm',  '≈ 1.6% of free span (sag check)');
+
+        html += secHead('Tensions (per belt)');
+        html += row('F₁',         fmt(F1,1),        'N',   'Tight side');
+        html += row('F₂',         fmt(F2,1),        'N',   'Slack side', F2 < 0 ? '#f87171' : '');
+        html += row('F₁ − F₂',    fmt(dF,1),        'N',   'P·1000 / v');
+        html += row('F₀',         fmt(F0,1),        'N',   '(F₁+F₂)/2 — initial tension');
+        html += row('F_shaft (1)', fmt(Fshaft_one,1),'N',   '2·F₀·sin(α₁/2)  per belt');
+        html += row('F_shaft (z)', fmt(Fshaft_tot,1),'N',   `z = ${z} belts total shaft load`);
+
+        // Verdict / checks
+        html += `<tr><td colspan="4" style="padding-top:0.75rem;">`;
+        const allOk = !warnWrap && !warnSpeed && !warnDmin && !warnSlip;
+        const vClass = allOk ? 'pass' : (warnSlip ? 'fail' : 'warn');
+        const vText  = allOk ? '✓ PASS — all checks satisfied' : (warnSlip ? '✗ FAIL — belt slips (F₂ < 0)' : '⚠ WARN — see checks below');
+        html += `<span class="verdict ${vClass}">${vText}</span>`;
+        if (warnDmin)   html += `<div style="font-size:0.78rem;color:#f87171;margin-top:0.35rem;">✗ d₁ = ${d1} mm &lt; d₁_min = ${dmin} mm for profile ${profName}</div>`;
+        if (warnWrap)   html += `<div style="font-size:0.78rem;color:#f87171;margin-top:0.35rem;">✗ Wrap angle α₁ = ${fmt(alpha1_deg,1)}° &lt; 120° — slip risk. Increase centre distance or reduce ratio.</div>`;
+        if (warnSpeed)  html += `<div style="font-size:0.78rem;color:#f59e0b;margin-top:0.35rem;">⚠ Belt speed v = ${fmt(v,1)} m/s exceeds 50 m/s limit for narrow V-belts.</div>`;
+        if (warnCentre) html += `<div style="font-size:0.78rem;color:#f59e0b;margin-top:0.35rem;">⚠ Centre distance ${a} mm outside recommended range ${fmt(0.7*(d1+d2),0)}–${fmt(2*(d1+d2),0)} mm.</div>`;
+        html += `</td></tr>`;
+
+        document.getElementById('resBody').innerHTML = html;
+        drawDiagram(d1, d2, a, alpha1_deg, v, F1, F2, allOk);
+    }
+
+    // ─── SVG Diagram ─────────────────────────────────────────────────────────────
+    function drawDiagram(d1, d2, a, alpha1, v, F1, F2, allOk) {
+        const svg = document.getElementById('diagram');
+        svg.innerHTML = '';
+        const ns    = 'http://www.w3.org/2000/svg';
+        const orange='#f97316', gray='#9ca3af', light='#e5e7eb', blue='#60a5fa',
+              green='#4ade80', red='#f87171', yellow='#fbbf24';
+        const W=560, H=260;
+        const beltColor = allOk ? orange : (alpha1 < 120 ? red : yellow);
+
+        function ln(x1,y1,x2,y2,col,w,dash) {
+            const e=document.createElementNS(ns,'line');
+            e.setAttribute('x1',x1);e.setAttribute('y1',y1);e.setAttribute('x2',x2);e.setAttribute('y2',y2);
+            e.setAttribute('stroke',col||gray);e.setAttribute('stroke-width',w||1.5);
+            if(dash)e.setAttribute('stroke-dasharray',dash);svg.appendChild(e);
+        }
+        function circ(cx,cy,r,fill,stroke,sw) {
+            const e=document.createElementNS(ns,'circle');
+            e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('r',r);
+            e.setAttribute('fill',fill||'none');
+            if(stroke){e.setAttribute('stroke',stroke);e.setAttribute('stroke-width',sw||1.8);}
+            svg.appendChild(e);
+        }
+        function txt(x,y,t,col,size,anchor,weight) {
+            const e=document.createElementNS(ns,'text');
+            e.setAttribute('x',x);e.setAttribute('y',y);e.setAttribute('fill',col||light);
+            e.setAttribute('font-size',size||11);e.setAttribute('text-anchor',anchor||'middle');
+            e.setAttribute('dominant-baseline','middle');if(weight)e.setAttribute('font-weight',weight);
+            e.textContent=t;svg.appendChild(e);
+        }
+        function arrow(x1,y1,x2,y2,col,w) {
+            ln(x1,y1,x2,y2,col,w||2);
+            const angle=Math.atan2(y2-y1,x2-x1),s=8;
+            const p=document.createElementNS(ns,'polygon');
+            p.setAttribute('points',`${x2},${y2} ${x2-s*Math.cos(angle-0.4)},${y2-s*Math.sin(angle-0.4)} ${x2-s*Math.cos(angle+0.4)},${y2-s*Math.sin(angle+0.4)}`);
+            p.setAttribute('fill',col);svg.appendChild(p);
+        }
+
+        // Pulley positions — scale to fit diagram
+        const margin = 55;
+        const maxR   = Math.min(80, W * 0.15);
+        // Scale pulleys to fit within the SVG
+        const scale  = Math.min(maxR / (d2/2), (W - 2*margin) / (a + d1/2 + d2/2) );
+        const r1 = Math.max(d1/2 * scale, 12);
+        const r2 = Math.max(d2/2 * scale, 18);
+        const cx1 = margin + r1;
+        const cx2 = Math.min(W - margin - r2, cx1 + a * scale);
+        const cy  = H / 2;
+
+        // Belt tangent lines (open drive)
+        const dy  = (r2 - r1);
+        const dx  = cx2 - cx1;
+        const dist= Math.sqrt(dx*dx + dy*dy);
+        const sinT= dy / dist;
+        const cosT= dx / dist;
+        // Top belt: from top of small to top of large
+        const bx1T = cx1 - sinT * r1,  by1T = cy - cosT * r1;
+        const bx2T = cx2 - sinT * r2,  by2T = cy - cosT * r2;
+        // Bottom belt
+        const bx1B = cx1 + sinT * r1,  by1B = cy + cosT * r1;
+        const bx2B = cx2 + sinT * r2,  by2B = cy + cosT * r2;
+
+        // Belt lines (tight side = top, slack = bottom conventionally for driver rotating CW)
+        ln(bx1T, by1T, bx2T, by2T, beltColor, 3);
+        ln(bx1B, by1B, bx2B, by2B, beltColor, 1.5, '4,3');
+
+        // Pulleys
+        circ(cx1, cy, r1, 'rgba(30,30,30,0.8)', orange, 2);
+        circ(cx1, cy, r1*0.35, 'rgba(249,115,22,0.15)', orange, 1);
+        circ(cx2, cy, r2, 'rgba(30,30,30,0.8)', '#9ca3af', 2);
+        circ(cx2, cy, r2*0.35, 'rgba(100,116,139,0.15)', '#9ca3af', 1);
+
+        // Rotation arrows
+        const arcA = document.createElementNS(ns,'path');
+        arcA.setAttribute('d',`M ${cx1+r1*0.6},${cy-r1*0.6} A ${r1*0.6} ${r1*0.6} 0 0 1 ${cx1-r1*0.6},${cy-r1*0.6}`);
+        arcA.setAttribute('stroke',orange);arcA.setAttribute('fill','none');arcA.setAttribute('stroke-width','1.5');
+        svg.appendChild(arcA);
+        arrow(cx1-r1*0.6,cy-r1*0.6,cx1-r1*0.6,cy-r1*0.6+1,orange,1.5);
+
+        // Labels
+        txt(cx1, cy, `d₁=${d1}`, orange, 9);
+        txt(cx2, cy, `d₂=${d2}`, gray, 9);
+        txt(cx1, cy+r1+16, `n₁=${(document.getElementById('n1').value||'—')} rpm`, orange, 8.5);
+
+        // Centre distance dimension
+        ln(cx1, cy+Math.max(r1,r2)+24, cx2, cy+Math.max(r1,r2)+24, gray, 1);
+        ln(cx1, cy+Math.max(r1,r2)+18, cx1, cy+Math.max(r1,r2)+30, gray, 1);
+        ln(cx2, cy+Math.max(r1,r2)+18, cx2, cy+Math.max(r1,r2)+30, gray, 1);
+        txt((cx1+cx2)/2, cy+Math.max(r1,r2)+38, `a = ${document.getElementById('a').value||'—'} mm`, gray, 9);
+
+        // Tension labels
+        const midTx = (bx1T+bx2T)/2, midTy = (by1T+by2T)/2;
+        const midBx = (bx1B+bx2B)/2, midBy = (by1B+by2B)/2;
+        txt(midTx, midTy-10, `F₁ = ${isFinite(F1)?F1.toFixed(0):'—'} N (tight)`, beltColor, 8.5);
+        txt(midBx, midBy+12, `F₂ = ${isFinite(F2)?F2.toFixed(0):'—'} N (slack)`, gray, 8.5);
+
+        // Wrap angle arc indicator on small pulley
+        const angHalf = (Math.PI - alpha1 * Math.PI/180) / 2;
+        const arcR = r1 + 8;
+        const axS = cx1 + arcR * Math.cos(Math.PI - angHalf);
+        const ayS = cy  - arcR * Math.sin(Math.PI - angHalf);
+        const axE = cx1 + arcR * Math.cos(Math.PI + angHalf);
+        const ayE = cy  + arcR * Math.sin(Math.PI + angHalf);
+        const arcEl = document.createElementNS(ns,'path');
+        arcEl.setAttribute('d',`M ${axS},${ayS} A ${arcR} ${arcR} 0 ${alpha1>180?1:0} 0 ${axE},${ayE}`);
+        arcEl.setAttribute('stroke',alpha1<120?red:blue);arcEl.setAttribute('fill','none');
+        arcEl.setAttribute('stroke-width','1.5');arcEl.setAttribute('stroke-dasharray','3,2');
+        svg.appendChild(arcEl);
+        txt(cx1 - arcR - 18, cy, `α₁=${alpha1.toFixed(1)}°`, alpha1<120?red:blue, 8.5, 'end');
+
+        // Belt speed + profile label top
+        const profName = document.getElementById('profile').value.split(',')[1];
+        txt(W/2, 14, `${profName} profile  ·  v = ${isFinite(v)?v.toFixed(2):'—'} m/s`, gray, 9);
+
+        // Legend
+        ln(10, H-14, 30, H-14, beltColor, 3);
+        txt(34, H-14, 'Tight side (F₁)', gray, 9, 'start');
+        ln(160, H-14, 180, H-14, beltColor, 1.5, '4,3');
+        txt(184, H-14, 'Slack side (F₂)', gray, 9, 'start');
+    }
+
+    calc();
+    </script>
+</body>
+</html>

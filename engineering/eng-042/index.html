@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spur Gear Geometry Calculator — ISO 21771 | StrokeForge Engineering</title>
+    <meta name="description" content="Spur gear basic geometry calculator per ISO 21771. Pitch diameter, tip/root/base diameters, centre distance, contact ratio. Standard and profile-shifted gears.">
+    <meta name="keywords" content="spur gear calculator, gear geometry, ozubená kola, modul, roztečný průměr, ISO 21771, profile shift, addendum, contact ratio">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-042/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 960px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Mode toggle */
+        .mode-bar { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+        .mode-btn { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.4rem 1.1rem; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+        .mode-btn.active { background: var(--primary-orange); border-color: var(--primary-orange); color: #000; font-weight: 700; }
+
+        .input-grid   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        .input-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .input-grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 640px) { .input-grid { grid-template-columns: 1fr 1fr; } .input-grid-4 { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 400px) { .input-grid { grid-template-columns: 1fr; } .input-grid-2 { grid-template-columns: 1fr; } }
+
+        .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; min-width: 0; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; flex-shrink: 0; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        /* Side layout: inputs | SVG */
+        .side-layout { display: grid; grid-template-columns: 1fr 200px; gap: 2rem; align-items: start; }
+        @media (max-width: 620px) { .side-layout { grid-template-columns: 1fr; } }
+
+        /* Results table */
+        .res-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .res-table th { padding: 0.5rem 0.9rem; text-align: left; color: var(--text-gray); border-bottom: 1px solid var(--border-gray); font-size: 0.75rem; font-weight: 600; }
+        .res-table td { padding: 0.55rem 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .res-table td:first-child  { color: var(--primary-orange); font-weight: 600; font-family: monospace; width: 130px; }
+        .res-table td:nth-child(2) { color: var(--light-gray); font-weight: 700; font-size: 0.95rem; }
+        .res-table td:nth-child(3) { color: var(--text-gray); font-size: 0.8rem; width: 60px; }
+        .res-table td:nth-child(4) { color: var(--text-gray); font-size: 0.78rem; font-family: monospace; }
+        .res-table tr:last-child td { border-bottom: none; }
+        .res-table .sec-head td { color: var(--text-gray); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border-gray); }
+
+        /* Two-column results split for gear 1 / gear 2 */
+        .gear-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        @media (max-width: 560px) { .gear-cols { grid-template-columns: 1fr; } }
+
+        /* Utilisation bar */
+        .bar-wrap   { margin: 0.5rem 0 0; }
+        .bar-track  { height: 10px; background: var(--darker-bg); border-radius: 99px; overflow: hidden; }
+        .bar-fill   { height: 100%; border-radius: 99px; transition: width 0.4s, background 0.4s; }
+        .bar-label  { font-size: 0.78rem; color: var(--text-gray); margin-top: 0.35rem; display: flex; justify-content: space-between; }
+
+        /* Verdict */
+        .verdict { display: inline-block; padding: 0.3rem 1rem; border-radius: 6px; font-size: 0.88rem; font-weight: 700; margin-top: 0.5rem; }
+        .verdict.pass { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+        .verdict.fail { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+        .verdict.warn { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.82rem; color: var(--text-gray); line-height: 1.7; }
+        .info-block ul { padding-left: 1.2rem; margin: 0; }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.82rem; line-height: 2.0; display: block; margin-top: 0.4rem; }
+
+        /* Gear legend */
+        .legend { display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; margin-top: 0.75rem; }
+        .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: var(--text-gray); }
+        .legend-dot { width: 18px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+        .legend-dot.dash { background: none; border-top: 2px dashed; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Spur Gear Geometry Calculator</h1>
+        <p>Pitch · tip · root · base diameters · centre distance · contact ratio · per ISO 21771</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- INPUT -->
+        <div class="card">
+            <h2>Gear parameters</h2>
+
+            <div class="mode-bar">
+                <button class="mode-btn active" id="btnStd" onclick="setMode('std')">Standard (x = 0)</button>
+                <button class="mode-btn" id="btnShift" onclick="setMode('shift')">Profile Shift</button>
+            </div>
+
+            <div class="side-layout">
+                <div>
+                    <!-- Common inputs -->
+                    <div class="input-grid" style="margin-bottom:1rem;">
+                        <div class="field">
+                            <label>Module <i>m</i></label>
+                            <div class="field-row">
+                                <select id="modSel" class="sel" onchange="onModChange()">
+                                    <option value="1">1</option>
+                                    <option value="1.25">1.25</option>
+                                    <option value="1.5">1.5</option>
+                                    <option value="2" selected>2</option>
+                                    <option value="2.5">2.5</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="8">8</option>
+                                    <option value="10">10</option>
+                                    <option value="12">12</option>
+                                    <option value="16">16</option>
+                                    <option value="20">20</option>
+                                    <option value="custom">Custom</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field" id="mCustomField" style="display:none;">
+                            <label>Custom module <i>m</i></label>
+                            <div class="field-row">
+                                <input type="number" id="mCustom" class="inp" value="2" min="0.1" step="0.1" oninput="calc()">
+                                <span class="unit">mm</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Pressure angle <i>α</i></label>
+                            <div class="field-row">
+                                <select id="alphaSel" class="sel" onchange="calc()">
+                                    <option value="20" selected>20°  (standard)</option>
+                                    <option value="14.5">14.5°</option>
+                                    <option value="25">25°</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Face width <i>b</i></label>
+                            <div class="field-row">
+                                <input type="number" id="bfw" class="inp" value="20" min="1" step="1" oninput="calc()">
+                                <span class="unit">mm</span>
+                            </div>
+                            <span class="hint">For b/m ratio check only</span>
+                        </div>
+                    </div>
+
+                    <div class="input-grid-2" style="margin-bottom:1rem;">
+                        <div class="field">
+                            <label>Tooth count <i>z</i><sub>1</sub> (pinion)</label>
+                            <div class="field-row">
+                                <input type="number" id="z1" class="inp" value="18" min="5" step="1" oninput="calc()">
+                                <span class="unit">—</span>
+                            </div>
+                            <span class="hint">Recommended z₁ ≥ 17 (α = 20°)</span>
+                        </div>
+                        <div class="field">
+                            <label>Tooth count <i>z</i><sub>2</sub> (wheel)</label>
+                            <div class="field-row">
+                                <input type="number" id="z2" class="inp" value="36" min="5" step="1" oninput="calc()">
+                                <span class="unit">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile shift row (hidden in std mode) -->
+                    <div id="shiftRow" style="display:none;">
+                        <div class="input-grid-2" style="margin-bottom:1rem;">
+                            <div class="field">
+                                <label>Profile shift <i>x</i><sub>1</sub> (pinion)</label>
+                                <div class="field-row">
+                                    <input type="number" id="x1" class="inp" value="0.2" min="-1" max="1.5" step="0.05" oninput="calc()">
+                                    <span class="unit">—</span>
+                                </div>
+                                <span class="hint">Typical: 0…+0.6</span>
+                            </div>
+                            <div class="field">
+                                <label>Profile shift <i>x</i><sub>2</sub> (wheel)</label>
+                                <div class="field-row">
+                                    <input type="number" id="x2" class="inp" value="-0.1" min="-1" max="1.5" step="0.05" oninput="calc()">
+                                    <span class="unit">—</span>
+                                </div>
+                                <span class="hint">Can be negative for backlash</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gear diagram SVG -->
+                <svg id="gearSvg" width="200" height="200" viewBox="0 0 200 200"></svg>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card">
+            <h2>Results</h2>
+            <div class="gear-cols">
+                <div>
+                    <table class="res-table">
+                        <thead><tr><th>Parameter</th><th>Value</th><th>Unit</th><th>Formula</th></tr></thead>
+                        <tbody id="resBody1"></tbody>
+                    </table>
+                </div>
+                <div>
+                    <table class="res-table">
+                        <thead><tr><th>Parameter</th><th>Value</th><th>Unit</th><th>Formula</th></tr></thead>
+                        <tbody id="resBody2"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pair results + checks -->
+            <div style="margin-top:1.5rem;">
+                <table class="res-table">
+                    <thead><tr><th>Gear pair</th><th>Value</th><th>Unit</th><th>Formula / note</th></tr></thead>
+                    <tbody id="resBodyPair"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+            <h2>Formulas &amp; design notes</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Basic diameters</h3>
+                    <span class="mono">d  = m · z  (pitch circle)<br>da = m · (z + 2 + 2x)  (tip)<br>df = m · (z − 2.5 + 2x)  (root)<br>db = d · cos α  (base)</span>
+                </div>
+                <div class="info-block">
+                    <h3>Centre distance</h3>
+                    <span class="mono">a  = m·(z₁+z₂)/2  (standard)<br>a' = m·(z₁+z₂)/2 · cosα/cosα'<br>inv(α') = inv(α) + 2(x₁+x₂)·tanα / (z₁+z₂)<br>inv(φ) = tan(φ) − φ  [rad]</span>
+                </div>
+                <div class="info-block">
+                    <h3>Contact ratio</h3>
+                    <span class="mono">εα = (√(da1²−db1²) + √(da2²−db2²) − 2a'sinα') / (2π·m·cosα)</span>
+                    <p>εα ≥ 1.0 required; εα ≥ 1.2 recommended for smooth running.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Undercut &amp; profile shift</h3>
+                    <span class="mono">z_min = 2 / sin²α ≈ 17  (α=20°)<br>x_min = 1 − z·sin²α/2</span>
+                    <p>Positive x increases tip and root diameter, shifts tooth toward tip — avoids undercut on small pinions.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Circular &amp; base pitch</h3>
+                    <span class="mono">p  = π · m  (circular pitch)<br>pb = p · cos α  (base pitch)</span>
+                    <p>Base pitch must be equal for both gears — automatically satisfied when module and pressure angle are shared.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Design recommendations</h3>
+                    <ul>
+                        <li>Gear ratio i = z₂/z₁ ≤ 5…6 for single stage</li>
+                        <li>Face width b = (6…12)·m typical</li>
+                        <li>z₁ ≥ 17 avoids undercut at α = 20° without profile shift</li>
+                        <li>Contact ratio εα ≥ 1.2 for quiet running</li>
+                        <li>Tip clearance c* = 0.25·m (standard)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>StrokeForge Engineering — reference tools for mechanical design</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ─── MODE ─────────────────────────────────────────────────────────────────────
+    let mode = 'std';
+    function setMode(m) {
+        mode = m;
+        document.getElementById('btnStd').classList.toggle('active', m === 'std');
+        document.getElementById('btnShift').classList.toggle('active', m === 'shift');
+        document.getElementById('shiftRow').style.display = m === 'shift' ? '' : 'none';
+        calc();
+    }
+
+    function onModChange() {
+        const v = document.getElementById('modSel').value;
+        document.getElementById('mCustomField').style.display = v === 'custom' ? '' : 'none';
+        calc();
+    }
+
+    function getM() {
+        const v = document.getElementById('modSel').value;
+        if (v === 'custom') return parseFloat(document.getElementById('mCustom').value) || 2;
+        return parseFloat(v) || 2;
+    }
+
+    // ─── INV FUNCTION & SOLVER ────────────────────────────────────────────────────
+    function inv(phi) { return Math.tan(phi) - phi; }
+
+    // Solve α' from inv(α') = target using Newton-Raphson
+    function solveInvAlpha(target, alpha0) {
+        let a = alpha0;
+        for (let i = 0; i < 50; i++) {
+            const fi = inv(a) - target;
+            const dfi = Math.tan(a) * Math.tan(a); // d/dα [tan(α) − α] = tan²(α)
+            const da = fi / dfi;
+            a -= da;
+            if (Math.abs(da) < 1e-12) break;
+        }
+        return a;
+    }
+
+    // ─── HELPERS ──────────────────────────────────────────────────────────────────
+    function fmt(v, dec) { return isFinite(v) ? v.toFixed(dec) : '—'; }
+    function row(sym, val, unit, note, col) {
+        const cs = col ? ` style="color:${col}"` : '';
+        return `<tr><td>${sym}</td><td${cs}>${val}</td><td>${unit||''}</td><td>${note||''}</td></tr>`;
+    }
+    function secHead(title) {
+        return `<tr class="sec-head"><td colspan="4">${title}</td></tr>`;
+    }
+
+    // ─── MAIN CALC ────────────────────────────────────────────────────────────────
+    function calc() {
+        const m  = getM();
+        const z1 = Math.max(5, Math.round(parseFloat(document.getElementById('z1').value) || 18));
+        const z2 = Math.max(5, Math.round(parseFloat(document.getElementById('z2').value) || 36));
+        const alphaDeg = parseFloat(document.getElementById('alphaSel').value) || 20;
+        const alpha = alphaDeg * Math.PI / 180;
+        const bfw = parseFloat(document.getElementById('bfw').value) || 20;
+        const x1 = mode === 'shift' ? (parseFloat(document.getElementById('x1').value) || 0) : 0;
+        const x2 = mode === 'shift' ? (parseFloat(document.getElementById('x2').value) || 0) : 0;
+
+        // --- Pitch diameters ---
+        const d1 = m * z1;
+        const d2 = m * z2;
+
+        // --- Tip / root diameters ---
+        const da1 = m * (z1 + 2 + 2 * x1);
+        const da2 = m * (z2 + 2 + 2 * x2);
+        const df1 = m * (z1 - 2.5 + 2 * x1);
+        const df2 = m * (z2 - 2.5 + 2 * x2);
+
+        // --- Base circle diameters ---
+        const db1 = d1 * Math.cos(alpha);
+        const db2 = d2 * Math.cos(alpha);
+
+        // --- Addendum / dedendum ---
+        const ha1 = m * (1 + x1);
+        const ha2 = m * (1 + x2);
+        const hf1 = m * (1.25 - x1);
+        const hf2 = m * (1.25 - x2);
+        const h1  = ha1 + hf1;
+        const h2  = ha2 + hf2;
+
+        // --- Circular pitch ---
+        const p  = Math.PI * m;
+        const pb = p * Math.cos(alpha);
+
+        // --- Gear ratio ---
+        const i = z2 / z1;
+
+        // --- Working pressure angle (with profile shift) ---
+        const xSum = x1 + x2;
+        const invAlpha0 = inv(alpha);
+        const invAlphaPrime = invAlpha0 + 2 * xSum * Math.tan(alpha) / (z1 + z2);
+        let alphaPrime;
+        try {
+            alphaPrime = solveInvAlpha(invAlphaPrime, alpha);
+        } catch(e) {
+            alphaPrime = alpha;
+        }
+        const alphaPrimeDeg = alphaPrime * 180 / Math.PI;
+
+        // --- Standard and working centre distance ---
+        const a_std  = m * (z1 + z2) / 2;
+        const a_work = m * (z1 + z2) / 2 * Math.cos(alpha) / Math.cos(alphaPrime);
+
+        // --- Contact ratio ---
+        const r1 = d1 / 2, r2 = d2 / 2;
+        const ra1 = da1 / 2, ra2 = da2 / 2;
+        const rb1 = db1 / 2, rb2 = db2 / 2;
+        let eps;
+        try {
+            eps = (Math.sqrt(ra1*ra1 - rb1*rb1) + Math.sqrt(ra2*ra2 - rb2*rb2) - 2*a_work*Math.sin(alphaPrime))
+                   / (2 * Math.PI * m * Math.cos(alpha));
+        } catch(e) { eps = NaN; }
+
+        // --- Undercut check ---
+        const z_min = 2 / (Math.sin(alpha) * Math.sin(alpha));
+        const x_min1 = Math.max(0, 1 - z1 * Math.sin(alpha) * Math.sin(alpha) / 2);
+        const x_min2 = Math.max(0, 1 - z2 * Math.sin(alpha) * Math.sin(alpha) / 2);
+        const undercut1 = x1 < x_min1;
+        const undercut2 = x2 < x_min2;
+
+        // --- b/m ratio ---
+        const bm = bfw / m;
+
+        // ─── BUILD RESULT TABLES ──────────────────────────────────────────────
+        let h1html = '';
+        h1html += secHead('Gear 1 — Pinion (z₁ = ' + z1 + ')');
+        h1html += row('d₁',  fmt(d1, 3),  'mm', 'm·z₁');
+        h1html += row('da₁', fmt(da1,3),  'mm', 'm·(z₁+2+2x₁)');
+        h1html += row('df₁', fmt(df1,3),  'mm', 'm·(z₁−2.5+2x₁)');
+        h1html += row('db₁', fmt(db1,3),  'mm', 'd₁·cosα');
+        h1html += row('ha₁', fmt(ha1,3),  'mm', 'm·(1+x₁)');
+        h1html += row('hf₁', fmt(hf1,3),  'mm', 'm·(1.25−x₁)');
+        h1html += row('h₁',  fmt(h1, 3),  'mm', 'ha₁+hf₁');
+        if (mode === 'shift') h1html += row('x₁', fmt(x1,3), '—', 'Profile shift coeff.');
+        if (undercut1 && x1 < x_min1) {
+            h1html += `<tr><td colspan="4" style="color:#f59e0b;font-size:0.78rem;padding:0.4rem 0.9rem;">⚠ Undercut risk — x₁ ≥ ${fmt(x_min1,3)} recommended</td></tr>`;
+        }
+
+        let h2html = '';
+        h2html += secHead('Gear 2 — Wheel (z₂ = ' + z2 + ')');
+        h2html += row('d₂',  fmt(d2, 3),  'mm', 'm·z₂');
+        h2html += row('da₂', fmt(da2,3),  'mm', 'm·(z₂+2+2x₂)');
+        h2html += row('df₂', fmt(df2,3),  'mm', 'm·(z₂−2.5+2x₂)');
+        h2html += row('db₂', fmt(db2,3),  'mm', 'd₂·cosα');
+        h2html += row('ha₂', fmt(ha2,3),  'mm', 'm·(1+x₂)');
+        h2html += row('hf₂', fmt(hf2,3),  'mm', 'm·(1.25−x₂)');
+        h2html += row('h₂',  fmt(h2, 3),  'mm', 'ha₂+hf₂');
+        if (mode === 'shift') h2html += row('x₂', fmt(x2,3), '—', 'Profile shift coeff.');
+        if (undercut2 && x2 < x_min2) {
+            h2html += `<tr><td colspan="4" style="color:#f59e0b;font-size:0.78rem;padding:0.4rem 0.9rem;">⚠ Undercut risk — x₂ ≥ ${fmt(x_min2,3)} recommended</td></tr>`;
+        }
+
+        let hPair = '';
+        hPair += secHead('Gear pair');
+        hPair += row('m',   fmt(m, 3),         'mm', 'Module');
+        hPair += row('α',   fmt(alphaDeg, 1),   '°',  'Reference pressure angle');
+        if (mode === 'shift') {
+            hPair += row('α\'', fmt(alphaPrimeDeg,3), '°', 'Working pressure angle');
+        }
+        hPair += row('i',   fmt(i, 3),          '—',  'z₂/z₁');
+        hPair += row('p',   fmt(p, 3),          'mm', 'π·m  (circular pitch)');
+        hPair += row('pb',  fmt(pb, 3),         'mm', 'p·cosα  (base pitch)');
+        hPair += row('a',   fmt(a_std, 3),      'mm', 'm·(z₁+z₂)/2  (standard)');
+        if (mode === 'shift' && Math.abs(xSum) > 0.001) {
+            hPair += row('a\'', fmt(a_work, 3), 'mm', 'Working centre distance');
+        }
+        hPair += row('b/m', fmt(bm, 1),         '—',  'Face width ratio (rec. 6…12)');
+
+        // Contact ratio bar + verdict
+        const epsPct = eps / 1.2 * 100;
+        const barColor = eps < 1.0 ? '#f87171' : eps < 1.2 ? '#f59e0b' : '#4ade80';
+        const vClass   = eps < 1.0 ? 'fail' : eps < 1.2 ? 'warn' : 'pass';
+        const vText    = eps < 1.0 ? '✗ FAIL — contact ratio < 1.0 (no continuous contact)'
+                       : eps < 1.2 ? '⚠ WARN — εα < 1.2 (rough running)'
+                       : '✓ PASS';
+
+        hPair += `<tr><td colspan="4" style="padding-top:0.75rem;">
+            <div style="font-size:0.82rem;color:var(--text-gray);margin-bottom:0.3rem;">Contact ratio &nbsp;<strong style="color:var(--light-gray);">εα = ${fmt(eps,3)}</strong></div>
+            <div class="bar-wrap">
+                <div class="bar-track"><div class="bar-fill" style="width:${Math.min(eps/2*100,100)}%;background:${barColor};"></div></div>
+                <div class="bar-label"><span>0</span><span>εα = 1.0</span><span>2.0</span></div>
+            </div>
+            <span class="verdict ${vClass}">${vText}</span>`;
+
+        // Additional warnings
+        const bmOk = bm >= 6 && bm <= 12;
+        if (!bmOk) hPair += `<div style="font-size:0.78rem;color:#f59e0b;margin-top:0.4rem;">⚠ b/m = ${fmt(bm,1)} — recommended range 6…12</div>`;
+        if (i > 6)  hPair += `<div style="font-size:0.78rem;color:#f59e0b;margin-top:0.4rem;">⚠ Gear ratio i = ${fmt(i,2)} > 6 — consider two-stage drive</div>`;
+        hPair += `</td></tr>`;
+
+        document.getElementById('resBody1').innerHTML = h1html;
+        document.getElementById('resBody2').innerHTML = h2html;
+        document.getElementById('resBodyPair').innerHTML = hPair;
+
+        drawGears(d1, d2, da1, da2, df1, df2, db1, db2, a_work, eps);
+    }
+
+    // ─── SVG GEAR DIAGRAM ─────────────────────────────────────────────────────────
+    function drawGears(d1, d2, da1, da2, df1, df2, db1, db2, a, eps) {
+        const svg = document.getElementById('gearSvg');
+        const ns  = 'http://www.w3.org/2000/svg';
+        svg.innerHTML = '';
+        const W = 200, H = 200;
+
+        // Scale: fit both gears (max radius = ra1 + a + ra2 = a + ra2 in worst case; centre-to-centre = a)
+        const ra1 = da1 / 2, ra2 = da2 / 2;
+        const maxSpan = (ra1 + a + ra2) * 1.05;
+        const scale = Math.min(W, H) / maxSpan;
+
+        // Centres: place gear1 left, gear2 right, both centred vertically
+        const cy = H / 2;
+        const cx1 = W / 2 - (a / 2) * scale;
+        const cx2 = W / 2 + (a / 2) * scale;
+
+        function circle(cx, cy, r, col, sw, dash) {
+            if (r * scale < 1) return;
+            const e = document.createElementNS(ns, 'circle');
+            e.setAttribute('cx', cx); e.setAttribute('cy', cy);
+            e.setAttribute('r', r * scale);
+            e.setAttribute('fill', 'none');
+            e.setAttribute('stroke', col);
+            e.setAttribute('stroke-width', sw || 1.5);
+            if (dash) e.setAttribute('stroke-dasharray', dash);
+            svg.appendChild(e);
+        }
+        function ln(x1,y1,x2,y2,col,sw,dash) {
+            const e = document.createElementNS(ns,'line');
+            e.setAttribute('x1',x1);e.setAttribute('y1',y1);e.setAttribute('x2',x2);e.setAttribute('y2',y2);
+            e.setAttribute('stroke',col);e.setAttribute('stroke-width',sw||1);
+            if(dash) e.setAttribute('stroke-dasharray',dash);
+            svg.appendChild(e);
+        }
+        function txt(x,y,t,col,size,anchor) {
+            const e = document.createElementNS(ns,'text');
+            e.setAttribute('x',x);e.setAttribute('y',y);e.setAttribute('fill',col||'#9ca3af');
+            e.setAttribute('font-size',size||9);e.setAttribute('text-anchor',anchor||'middle');
+            e.setAttribute('dominant-baseline','middle');e.textContent=t;svg.appendChild(e);
+        }
+
+        const orange = '#f97316', gray = '#6b7280', blue = '#60a5fa', green = '#4ade80';
+
+        // Centre distance dimension line (bottom)
+        const dimY = cy + Math.max(ra1, ra2) * scale + 12;
+        ln(cx1, dimY, cx2, dimY, gray, 1);
+        ln(cx1, dimY-4, cx1, dimY+4, gray, 1);
+        ln(cx2, dimY-4, cx2, dimY+4, gray, 1);
+        txt((cx1+cx2)/2, dimY+8, `a = ${a.toFixed(2)} mm`, gray, 8);
+
+        // Root circles (dark fill hint)
+        circle(cx1, cy, df1/2, '#374151', 1, '3,2');
+        circle(cx2, cy, df2/2, '#374151', 1, '3,2');
+
+        // Base circles (subtle)
+        circle(cx1, cy, db1/2, '#4b5563', 1, '2,3');
+        circle(cx2, cy, db2/2, '#4b5563', 1, '2,3');
+
+        // Pitch circles (solid orange)
+        circle(cx1, cy, d1/2, orange, 1.8);
+        circle(cx2, cy, d2/2, orange, 1.8);
+
+        // Tip circles (light)
+        circle(cx1, cy, da1/2, '#9ca3af', 1.2);
+        circle(cx2, cy, da2/2, '#9ca3af', 1.2);
+
+        // Pitch point marker
+        const ppX = cx1 + (d1/2) * scale;
+        const ppR = 3;
+        const pp = document.createElementNS(ns,'circle');
+        pp.setAttribute('cx',ppX);pp.setAttribute('cy',cy);pp.setAttribute('r',ppR);
+        pp.setAttribute('fill',green);svg.appendChild(pp);
+
+        // Centre line (horizontal)
+        ln(cx1 - ra1*scale - 4, cy, cx2 + ra2*scale + 4, cy, '#374151', 0.8, '4,3');
+
+        // Labels
+        txt(cx1, cy, `z₁=${Math.round(d1/getM())}`, '#e5e7eb', 8);
+        txt(cx2, cy, `z₂=${Math.round(d2/getM())}`, '#e5e7eb', 8);
+
+        // εα indicator top-right corner
+        const epCol = eps < 1.0 ? '#f87171' : eps < 1.2 ? '#fbbf24' : '#4ade80';
+        txt(W-4, 12, `εα=${eps.toFixed(2)}`, epCol, 9, 'end');
+    }
+
+    // Initial render
+    calc();
+    </script>
+</body>
+</html>

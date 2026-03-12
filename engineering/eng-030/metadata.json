@@ -1,0 +1,9 @@
+{
+  "id": "eng-030",
+  "title": "GD&T Geometric Tolerances",
+  "description": "Quick reference for geometric tolerances per ISO 1101 / ASME Y14.5. All 14 symbols with SVG icons, descriptions, tolerance frame structure, and examples for form, orientation, location and runout.",
+  "category": "reference",
+  "icon": "📐",
+  "difficulty": "intermediate",
+  "topic": "konstruovani"
+}

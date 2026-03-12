@@ -1,0 +1,9 @@
+{
+  "id": "eng-041",
+  "title": "Chain Drive Calculator",
+  "description": "Chain drive calculator: transmission ratio, pitch diameters, chain length in links, actual centre distance, wrap angle and polygonal effect. Supports all standard ISO 606 pitches.",
+  "category": "machine-elements",
+  "icon": "🔗",
+  "difficulty": "intermediate",
+  "topic": "prevody"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "eng-040",
+  "title": "V-Belt Drive Calculator",
+  "description": "V-belt drive calculator: transmission ratio, belt speed, belt length, wrap angles, tight/slack side tensions, shaft load and belt sag. Supports SPZ, SPA, SPB, SPC profiles.",
+  "category": "machine-elements",
+  "icon": "⚙️",
+  "difficulty": "intermediate",
+  "topic": "prevody"
+}

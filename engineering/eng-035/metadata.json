@@ -1,0 +1,9 @@
+{
+  "id": "eng-035",
+  "title": "Fixed-Fixed Beam Calculator",
+  "description": "Fixed beam reactions, fixing moments MA/MB, max deflection and M-diagram for UDL, central point load or eccentric point load. Full bending moment diagram in SVG.",
+  "category": "beams",
+  "icon": "🏗️",
+  "difficulty": "intermediate",
+  "topic": "pruznost-pevnost"
+}

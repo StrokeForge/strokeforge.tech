@@ -1,0 +1,9 @@
+{
+  "id": "eng-042",
+  "title": "Spur Gear Geometry Calculator",
+  "description": "Spur gear basic geometry per ISO 21771. Pitch, tip and root diameters, base circle, centre distance, contact ratio. Supports standard and profile-shifted gears.",
+  "category": "machine-elements",
+  "icon": "⚙️",
+  "difficulty": "intermediate",
+  "topic": "prevody"
+}

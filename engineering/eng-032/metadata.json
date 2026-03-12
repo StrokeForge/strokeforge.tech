@@ -1,0 +1,9 @@
+{
+  "id": "eng-032",
+  "title": "Butt Weld Calculator (EC3)",
+  "description": "Full penetration butt weld strength check per ČSN EN 1993-1-8. Enter plate thickness, weld length and load type to verify design resistance in tension, compression or bending.",
+  "category": "joints",
+  "icon": "🔗",
+  "difficulty": "intermediate",
+  "topic": "svarove-spoje"
+}

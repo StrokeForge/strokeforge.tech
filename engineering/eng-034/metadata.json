@@ -1,0 +1,9 @@
+{
+  "id": "eng-034",
+  "title": "Buckling Stability (Euler)",
+  "description": "Euler column buckling calculator. All four boundary conditions (cases I–IV), common cross-sections, slenderness λ, critical force Fcr and PASS/FAIL assessment.",
+  "category": "beams",
+  "icon": "📏",
+  "difficulty": "intermediate",
+  "topic": "pruznost-pevnost"
+}

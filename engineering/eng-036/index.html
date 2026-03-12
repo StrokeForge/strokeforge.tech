@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shear Stress Calculator | StrokeForge Engineering</title>
+    <meta name="description" content="Shear stress τ calculator with distribution diagram across cross-section. Rectangle, circle, hollow circle and I-profile. τ_max, τ_avg, shape factor and PASS/FAIL check.">
+    <meta name="keywords" content="shear stress calculator, smykové napětí, τ distribution, I-profile shear, rectangle shear, výpočet na smyk, posouvající síla">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-036/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+.tool-wrap { max-width: 900px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .mode-toggle { display: flex; gap: 0; border: 1px solid var(--border-gray); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem; }
+        .mode-btn { flex: 1; padding: 0.65rem 0.4rem; background: none; border: none; color: var(--text-gray); cursor: pointer; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; text-align: center; border-right: 1px solid var(--border-gray); }
+        .mode-btn:last-child { border-right: none; }
+        .mode-btn.active { background: var(--primary-orange); color: #000; }
+        .mode-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .input-grid { grid-template-columns: 1fr 1fr; } }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); }
+
+        .section-panel { display: none; }
+        .section-panel.active { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+        @media (max-width: 600px) { .section-panel.active { grid-template-columns: 1fr 1fr; } }
+
+        .result-verdict { border-radius: 10px; padding: 1.1rem 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
+        .result-verdict.pass { background: rgba(74,222,128,0.1); border: 2px solid #4ade80; }
+        .result-verdict.fail { background: rgba(248,113,113,0.1); border: 2px solid #f87171; }
+        .result-verdict.na   { background: rgba(100,116,139,0.1); border: 2px solid var(--border-gray); }
+        .verdict-icon { font-size: 2rem; }
+        .verdict-text { font-size: 1.1rem; font-weight: 700; }
+        .verdict-sub  { font-size: 0.82rem; color: var(--text-gray); margin-top: 0.2rem; }
+
+        .res-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        @media (max-width: 520px) { .res-grid { grid-template-columns: 1fr 1fr; } }
+        .res-cell { background: var(--darker-bg); border-radius: 8px; padding: 0.85rem 1rem; }
+        .res-cell .lbl { font-size: 0.7rem; color: var(--text-gray); margin-bottom: 0.2rem; }
+        .res-cell .val { font-size: 1.05rem; font-weight: 700; color: var(--light-gray); font-variant-numeric: tabular-nums; }
+        .res-cell .val.orange { color: var(--primary-orange); }
+        .res-cell .val.green  { color: #4ade80; }
+        .res-cell .val.red    { color: #f87171; }
+
+        .util-bar-wrap { background: rgba(255,255,255,0.07); border-radius: 6px; height: 10px; margin-top: 0.75rem; overflow: hidden; }
+        .util-bar { height: 100%; border-radius: 6px; transition: width 0.4s, background 0.3s; }
+
+        .warn-box { border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.82rem; margin-top: 0.6rem; display: none; }
+        .warn-box.show { display: block; }
+        .warn-box.warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #f59e0b; }
+        .warn-box.info { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); color: #93c5fd; }
+        .warn-box.err  { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #f87171; }
+
+        .diagram-wrap { display: flex; justify-content: center; padding: 0.5rem 0; }
+        svg text { font-family: inherit; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.6; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+        .info-block code { background: rgba(255,255,255,0.07); padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.82rem; color: var(--light-gray); }
+
+        details.card summary { cursor: pointer; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; }
+        details.card[open] summary { margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Shear Stress Calculator</h1>
+        <p>τ distribution across cross-section · τ<sub>max</sub> · shape factor · PASS/FAIL check</p>
+    </div>
+
+    <div class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- Inputs -->
+        <div class="card">
+            <h2>Cross-Section Type</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn active" data-sec="rect">▭ Rectangle</button>
+                <button class="mode-btn" data-sec="circle">● Circle</button>
+                <button class="mode-btn" data-sec="hollow">◎ Hollow Circle</button>
+                <button class="mode-btn" data-sec="ipe">I I-Profile</button>
+            </div>
+
+            <!-- Common: V and material -->
+            <div class="input-grid">
+                <div class="field">
+                    <label>Shear force <i>V</i></label>
+                    <div class="field-row">
+                        <input class="inp" type="number" id="V" value="50" min="0" step="0.1">
+                        <span class="unit">kN</span>
+                    </div>
+                    <span class="hint">Design value (factored)</span>
+                </div>
+                <div class="field">
+                    <label>Material</label>
+                    <div class="field-row">
+                        <select class="sel" id="material">
+                            <option value="235">S235 — fy = 235 MPa</option>
+                            <option value="275">S275 — fy = 275 MPa</option>
+                            <option value="355" selected>S355 — fy = 355 MPa</option>
+                            <option value="460">S460 — fy = 460 MPa</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>γ<sub>M0</sub></label>
+                    <div class="field-row">
+                        <select class="sel" id="gM0">
+                            <option value="1.0" selected>1.0 — standard</option>
+                            <option value="1.1">1.1 — elevated</option>
+                        </select>
+                    </div>
+                    <span class="hint">EN 1993-1-1 §6.1</span>
+                </div>
+            </div>
+
+            <!-- Rectangle -->
+            <div class="section-panel active" id="panel-rect">
+                <div class="field">
+                    <label>Width <i>b</i></label>
+                    <div class="field-row"><input class="inp" type="number" id="r-b" value="80" min="1" step="1"><span class="unit">mm</span></div>
+                </div>
+                <div class="field">
+                    <label>Height <i>h</i></label>
+                    <div class="field-row"><input class="inp" type="number" id="r-h" value="200" min="1" step="1"><span class="unit">mm</span></div>
+                    <span class="hint">τ_max = 3V / (2·b·h)</span>
+                </div>
+            </div>
+
+            <!-- Circle -->
+            <div class="section-panel" id="panel-circle">
+                <div class="field">
+                    <label>Diameter <i>d</i></label>
+                    <div class="field-row"><input class="inp" type="number" id="c-d" value="80" min="1" step="0.5"><span class="unit">mm</span></div>
+                    <span class="hint">τ_max = 4V / (3·A)</span>
+                </div>
+            </div>
+
+            <!-- Hollow circle -->
+            <div class="section-panel" id="panel-hollow">
+                <div class="field">
+                    <label>Outer ∅ <i>D</i></label>
+                    <div class="field-row"><input class="inp" type="number" id="h-D" value="100" min="1" step="0.5"><span class="unit">mm</span></div>
+                </div>
+                <div class="field">
+                    <label>Inner ∅ <i>d</i></label>
+                    <div class="field-row"><input class="inp" type="number" id="h-d" value="80" min="1" step="0.5"><span class="unit">mm</span></div>
+                    <span class="hint">τ_max = 2V / A at NA</span>
+                </div>
+            </div>
+
+            <!-- I-profile -->
+            <div class="section-panel" id="panel-ipe">
+                <div class="field">
+                    <label>Flange width <i>b<sub>f</sub></i></label>
+                    <div class="field-row"><input class="inp" type="number" id="i-bf" value="120" min="1" step="1"><span class="unit">mm</span></div>
+                </div>
+                <div class="field">
+                    <label>Flange thickness <i>t<sub>f</sub></i></label>
+                    <div class="field-row"><input class="inp" type="number" id="i-tf" value="12" min="1" step="0.5"><span class="unit">mm</span></div>
+                </div>
+                <div class="field">
+                    <label>Web height <i>h<sub>w</sub></i></label>
+                    <div class="field-row"><input class="inp" type="number" id="i-hw" value="176" min="1" step="1"><span class="unit">mm</span></div>
+                    <span class="hint">Between flanges (clear)</span>
+                </div>
+                <div class="field">
+                    <label>Web thickness <i>t<sub>w</sub></i></label>
+                    <div class="field-row"><input class="inp" type="number" id="i-tw" value="7" min="1" step="0.5"><span class="unit">mm</span></div>
+                    <span class="hint">τ_max in web at NA</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="card">
+            <h2>Results</h2>
+
+            <div class="result-verdict na" id="verdict-box">
+                <div class="verdict-icon" id="verdict-icon">—</div>
+                <div>
+                    <div class="verdict-text" id="verdict-text">Enter values</div>
+                    <div class="verdict-sub" id="verdict-sub"></div>
+                </div>
+            </div>
+
+            <div class="res-grid">
+                <div class="res-cell">
+                    <div class="lbl">Cross-section area <i>A</i></div>
+                    <div class="val orange" id="A-val">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Moment of inertia <i>I</i></div>
+                    <div class="val" id="I-val">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Average shear τ<sub>avg</sub> = V/A</div>
+                    <div class="val" id="tau-avg">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Max shear τ<sub>max</sub></div>
+                    <div class="val" id="tau-max">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Shape factor α = τ<sub>max</sub>/τ<sub>avg</sub></div>
+                    <div class="val" id="alpha">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Design resistance τ<sub>Rd</sub></div>
+                    <div class="val" id="tau-rd">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Utilisation η</div>
+                    <div class="val" id="eta">—</div>
+                </div>
+                <div class="res-cell">
+                    <div class="lbl">Reserve capacity</div>
+                    <div class="val" id="reserve">—</div>
+                </div>
+                <div class="res-cell" id="tau-flange-cell" style="display:none">
+                    <div class="lbl">Shear at flange/web jct.</div>
+                    <div class="val" id="tau-flange">—</div>
+                </div>
+            </div>
+
+            <div class="util-bar-wrap">
+                <div class="util-bar" id="util-bar" style="width:0%"></div>
+            </div>
+
+            <div class="warn-box err"  id="w-hollow">Inner diameter ≥ outer diameter — invalid section.</div>
+            <div class="warn-box warn" id="w-high">Utilisation &gt; 80% — consider larger web thickness or section.</div>
+            <div class="warn-box info" id="w-ipe">I-profile: τ_max in web at neutral axis. Flange carries very little shear.</div>
+        </div>
+
+        <!-- SVG Diagram -->
+        <div class="card">
+            <h2>Cross-Section & τ Distribution</h2>
+            <div class="diagram-wrap">
+                <svg id="diagram" width="540" height="300" viewBox="0 0 540 300"></svg>
+            </div>
+        </div>
+
+        <!-- Method info -->
+        <details class="card">
+            <summary>Formulas — Shear Stress Distribution</summary>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>General formula</h3>
+                    <p>Shear stress at height y from NA:</p>
+                    <p><code>τ(y) = V · S(y) / (I · t(y))</code></p>
+                    <p>where S(y) = first moment of area above y, t(y) = width at y.</p>
+                    <p>Design resistance:</p>
+                    <p><code>τ<sub>Rd</sub> = f<sub>y</sub> / (√3 · γM0)</code></p>
+                </div>
+                <div class="info-block">
+                    <h3>Section formulas</h3>
+                    <ul>
+                        <li><strong>Rectangle:</strong> τ_max = 3V/(2A)  — α = 1.5</li>
+                        <li><strong>Solid circle:</strong> τ_max = 4V/(3A)  — α = 4/3</li>
+                        <li><strong>Hollow circle:</strong> τ_max = 2V/A  — α = 2.0</li>
+                        <li><strong>I-profile (web):</strong> τ_max = V·S_max/(I·t_w)</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Distribution shape</h3>
+                    <ul>
+                        <li>Rectangle: parabolic — max at NA, zero at top/bottom</li>
+                        <li>Circle: parabolic — max at NA, zero at extremes</li>
+                        <li>Hollow circle: parabolic — max at NA</li>
+                        <li>I-profile: nearly uniform in web, small jump at flange junction</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Shear in I-profiles</h3>
+                    <p>Most shear (≈ 90–95%) is carried by the web. Flanges carry very little. The shear diagram shows a nearly rectangular distribution in the web with small steps at flange–web junctions.</p>
+                    <p><code>τ<sub>web,NA</sub> = V · S<sub>max</sub> / (I · t<sub>w</sub>)</code></p>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <footer>
+        <p>StrokeForge Engineering — reference tools for mechanical design</p>
+    </footer>
+
+    <script>
+    let activeSec = 'rect';
+
+    const FY = { '235':235, '275':275, '355':355, '460':460 };
+
+    function switchSec(sec) {
+        activeSec = sec;
+        ['rect','circle','hollow','ipe'].forEach(s => {
+            document.getElementById('panel-' + s).classList.toggle('active', s === sec);
+        });
+        document.getElementById('tau-flange-cell').style.display = sec === 'ipe' ? '' : 'none';
+        document.getElementById('w-ipe').classList.toggle('show', sec === 'ipe');
+        calculate();
+    }
+
+    function fmt1(v) { return isFinite(v) ? v.toFixed(1) : '—'; }
+    function fmt2(v) { return isFinite(v) ? v.toFixed(2) : '—'; }
+    function fmtI(v) { if(!isFinite(v)||v<=0)return '—'; if(v>=1e6)return (v/1e6).toFixed(2)+' ×10⁶ mm⁴'; if(v>=1e3)return (v/1e3).toFixed(1)+' ×10³ mm⁴'; return v.toFixed(0)+' mm⁴'; }
+
+    function calculate() {
+        const V   = (parseFloat(document.getElementById('V').value)||0) * 1000; // N
+        const fy  = FY[document.getElementById('material').value];
+        const gM0 = parseFloat(document.getElementById('gM0').value);
+
+        ['w-hollow','w-high'].forEach(id => document.getElementById(id).classList.remove('show'));
+
+        const tauRd = fy / (Math.sqrt(3) * gM0);
+
+        let A=0, I=0, tauMax=0, tauAvg=0, alpha=0, tauFlange=0;
+        let valid = true;
+
+        if (activeSec === 'rect') {
+            const b = parseFloat(document.getElementById('r-b').value)||0;
+            const h = parseFloat(document.getElementById('r-h').value)||0;
+            A = b * h;
+            I = b * h**3 / 12;
+            tauAvg = A > 0 ? V / A : 0;
+            tauMax = 1.5 * tauAvg;
+            alpha  = 1.5;
+
+        } else if (activeSec === 'circle') {
+            const d = parseFloat(document.getElementById('c-d').value)||0;
+            A = Math.PI * d**2 / 4;
+            I = Math.PI * d**4 / 64;
+            tauAvg = A > 0 ? V / A : 0;
+            tauMax = (4/3) * tauAvg;
+            alpha  = 4/3;
+
+        } else if (activeSec === 'hollow') {
+            const D = parseFloat(document.getElementById('h-D').value)||0;
+            const d = parseFloat(document.getElementById('h-d').value)||0;
+            if (d >= D) { document.getElementById('w-hollow').classList.add('show'); valid=false; }
+            else {
+                A = Math.PI * (D**2 - d**2) / 4;
+                I = Math.PI * (D**4 - d**4) / 64;
+                tauAvg = A > 0 ? V / A : 0;
+                // τ_max for hollow circle = 2V/(A) × (D²+Dd+d²)/(D²+d²) — simplified to 2V/A
+                const R = D/2, r = d/2;
+                const Smax = (2/3)*(R**3 - r**3);
+                const t_na = 2*(R-r);
+                tauMax = I > 0 ? V * Smax / (I * t_na) : 0;
+                alpha  = A > 0 ? tauMax / tauAvg : 0;
+            }
+
+        } else { // ipe
+            const bf = parseFloat(document.getElementById('i-bf').value)||0;
+            const tf = parseFloat(document.getElementById('i-tf').value)||0;
+            const hw = parseFloat(document.getElementById('i-hw').value)||0;
+            const tw = parseFloat(document.getElementById('i-tw').value)||0;
+            const H  = hw + 2*tf;
+            A = bf*tf*2 + hw*tw;
+            // I about strong axis
+            I = (bf * H**3 - (bf-tw) * hw**3) / 12;
+            tauAvg = A > 0 ? V / A : 0;
+            // First moment at NA (web contribution + flange contribution)
+            const Sf = bf * tf * (hw/2 + tf/2);      // flange above NA
+            const Sw = tw * (hw/2) * (hw/4);           // half-web above NA
+            const Smax = Sf + Sw;
+            tauMax = I > 0 && tw > 0 ? V * Smax / (I * tw) : 0;
+            alpha  = A > 0 ? tauMax / tauAvg : 0;
+            // τ at flange/web junction (top of web)
+            tauFlange = I > 0 && tw > 0 ? V * Sf / (I * tw) : 0;
+        }
+
+        if (!valid) return;
+
+        const eta    = tauRd > 0 ? tauMax / tauRd : 0;
+        const etaPct = eta * 100;
+        const reserve = (1-eta)*100;
+
+        document.getElementById('A-val').textContent   = fmt1(A) + ' mm²';
+        document.getElementById('I-val').textContent   = fmtI(I);
+        document.getElementById('tau-avg').textContent = fmt2(tauAvg) + ' MPa';
+
+        const tmEl = document.getElementById('tau-max');
+        tmEl.textContent = fmt2(tauMax) + ' MPa';
+        tmEl.className   = 'val ' + (tauMax > tauRd ? 'red' : tauMax > 0.8*tauRd ? 'orange' : 'green');
+
+        document.getElementById('alpha').textContent   = fmt2(alpha);
+        document.getElementById('tau-rd').textContent  = fmt2(tauRd) + ' MPa';
+        document.getElementById('eta').textContent     = fmt1(etaPct) + ' %';
+        document.getElementById('reserve').textContent = reserve >= 0 ? fmt1(reserve) + ' %' : '—';
+
+        if (activeSec === 'ipe') {
+            document.getElementById('tau-flange').textContent = fmt2(tauFlange) + ' MPa';
+        }
+
+        // Bar
+        const barW = Math.min(etaPct,100);
+        const barC = etaPct>100 ? '#f87171' : etaPct>80 ? '#f59e0b' : '#4ade80';
+        const bar  = document.getElementById('util-bar');
+        bar.style.width = barW + '%'; bar.style.background = barC;
+
+        if (etaPct > 80 && etaPct <= 100) document.getElementById('w-high').classList.add('show');
+
+        // Verdict
+        const verdict=document.getElementById('verdict-box'), vIcon=document.getElementById('verdict-icon'),
+              vText=document.getElementById('verdict-text'), vSub=document.getElementById('verdict-sub');
+        if (V===0) {
+            verdict.className='result-verdict na'; vIcon.textContent='—'; vText.textContent='Enter values'; vSub.textContent='';
+        } else if (eta<=1.0) {
+            verdict.className='result-verdict pass'; vIcon.textContent='✅';
+            vText.textContent='PASS'; vSub.textContent=`τ_max = ${fmt2(tauMax)} MPa ≤ τ_Rd = ${fmt2(tauRd)} MPa  ·  η = ${fmt1(etaPct)} %`;
+        } else {
+            verdict.className='result-verdict fail'; vIcon.textContent='❌';
+            vText.textContent='FAIL'; vSub.textContent=`τ_max = ${fmt2(tauMax)} MPa > τ_Rd = ${fmt2(tauRd)} MPa`;
+        }
+
+        drawDiagram(activeSec, V, A, I, tauMax, tauAvg, tauRd, tauFlange, eta);
+    }
+
+    // --- SVG Diagram ---
+    function drawDiagram(sec, V, A, I, tauMax, tauAvg, tauRd, tauFlange, eta) {
+        const svg  = document.getElementById('diagram');
+        svg.innerHTML = '';
+        const ns    = 'http://www.w3.org/2000/svg';
+        const orange='#f97316', gray='#9ca3af', light='#e5e7eb', blue='#60a5fa',
+              green='#4ade80', red='#f87171', yellow='#fbbf24';
+        const W=540, H=300;
+        const secColor = eta>1 ? red : eta>0.8 ? yellow : '#60a5fa';
+
+        function ln(x1,y1,x2,y2,col,w,dash) {
+            const e=document.createElementNS(ns,'line');
+            e.setAttribute('x1',x1);e.setAttribute('y1',y1);e.setAttribute('x2',x2);e.setAttribute('y2',y2);
+            e.setAttribute('stroke',col||gray);e.setAttribute('stroke-width',w||1.5);
+            if(dash)e.setAttribute('stroke-dasharray',dash);svg.appendChild(e);
+        }
+        function txt(x,y,t,col,size,anchor,weight) {
+            const e=document.createElementNS(ns,'text');
+            e.setAttribute('x',x);e.setAttribute('y',y);e.setAttribute('fill',col||light);
+            e.setAttribute('font-size',size||11);e.setAttribute('text-anchor',anchor||'middle');
+            e.setAttribute('dominant-baseline','middle');if(weight)e.setAttribute('font-weight',weight);
+            e.textContent=t;svg.appendChild(e);
+        }
+        function rect(x,y,w,h,col,fill,rx) {
+            const e=document.createElementNS(ns,'rect');
+            e.setAttribute('x',x);e.setAttribute('y',y);e.setAttribute('width',w);e.setAttribute('height',h);
+            e.setAttribute('stroke',col||gray);e.setAttribute('fill',fill||'none');e.setAttribute('stroke-width',1.8);
+            if(rx)e.setAttribute('rx',rx);svg.appendChild(e);
+        }
+        function poly(pts,fill,stroke) {
+            const e=document.createElementNS(ns,'polygon');
+            e.setAttribute('points',pts);e.setAttribute('fill',fill||'none');
+            if(stroke){e.setAttribute('stroke',stroke);e.setAttribute('stroke-width','1.5');}
+            svg.appendChild(e);
+        }
+
+        // Layout: cross-section on left, τ diagram on right
+        const cx = 150, cy = 150; // centre of cross-section drawing
+        const scH = 110;           // half-height of drawn section
+        const dxBase = 280;        // x-baseline of τ diagram
+        const dScale = tauMax > 0 ? 110 / tauMax : 1; // px per MPa
+
+        // ----- Draw cross-section -----
+        if (sec === 'rect') {
+            const b=parseFloat(document.getElementById('r-b').value)||80;
+            const h=parseFloat(document.getElementById('r-h').value)||200;
+            const scale = Math.min(scH*2/h, 180/b);
+            const dw=b*scale, dh=h*scale;
+            rect(cx-dw/2, cy-dh/2, dw, dh, blue, 'rgba(96,165,250,0.12)');
+            // NA
+            ln(cx-dw/2-10, cy, cx+dw/2+10, cy, gray, 1, '4,2');
+            txt(cx, cy-dh/2-10, `b=${b}`, gray, 9);
+            txt(cx+dw/2+22, cy, `h=${h}`, gray, 9, 'start');
+
+            // τ distribution (parabolic)
+            const pts=[];
+            const n=40;
+            for(let i=0;i<=n;i++){
+                const frac=i/n; // 0=top, 1=bot
+                const y_loc = (frac-0.5)*h; // mm from NA
+                const tau = 1.5 * (V/A) * (1 - 4*y_loc*y_loc/(h*h));
+                const px = dxBase + tau*dScale;
+                const py = cy + (frac-0.5)*dh*2;
+                pts.push(`${px},${py}`);
+            }
+            const baseL = `${dxBase},${cy-dh}`, baseR = `${dxBase},${cy+dh}`;
+            poly([baseL].concat(pts).concat([baseR]).join(' '), 'rgba(96,165,250,0.15)', blue);
+            // Outline
+            const pathEl=document.createElementNS(ns,'polyline');
+            pathEl.setAttribute('points',pts.join(' ')); pathEl.setAttribute('fill','none');
+            pathEl.setAttribute('stroke',secColor); pathEl.setAttribute('stroke-width','2.5'); svg.appendChild(pathEl);
+
+        } else if (sec === 'circle') {
+            const d=parseFloat(document.getElementById('c-d').value)||80;
+            const r = Math.min(scH, 90);
+            const circ=document.createElementNS(ns,'circle');
+            circ.setAttribute('cx',cx);circ.setAttribute('cy',cy);circ.setAttribute('r',r);
+            circ.setAttribute('fill','rgba(96,165,250,0.12)');circ.setAttribute('stroke',blue);
+            circ.setAttribute('stroke-width','2');svg.appendChild(circ);
+            ln(cx-r-10,cy,cx+r+10,cy,gray,1,'4,2');
+            txt(cx+r+14,cy-10,`∅${d}`,gray,9,'start');
+
+            // τ parabolic
+            const pts=[];
+            for(let i=0;i<=40;i++){
+                const frac=i/40;
+                const y_frac=(frac-0.5)*2; // -1 to 1
+                const tau=(4*V/(3*A))*(1-y_frac*y_frac);
+                const px=dxBase+tau*dScale;
+                const py=cy+y_frac*r;
+                pts.push(`${px},${py}`);
+            }
+            const bL=`${dxBase},${cy-r}`, bR=`${dxBase},${cy+r}`;
+            poly([bL].concat(pts).concat([bR]).join(' '),'rgba(96,165,250,0.15)',blue);
+            const pe=document.createElementNS(ns,'polyline');
+            pe.setAttribute('points',pts.join(' ')); pe.setAttribute('fill','none');
+            pe.setAttribute('stroke',secColor); pe.setAttribute('stroke-width','2.5'); svg.appendChild(pe);
+
+        } else if (sec === 'hollow') {
+            const D=parseFloat(document.getElementById('h-D').value)||100;
+            const d=parseFloat(document.getElementById('h-d').value)||80;
+            const scale=Math.min(scH/D*2*0.95, 90/(D/2));
+            const Rout=(D/2)*scale, Rin=(d/2)*scale;
+            const co=document.createElementNS(ns,'circle');
+            co.setAttribute('cx',cx);co.setAttribute('cy',cy);co.setAttribute('r',Rout);
+            co.setAttribute('fill','rgba(96,165,250,0.12)');co.setAttribute('stroke',blue);co.setAttribute('stroke-width','2');svg.appendChild(co);
+            const ci=document.createElementNS(ns,'circle');
+            ci.setAttribute('cx',cx);ci.setAttribute('cy',cy);ci.setAttribute('r',Rin);
+            ci.setAttribute('fill','var(--card-bg)');ci.setAttribute('stroke',blue);ci.setAttribute('stroke-width','1.5');svg.appendChild(ci);
+            ln(cx-Rout-10,cy,cx+Rout+10,cy,gray,1,'4,2');
+            txt(cx+Rout+14,cy-10,`∅D=${D}`,gray,9,'start');
+            txt(cx+Rout+14,cy+10,`∅d=${d}`,gray,9,'start');
+
+            // τ — parabolic approx peaking at NA
+            const pts=[];
+            for(let i=0;i<=40;i++){
+                const frac=i/40;
+                const y_frac=(frac-0.5)*2;
+                const tau=tauMax*(1-y_frac*y_frac);
+                const px=dxBase+tau*dScale;
+                const py=cy+y_frac*Rout;
+                pts.push(`${px},${py}`);
+            }
+            const bL=`${dxBase},${cy-Rout}`, bR=`${dxBase},${cy+Rout}`;
+            poly([bL].concat(pts).concat([bR]).join(' '),'rgba(96,165,250,0.15)',blue);
+            const pe=document.createElementNS(ns,'polyline');
+            pe.setAttribute('points',pts.join(' ')); pe.setAttribute('fill','none');
+            pe.setAttribute('stroke',secColor); pe.setAttribute('stroke-width','2.5'); svg.appendChild(pe);
+
+        } else { // ipe
+            const bf=parseFloat(document.getElementById('i-bf').value)||120;
+            const tf=parseFloat(document.getElementById('i-tf').value)||12;
+            const hw=parseFloat(document.getElementById('i-hw').value)||176;
+            const tw=parseFloat(document.getElementById('i-tw').value)||7;
+            const H=hw+2*tf;
+            const scale=Math.min(scH*2/H, 90/(bf/2));
+            const dBf=bf*scale, dTf=tf*scale, dHw=hw*scale, dTw=tw*scale;
+            const dH=H*scale;
+            // Top flange
+            rect(cx-dBf/2, cy-dH/2, dBf, dTf, blue, 'rgba(96,165,250,0.12)');
+            // Web
+            rect(cx-dTw/2, cy-dH/2+dTf, dTw, dHw, blue, 'rgba(96,165,250,0.18)');
+            // Bottom flange
+            rect(cx-dBf/2, cy+dH/2-dTf, dBf, dTf, blue, 'rgba(96,165,250,0.12)');
+            ln(cx-dBf/2-10,cy,cx+dBf/2+10,cy,gray,1,'4,2');
+            txt(cx+dBf/2+14,cy-10,`b=${bf}`,gray,9,'start');
+            txt(cx+dBf/2+14,cy+10,`hw=${hw}`,gray,9,'start');
+
+            // τ diagram: 4 key points — top, flange/web junction (outside), flange/web (inside), NA
+            // y coordinates in draw space
+            const yTop   = cy - dH/2;
+            const yFT    = cy - dHw/2;  // flange/web top
+            const yNA    = cy;
+            const yFB    = cy + dHw/2;
+            const yBot   = cy + dH/2;
+            const tauFT  = 0;
+            const tauFTin= tauFlange;
+            const tauNA  = tauMax;
+            const tauFBin= tauFlange;
+            const tauFBout=0;
+
+            const spts = [
+                `${dxBase},${yTop}`,
+                `${dxBase+tauFT*dScale},${yTop}`,
+                `${dxBase+tauFT*dScale},${yFT}`,   // top of web (flange τ≈0)
+                `${dxBase+tauFTin*dScale},${yFT}`,  // jump to web τ at junction
+                `${dxBase+tauNA*dScale},${yNA}`,    // max at NA
+                `${dxBase+tauFBin*dScale},${yFB}`,  // web τ at lower junction
+                `${dxBase+tauFBout*dScale},${yFB}`, // flange τ≈0
+                `${dxBase+tauFBout*dScale},${yBot}`,
+                `${dxBase},${yBot}`,
+            ];
+            poly(spts.join(' '),'rgba(96,165,250,0.15)',blue);
+            const pe=document.createElementNS(ns,'polyline');
+            const pePoints = spts.slice(1, spts.length-1).join(' ');
+            pe.setAttribute('points',pePoints); pe.setAttribute('fill','none');
+            pe.setAttribute('stroke',secColor); pe.setAttribute('stroke-width','2.5'); svg.appendChild(pe);
+        }
+
+        // τ diagram axis and labels
+        ln(dxBase, cy-120, dxBase, cy+120, gray, 1);
+        txt(dxBase, cy-130, 'τ [MPa]', gray, 9);
+        // τ_max marker
+        const tmX = dxBase + tauMax*dScale;
+        ln(tmX, cy-4, tmX, cy+4, secColor, 1.5);
+        txt(tmX+4, cy-12, `τ_max=${(tauMax).toFixed(1)}`, secColor, 9, 'start');
+        // τ_Rd marker
+        const trdX = dxBase + tauRd*dScale;
+        ln(trdX, cy-120, trdX, cy+120, green, 1, '3,2');
+        txt(trdX+3, cy+130, `τ_Rd=${(tauRd).toFixed(1)}`, green, 9, 'start');
+        // V arrow label
+        txt(cx, H-14, `V = ${(V/1000).toFixed(1)} kN`, orange, 10);
+        // NA label
+        txt(dxBase-12, cy, 'NA', gray, 9, 'end');
+    }
+
+    // Mode buttons
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            switchSec(btn.dataset.sec);
+        });
+    });
+
+    // All inputs
+    ['V','material','gM0','r-b','r-h','c-d','h-D','h-d','i-bf','i-tf','i-hw','i-tw'].forEach(id => {
+        const el=document.getElementById(id);
+        if(el) el.addEventListener('input', calculate);
+    });
+
+    calculate();
+    </script>
+    <script src="../../js/nav.js"></script>
+</body>
+</html>

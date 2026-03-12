@@ -1,0 +1,9 @@
+{
+  "id": "eng-044",
+  "title": "ATEX — Explosive Atmosphere Classifications",
+  "description": "ATEX reference: equipment categories, zones (0/1/2/20/21/22), equipment groups (IIA/IIB/IIC), temperature classes T1–T6, protection types Ex d/e/i/n/p. Per ATEX 2014/34/EU and IEC 60079.",
+  "category": "standards",
+  "icon": "⚡",
+  "difficulty": "intermediate",
+  "topic": "normy"
+}

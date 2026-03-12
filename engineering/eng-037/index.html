@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heat Treatment Overview | StrokeForge Engineering</title>
+    <meta name="description" content="Steel heat treatment reference table: quenching, tempering, annealing, case hardening, nitriding, induction hardening. Temperatures, hardness ranges and typical materials.">
+    <meta name="keywords" content="heat treatment steel, kalení oceli, popouštění, žíhání, cementování, nitridování, indukční kalení, hardness HRC, tepelné zpracování">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-037/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+.tool-wrap { max-width: 960px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Filter tabs */
+        .filter-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .fb { padding: 0.4rem 1rem; border-radius: 6px; border: 1px solid var(--border-gray); background: none; color: var(--text-gray); cursor: pointer; font-size: 0.82rem; font-weight: 600; transition: all 0.18s; }
+        .fb.active { background: var(--primary-orange); color: #000; border-color: var(--primary-orange); }
+        .fb:not(.active):hover { border-color: var(--primary-orange); color: var(--light-gray); }
+
+        /* Process grid */
+        .proc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+
+        /* Process card */
+        .proc-card { background: var(--darker-bg); border: 1px solid var(--border-gray); border-radius: 10px; padding: 1.1rem 1.2rem; transition: border-color 0.18s; }
+        .proc-card:hover { border-color: var(--primary-orange); }
+        .proc-card.hidden { display: none; }
+        .proc-header { display: flex; align-items: flex-start; gap: 0.7rem; margin-bottom: 0.75rem; }
+        .proc-icon { font-size: 1.5rem; flex-shrink: 0; line-height: 1; }
+        .proc-title { flex: 1; }
+        .proc-title .en { font-size: 0.92rem; font-weight: 700; color: var(--light-gray); }
+        .proc-title .cs { font-size: 0.78rem; color: var(--primary-orange); margin-top: 0.1rem; }
+        .proc-badge { font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
+        .badge-hard   { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+        .badge-anneal { background: rgba(96,165,250,0.12); color: #60a5fa; border: 1px solid rgba(96,165,250,0.25); }
+        .badge-surf   { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+        .badge-thermo { background: rgba(167,139,250,0.12); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
+
+        .proc-row { display: flex; justify-content: space-between; font-size: 0.79rem; margin-bottom: 0.3rem; }
+        .proc-row .lbl { color: var(--text-gray); }
+        .proc-row .val { color: var(--light-gray); font-weight: 600; text-align: right; }
+        .proc-row .val.orange { color: var(--primary-orange); }
+        .proc-row .val.temp   { color: #f87171; }
+        .proc-row .val.blue   { color: #60a5fa; }
+
+        /* Hardness bar */
+        .hrd-bar-wrap { margin: 0.6rem 0 0.5rem; }
+        .hrd-bar-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-gray); margin-bottom: 0.25rem; }
+        .hrd-bar-track { background: rgba(255,255,255,0.07); border-radius: 4px; height: 7px; position: relative; }
+        .hrd-bar-fill { height: 100%; border-radius: 4px; }
+        .hrd-marker { position: absolute; top: -2px; height: 11px; width: 2px; background: rgba(255,255,255,0.3); border-radius: 1px; }
+
+        .proc-desc { font-size: 0.78rem; color: var(--text-gray); line-height: 1.55; margin-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.5rem; }
+        .proc-note { font-size: 0.74rem; color: #f59e0b; margin-top: 0.35rem; }
+
+        /* Info section */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.6; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+        .info-block code { background: rgba(255,255,255,0.07); padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.82rem; color: var(--light-gray); }
+
+        /* Hardness scale reference */
+        .hrd-scale { display: flex; gap: 0; border-radius: 8px; overflow: hidden; margin-bottom: 0.5rem; }
+        .hrd-seg { flex: 1; padding: 0.3rem 0; text-align: center; font-size: 0.7rem; font-weight: 700; }
+
+        details.card summary { cursor: pointer; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; }
+        details.card[open] summary { margin-bottom: 1rem; }
+
+        .count-badge { background: rgba(249,115,22,0.12); color: var(--primary-orange); border: 1px solid rgba(249,115,22,0.25); border-radius: 5px; padding: 0.1rem 0.5rem; font-size: 0.75rem; font-weight: 700; margin-left: 0.5rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>Heat Treatment Overview</h1>
+        <p>Steel heat treatment methods · temperatures · hardness · typical materials</p>
+    </div>
+
+    <div class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <div class="card">
+            <h2>Heat Treatment Methods <span class="count-badge" id="count">12</span></h2>
+
+            <div class="filter-bar">
+                <button class="fb active" data-cat="all">All</button>
+                <button class="fb" data-cat="hardening">🔥 Hardening</button>
+                <button class="fb" data-cat="annealing">❄️ Annealing</button>
+                <button class="fb" data-cat="surface">⚡ Surface Hardening</button>
+                <button class="fb" data-cat="thermochem">⚗️ Thermochemical</button>
+            </div>
+
+            <div class="proc-grid" id="proc-grid">
+                <!-- Cards injected by JS -->
+            </div>
+        </div>
+
+        <!-- Hardness reference scale -->
+        <div class="card">
+            <h2>Hardness Scale Reference</h2>
+            <div style="margin-bottom:0.5rem;">
+                <div class="hrd-scale">
+                    <div class="hrd-seg" style="background:rgba(74,222,128,0.2);color:#4ade80;">Soft<br>0–20 HRC</div>
+                    <div class="hrd-seg" style="background:rgba(251,191,36,0.2);color:#fbbf24;">Medium<br>20–40 HRC</div>
+                    <div class="hrd-seg" style="background:rgba(249,115,22,0.2);color:#f97316;">Hard<br>40–55 HRC</div>
+                    <div class="hrd-seg" style="background:rgba(248,113,113,0.2);color:#f87171;">Very Hard<br>55–70 HRC</div>
+                </div>
+            </div>
+            <div style="font-size:0.79rem;color:var(--text-gray);display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.75rem;">
+                <div>HRC 20 ≈ HB 241<br>HRC 30 ≈ HB 286</div>
+                <div>HRC 40 ≈ HB 371<br>HRC 45 ≈ HB 421</div>
+                <div>HRC 50 ≈ HB 481<br>HRC 55 ≈ HB 543</div>
+                <div>HRC 60 ≈ HB 620<br>HRC 65 ≈ HB 721</div>
+            </div>
+        </div>
+
+        <!-- Info -->
+        <details class="card">
+            <summary>Background — Steel Heat Treatment Principles</summary>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Why heat treat?</h3>
+                    <ul>
+                        <li>Hardening increases wear resistance and strength</li>
+                        <li>Annealing relieves stresses and improves machinability</li>
+                        <li>Surface treatments give a hard wear layer while keeping tough core</li>
+                        <li>Thermochemical treatments enrich the surface with C or N</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Carbon requirement</h3>
+                    <ul>
+                        <li><strong>Quench hardening:</strong> requires &gt; 0.30% C (typically 0.35–0.60%)</li>
+                        <li><strong>Carburising:</strong> used on low-C steels (0.10–0.25% C); surface C raised to 0.7–1.0%</li>
+                        <li><strong>Nitriding:</strong> no minimum C; uses Al, Cr, Mo alloying elements</li>
+                        <li><strong>Annealing:</strong> effective on all carbon steels</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Typical Czech steels</h3>
+                    <ul>
+                        <li><strong>12 050 (C45):</strong> quenching, induction, 46–54 HRC</li>
+                        <li><strong>14 220 (16MnCr5):</strong> carburising, 58–63 HRC surface</li>
+                        <li><strong>19 312 (X38CrMoV5):</strong> tool steel, hot work</li>
+                        <li><strong>14 109 (34CrAlNi7):</strong> nitriding steel, 900–1100 HV surface</li>
+                        <li><strong>11 500 (S355):</strong> stress relief annealing only</li>
+                    </ul>
+                </div>
+                <div class="info-block">
+                    <h3>Distortion and cracking</h3>
+                    <ul>
+                        <li>Quenching in water → higher hardness, more distortion/cracking risk</li>
+                        <li>Oil quench → lower hardness, less distortion</li>
+                        <li>Tempering always follows quenching to reduce brittleness</li>
+                        <li>Through-hardening vs case hardening: thick sections may not harden fully through</li>
+                        <li>Hardenability: described by Jominy end-quench test</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <footer>
+        <p>StrokeForge Engineering — reference tools for mechanical design</p>
+    </footer>
+
+    <script>
+    const PROCESSES = [
+        // ---- HARDENING ----
+        {
+            cat: 'hardening',
+            icon: '🔥',
+            en: 'Quench Hardening',
+            cs: 'Kalení',
+            badge: 'badge-hard',
+            badgeLabel: 'Hardening',
+            temp: '800 – 900 °C',
+            cool: 'Water / Oil / Air',
+            hardMin: 40, hardMax: 65,
+            hardLabel: '40 – 65 HRC',
+            steels: 'C45, C60, 42CrMo4, 100Cr6',
+            czechSteels: '12 050, 12 060, 15 142',
+            desc: 'Steel is heated above austenitising temperature and rapidly cooled (quenched) to form martensite. Produces maximum hardness for a given carbon content.',
+            note: 'Always followed by tempering to reduce brittleness.',
+        },
+        {
+            cat: 'hardening',
+            icon: '🌡️',
+            en: 'Tempering',
+            cs: 'Popouštění',
+            badge: 'badge-hard',
+            badgeLabel: 'Hardening',
+            temp: '150 – 650 °C',
+            cool: 'Air (controlled)',
+            hardMin: 25, hardMax: 60,
+            hardLabel: '25 – 60 HRC',
+            steels: 'After quenching — all hardenable steels',
+            czechSteels: '12 050, 15 142, 19 312',
+            desc: 'Performed after quenching. Reduces brittleness (martensite → tempered martensite) while retaining acceptable hardness. Higher temperature → lower hardness but higher toughness.',
+            note: 'Low temper (150–250 °C): max hardness. High temper (550–650 °C): tough core (QT).',
+        },
+        {
+            cat: 'hardening',
+            icon: '🔁',
+            en: 'Quench & Temper (QT)',
+            cs: 'Zušlechťování',
+            badge: 'badge-hard',
+            badgeLabel: 'Hardening',
+            temp: '840 °C + 550–650 °C',
+            cool: 'Oil → Air',
+            hardMin: 28, hardMax: 42,
+            hardLabel: '28 – 42 HRC',
+            steels: '42CrMo4, 34CrNiMo6, 40NiCrMo7',
+            czechSteels: '15 142, 15 241, 16 341',
+            desc: 'Combined quenching followed by high tempering (550–650 °C). Results in a good combination of strength, toughness and ductility. Used for shafts, gears, connecting rods.',
+            note: 'Standard engineering heat treatment for structural machine components.',
+        },
+
+        // ---- ANNEALING ----
+        {
+            cat: 'annealing',
+            icon: '❄️',
+            en: 'Full Annealing',
+            cs: 'Normalizační žíhání',
+            badge: 'badge-anneal',
+            badgeLabel: 'Annealing',
+            temp: '820 – 950 °C',
+            cool: 'Slow furnace cool',
+            hardMin: 5, hardMax: 22,
+            hardLabel: '140 – 220 HB',
+            steels: 'All structural carbon and alloy steels',
+            czechSteels: '11 500, 12 050, 15 142',
+            desc: 'Heated above Ac3, held, then cooled slowly in furnace. Refines grain structure, homogenises microstructure, maximum softness for machining.',
+            note: null,
+        },
+        {
+            cat: 'annealing',
+            icon: '💨',
+            en: 'Stress Relief Annealing',
+            cs: 'Žíhání na snížení pnutí',
+            badge: 'badge-anneal',
+            badgeLabel: 'Annealing',
+            temp: '500 – 650 °C',
+            cool: 'Slow furnace cool',
+            hardMin: 0, hardMax: 18,
+            hardLabel: '≤ 200 HB',
+            steels: 'All steels, weldments, castings',
+            czechSteels: '11 375, 11 500, S355',
+            desc: 'Removes residual stresses from welding, casting or machining. No phase transformation. Temperature kept below Ac1. Dimensional stability improved.',
+            note: 'Essential before precision machining of welded structures.',
+        },
+        {
+            cat: 'annealing',
+            icon: '🔃',
+            en: 'Recrystallisation Annealing',
+            cs: 'Rekrystalizační žíhání',
+            badge: 'badge-anneal',
+            badgeLabel: 'Annealing',
+            temp: '550 – 700 °C',
+            cool: 'Air or furnace',
+            hardMin: 0, hardMax: 15,
+            hardLabel: '≤ 180 HB',
+            steels: 'Cold-worked steels, sheet metal, wire',
+            czechSteels: '11 320, 11 343, low-C steels',
+            desc: 'Restores ductility in cold-worked (work-hardened) material. New strain-free grains nucleate and grow. Used between cold-forming operations.',
+            note: null,
+        },
+        {
+            cat: 'annealing',
+            icon: '🌀',
+            en: 'Spheroidise Annealing',
+            cs: 'Žíhání na měkko',
+            badge: 'badge-anneal',
+            badgeLabel: 'Annealing',
+            temp: '680 – 750 °C',
+            cool: 'Very slow furnace cool',
+            hardMin: 0, hardMax: 15,
+            hardLabel: '140 – 185 HB',
+            steels: 'High-carbon and tool steels before machining',
+            czechSteels: '19 191, 19 312, 19 552',
+            desc: 'Cementite (Fe₃C) is transformed into globular (spheroidal) form. Produces the softest possible condition. Used before deep drawing or cold heading of high-carbon steel.',
+            note: null,
+        },
+
+        // ---- SURFACE HARDENING ----
+        {
+            cat: 'surface',
+            icon: '⚡',
+            en: 'Induction Hardening',
+            cs: 'Indukční kalení',
+            badge: 'badge-surf',
+            badgeLabel: 'Surface',
+            temp: '850 – 950 °C (surface)',
+            cool: 'Water spray',
+            hardMin: 52, hardMax: 62,
+            hardLabel: '52 – 62 HRC',
+            steels: 'C45, C60, 42CrMo4',
+            czechSteels: '12 050, 12 060, 15 142',
+            desc: 'Electromagnetic induction rapidly heats only the surface layer. Quenching follows immediately. Produces hard surface with tough core. Fast, precise, localisable.',
+            note: 'Requires ≥ 0.40% C. Case depth typically 1–5 mm.',
+        },
+        {
+            cat: 'surface',
+            icon: '🔥',
+            en: 'Flame Hardening',
+            cs: 'Plamenové kalení',
+            badge: 'badge-surf',
+            badgeLabel: 'Surface',
+            temp: '850 – 950 °C (surface)',
+            cool: 'Water spray',
+            hardMin: 45, hardMax: 58,
+            hardLabel: '45 – 58 HRC',
+            steels: 'C45, GGG-70 (nodular cast iron)',
+            czechSteels: '12 050, litina s kuličkovým grafitem',
+            desc: 'Oxyacetylene or propane flame heats the surface, then spray-quenched. Suitable for large components (gears, slideways) where induction is impractical.',
+            note: 'Less precise than induction. Requires careful operator control.',
+        },
+
+        // ---- THERMOCHEMICAL ----
+        {
+            cat: 'thermochem',
+            icon: '⚗️',
+            en: 'Carburising (Case Hardening)',
+            cs: 'Cementování (Cementace)',
+            badge: 'badge-thermo',
+            badgeLabel: 'Thermochem.',
+            temp: '880 – 950 °C',
+            cool: 'Oil quench after',
+            hardMin: 58, hardMax: 65,
+            hardLabel: '58 – 65 HRC surface',
+            steels: '16MnCr5, 20MnCr5, 18CrNiMo7-6',
+            czechSteels: '14 220, 16 220, 16 523',
+            desc: 'Low-carbon steel (0.10–0.25% C) is heated in a carbon-rich atmosphere. Carbon diffuses into the surface to 0.7–1.0% C. Part then quenched and low-tempered. Hard wear-resistant case, tough core.',
+            note: 'Case depth 0.5–3 mm. Best for gears, pins, bearing races.',
+        },
+        {
+            cat: 'thermochem',
+            icon: '🧪',
+            en: 'Nitriding',
+            cs: 'Nitridování',
+            badge: 'badge-thermo',
+            badgeLabel: 'Thermochem.',
+            temp: '480 – 580 °C',
+            cool: 'Air (no quench needed)',
+            hardMin: 65, hardMax: 72,
+            hardLabel: '900–1100 HV (≈ 65–72 HRC)',
+            steels: '34CrAlNi7, 31CrMoV9, 41CrAlMo7',
+            czechSteels: '14 109, 15 230',
+            desc: 'Nitrogen diffuses into surface at sub-critical temperature. No quench required — very low distortion. Produces extreme surface hardness due to iron nitride and alloy nitride precipitation. Good corrosion resistance.',
+            note: 'Requires Al, Cr, Mo alloying. Case depth 0.1–0.5 mm only.',
+        },
+        {
+            cat: 'thermochem',
+            icon: '🔬',
+            en: 'Carbonitriding',
+            cs: 'Karbonitrování',
+            badge: 'badge-thermo',
+            badgeLabel: 'Thermochem.',
+            temp: '700 – 900 °C',
+            cool: 'Oil quench',
+            hardMin: 55, hardMax: 64,
+            hardLabel: '55 – 64 HRC surface',
+            steels: 'Low-C steels, alloy steels',
+            czechSteels: '12 020, 14 220, 12 050',
+            desc: 'Combined carbon and nitrogen enrichment of the surface. Nitrogen improves hardenability. Used for thin-section parts needing hard wear-resistant surface. Similar to carburising but at lower temperature.',
+            note: 'Case depth 0.07–0.75 mm. Less distortion than carburising.',
+        },
+    ];
+
+    function hrcToColor(hrc) {
+        if (hrc < 20) return '#4ade80';
+        if (hrc < 40) return '#fbbf24';
+        if (hrc < 55) return '#f97316';
+        return '#f87171';
+    }
+
+    function renderCard(p) {
+        const pct1 = (p.hardMin / 70 * 100).toFixed(1);
+        const pct2 = (p.hardMax / 70 * 100).toFixed(1);
+        const barW = pct2 - pct1;
+        const col1 = hrcToColor(p.hardMin);
+        const col2 = hrcToColor(p.hardMax);
+        // Gradient color
+        const barColor = col1 === col2 ? col1 : `linear-gradient(to right, ${col1}, ${col2})`;
+
+        return `<div class="proc-card" data-cat="${p.cat}">
+            <div class="proc-header">
+                <div class="proc-icon">${p.icon}</div>
+                <div class="proc-title">
+                    <div class="en">${p.en}</div>
+                    <div class="cs">${p.cs}</div>
+                </div>
+                <span class="proc-badge ${p.badge}">${p.badgeLabel}</span>
+            </div>
+            <div class="proc-row"><span class="lbl">Temperature</span><span class="val temp">${p.temp}</span></div>
+            <div class="proc-row"><span class="lbl">Cooling</span><span class="val blue">${p.cool}</span></div>
+            <div class="proc-row"><span class="lbl">Typical steels (EN)</span><span class="val" style="font-size:0.75rem">${p.steels}</span></div>
+            <div class="proc-row"><span class="lbl">Czech equivalents</span><span class="val orange" style="font-size:0.75rem">${p.czechSteels}</span></div>
+            <div class="hrd-bar-wrap">
+                <div class="hrd-bar-label"><span>Achievable hardness</span><span>${p.hardLabel}</span></div>
+                <div class="hrd-bar-track">
+                    <div class="hrd-bar-fill" style="margin-left:${pct1}%;width:${barW}%;background:${barColor};"></div>
+                    <div class="hrd-marker" style="left:25%"></div>
+                    <div class="hrd-marker" style="left:50%"></div>
+                    <div class="hrd-marker" style="left:75%"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.65rem;color:var(--text-gray);margin-top:2px;"><span>0</span><span>20</span><span>40</span><span>55</span><span>70 HRC</span></div>
+            </div>
+            <div class="proc-desc">${p.desc}${p.note ? `<div class="proc-note">⚠ ${p.note}</div>` : ''}</div>
+        </div>`;
+    }
+
+    function renderAll(cat) {
+        const grid = document.getElementById('proc-grid');
+        const filtered = cat === 'all' ? PROCESSES : PROCESSES.filter(p => p.cat === cat);
+        grid.innerHTML = filtered.map(renderCard).join('');
+        document.getElementById('count').textContent = filtered.length;
+    }
+
+    // Filter buttons
+    document.querySelectorAll('.fb').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.fb').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderAll(btn.dataset.cat);
+        });
+    });
+
+    renderAll('all');
+    </script>
+    <script src="../../js/nav.js"></script>
+</body>
+</html>

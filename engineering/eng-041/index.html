@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chain Drive Calculator | StrokeForge Engineering</title>
+    <meta name="description" content="Chain drive calculator: transmission ratio, pitch diameters, chain length in links, actual centre distance, wrap angle and polygonal effect. ISO 606 pitches.">
+    <meta name="keywords" content="chain drive calculator, řetězový převod, chain length, pitch diameter, řetěz výpočet, ISO 606, sprocket, počet článků">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-041/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 960px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        .input-grid   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        .input-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 640px) { .input-grid { grid-template-columns: 1fr 1fr; } .input-grid-2 { grid-template-columns: 1fr; } }
+
+        .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); }
+        .field-row { display: flex; gap: 0.5rem; align-items: center; }
+        .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .inp:focus { border-color: var(--primary-orange); }
+        .sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.88rem; outline: none; cursor: pointer; width: 100%; min-width: 0; }
+        .sel:focus { border-color: var(--primary-orange); }
+        .unit { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.6rem; font-size: 0.82rem; white-space: nowrap; flex-shrink: 0; }
+        .hint { font-size: 0.71rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        /* Side layout */
+        .side-layout { display: grid; grid-template-columns: 1fr 160px; gap: 2rem; align-items: start; }
+        @media (max-width: 620px) { .side-layout { grid-template-columns: 1fr; } }
+
+        /* Results table */
+        .res-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .res-table th { padding: 0.5rem 0.9rem; text-align: left; color: var(--text-gray); border-bottom: 1px solid var(--border-gray); font-size: 0.75rem; font-weight: 600; }
+        .res-table td { padding: 0.55rem 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .res-table td:first-child  { color: var(--primary-orange); font-weight: 600; font-family: monospace; width: 140px; }
+        .res-table td:nth-child(2) { color: var(--light-gray); font-weight: 700; font-size: 0.95rem; }
+        .res-table td:nth-child(3) { color: var(--text-gray); font-size: 0.8rem; width: 60px; }
+        .res-table td:nth-child(4) { color: var(--text-gray); font-size: 0.78rem; font-family: monospace; }
+        .res-table tr:last-child td { border-bottom: none; }
+        .res-table .sec-head td { color: var(--text-gray); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 1rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border-gray); }
+
+        /* Verdict */
+        .verdict { display: inline-block; padding: 0.3rem 1rem; border-radius: 6px; font-size: 0.88rem; font-weight: 700; margin-top: 0.5rem; }
+        .verdict.pass { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+        .verdict.fail { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+        .verdict.warn { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+
+        /* Diagram */
+        .diagram-wrap { display: flex; justify-content: center; padding: 0.5rem 0; }
+        svg text { font-family: inherit; }
+
+        /* Info */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.6; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+        .info-block code { background: rgba(255,255,255,0.07); padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.82rem; color: var(--light-gray); }
+        .mono { font-family: monospace; color: var(--light-gray); font-size: 0.82rem; line-height: 2.0; display: block; margin-top: 0.4rem; }
+
+        /* Pitch table */
+        .pitch-tbl { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 0.5rem; }
+        .pitch-tbl th { padding: 0.3rem 0.6rem; text-align: left; color: var(--text-gray); border-bottom: 1px solid var(--border-gray); font-size: 0.72rem; }
+        .pitch-tbl td { padding: 0.3rem 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text-gray); }
+        .pitch-tbl td:first-child { color: var(--primary-orange); font-weight: 700; }
+
+        details.card summary { cursor: pointer; color: var(--primary-orange); font-size: 0.9rem; font-weight: 600; }
+        details.card[open] summary { margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Chain Drive Calculator</h1>
+        <p>Chain length · centre distance · wrap angle · polygonal effect — ISO 606</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- INPUT -->
+        <div class="card">
+            <h2>Drive geometry &amp; speed</h2>
+            <div class="side-layout">
+                <div>
+                    <div class="input-grid" style="margin-bottom:1rem;">
+                        <div class="field">
+                            <label>Driver teeth <i>z</i><sub>1</sub></label>
+                            <div class="field-row">
+                                <input class="inp" type="number" id="z1" value="19" min="6" step="1" oninput="calc()">
+                                <span class="unit">—</span>
+                            </div>
+                            <span class="hint">Preferred: z₁ ≥ 17</span>
+                        </div>
+                        <div class="field">
+                            <label>Driven teeth <i>z</i><sub>2</sub></label>
+                            <div class="field-row">
+                                <input class="inp" type="number" id="z2" value="38" min="6" step="1" oninput="calc()">
+                                <span class="unit">—</span>
+                            </div>
+                            <span class="hint">Max z₂ ≈ 120</span>
+                        </div>
+                        <div class="field">
+                            <label>Chain pitch <i>p</i></label>
+                            <div class="field-row">
+                                <select class="sel" id="pitch" onchange="calc()">
+                                    <option value="6.35">6.35 mm — 1/4"</option>
+                                    <option value="8">8 mm — 5/16"</option>
+                                    <option value="9.525">9.525 mm — 3/8"</option>
+                                    <option value="12.7" selected>12.7 mm — 1/2" (most common)</option>
+                                    <option value="15.875">15.875 mm — 5/8"</option>
+                                    <option value="19.05">19.05 mm — 3/4"</option>
+                                    <option value="25.4">25.4 mm — 1"</option>
+                                    <option value="31.75">31.75 mm — 1-1/4"</option>
+                                    <option value="38.1">38.1 mm — 1-1/2"</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Desired centre distance <i>a</i></label>
+                            <div class="field-row">
+                                <input class="inp" type="number" id="a" value="500" min="50" step="5" oninput="calc()">
+                                <span class="unit">mm</span>
+                            </div>
+                            <span class="hint">Recom.: 30–50× pitch</span>
+                        </div>
+                        <div class="field">
+                            <label>Driver speed <i>n</i><sub>1</sub></label>
+                            <div class="field-row">
+                                <input class="inp" type="number" id="n1" value="960" min="1" step="10" oninput="calc()">
+                                <span class="unit">rpm</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Link count parity</label>
+                            <div class="field-row">
+                                <select class="sel" id="parity" onchange="calc()">
+                                    <option value="even" selected>Even (preferred)</option>
+                                    <option value="odd">Odd (with offset link)</option>
+                                    <option value="any">Any (nearest)</option>
+                                </select>
+                            </div>
+                            <span class="hint">Even avoids offset link</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mini chain diagram -->
+                <svg id="chainSvg" width="160" height="200" viewBox="0 0 160 200"></svg>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card">
+            <h2>Results</h2>
+            <table class="res-table">
+                <thead><tr><th>Parameter</th><th>Value</th><th>Unit</th><th>Formula / note</th></tr></thead>
+                <tbody id="resBody"></tbody>
+            </table>
+        </div>
+
+        <!-- SVG Diagram -->
+        <div class="card">
+            <h2>Drive Diagram</h2>
+            <div class="diagram-wrap">
+                <svg id="diagram" width="560" height="250" viewBox="0 0 560 250"></svg>
+            </div>
+        </div>
+
+        <!-- Info -->
+        <details class="card">
+            <summary>Formulas &amp; ISO 606 chain pitches</summary>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Geometry</h3>
+                    <span class="mono">i = z₂/z₁ = n₁/n₂<br>d₁ = p / sin(π/z₁)  [pitch dia]<br>d₂ = p / sin(π/z₂)<br>v = z₁·p·n₁ / 60 000  [m/s]</span>
+                </div>
+                <div class="info-block">
+                    <h3>Chain length</h3>
+                    <span class="mono">X = a/p  (a in links)<br>L = 2X + (z₁+z₂)/2 + (z₂−z₁)²/(4π²X)<br>→ round to even integer<br>a_actual = p/4·[Y + √(Y² − 8·Δz²/π²)]<br>where Y = L − (z₁+z₂)/2,  Δz = z₂−z₁</span>
+                </div>
+                <div class="info-block">
+                    <h3>Wrap angle</h3>
+                    <span class="mono">α₁ = 180° − 60°·(z₂−z₁)/X_links<br>(simplified)<br>or: α₁ = 180° − 2·arcsin((d₂−d₁)/(2a))</span>
+                    <p>Minimum α₁ = 120°. Below this use a tensioner.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Polygonal effect</h3>
+                    <span class="mono">δv/v = 1 − cos(π/z₁)</span>
+                    <p>Speed variation due to chain link geometry. Higher tooth count → smoother running. z₁ ≥ 17 for smooth operation at higher speeds.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Standard ISO 606 pitches</h3>
+                    <table class="pitch-tbl">
+                        <thead><tr><th>Pitch</th><th>Inch</th><th>ISO chain</th><th>v_max</th></tr></thead>
+                        <tbody>
+                            <tr><td>6.35 mm</td><td>1/4"</td><td>04B</td><td>3 m/s</td></tr>
+                            <tr><td>9.525 mm</td><td>3/8"</td><td>06B</td><td>8 m/s</td></tr>
+                            <tr><td>12.7 mm</td><td>1/2"</td><td>08B / ANSI 40</td><td>15 m/s</td></tr>
+                            <tr><td>15.875 mm</td><td>5/8"</td><td>10B / ANSI 50</td><td>15 m/s</td></tr>
+                            <tr><td>19.05 mm</td><td>3/4"</td><td>12B / ANSI 60</td><td>12 m/s</td></tr>
+                            <tr><td>25.4 mm</td><td>1"</td><td>16B / ANSI 80</td><td>10 m/s</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="info-block">
+                    <h3>Design guidelines</h3>
+                    <ul>
+                        <li>z₁ ≥ 17 for smooth running (z₁ = 19, 21, 23 typical)</li>
+                        <li>z₂ ≤ 120 to avoid long pitch engagement</li>
+                        <li>i ≤ 6 for single-stage chain drives</li>
+                        <li>Centre distance: 30–50× pitch preferred</li>
+                        <li>Even number of links avoids offset/half link</li>
+                        <li>Upper chain strand should be the tight side (slack side sags below)</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+    </main>
+
+    <footer>
+        <p>StrokeForge Engineering — reference tools for mechanical design</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    function fmt(v, dec) { return isFinite(v) && !isNaN(v) ? v.toFixed(dec) : '—'; }
+    function row(sym, val, unit, note, col) {
+        const s = col ? ` style="color:${col}"` : '';
+        return `<tr><td>${sym}</td><td${s}>${val}</td><td>${unit||''}</td><td>${note||''}</td></tr>`;
+    }
+    function secHead(t) { return `<tr class="sec-head"><td colspan="4">${t}</td></tr>`; }
+
+    function roundLinks(L, parity) {
+        if (parity === 'even') return Math.ceil(L % 2 < 1 ? L : L + (2 - L % 2)) % 2 === 0 ? Math.ceil(L) + (Math.ceil(L) % 2 !== 0 ? 1 : 0) : Math.ceil(L);
+        if (parity === 'odd')  { const r = Math.round(L); return r % 2 === 0 ? r + 1 : r; }
+        return Math.round(L);
+    }
+
+    function roundEven(L) { const r = Math.ceil(L); return r % 2 === 0 ? r : r + 1; }
+    function roundOdd(L)  { const r = Math.round(L); return r % 2 !== 0 ? r : r + 1; }
+    function roundAny(L)  { return Math.round(L); }
+
+    function calc() {
+        const z1 = parseInt(document.getElementById('z1').value) || 19;
+        const z2 = parseInt(document.getElementById('z2').value) || 38;
+        const p  = parseFloat(document.getElementById('pitch').value) || 12.7;
+        const a  = parseFloat(document.getElementById('a').value) || 500;
+        const n1 = parseFloat(document.getElementById('n1').value) || 960;
+        const parity = document.getElementById('parity').value;
+
+        // Kinematics
+        const i  = z2 / z1;
+        const n2 = n1 / i;
+        const v  = z1 * p * n1 / 60000; // m/s
+
+        // Pitch diameters
+        const d1 = p / Math.sin(Math.PI / z1);
+        const d2 = p / Math.sin(Math.PI / z2);
+
+        // Chain length in links (exact)
+        const X  = a / p;   // centre distance in link pitches
+        const dz = z2 - z1;
+        const L_exact = 2*X + (z1+z2)/2 + dz*dz / (4 * Math.PI * Math.PI * X);
+
+        // Round to parity
+        let L_round;
+        if (parity === 'even')      L_round = roundEven(L_exact);
+        else if (parity === 'odd')  L_round = roundOdd(L_exact);
+        else                        L_round = roundAny(L_exact);
+
+        // Actual centre distance from rounded link count
+        const Y = L_round - (z1+z2)/2;
+        const disc = Y*Y - 8*dz*dz/(4*Math.PI*Math.PI);
+        const a_actual = disc >= 0 ? p/4 * (Y + Math.sqrt(disc)) : null;
+        const da = a_actual !== null ? a_actual - a : null;
+
+        // Wrap angle on small sprocket
+        const sinA = a_actual && d1 && d2 ? (d2-d1)/(2*a_actual) : (d2-d1)/(2*a);
+        const alpha1_rad = Math.PI - 2*Math.asin(Math.min(Math.abs(sinA), 0.999)) * Math.sign(sinA+0.001);
+        const alpha1_deg = alpha1_rad * 180 / Math.PI;
+
+        // Polygonal effect
+        const poly = (1 - Math.cos(Math.PI/z1)) * 100; // %
+
+        // Chain length in mm
+        const L_mm = L_round * p;
+
+        // Checks
+        const warnZ1    = z1 < 17;
+        const warnZ2    = z2 > 120;
+        const warnSpeed = v > 15;
+        const warnWrap  = alpha1_deg < 120;
+        const warnRatio = i > 6;
+        const warnCentre= a < 30*p || a > 50*p;
+        const allOk = !warnZ1 && !warnZ2 && !warnSpeed && !warnWrap && !warnRatio;
+
+        // Build results
+        let html = '';
+        html += secHead('Kinematics');
+        html += row('i',         fmt(i,3),          '—',  'z₂ / z₁ = n₁ / n₂');
+        html += row('n₂',        fmt(n2,1),         'rpm', `n₁ / i`);
+        html += row('v',         fmt(v,2),           'm/s','z₁·p·n₁ / 60 000', v > 15 ? '#f87171' : v > 10 ? '#fbbf24' : '#4ade80');
+
+        html += secHead('Sprocket diameters');
+        html += row('d₁',        fmt(d1,1),          'mm', `p / sin(π/${z1})`);
+        html += row('d₂',        fmt(d2,1),          'mm', `p / sin(π/${z2})`);
+        html += row('α₁',        fmt(alpha1_deg,1),  '°',  'Wrap on small sprocket', alpha1_deg < 120 ? '#f87171' : alpha1_deg < 150 ? '#fbbf24' : '#4ade80');
+
+        html += secHead('Chain length');
+        html += row('L (exact)', fmt(L_exact,2),     'links','2X + (z₁+z₂)/2 + (z₂−z₁)²/(4π²X)');
+        html += row('L (rounded)',L_round,            'links', parity === 'even' ? 'Even — no offset link' : parity === 'odd' ? 'Odd — offset link needed' : 'Nearest integer');
+        html += row('L_mm',      fmt(L_mm,0),        'mm',  'L × p');
+
+        html += secHead('Actual centre distance');
+        html += row('a_desired', fmt(a,0),            'mm', 'Input value');
+        html += row('a_actual',  a_actual !== null ? fmt(a_actual,1) : '—', 'mm', 'From rounded link count');
+        html += row('Δa',        da !== null ? (da >= 0 ? '+' : '') + fmt(da,1) : '—', 'mm', da !== null ? (Math.abs(da) < 0.5 ? 'Negligible adjustment' : (da > 0 ? 'Increase centre distance' : 'Reduce centre distance')) : '');
+
+        html += secHead('Polygonal effect');
+        html += row('δv/v',      fmt(poly,2),         '%',  `1 − cos(π/${z1}) × 100`, poly > 3 ? '#fbbf24' : '#4ade80');
+        html += row('z₁',        z1,                  '—',  z1 < 17 ? '⚠ Prefer z₁ ≥ 17' : '✓ OK', z1 < 17 ? '#f87171' : '#4ade80');
+
+        // Verdict
+        html += `<tr><td colspan="4" style="padding-top:0.75rem;">`;
+        const vClass = allOk ? 'pass' : (warnSpeed && v > 15 ? 'fail' : 'warn');
+        const vText  = allOk ? '✓ PASS — all checks satisfied'
+                             : (warnSpeed && v > 15 ? '✗ FAIL — chain speed exceeds limit' : '⚠ WARN — see checks below');
+        html += `<span class="verdict ${vClass}">${vText}</span>`;
+        if (warnZ1)    html += `<div style="font-size:0.78rem;color:#f59e0b;margin-top:0.35rem;">⚠ z₁ = ${z1} &lt; 17 — increased polygonal effect and wear rate</div>`;
+        if (warnZ2)    html += `<div style="font-size:0.78rem;color:#f87171;margin-top:0.35rem;">✗ z₂ = ${z2} &gt; 120 — excessive tooth count</div>`;
+        if (warnRatio) html += `<div style="font-size:0.78rem;color:#f59e0b;margin-top:0.35rem;">⚠ Ratio i = ${fmt(i,2)} &gt; 6 — consider two-stage drive</div>`;
+        if (warnWrap)  html += `<div style="font-size:0.78rem;color:#f87171;margin-top:0.35rem;">✗ Wrap α₁ = ${fmt(alpha1_deg,1)}° &lt; 120° — add tensioner sprocket</div>`;
+        if (warnSpeed) html += `<div style="font-size:0.78rem;color:#f87171;margin-top:0.35rem;">✗ v = ${fmt(v,2)} m/s exceeds recommended limit for this pitch</div>`;
+        if (warnCentre)html += `<div style="font-size:0.78rem;color:#f59e0b;margin-top:0.35rem;">⚠ Centre distance a = ${a} mm outside 30–50× pitch range (${fmt(30*p,0)}–${fmt(50*p,0)} mm)</div>`;
+        html += `</td></tr>`;
+
+        document.getElementById('resBody').innerHTML = html;
+        drawMiniChain(z1, z2, p, v);
+        drawDiagram(z1, z2, d1, d2, a_actual || a, alpha1_deg, L_round, p, allOk);
+    }
+
+    // Mini side SVG — chain links schematic
+    function drawMiniChain(z1, z2, p, v) {
+        const svg = document.getElementById('chainSvg');
+        svg.innerHTML = '';
+        const ns = 'http://www.w3.org/2000/svg';
+        const W=160, H=200;
+        const orange='#f97316', gray='#9ca3af';
+
+        function txt(x,y,t,col,size,anchor) {
+            const e=document.createElementNS(ns,'text');
+            e.setAttribute('x',x);e.setAttribute('y',y);e.setAttribute('fill',col||gray);
+            e.setAttribute('font-size',size||9);e.setAttribute('text-anchor',anchor||'middle');
+            e.setAttribute('dominant-baseline','middle');e.textContent=t;svg.appendChild(e);
+        }
+        function circ(cx,cy,r,fill,stroke,sw) {
+            const e=document.createElementNS(ns,'circle');
+            e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('r',r);
+            e.setAttribute('fill',fill||'none');
+            if(stroke){e.setAttribute('stroke',stroke);e.setAttribute('stroke-width',sw||1.5);}
+            svg.appendChild(e);
+        }
+        function ln(x1,y1,x2,y2,col,w) {
+            const e=document.createElementNS(ns,'line');
+            e.setAttribute('x1',x1);e.setAttribute('y1',y1);e.setAttribute('x2',x2);e.setAttribute('y2',y2);
+            e.setAttribute('stroke',col||gray);e.setAttribute('stroke-width',w||1.5);svg.appendChild(e);
+        }
+
+        // Small sprocket
+        const cx1=45, cy1=100, r1=35;
+        circ(cx1,cy1,r1,'rgba(30,30,30,0.8)',orange,2);
+        circ(cx1,cy1,r1*0.4,'rgba(249,115,22,0.15)',orange,1);
+        // Teeth on small
+        const nt=Math.min(z1,8);
+        for(let i=0;i<nt;i++){
+            const ang=2*Math.PI*i/nt;
+            const tx=cx1+(r1+5)*Math.cos(ang), ty=cy1+(r1+5)*Math.sin(ang);
+            const e=document.createElementNS(ns,'circle');
+            e.setAttribute('cx',tx);e.setAttribute('cy',ty);e.setAttribute('r',3);
+            e.setAttribute('fill',orange);svg.appendChild(e);
+        }
+        txt(cx1,cy1,`z₁=${parseInt(document.getElementById('z1').value)||19}`,orange,8.5);
+
+        // Large sprocket (partially visible on right)
+        const cx2=145, cy2=100, r2=55;
+        const clipEl=document.createElementNS(ns,'clipPath');
+        clipEl.setAttribute('id','clip1');
+        const clipRect=document.createElementNS(ns,'rect');
+        clipRect.setAttribute('x','100');clipRect.setAttribute('y','0');
+        clipRect.setAttribute('width','60');clipRect.setAttribute('height',H.toString());
+        clipEl.appendChild(clipRect);svg.appendChild(clipEl);
+        const gLarge=document.createElementNS(ns,'g');
+        gLarge.setAttribute('clip-path','url(#clip1)');
+        const c2=document.createElementNS(ns,'circle');
+        c2.setAttribute('cx',cx2.toString());c2.setAttribute('cy',cy2.toString());c2.setAttribute('r',r2.toString());
+        c2.setAttribute('fill','rgba(30,30,30,0.8)');c2.setAttribute('stroke',gray);c2.setAttribute('stroke-width','2');
+        gLarge.appendChild(c2);
+        svg.appendChild(gLarge);
+        txt(W-10,cy2,`z₂`,gray,8.5,'end');
+
+        // Chain spans
+        ln(cx1,cy1-r1,W,cy1-r1,orange,2);
+        ln(cx1,cy1+r1,W,cy1+r1,orange,1.5);
+
+        // Chain links (top strand)
+        const np=Math.min(6, Math.floor((W-cx1-r1)/16));
+        for(let i=0;i<np;i++){
+            const lx=cx1+r1+4+i*16;
+            circ(lx,cy1-r1,5,'rgba(249,115,22,0.1)',orange,1.5);
+        }
+        // Speed label
+        txt(W/2, H-12, `v = ${isFinite(v)?v.toFixed(2):'—'} m/s`, gray, 8.5);
+    }
+
+    // Main SVG diagram
+    function drawDiagram(z1, z2, d1, d2, a, alpha1, L_links, p, allOk) {
+        const svg = document.getElementById('diagram');
+        svg.innerHTML = '';
+        const ns    = 'http://www.w3.org/2000/svg';
+        const orange='#f97316', gray='#9ca3af', light='#e5e7eb', blue='#60a5fa',
+              green='#4ade80', red='#f87171', yellow='#fbbf24';
+        const W=560, H=250;
+        const chainColor = allOk ? orange : (alpha1 < 120 ? red : yellow);
+
+        function ln(x1,y1,x2,y2,col,w,dash) {
+            const e=document.createElementNS(ns,'line');
+            e.setAttribute('x1',x1);e.setAttribute('y1',y1);e.setAttribute('x2',x2);e.setAttribute('y2',y2);
+            e.setAttribute('stroke',col||gray);e.setAttribute('stroke-width',w||1.5);
+            if(dash)e.setAttribute('stroke-dasharray',dash);svg.appendChild(e);
+        }
+        function circ(cx,cy,r,fill,stroke,sw) {
+            const e=document.createElementNS(ns,'circle');
+            e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('r',r);
+            e.setAttribute('fill',fill||'none');
+            if(stroke){e.setAttribute('stroke',stroke);e.setAttribute('stroke-width',sw||1.8);}
+            svg.appendChild(e);
+        }
+        function txt(x,y,t,col,size,anchor,weight) {
+            const e=document.createElementNS(ns,'text');
+            e.setAttribute('x',x);e.setAttribute('y',y);e.setAttribute('fill',col||light);
+            e.setAttribute('font-size',size||11);e.setAttribute('text-anchor',anchor||'middle');
+            e.setAttribute('dominant-baseline','middle');if(weight)e.setAttribute('font-weight',weight);
+            e.textContent=t;svg.appendChild(e);
+        }
+
+        // Scale pulleys to fit
+        const margin = 50;
+        const scale  = Math.min(80/(d2/2), (W - 2*margin - 20)/(a + d1/2 + d2/2));
+        const r1 = Math.max(d1/2*scale, 16);
+        const r2 = Math.max(d2/2*scale, 24);
+        const cx1 = margin + r1;
+        const cx2 = Math.min(W - margin - r2, cx1 + a*scale);
+        const cy  = H/2;
+
+        // Belt tangent
+        const dy  = (r2 - r1);
+        const dx  = cx2 - cx1;
+        const dist= Math.sqrt(dx*dx + dy*dy);
+        const sinT= dy/dist, cosT= dx/dist;
+        const bx1T=cx1-sinT*r1, by1T=cy-cosT*r1;
+        const bx2T=cx2-sinT*r2, by2T=cy-cosT*r2;
+        const bx1B=cx1+sinT*r1, by1B=cy+cosT*r1;
+        const bx2B=cx2+sinT*r2, by2B=cy+cosT*r2;
+
+        // Chain strands — draw as thick lines with link dots
+        ln(bx1T,by1T,bx2T,by2T,chainColor,3.5);  // tight
+        ln(bx1B,by1B,bx2B,by2B,chainColor,2,'5,3'); // slack (dashed)
+
+        // Chain link pins along tight side
+        const spanLen = Math.sqrt((bx2T-bx1T)**2+(by2T-by1T)**2);
+        const nLinks  = Math.floor(spanLen / (p * scale));
+        const lx_step = (bx2T-bx1T)/(nLinks+1);
+        const ly_step = (by2T-by1T)/(nLinks+1);
+        for(let i=1;i<=nLinks;i++){
+            const lx=bx1T+lx_step*i, ly=by1T+ly_step*i;
+            circ(lx,ly,2.5,'rgba(249,115,22,0.25)',chainColor,1);
+        }
+
+        // Sprockets
+        circ(cx1,cy,r1,'rgba(25,25,25,0.9)',orange,2);
+        circ(cx1,cy,r1*0.35,'rgba(249,115,22,0.12)',orange,1);
+        const nTeeth1=Math.min(z1,12);
+        for(let i=0;i<nTeeth1;i++){
+            const ang=2*Math.PI*i/nTeeth1;
+            const tx=cx1+(r1+4)*Math.cos(ang), ty=cy+(r1+4)*Math.sin(ang);
+            const e=document.createElementNS(ns,'circle');
+            e.setAttribute('cx',tx);e.setAttribute('cy',ty);e.setAttribute('r',3);
+            e.setAttribute('fill',orange);svg.appendChild(e);
+        }
+
+        circ(cx2,cy,r2,'rgba(25,25,25,0.9)',gray,2);
+        circ(cx2,cy,r2*0.35,'rgba(100,116,139,0.12)',gray,1);
+        const nTeeth2=Math.min(z2,16);
+        for(let i=0;i<nTeeth2;i++){
+            const ang=2*Math.PI*i/nTeeth2;
+            const tx=cx2+(r2+4)*Math.cos(ang), ty=cy+(r2+4)*Math.sin(ang);
+            const e=document.createElementNS(ns,'circle');
+            e.setAttribute('cx',tx);e.setAttribute('cy',ty);e.setAttribute('r',3.5);
+            e.setAttribute('fill',gray);svg.appendChild(e);
+        }
+
+        // Labels
+        txt(cx1,cy,`z₁=${z1}`,orange,9);
+        txt(cx2,cy,`z₂=${z2}`,gray,9);
+        txt(cx1,cy+r1+14,`d₁=${d1.toFixed(1)}`,orange,8.5);
+        txt(cx2,cy+r2+14,`d₂=${d2.toFixed(1)}`,gray,8.5);
+
+        // Wrap angle arc on small sprocket
+        const arcR = r1+9;
+        const angHalf = (180 - alpha1) * Math.PI/180 / 2;
+        const ax1 = cx1+arcR*Math.cos(Math.PI-angHalf), ay1 = cy-arcR*Math.sin(Math.PI-angHalf);
+        const ax2 = cx1+arcR*Math.cos(Math.PI+angHalf), ay2 = cy+arcR*Math.sin(Math.PI+angHalf);
+        const arcPath=document.createElementNS(ns,'path');
+        arcPath.setAttribute('d',`M ${ax1},${ay1} A ${arcR} ${arcR} 0 ${alpha1>180?1:0} 0 ${ax2},${ay2}`);
+        arcPath.setAttribute('stroke',alpha1<120?red:blue);arcPath.setAttribute('fill','none');
+        arcPath.setAttribute('stroke-width','1.5');arcPath.setAttribute('stroke-dasharray','3,2');
+        svg.appendChild(arcPath);
+        txt(cx1-arcR-16,cy,`α₁=${alpha1.toFixed(1)}°`,alpha1<120?red:blue,8,'end');
+
+        // Centre distance
+        ln(cx1,cy+Math.max(r1,r2)+22,cx2,cy+Math.max(r1,r2)+22,gray,1);
+        ln(cx1,cy+Math.max(r1,r2)+16,cx1,cy+Math.max(r1,r2)+28,gray,1);
+        ln(cx2,cy+Math.max(r1,r2)+16,cx2,cy+Math.max(r1,r2)+28,gray,1);
+        txt((cx1+cx2)/2,cy+Math.max(r1,r2)+38,`a = ${document.getElementById('a').value||'—'} mm`,gray,9);
+
+        // Strand labels
+        const tmx=(bx1T+bx2T)/2, tmy=(by1T+by2T)/2;
+        txt(tmx,tmy-10,`tight side`,chainColor,8.5);
+        txt((bx1B+bx2B)/2,(by1B+by2B)/2+12,'slack side (sag)',gray,8.5);
+
+        // Top label
+        txt(W/2,14,`p = ${document.getElementById('pitch').value} mm  ·  L = ${L_links} links`,gray,9);
+    }
+
+    calc();
+    </script>
+</body>
+</html>

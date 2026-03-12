@@ -1,0 +1,9 @@
+{
+  "id": "eng-033",
+  "title": "Riveted Joint Calculator",
+  "description": "Riveted joint strength check per general machine design principles. Calculates rivet shear, plate bearing and net section stresses with PASS/FAIL verdict.",
+  "category": "joints",
+  "icon": "🔩",
+  "difficulty": "intermediate",
+  "topic": "svarove-spoje"
+}
