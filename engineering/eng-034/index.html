@@ -331,6 +331,11 @@
     </footer>
 
     <script>
+    // Decimal separator helper — accepts both "." and ","
+    function pf(id) {
+        return parseFloat((document.getElementById(id).value || '').replace(',', '.')) || 0;
+    }
+
     let activeBeta = 1.0;
     let activeCase = 1;
 
@@ -346,23 +351,23 @@
         const type = document.getElementById('sec-type').value;
         let I = 0, A = 0;
         if (type === 'rect') {
-            const b = parseFloat(document.getElementById('r-b').value) || 0;
-            const h = parseFloat(document.getElementById('r-h').value) || 0;
+            const b = pf('r-b') || 0;
+            const h = pf('r-h') || 0;
             I = b * h * h * h / 12;
             A = b * h;
         } else if (type === 'circle') {
-            const d = parseFloat(document.getElementById('c-d').value) || 0;
+            const d = pf('c-d') || 0;
             I = Math.PI * d * d * d * d / 64;
             A = Math.PI * d * d / 4;
         } else if (type === 'hollow') {
-            const D = parseFloat(document.getElementById('h-D').value) || 0;
-            const d = parseFloat(document.getElementById('h-d').value) || 0;
+            const D = pf('h-D') || 0;
+            const d = pf('h-d') || 0;
             if (d >= D) return { I: 0, A: 0, invalid: true };
             I = Math.PI * (D * D * D * D - d * d * d * d) / 64;
             A = Math.PI * (D * D - d * d) / 4;
         } else {
-            I = parseFloat(document.getElementById('cu-I').value) || 0;
-            A = parseFloat(document.getElementById('cu-A').value) || 0;
+            I = pf('cu-I') || 0;
+            A = pf('cu-A') || 0;
         }
         return { I, A, invalid: false };
     }
@@ -377,8 +382,8 @@
     }
 
     function calculate() {
-        const L     = parseFloat(document.getElementById('L').value)     || 0;
-        const F     = parseFloat(document.getElementById('force').value) || 0;
+        const L     = pf('L')     || 0;
+        const F     = pf('force') || 0;
         const matStr= document.getElementById('material').value;
         const [E, fy] = matStr.split(',').map(Number);
         const beta  = activeBeta;

@@ -288,6 +288,11 @@
 
     <script src="../../js/nav.js"></script>
     <script>
+    // Decimal separator helper — accepts both "." and ","
+    function pf(id) {
+        return parseFloat((document.getElementById(id).value || '').replace(',', '.')) || 0;
+    }
+
     // ─── MODE ─────────────────────────────────────────────────────────────────────
     let mode = 'std';
     function setMode(m) {
@@ -306,7 +311,7 @@
 
     function getM() {
         const v = document.getElementById('modSel').value;
-        if (v === 'custom') return parseFloat(document.getElementById('mCustom').value) || 2;
+        if (v === 'custom') return pf('mCustom') || 2;
         return parseFloat(v) || 2;
     }
 
@@ -339,13 +344,13 @@
     // ─── MAIN CALC ────────────────────────────────────────────────────────────────
     function calc() {
         const m  = getM();
-        const z1 = Math.max(5, Math.round(parseFloat(document.getElementById('z1').value) || 18));
-        const z2 = Math.max(5, Math.round(parseFloat(document.getElementById('z2').value) || 36));
-        const alphaDeg = parseFloat(document.getElementById('alphaSel').value) || 20;
+        const z1 = Math.max(5, Math.round(pf('z1') || 18));
+        const z2 = Math.max(5, Math.round(pf('z2') || 36));
+        const alphaDeg = pf('alphaSel') || 20;
         const alpha = alphaDeg * Math.PI / 180;
-        const bfw = parseFloat(document.getElementById('bfw').value) || 20;
-        const x1 = mode === 'shift' ? (parseFloat(document.getElementById('x1').value) || 0) : 0;
-        const x2 = mode === 'shift' ? (parseFloat(document.getElementById('x2').value) || 0) : 0;
+        const bfw = pf('bfw') || 20;
+        const x1 = mode === 'shift' ? (pf('x1') || 0) : 0;
+        const x2 = mode === 'shift' ? (pf('x2') || 0) : 0;
 
         // --- Pitch diameters ---
         const d1 = m * z1;

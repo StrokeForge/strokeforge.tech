@@ -276,6 +276,11 @@
     </footer>
 
     <script>
+    // Decimal separator helper — accepts both "." and ","
+    function pf(id) {
+        return parseFloat((document.getElementById(id).value || '').replace(',', '.')) || 0;
+    }
+
     // Material data: fy [MPa]
     const MAT = {
         '235': 235,
@@ -290,12 +295,12 @@
     function fmt2(v) { return v.toFixed(2); }
 
     function calculate() {
-        const t       = parseFloat(document.getElementById('t').value)     || 0;
-        const l       = parseFloat(document.getElementById('l').value)     || 0;
-        const F       = parseFloat(document.getElementById('force').value) || 0;
+        const t       = pf('t')     || 0;
+        const l       = pf('l')     || 0;
+        const F       = pf('force') || 0;
         const matKey  = document.getElementById('material').value;
         const quality = document.getElementById('quality').value;
-        const gM0     = parseFloat(document.getElementById('gM0').value);
+        const gM0     = pf('gM0');
 
         const fy = MAT[matKey];
 

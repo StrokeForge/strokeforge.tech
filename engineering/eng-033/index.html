@@ -307,6 +307,11 @@
     </footer>
 
     <script>
+    // Decimal separator helper — accepts both "." and ","
+    function pf(id) {
+        return parseFloat((document.getElementById(id).value || '').replace(',', '.')) || 0;
+    }
+
     // Material: [fy, fu] MPa
     const MAT = {
         '235': [235, 360],
@@ -340,15 +345,15 @@
     }
 
     function calculate() {
-        const d    = parseFloat(document.getElementById('d').value)     || 0;
-        const n    = parseFloat(document.getElementById('n').value)     || 1;
-        const nr   = parseFloat(document.getElementById('nr').value)    || 1;
-        const t    = parseFloat(document.getElementById('t').value)     || 0;
-        const b    = parseFloat(document.getElementById('b').value)     || 0;
-        const F    = parseFloat(document.getElementById('force').value) || 0;
+        const d    = pf('d')     || 0;
+        const n    = pf('n')     || 1;
+        const nr   = pf('nr')    || 1;
+        const t    = pf('t')     || 0;
+        const b    = pf('b')     || 0;
+        const F    = pf('force') || 0;
         const [fy, fu] = MAT[document.getElementById('material').value];
-        const gM2  = parseFloat(document.getElementById('gM2').value);
-        const gM0  = parseFloat(document.getElementById('gM0').value);
+        const gM2  = pf('gM2');
+        const gM0  = pf('gM0');
         const m    = (activeMode === 'double') ? 2 : 1;
 
         // Warn: hide all

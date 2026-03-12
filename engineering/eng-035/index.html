@@ -330,6 +330,11 @@
     </footer>
 
     <script>
+    // Decimal separator helper — accepts both "." and ","
+    function pf(id) {
+        return parseFloat((document.getElementById(id).value || '').replace(',', '.')) || 0;
+    }
+
     let activeMode = 'udl';
 
     function switchSection() {
@@ -343,27 +348,27 @@
     function getI() {
         const type = document.getElementById('sec-type').value;
         if (type === 'rect') {
-            const b = parseFloat(document.getElementById('r-b').value)||0;
-            const h = parseFloat(document.getElementById('r-h').value)||0;
+            const b = pf('r-b')||0;
+            const h = pf('r-h')||0;
             return b * h * h * h / 12;
         } else if (type === 'circle') {
-            const d = parseFloat(document.getElementById('c-d').value)||0;
+            const d = pf('c-d')||0;
             return Math.PI * d**4 / 64;
         } else if (type === 'hollow') {
-            const D = parseFloat(document.getElementById('h-D').value)||0;
-            const d = parseFloat(document.getElementById('h-d').value)||0;
+            const D = pf('h-D')||0;
+            const d = pf('h-d')||0;
             if (d >= D) return -1;
             return Math.PI * (D**4 - d**4) / 64;
         } else if (type === 'ipe') {
-            return parseFloat(document.getElementById('ipe-sel').value)||0;
+            return pf('ipe-sel')||0;
         } else {
-            return parseFloat(document.getElementById('cu-I').value)||0;
+            return pf('cu-I')||0;
         }
     }
 
     function getE() {
         const sel = document.getElementById('material').value;
-        if (sel === 'custom') return parseFloat(document.getElementById('E-custom').value)||210000;
+        if (sel === 'custom') return pf('E-custom')||210000;
         return parseFloat(sel);
     }
 
@@ -373,7 +378,7 @@
     function fmtEI(v) { if (!isFinite(v)||v<=0) return '—'; return (v/1e9).toFixed(2)+' kNm²'; }
 
     function calculate() {
-        const L = parseFloat(document.getElementById('L').value)||0;
+        const L = pf('L')||0;
         const E = getE();
         const I = getI();
         const EI = E * I; // N·mm²
@@ -387,7 +392,7 @@
         let aVal = 0, bVal = 0;
 
         if (activeMode === 'udl') {
-            const w = (parseFloat(document.getElementById('w').value)||0); // kN/m
+            const w = (pf('w')||0); // kN/m
             const wNmm = w / 1000; // N/mm
             RA = wNmm * L / 2;              // N
             RB = RA;
@@ -398,7 +403,7 @@
             document.getElementById('w-symm').classList.add('show');
 
         } else if (activeMode === 'center') {
-            const P = (parseFloat(document.getElementById('P').value)||0) * 1000; // N
+            const P = (pf('P')||0) * 1000; // N
             RA = P / 2;
             RB = P / 2;
             MA = -P * L / 8;
@@ -409,10 +414,10 @@
 
         } else { // eccentric
             eccentric = true;
-            aVal = parseFloat(document.getElementById('a').value)||0;
+            aVal = pf('a')||0;
             bVal = L - aVal;
             if (aVal <= 0 || aVal >= L) { document.getElementById('w-a').classList.add('show'); return; }
-            const P = (parseFloat(document.getElementById('P').value)||0) * 1000; // N
+            const P = (pf('P')||0) * 1000; // N
             RA = P * bVal * bVal * (3 * aVal + bVal) / L**3;
             RB = P * aVal * aVal * (3 * bVal + aVal) / L**3;
             MA = -P * aVal * bVal * bVal / L**2;

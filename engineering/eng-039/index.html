@@ -256,6 +256,11 @@
 
     <script src="../../js/nav.js"></script>
     <script>
+    // Decimal separator helper — accepts both "." and ","
+    function pf(id) {
+        return parseFloat((document.getElementById(id).value || '').replace(',', '.')) || 0;
+    }
+
     // ─── MATERIAL DATA ────────────────────────────────────────────────────────────
     // G [MPa], Rm table by wire diameter
     const MAT_G = {
@@ -266,7 +271,7 @@
     };
     // Rm [MPa] by d breakpoints for EN 10270-1 / EN 10270-2 spring steel
     function getRm(d, matKey) {
-        if (matKey === 'custom') return parseFloat(document.getElementById('tauAllow').value) / 0.45 || 1550;
+        if (matKey === 'custom') return pf('tauAllow') / 0.45 || 1550;
         if (matKey === '43000') { // phosphor bronze — flat Rm
             return d <= 0.5 ? 700 : d <= 1 ? 640 : d <= 2 ? 580 : d <= 4 ? 530 : d <= 8 ? 490 : 460;
         }
@@ -279,7 +284,7 @@
 
     function getG() {
         const m = document.getElementById('mat').value;
-        if (m === 'custom') return parseFloat(document.getElementById('Gcust').value) || 81500;
+        if (m === 'custom') return pf('Gcust') || 81500;
         return MAT_G[m] || 81500;
     }
 
@@ -306,12 +311,12 @@
     }
 
     function calc() {
-        const d  = parseFloat(document.getElementById('dw').value) || 0;
-        const D  = parseFloat(document.getElementById('Dm').value) || 0;
-        const n  = parseFloat(document.getElementById('na').value) || 0;
-        const F0 = parseFloat(document.getElementById('F0').value) || 0;
-        const F1 = parseFloat(document.getElementById('F1').value) || 0;
-        const F2 = parseFloat(document.getElementById('F2').value) || 0;
+        const d  = pf('dw') || 0;
+        const D  = pf('Dm') || 0;
+        const n  = pf('na') || 0;
+        const F0 = pf('F0') || 0;
+        const F1 = pf('F1') || 0;
+        const F2 = pf('F2') || 0;
         const hookType = document.getElementById('hooks').value;
         const matKey   = document.getElementById('mat').value;
 

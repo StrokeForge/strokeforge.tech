@@ -315,6 +315,11 @@
     </footer>
 
     <script>
+    // Decimal separator helper — accepts both "." and ","
+    function pf(id) {
+        return parseFloat((document.getElementById(id).value || '').replace(',', '.')) || 0;
+    }
+
     let activeSec = 'rect';
 
     const FY = { '235':235, '275':275, '355':355, '460':460 };
@@ -334,9 +339,9 @@
     function fmtI(v) { if(!isFinite(v)||v<=0)return '—'; if(v>=1e6)return (v/1e6).toFixed(2)+' ×10⁶ mm⁴'; if(v>=1e3)return (v/1e3).toFixed(1)+' ×10³ mm⁴'; return v.toFixed(0)+' mm⁴'; }
 
     function calculate() {
-        const V   = (parseFloat(document.getElementById('V').value)||0) * 1000; // N
+        const V   = (pf('V')||0) * 1000; // N
         const fy  = FY[document.getElementById('material').value];
-        const gM0 = parseFloat(document.getElementById('gM0').value);
+        const gM0 = pf('gM0');
 
         ['w-hollow','w-high'].forEach(id => document.getElementById(id).classList.remove('show'));
 
@@ -346,8 +351,8 @@
         let valid = true;
 
         if (activeSec === 'rect') {
-            const b = parseFloat(document.getElementById('r-b').value)||0;
-            const h = parseFloat(document.getElementById('r-h').value)||0;
+            const b = pf('r-b')||0;
+            const h = pf('r-h')||0;
             A = b * h;
             I = b * h**3 / 12;
             tauAvg = A > 0 ? V / A : 0;
@@ -355,7 +360,7 @@
             alpha  = 1.5;
 
         } else if (activeSec === 'circle') {
-            const d = parseFloat(document.getElementById('c-d').value)||0;
+            const d = pf('c-d')||0;
             A = Math.PI * d**2 / 4;
             I = Math.PI * d**4 / 64;
             tauAvg = A > 0 ? V / A : 0;
@@ -363,8 +368,8 @@
             alpha  = 4/3;
 
         } else if (activeSec === 'hollow') {
-            const D = parseFloat(document.getElementById('h-D').value)||0;
-            const d = parseFloat(document.getElementById('h-d').value)||0;
+            const D = pf('h-D')||0;
+            const d = pf('h-d')||0;
             if (d >= D) { document.getElementById('w-hollow').classList.add('show'); valid=false; }
             else {
                 A = Math.PI * (D**2 - d**2) / 4;
@@ -379,10 +384,10 @@
             }
 
         } else { // ipe
-            const bf = parseFloat(document.getElementById('i-bf').value)||0;
-            const tf = parseFloat(document.getElementById('i-tf').value)||0;
-            const hw = parseFloat(document.getElementById('i-hw').value)||0;
-            const tw = parseFloat(document.getElementById('i-tw').value)||0;
+            const bf = pf('i-bf')||0;
+            const tf = pf('i-tf')||0;
+            const hw = pf('i-hw')||0;
+            const tw = pf('i-tw')||0;
             const H  = hw + 2*tf;
             A = bf*tf*2 + hw*tw;
             // I about strong axis
@@ -489,8 +494,8 @@
 
         // ----- Draw cross-section -----
         if (sec === 'rect') {
-            const b=parseFloat(document.getElementById('r-b').value)||80;
-            const h=parseFloat(document.getElementById('r-h').value)||200;
+            const b=pf('r-b')||80;
+            const h=pf('r-h')||200;
             const scale = Math.min(scH*2/h, 180/b);
             const dw=b*scale, dh=h*scale;
             rect(cx-dw/2, cy-dh/2, dw, dh, blue, 'rgba(96,165,250,0.12)');
@@ -518,7 +523,7 @@
             pathEl.setAttribute('stroke',secColor); pathEl.setAttribute('stroke-width','2.5'); svg.appendChild(pathEl);
 
         } else if (sec === 'circle') {
-            const d=parseFloat(document.getElementById('c-d').value)||80;
+            const d=pf('c-d')||80;
             const r = Math.min(scH, 90);
             const circ=document.createElementNS(ns,'circle');
             circ.setAttribute('cx',cx);circ.setAttribute('cy',cy);circ.setAttribute('r',r);
@@ -544,8 +549,8 @@
             pe.setAttribute('stroke',secColor); pe.setAttribute('stroke-width','2.5'); svg.appendChild(pe);
 
         } else if (sec === 'hollow') {
-            const D=parseFloat(document.getElementById('h-D').value)||100;
-            const d=parseFloat(document.getElementById('h-d').value)||80;
+            const D=pf('h-D')||100;
+            const d=pf('h-d')||80;
             const scale=Math.min(scH/D*2*0.95, 90/(D/2));
             const Rout=(D/2)*scale, Rin=(d/2)*scale;
             const co=document.createElementNS(ns,'circle');
@@ -575,10 +580,10 @@
             pe.setAttribute('stroke',secColor); pe.setAttribute('stroke-width','2.5'); svg.appendChild(pe);
 
         } else { // ipe
-            const bf=parseFloat(document.getElementById('i-bf').value)||120;
-            const tf=parseFloat(document.getElementById('i-tf').value)||12;
-            const hw=parseFloat(document.getElementById('i-hw').value)||176;
-            const tw=parseFloat(document.getElementById('i-tw').value)||7;
+            const bf=pf('i-bf')||120;
+            const tf=pf('i-tf')||12;
+            const hw=pf('i-hw')||176;
+            const tw=pf('i-tw')||7;
             const H=hw+2*tf;
             const scale=Math.min(scH*2/H, 90/(bf/2));
             const dBf=bf*scale, dTf=tf*scale, dHw=hw*scale, dTw=tw*scale;

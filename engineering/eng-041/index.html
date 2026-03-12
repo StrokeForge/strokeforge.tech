@@ -243,6 +243,11 @@
 
     <script src="../../js/nav.js"></script>
     <script>
+    // Decimal separator helper — accepts both "." and ","
+    function pf(id) {
+        return parseFloat((document.getElementById(id).value || '').replace(',', '.')) || 0;
+    }
+
     function fmt(v, dec) { return isFinite(v) && !isNaN(v) ? v.toFixed(dec) : '—'; }
     function row(sym, val, unit, note, col) {
         const s = col ? ` style="color:${col}"` : '';
@@ -263,9 +268,9 @@
     function calc() {
         const z1 = parseInt(document.getElementById('z1').value) || 19;
         const z2 = parseInt(document.getElementById('z2').value) || 38;
-        const p  = parseFloat(document.getElementById('pitch').value) || 12.7;
-        const a  = parseFloat(document.getElementById('a').value) || 500;
-        const n1 = parseFloat(document.getElementById('n1').value) || 960;
+        const p  = pf('pitch') || 12.7;
+        const a  = pf('a') || 500;
+        const n1 = pf('n1') || 960;
         const parity = document.getElementById('parity').value;
 
         // Kinematics
