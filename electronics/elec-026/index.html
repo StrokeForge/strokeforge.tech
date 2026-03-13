@@ -326,8 +326,8 @@
         const svg=mkSvg(268,150);
         const ox_=134,oy_=74,h_=52,hw_=Math.round(h_*0.55);
         el(svg,'polygon',{points:`${ox_},${oy_-h_/2} ${ox_},${oy_+h_/2} ${ox_+hw_},${oy_}`,fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
-        tx(svg,ox_+9,oy_-h_/4,'+',C.green,9,'middle');
-        tx(svg,ox_+9,oy_+h_/4,'−',C.orange,11,'middle');
+        tx(svg,ox_+9,oy_-h_/4,'−',C.orange,11,'middle');
+        tx(svg,ox_+9,oy_+h_/4,'+',C.green,9,'middle');
         const amp={inP:{x:ox_,y:Math.round(oy_-h_/4)},inN:{x:ox_,y:Math.round(oy_+h_/4)},out:{x:ox_+hw_,y:oy_}};
         // V2 → R1–R2 → inP (top, +), V1 → R3–R4 → inN (bottom, −)
         const jxT=82; // junction x for V1 path (inP side)
