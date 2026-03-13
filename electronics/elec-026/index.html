@@ -370,12 +370,12 @@
     function drawDifferentiator() {
         const svg=mkSvg(240,130);
         const amp=opamp(svg,102,62,52);
-        ln(svg,14,amp.inN.y,34,amp.inN.y); tx(svg,8,amp.inN.y,'Vin',C.green,8);
-        capH(svg,38,amp.inN.y,C.blue);
-        tx(svg,41,amp.inN.y-14,'C',C.blue,8);
-        ln(svg,45,amp.inN.y,amp.inN.x,amp.inN.y);
-        ln(svg,amp.inP.x,amp.inP.y,amp.inP.x-10,amp.inP.y);
-        gnd(svg,amp.inP.x-10,amp.inP.y);
+        ln(svg,14,amp.inP.y,34,amp.inP.y); tx(svg,8,amp.inP.y,'Vin',C.green,8);
+        capH(svg,38,amp.inP.y,C.blue);
+        tx(svg,41,amp.inP.y-14,'C',C.blue,8);
+        ln(svg,45,amp.inP.y,amp.inP.x,amp.inP.y);
+        ln(svg,amp.inN.x,amp.inN.y,amp.inN.x-10,amp.inN.y);
+        gnd(svg,amp.inN.x-10,amp.inN.y);
         ln(svg,amp.out.x,amp.out.y,230,amp.out.y); tx(svg,222,amp.out.y-9,'Vout',C.light,8);
         const jx=79, jxL=74, jxR=141;
         el(svg,'circle',{cx:jxR,cy:amp.out.y,r:2.5,fill:C.wire});
@@ -384,8 +384,8 @@
         zigzag(svg,jx,18,jx+52,18,C.orange);
         tx(svg,jx+26,9,'R',C.orange,8);
         ln(svg,jxL,18,jx,18);
-        ln(svg,jxL,18,jxL,amp.inN.y);
-        el(svg,'circle',{cx:jxL,cy:amp.inN.y,r:2.5,fill:C.wire});
+        ln(svg,jxL,18,jxL,amp.inP.y);
+        el(svg,'circle',{cx:jxL,cy:amp.inP.y,r:2.5,fill:C.wire});
         return svg;
     }
     function drawIntegrator() {
