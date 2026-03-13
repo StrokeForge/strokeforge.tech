@@ -337,17 +337,7 @@
         ln(svg,jxP,18,jxP,amp.inP.y);
         el(svg,'circle',{cx:jxP,cy:amp.inP.y,r:2.5,fill:C.wire});
         ln(svg,jxP,amp.inP.y,amp.inP.x,amp.inP.y);
-        // R4: from inP junction down to GND
-        ln(svg,jxP,amp.inP.y,jxP,amp.inP.y+20);
-        zigzagV(svg,jxP,amp.inP.y+20,amp.inP.y+46,C.blue);
-        tx(svg,jxP-13,amp.inP.y+33,'R4',C.blue,7);
-        // V2 → R3 → inN (bottom, −), R2 feedback from output to inN node
-        const jxB=80; // junction x for bottom (V2 side = − input)
-        ln(svg,14,amp.inN.y,38,amp.inN.y); tx(svg,8,amp.inN.y,'V2',C.yellow,8);
-        zigzag(svg,38,amp.inN.y,jxB,amp.inN.y,C.orange);
-        tx(svg,59,amp.inN.y-12,'R3',C.orange,7);
-        ln(svg,jxB,amp.inN.y,amp.inN.x,amp.inN.y);
-        el(svg,'circle',{cx:jxB,cy:amp.inN.y,r:2.5,fill:C.wire});
+        const jxB=80; // junction x for inN (R2 feedback)
         // output + Vout
         ln(svg,amp.out.x,amp.out.y,258,amp.out.y); tx(svg,254,amp.out.y-8,'Vout',C.light,7);
         // R2 feedback: output → up → R2 horizontal → jxB
