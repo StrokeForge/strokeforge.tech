@@ -261,7 +261,7 @@
         tx(svg,ox+9,oy+h/4,'+',C.green,9,'middle');
         const topY=Math.round(oy-h/4), botY=Math.round(oy+h/4);
         const outX=ox+hw, outY=oy;
-        const jx=75, r2y=28, r2Right=outX+40;
+        const jx=75, r2y=20, r2Right=outX+40;
         // Vin → R1 → junction → − input
         ln(svg,14,topY,28,topY); tx(svg,7,topY,'Vin',C.green,8);
         zigzag(svg,28,topY,jx,topY,C.orange);
@@ -305,14 +305,13 @@
         // výstup: junction rfR posunut +20 od tipu trojúhelníku
         const rfR=amp.out.x+20;
         ln(svg,amp.out.x,amp.out.y,rfR,amp.out.y);
-        el(svg,'circle',{cx:rfR,cy:amp.out.y,r:2.5,fill:C.wire});
         ln(svg,rfR,amp.out.y,266,amp.out.y); tx(svg,258,amp.out.y-9,'Vout',C.light,8);
         ln(svg,rfR,amp.out.y,rfR,16);
         const jxRf=jx+20;                              // levá svislá Rf posunuta +20
-        ln(svg,jxRf,16,jx+30,16);                     // levý drát před Rf
-        zigzag(svg,jx+30,16,jx+82,16,C.blue);         // Rf (poloha beze změny)
-        tx(svg,jx+56,7,'Rf',C.blue,8);
-        ln(svg,jx+82,16,rfR,16);                      // pravý drát za Rf
+        ln(svg,jxRf,16,jx+39,16);                     // levý drát před Rf
+        zigzag(svg,jx+39,16,jx+91,16,C.blue);         // Rf posunut doprava
+        tx(svg,jx+65,7,'Rf',C.blue,8);
+        ln(svg,jx+91,16,rfR,16);                      // pravý drát za Rf
         ln(svg,jxRf,16,jxRf,amp.inP.y);               // nová levá svislá dolů
         el(svg,'circle',{cx:jxRf,cy:amp.inP.y,r:2.5,fill:C.wire});
         return svg;
