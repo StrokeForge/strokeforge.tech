@@ -252,8 +252,8 @@
         return svg;
     }
     function drawInv() {
-        const svg=mkSvg(255,135);
-        const ox=105, oy=65, h=52, hw=Math.round(h*0.55);
+        const svg=mkSvg(285,135);
+        const ox=135, oy=65, h=52, hw=Math.round(h*0.55);
         // op-amp with − at top, + at bottom, no dot at tip
         el(svg,'polygon',{points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
             fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
@@ -282,12 +282,12 @@
         ln(svg,jx,botY,jx,botY+28);
         gnd(svg,jx,botY+28);
         // output → right → Vout
-        ln(svg,r2Right,outY,242,outY); tx(svg,234,outY-9,'Vout',C.light,8);
+        ln(svg,r2Right,outY,272,outY); tx(svg,264,outY-9,'Vout',C.light,8);
         return svg;
     }
     function drawSumming() {
-        const svg=mkSvg(245,145);
-        const amp=opamp(svg,118,72,52);
+        const svg=mkSvg(278,145);
+        const amp=opamp(svg,148,72,52);
         const inputs=[{label:'V1',y:40,rl:'R1'},{label:'V2',y:72,rl:'R2'},{label:'Vn',y:104,rl:'Rn'}];
         const jx=88;
         inputs.forEach(inp=>{
@@ -301,12 +301,12 @@
         ln(svg,jx,amp.inN.y,amp.inN.x,amp.inN.y);
         ln(svg,amp.inP.x,amp.inP.y,amp.inP.x-10,amp.inP.y);
         gnd(svg,amp.inP.x-10,amp.inP.y);
-        ln(svg,amp.out.x,amp.out.y,235,amp.out.y); tx(svg,227,amp.out.y-9,'Vout',C.light,8);
+        ln(svg,amp.out.x,amp.out.y,266,amp.out.y); tx(svg,258,amp.out.y-9,'Vout',C.light,8);
         ln(svg,amp.out.x,amp.out.y,amp.out.x,16);
         ln(svg,amp.out.x,16,jx,16);
-        zigzag(svg,jx,16,jx+52,16,C.blue);
-        tx(svg,jx+26,7,'Rf',C.blue,8);
-        ln(svg,jx+52,16,amp.out.x,16);
+        zigzag(svg,jx+30,16,jx+82,16,C.blue);
+        tx(svg,jx+56,7,'Rf',C.blue,8);
+        ln(svg,jx+82,16,amp.out.x,16);
         ln(svg,jx,16,jx,amp.inN.y);
         return svg;
     }
