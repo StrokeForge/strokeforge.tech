@@ -226,12 +226,14 @@
         return svg;
     }
     function drawNonInv() {
-        const svg=mkSvg(230,148),amp=opamp(svg,75,55,52);
+        const svg=mkSvg(260,148),amp=opamp(svg,75,55,52);
         ln(svg,12,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,6,amp.inP.y,'Vin',C.green,8);
-        el(svg,'circle',{cx:amp.out.x,cy:amp.out.y,r:2.5,fill:C.wire});
-        ln(svg,amp.out.x,amp.out.y,218,amp.out.y); tx(svg,210,amp.out.y-9,'Vout',C.light,8);
-        // vertical R1, R2 divider below the output pin
-        const rdx=amp.out.x, jy=92;
+        // output stub → junction dot shifted +30 → Vout
+        const rdx=amp.out.x+30, jy=92;
+        ln(svg,amp.out.x,amp.out.y,rdx,amp.out.y);
+        el(svg,'circle',{cx:rdx,cy:amp.out.y,r:2.5,fill:C.wire});
+        ln(svg,rdx,amp.out.y,248,amp.out.y); tx(svg,240,amp.out.y-9,'Vout',C.light,8);
+        // vertical R1, R2 divider
         ln(svg,rdx,amp.out.y,rdx,amp.out.y+5);
         zigzagV(svg,rdx,amp.out.y+5,jy-5,C.orange);
         ln(svg,rdx,jy-5,rdx,jy);
@@ -242,7 +244,7 @@
         ln(svg,rdx,jy+33,rdx,jy+36);
         tx(svg,rdx+13,jy+19,'R2',C.orange,8);
         gnd(svg,rdx,jy+36);
-        // feedback: junction → left (outside triangle) → up → right to − input
+        // feedback: junction → left → up → right to − input
         const fbx=amp.inN.x-8;
         ln(svg,rdx,jy,fbx,jy);
         ln(svg,fbx,jy,fbx,amp.inN.y);
@@ -401,7 +403,6 @@
         ln(svg,csX+csR,csY,50,csY,C.blue);
         ln(svg,14,csY,14,csY+16); gnd(svg,14,csY+16);
         tx(svg,csX,csY-21,'Iin',C.blue,8,'middle');
-        tx(svg,csX,csY+20,'5 mA',C.blue,7,'middle');
         // Node 1 (junction: Iin out, − input, R1 bottom)
         const n1x=50,n1y=csY;
         el(svg,'circle',{cx:n1x,cy:n1y,r:2.5,fill:C.wire});
@@ -412,26 +413,30 @@
         const jx=out.x+16,jy=out.y;
         ln(svg,out.x,out.y,jx,jy);
         el(svg,'circle',{cx:jx,cy:jy,r:2.5,fill:C.wire});
-        // R1 feedback: junction → up → zigzag → down → Node 1
+        // R1 feedback: junction → up → stub → zigzag → stub → down → Node 1
         const feedY=24;
         ln(svg,jx,jy,jx,feedY);
-        zigzag(svg,jx,feedY,n1x,feedY,C.orange);
+        ln(svg,jx,feedY,jx-8,feedY);
+        zigzag(svg,jx-8,feedY,n1x+8,feedY,C.orange);
+        ln(svg,n1x+8,feedY,n1x,feedY);
         ln(svg,n1x,feedY,n1x,n1y);
-        tx(svg,Math.round((jx+n1x)/2),feedY-9,'R1  1k',C.orange,8,'middle');
+        tx(svg,Math.round((jx+n1x)/2),feedY-9,'R1',C.orange,8,'middle');
         // Output chain: junction → right → R2↓ → Ammeter↓ → R3↓ → GND
         const cx=170;
         ln(svg,jx,jy,cx,jy);
         const r2t=jy,r2b=jy+34;
+        ln(svg,cx-6,r2t,cx+6,r2t);
         ln(svg,cx,r2t,cx,r2t+5); zigzagV(svg,cx,r2t+5,r2b-5,C.orange); ln(svg,cx,r2b-5,cx,r2b);
-        tx(svg,cx+13,Math.round((r2t+r2b)/2),'R2  1k',C.orange,8,'start');
-        const amY=r2b+12;
-        ln(svg,cx,r2b,cx,amY-10);
+        ln(svg,cx-6,r2b,cx+6,r2b);
+        tx(svg,cx+13,Math.round((r2t+r2b)/2),'R2',C.orange,8,'start');
+        const amY=r2b+10;
         el(svg,'circle',{cx:cx,cy:amY,r:10,fill:'none',stroke:C.green,'stroke-width':1.5});
         el(svg,'text',{x:cx,y:amY,fill:C.green,'font-size':9,'font-family':'monospace','text-anchor':'middle','dominant-baseline':'middle'},'A');
-        tx(svg,cx+13,amY,'10 mA',C.green,7,'start');
         const r3t=amY+10,r3b=r3t+34;
-        ln(svg,cx,amY+10,cx,r3t+5); zigzagV(svg,cx,r3t+5,r3b-5,C.orange); ln(svg,cx,r3b-5,cx,r3b);
-        tx(svg,cx+13,Math.round((r3t+r3b)/2),'R3  1k',C.orange,8,'start');
+        ln(svg,cx-6,r3t,cx+6,r3t);
+        ln(svg,cx,r3t,cx,r3t+5); zigzagV(svg,cx,r3t+5,r3b-5,C.orange); ln(svg,cx,r3b-5,cx,r3b);
+        ln(svg,cx-6,r3b,cx+6,r3b);
+        tx(svg,cx+13,Math.round((r3t+r3b)/2),'R3',C.orange,8,'start');
         gnd(svg,cx,r3b);
         return svg;
     }
