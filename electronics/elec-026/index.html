@@ -369,7 +369,11 @@
     }
     function drawDifferentiator() {
         const svg=mkSvg(240,130);
-        const amp=opamp(svg,102,62,52);
+        const _o={ox:102,oy:62,h:52,hw:Math.round(52*0.55)};
+        el(svg,'polygon',{points:`${_o.ox},${_o.oy-_o.h/2} ${_o.ox},${_o.oy+_o.h/2} ${_o.ox+_o.hw},${_o.oy}`,fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
+        tx(svg,_o.ox+9,_o.oy-_o.h/4,'−',C.orange,11,'middle');
+        tx(svg,_o.ox+9,_o.oy+_o.h/4,'+',C.green,9,'middle');
+        const amp={inP:{x:_o.ox,y:Math.round(_o.oy-_o.h/4)},inN:{x:_o.ox,y:Math.round(_o.oy+_o.h/4)},out:{x:_o.ox+_o.hw,y:_o.oy}};
         ln(svg,14,amp.inP.y,34,amp.inP.y); tx(svg,8,amp.inP.y,'Vin',C.green,8);
         capH(svg,38,amp.inP.y,C.blue);
         tx(svg,41,amp.inP.y-14,'C',C.blue,8);
