@@ -326,18 +326,18 @@
         const svg=mkSvg(268,150);
         const amp=opamp(svg,134,74,52);
         // V1 → R1 → inP (top, +), R2 feedback from output to inP node
-        const jxT=62; // junction x for V1 path (inP side)
+        const jxT=82; // junction x for V1 path (inP side)
         tx(svg,8,18,'V1',C.green,8);
-        ln(svg,14,18,20,18);
-        zigzag(svg,20,18,jxT,18,C.orange);
-        tx(svg,41,9,'R1',C.orange,7);
-        ln(svg,jxT,18,80,18); // connect R1 to R2
-        const jxP=71; // junction mid R1–R2 → inP
+        ln(svg,14,18,40,18);
+        zigzag(svg,40,18,jxT,18,C.orange);
+        tx(svg,61,9,'R1',C.orange,7);
+        ln(svg,jxT,18,100,18); // connect R1 to R2
+        const jxP=91; // junction mid R1–R2 → inP
         el(svg,'circle',{cx:jxP,cy:18,r:2.5,fill:C.wire});
         ln(svg,jxP,18,jxP,amp.inP.y);
         el(svg,'circle',{cx:jxP,cy:amp.inP.y,r:2.5,fill:C.wire});
         ln(svg,jxP,amp.inP.y,amp.inP.x,amp.inP.y);
-        const jxB=80; // junction x for inN (R2 feedback)
+        const jxB=100; // junction x for R2 start
         // output + Vout
         ln(svg,amp.out.x,amp.out.y,258,amp.out.y); tx(svg,254,amp.out.y-8,'Vout',C.light,7);
         // R2 feedback: junction on Vout wire → up → R2 horizontal → jxB
