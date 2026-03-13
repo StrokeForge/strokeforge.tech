@@ -205,15 +205,16 @@
         return svg;
     }
     function drawFollower() {
-        const svg=mkSvg(220,110),amp=opamp(svg,75,55,52);
+        const svg=mkSvg(220,115),amp=opamp(svg,75,55,52);
         ln(svg,18,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,10,amp.inP.y,'Vin',C.green,8);
         ln(svg,amp.out.x,amp.out.y,210,amp.out.y); tx(svg,202,amp.out.y-9,'Vout',C.light,8);
         el(svg,'circle',{cx:amp.out.x,cy:amp.out.y,r:2.5,fill:C.wire});
-        // feedback: − input → down → right → up to output (U-loop below)
-        const fby=90;
-        ln(svg,amp.inN.x,amp.inN.y,amp.inN.x,fby);
-        ln(svg,amp.inN.x,fby,amp.out.x,fby);
-        ln(svg,amp.out.x,fby,amp.out.x,amp.out.y);
+        // feedback: output → down → left (outside triangle) → up → right to − input
+        const fby=96, fbxL=amp.inN.x-8;
+        ln(svg,amp.out.x,amp.out.y,amp.out.x,fby);
+        ln(svg,amp.out.x,fby,fbxL,fby);
+        ln(svg,fbxL,fby,fbxL,amp.inN.y);
+        ln(svg,fbxL,amp.inN.y,amp.inN.x,amp.inN.y);
         return svg;
     }
     function drawNonInv() {
