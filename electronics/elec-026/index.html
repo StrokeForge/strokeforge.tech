@@ -326,12 +326,14 @@
         const svg=mkSvg(268,150);
         const amp=opamp(svg,134,74,52);
         // V1 → R1 → inP (top, +), R2 feedback from output to inP node
-        const jxT=80; // junction x for top (V1 side = + input)
-        ln(svg,14,amp.inP.y,38,amp.inP.y); tx(svg,8,amp.inP.y,'V1',C.green,8);
-        zigzag(svg,38,amp.inP.y,jxT,amp.inP.y,C.orange);
-        tx(svg,59,amp.inP.y-12,'R1',C.orange,7);
-        ln(svg,jxT,amp.inP.y,amp.inP.x,amp.inP.y);
+        const jxT=62; // junction x for V1 path (inP side)
+        tx(svg,8,18,'V1',C.green,8);
+        ln(svg,14,18,20,18);
+        zigzag(svg,20,18,jxT,18,C.orange);
+        tx(svg,41,9,'R1',C.orange,7);
+        ln(svg,jxT,18,jxT,amp.inP.y); // vertical down to inP junction
         el(svg,'circle',{cx:jxT,cy:amp.inP.y,r:2.5,fill:C.wire});
+        ln(svg,jxT,amp.inP.y,amp.inP.x,amp.inP.y);
         // R4: jxT down to GND
         ln(svg,jxT,amp.inP.y,jxT,amp.inP.y+20);
         zigzagV(svg,jxT,amp.inP.y+20,amp.inP.y+46,C.blue);
