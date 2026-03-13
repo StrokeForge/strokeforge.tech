@@ -407,12 +407,14 @@
         gnd(svg,amp.inN.x-31,amp.inN.y);
         ln(svg,amp.out.x,amp.out.y,230,amp.out.y); tx(svg,222,amp.out.y-9,'Vout',C.light,8);
         const jx=78;
-        ln(svg,amp.out.x,amp.out.y,amp.out.x,18);
-        ln(svg,amp.out.x,18,jx+30,18);
+        const rfC=amp.out.x+19;
+        el(svg,'circle',{cx:rfC,cy:amp.out.y,r:2.5,fill:C.wire});
+        ln(svg,rfC,amp.out.y,rfC,18);
+        ln(svg,rfC,18,jx+30,18);
         capH(svg,jx+26,18,C.blue);
         tx(svg,jx+29,2,'C',C.blue,8);
         ln(svg,jx,18,jx+26,18);
-        ln(svg,jx+33,18,amp.out.x,18);
+        ln(svg,jx+33,18,rfC,18);
         ln(svg,jx,18,jx,amp.inP.y);
         el(svg,'circle',{cx:jx,cy:amp.inP.y,r:2.5,fill:C.wire});
         return svg;
