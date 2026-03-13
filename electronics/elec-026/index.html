@@ -261,7 +261,7 @@
         tx(svg,ox+9,oy+h/4,'+',C.green,9,'middle');
         const topY=Math.round(oy-h/4), botY=Math.round(oy+h/4);
         const outX=ox+hw, outY=oy;
-        const jx=75, r2y=20, r2Right=outX+40;
+        const jx=75, r2y=20, r2Right=outX+22;
         // Vin → R1 → junction → − input
         ln(svg,14,topY,28,topY); tx(svg,7,topY,'Vin',C.green,8);
         zigzag(svg,28,topY,jx,topY,C.orange);
@@ -283,7 +283,7 @@
         ln(svg,jx+22,botY,jx+22,botY+28);
         gnd(svg,jx+22,botY+28);
         // output → right → Vout
-        ln(svg,r2Right,outY,294,outY); tx(svg,286,outY-9,'Vout',C.light,8);
+        ln(svg,r2Right,outY,276,outY); tx(svg,268,outY-9,'Vout',C.light,8);
         return svg;
     }
     function drawSumming() {
@@ -305,6 +305,7 @@
         // výstup: junction rfR posunut +20 od tipu trojúhelníku
         const rfR=amp.out.x+20;
         ln(svg,amp.out.x,amp.out.y,rfR,amp.out.y);
+        el(svg,'circle',{cx:rfR,cy:amp.out.y,r:2.5,fill:C.wire});
         ln(svg,rfR,amp.out.y,266,amp.out.y); tx(svg,258,amp.out.y-9,'Vout',C.light,8);
         ln(svg,rfR,amp.out.y,rfR,16);
         const jxRf=jx+20;                              // levá svislá Rf posunuta +20
