@@ -381,6 +381,61 @@
         return svg;
     }
 
+    function drawTransimpedance() {
+        const svg=mkSvg(240,192);
+        // Op-amp inverted: − on top, + on bottom
+        const ox=98,oy=78,h=52,hw=Math.round(h*0.55);
+        el(svg,'polygon',{points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
+            fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
+        tx(svg,ox+9,oy-h/4,'−',C.orange,11,'middle');
+        tx(svg,ox+9,oy+h/4,'+',C.green,9,'middle');
+        const inN={x:ox,y:Math.round(oy-h/4)};
+        const inP={x:ox,y:Math.round(oy+h/4)};
+        const out={x:ox+hw,y:oy};
+        // Current source (circle, arrow pointing right)
+        const csX=30,csY=inN.y,csR=13;
+        el(svg,'circle',{cx:csX,cy:csY,r:csR,fill:'none',stroke:C.blue,'stroke-width':1.5});
+        ln(svg,csX-6,csY,csX+2,csY,C.blue,1.5);
+        el(svg,'polygon',{points:`${csX+2},${csY-3} ${csX+7},${csY} ${csX+2},${csY+3}`,fill:C.blue});
+        ln(svg,14,csY,csX-csR,csY,C.blue);
+        ln(svg,csX+csR,csY,50,csY,C.blue);
+        ln(svg,14,csY,14,csY+16); gnd(svg,14,csY+16);
+        tx(svg,csX,csY-21,'Iin',C.blue,8,'middle');
+        tx(svg,csX,csY+20,'5 mA',C.blue,7,'middle');
+        // Node 1 (junction: Iin out, − input, R1 bottom)
+        const n1x=50,n1y=csY;
+        el(svg,'circle',{cx:n1x,cy:n1y,r:2.5,fill:C.wire});
+        ln(svg,n1x,n1y,inN.x,inN.y);
+        // + input → GND
+        ln(svg,inP.x,inP.y,72,inP.y); ln(svg,72,inP.y,72,inP.y+16); gnd(svg,72,inP.y+16);
+        // Output junction
+        const jx=out.x+16,jy=out.y;
+        ln(svg,out.x,out.y,jx,jy);
+        el(svg,'circle',{cx:jx,cy:jy,r:2.5,fill:C.wire});
+        // R1 feedback: junction → up → zigzag → down → Node 1
+        const feedY=24;
+        ln(svg,jx,jy,jx,feedY);
+        zigzag(svg,jx,feedY,n1x,feedY,C.orange);
+        ln(svg,n1x,feedY,n1x,n1y);
+        tx(svg,Math.round((jx+n1x)/2),feedY-9,'R1  1k',C.orange,8,'middle');
+        // Output chain: junction → right → R2↓ → Ammeter↓ → R3↓ → GND
+        const cx=170;
+        ln(svg,jx,jy,cx,jy);
+        const r2t=jy,r2b=jy+34;
+        ln(svg,cx,r2t,cx,r2t+5); zigzagV(svg,cx,r2t+5,r2b-5,C.orange); ln(svg,cx,r2b-5,cx,r2b);
+        tx(svg,cx+13,Math.round((r2t+r2b)/2),'R2  1k',C.orange,8,'start');
+        const amY=r2b+12;
+        ln(svg,cx,r2b,cx,amY-10);
+        el(svg,'circle',{cx:cx,cy:amY,r:10,fill:'none',stroke:C.green,'stroke-width':1.5});
+        el(svg,'text',{x:cx,y:amY,fill:C.green,'font-size':9,'font-family':'monospace','text-anchor':'middle','dominant-baseline':'middle'},'A');
+        tx(svg,cx+13,amY,'10 mA',C.green,7,'start');
+        const r3t=amY+10,r3b=r3t+34;
+        ln(svg,cx,amY+10,cx,r3t+5); zigzagV(svg,cx,r3t+5,r3b-5,C.orange); ln(svg,cx,r3b-5,cx,r3b);
+        tx(svg,cx+13,Math.round((r3t+r3b)/2),'R3  1k',C.orange,8,'start');
+        gnd(svg,cx,r3b);
+        return svg;
+    }
+
     // ── Calc functions ───────────────────────────────────────────
     function calcNonInv(id) {
         const r1=parseFloat(document.getElementById(id+'-r1').value);
@@ -423,6 +478,9 @@
         {id:'int', title:'Integrator',                 draw:drawIntegrator,
          formula:'Vout = −(1/RC) × ∫Vin dt',
          desc:'Output is time-integral of input. Converts square → triangle, triangle → sine. Add large R in parallel with C to prevent saturation.'},
+        {id:'tia', title:'Transimpedance Amplifier',   draw:drawTransimpedance,
+         formula:'Vout = −Iin × R1\nIout = −Iin × R1 / (R2 + R3)',
+         desc:'Converts input current to output voltage. Virtual ground at (−) forces all Iin through R1. Output current through R2+R3 is read by the ammeter.'},
     ];
 
     // ── Build grid ───────────────────────────────────────────────
