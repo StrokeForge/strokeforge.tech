@@ -248,35 +248,39 @@
         return svg;
     }
     function drawInv() {
-        const svg=mkSvg(245,135);
+        const svg=mkSvg(255,135);
         const ox=105, oy=65, h=52, hw=Math.round(h*0.55);
-        // op-amp with − at top, + at bottom (schema orientation)
+        // op-amp with − at top, + at bottom, no dot at tip
         el(svg,'polygon',{points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
             fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
         tx(svg,ox+9,oy-h/4,'−',C.orange,11,'middle');
         tx(svg,ox+9,oy+h/4,'+',C.green,9,'middle');
-        el(svg,'circle',{cx:ox+hw,cy:oy,r:2,fill:C.wire});
         const topY=Math.round(oy-h/4), botY=Math.round(oy+h/4);
         const outX=ox+hw, outY=oy;
-        // Vin → R1 → junction → − input (top pin)
-        const jx=75, r2y=28;
-        ln(svg,14,topY,28,topY); tx(svg,7,topY,'Vin',C.green,8);
-        zigzag(svg,28,topY,jx,topY,C.orange);
-        tx(svg,51,topY-11,'R1',C.orange,8);
+        const jx=75, r2y=28, r2Right=outX+18;
+        // Vin → stub → R1 → stub → junction → − input
+        ln(svg,14,topY,26,topY); tx(svg,7,topY,'Vin',C.green,8);
+        ln(svg,26,topY,30,topY);
+        zigzag(svg,30,topY,68,topY,C.orange);
+        ln(svg,68,topY,jx,topY);
+        tx(svg,49,topY-11,'R1',C.orange,8);
         el(svg,'circle',{cx:jx,cy:topY,r:2.5,fill:C.wire});
         ln(svg,jx,topY,ox,topY);
-        // R2 feedback: junction UP → R2 horizontal → DOWN to output dot
+        // R2 feedback: junction UP → stub → R2 → stub → down to output junction
         ln(svg,jx,topY,jx,r2y);
-        zigzag(svg,jx,r2y,outX,r2y,C.blue);
-        tx(svg,Math.round((jx+outX)/2),r2y-10,'R2',C.blue,8);
-        ln(svg,outX,r2y,outX,outY);
-        el(svg,'circle',{cx:outX,cy:outY,r:2.5,fill:C.wire});
-        // + input → left to junction column → down → GND
+        ln(svg,jx,r2y,jx+6,r2y);
+        zigzag(svg,jx+6,r2y,r2Right-6,r2y,C.blue);
+        ln(svg,r2Right-6,r2y,r2Right,r2y);
+        tx(svg,Math.round((jx+r2Right)/2),r2y-10,'R2',C.blue,8);
+        ln(svg,r2Right,r2y,r2Right,outY);
+        el(svg,'circle',{cx:r2Right,cy:outY,r:2.5,fill:C.wire});
+        ln(svg,outX,outY,r2Right,outY);
+        // + input → left → GND
         ln(svg,ox,botY,jx,botY);
         ln(svg,jx,botY,jx,botY+28);
         gnd(svg,jx,botY+28);
         // output → right → Vout
-        ln(svg,outX,outY,233,outY); tx(svg,225,outY-9,'Vout',C.light,8);
+        ln(svg,r2Right,outY,242,outY); tx(svg,234,outY-9,'Vout',C.light,8);
         return svg;
     }
     function drawSumming() {
