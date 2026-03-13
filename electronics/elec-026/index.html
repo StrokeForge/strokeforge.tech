@@ -288,7 +288,12 @@
     }
     function drawSumming() {
         const svg=mkSvg(278,145);
-        const amp=opamp(svg,148,72,52,true);
+        const ox_=148,oy_=72,h_=52,hw_=Math.round(h_*0.55);
+        el(svg,'polygon',{points:`${ox_},${oy_-h_/2} ${ox_},${oy_+h_/2} ${ox_+hw_},${oy_}`,
+            fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
+        tx(svg,ox_+9,oy_-h_/4,'−',C.orange,11,'middle');
+        tx(svg,ox_+9,oy_+h_/4,'+',C.green,9,'middle');
+        const amp={inP:{x:ox_,y:Math.round(oy_-h_/4)},inN:{x:ox_,y:Math.round(oy_+h_/4)},out:{x:ox_+hw_,y:oy_}};
         const inputs=[{label:'V1',y:40,rl:'R1'},{label:'V2',y:72,rl:'R2'},{label:'Vn',y:104,rl:'Rn'}];
         const jx=88;
         inputs.forEach(inp=>{
@@ -296,12 +301,12 @@
             zigzag(svg,32,inp.y,62,inp.y,C.orange);
             tx(svg,47,inp.y-11,inp.rl,C.orange,7);
             ln(svg,62,inp.y,jx,inp.y);
-            ln(svg,jx,inp.y,jx,amp.inN.y);  // vstupní větev → − vstup
+            ln(svg,jx,inp.y,jx,amp.inP.y);  // vstupní větev → + vstup
         });
         tx(svg,8,86,'⋮',C.gray,9);
-        ln(svg,jx,amp.inN.y,amp.inN.x,amp.inN.y);  // jx → − vstup
-        ln(svg,amp.inP.x,amp.inP.y,amp.inP.x-10,amp.inP.y);  // + vstup → GND
-        gnd(svg,amp.inP.x-10,amp.inP.y);
+        ln(svg,jx,amp.inP.y,amp.inP.x,amp.inP.y);  // jx → + vstup
+        ln(svg,amp.inN.x,amp.inN.y,amp.inN.x-20,amp.inN.y);  // − vstup → GND
+        gnd(svg,amp.inN.x-20,amp.inN.y);
         // výstup: junction rfR posunut +20 od tipu trojúhelníku
         const rfR=amp.out.x+20;
         ln(svg,amp.out.x,amp.out.y,rfR,amp.out.y);
@@ -313,8 +318,8 @@
         zigzag(svg,jx+39,16,jx+91,16,C.blue);         // Rf posunut doprava
         tx(svg,jx+65,7,'Rf',C.blue,8);
         ln(svg,jx+91,16,rfR,16);                      // pravý drát za Rf
-        ln(svg,jxRf,16,jxRf,amp.inN.y);               // levá svislá dolů → − vstup
-        el(svg,'circle',{cx:jxRf,cy:amp.inN.y,r:2.5,fill:C.wire});
+        ln(svg,jxRf,16,jxRf,amp.inP.y);               // nová levá svislá dolů
+        el(svg,'circle',{cx:jxRf,cy:amp.inP.y,r:2.5,fill:C.wire});
         return svg;
     }
     function drawDiff() {
