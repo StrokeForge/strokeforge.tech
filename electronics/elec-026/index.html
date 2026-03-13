@@ -252,7 +252,7 @@
         return svg;
     }
     function drawInv() {
-        const svg=mkSvg(285,135);
+        const svg=mkSvg(307,135);
         const ox=135, oy=65, h=52, hw=Math.round(h*0.55);
         // op-amp with − at top, + at bottom, no dot at tip
         el(svg,'polygon',{points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
@@ -261,19 +261,19 @@
         tx(svg,ox+9,oy+h/4,'+',C.green,9,'middle');
         const topY=Math.round(oy-h/4), botY=Math.round(oy+h/4);
         const outX=ox+hw, outY=oy;
-        const jx=75, r2y=28, r2Right=outX+18;
+        const jx=75, r2y=28, r2Right=outX+40;
         // Vin → R1 → junction → − input
         ln(svg,14,topY,28,topY); tx(svg,7,topY,'Vin',C.green,8);
         zigzag(svg,28,topY,jx,topY,C.orange);
         tx(svg,51,topY-11,'R1',C.orange,8);
         el(svg,'circle',{cx:jx,cy:topY,r:2.5,fill:C.wire});
         ln(svg,jx,topY,ox,topY);
-        // R2 feedback: junction UP → stub → R2 → stub → down to output junction
+        // R2 feedback: junction UP → wire+stub → R2 → stub → down to output junction
         ln(svg,jx,topY,jx,r2y);
-        ln(svg,jx,r2y,jx+6,r2y);
-        zigzag(svg,jx+6,r2y,r2Right-6,r2y,C.blue);
+        ln(svg,jx,r2y,jx+28,r2y);
+        zigzag(svg,jx+28,r2y,r2Right-6,r2y,C.blue);
         ln(svg,r2Right-6,r2y,r2Right,r2y);
-        tx(svg,Math.round((jx+r2Right)/2),r2y-10,'R2',C.blue,8);
+        tx(svg,Math.round((jx+28+r2Right)/2),r2y-10,'R2',C.blue,8);
         ln(svg,r2Right,r2y,r2Right,outY);
         el(svg,'circle',{cx:r2Right,cy:outY,r:2.5,fill:C.wire});
         ln(svg,outX,outY,r2Right,outY);
@@ -282,7 +282,7 @@
         ln(svg,jx,botY,jx,botY+28);
         gnd(svg,jx,botY+28);
         // output → right → Vout
-        ln(svg,r2Right,outY,272,outY); tx(svg,264,outY-9,'Vout',C.light,8);
+        ln(svg,r2Right,outY,294,outY); tx(svg,286,outY-9,'Vout',C.light,8);
         return svg;
     }
     function drawSumming() {
@@ -295,19 +295,23 @@
             zigzag(svg,32,inp.y,62,inp.y,C.orange);
             tx(svg,47,inp.y-11,inp.rl,C.orange,7);
             ln(svg,62,inp.y,jx,inp.y);
-            ln(svg,jx,inp.y,jx,amp.inN.y);
+            ln(svg,jx,inp.y,jx,amp.inP.y);  // vstupní větev → + vstup
         });
         tx(svg,8,86,'⋮',C.gray,9);
-        ln(svg,jx,amp.inN.y,amp.inN.x,amp.inN.y);
-        ln(svg,amp.inP.x,amp.inP.y,amp.inP.x-10,amp.inP.y);
-        gnd(svg,amp.inP.x-10,amp.inP.y);
-        ln(svg,amp.out.x,amp.out.y,266,amp.out.y); tx(svg,258,amp.out.y-9,'Vout',C.light,8);
-        ln(svg,amp.out.x,amp.out.y,amp.out.x,16);
-        ln(svg,amp.out.x,16,jx,16);
+        ln(svg,jx,amp.inP.y,amp.inP.x,amp.inP.y);  // jx → + vstup
+        ln(svg,amp.inN.x,amp.inN.y,amp.inN.x-20,amp.inN.y);  // − vstup → GND
+        gnd(svg,amp.inN.x-20,amp.inN.y);
+        // výstup: junction rfR posunut +20 od tipu trojúhelníku
+        const rfR=amp.out.x+20;
+        ln(svg,amp.out.x,amp.out.y,rfR,amp.out.y);
+        el(svg,'circle',{cx:rfR,cy:amp.out.y,r:2.5,fill:C.wire});
+        ln(svg,rfR,amp.out.y,266,amp.out.y); tx(svg,258,amp.out.y-9,'Vout',C.light,8);
+        ln(svg,rfR,amp.out.y,rfR,16);
+        ln(svg,rfR,16,jx,16);
         zigzag(svg,jx+30,16,jx+82,16,C.blue);
         tx(svg,jx+56,7,'Rf',C.blue,8);
-        ln(svg,jx+82,16,amp.out.x,16);
-        ln(svg,jx,16,jx,amp.inN.y);
+        ln(svg,jx+82,16,rfR,16);
+        ln(svg,jx,16,jx,amp.inP.y);  // Rf dolů → + vstup
         return svg;
     }
     function drawDiff() {
