@@ -172,7 +172,7 @@
         ln(svg,x-3,y+17,x+3,y+17,C.gray,1);
     }
     // op-amp triangle pointing right; returns {inP, inN, out} pin coords
-    function opamp(svg,ox,oy,h) {
+    function opamp(svg,ox,oy,h,noOutDot) {
         h=h||54;
         const hw=Math.round(h*0.55);
         el(svg,'polygon',{
@@ -181,7 +181,7 @@
         });
         tx(svg,ox+9,oy-h/4,'+',C.green,9,'middle');
         tx(svg,ox+9,oy+h/4,'−',C.orange,11,'middle');
-        el(svg,'circle',{cx:ox+hw,cy:oy,r:2,fill:C.wire});
+        if(!noOutDot) el(svg,'circle',{cx:ox+hw,cy:oy,r:2,fill:C.wire});
         return {
             inP:{x:ox,y:Math.round(oy-h/4)},
             inN:{x:ox,y:Math.round(oy+h/4)},
@@ -197,7 +197,7 @@
     // ── Draw functions ───────────────────────────────────────────
     function drawComparator() {
         const svg=mkSvg(220,110);
-        const amp=opamp(svg,75,55,52);
+        const amp=opamp(svg,75,55,52,true);
         const wireStart=18, dotX=Math.round((wireStart+amp.inP.x)/2);
         ln(svg,wireStart,amp.inP.y,amp.inP.x,amp.inP.y);
         el(svg,'circle',{cx:dotX,cy:amp.inP.y,r:2.5,fill:C.wire});
@@ -211,7 +211,7 @@
         return svg;
     }
     function drawFollower() {
-        const svg=mkSvg(220,115),amp=opamp(svg,75,55,52);
+        const svg=mkSvg(220,115),amp=opamp(svg,75,55,52,true);
         ln(svg,18,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,10,amp.inP.y,'Vin',C.green,8);
         ln(svg,amp.out.x,amp.out.y,210,amp.out.y); tx(svg,202,amp.out.y-9,'Vout',C.light,8);
         // feedback junction on output wire, right of triangle tip
