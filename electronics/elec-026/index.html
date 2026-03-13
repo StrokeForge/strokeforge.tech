@@ -258,12 +258,10 @@
         const topY=Math.round(oy-h/4), botY=Math.round(oy+h/4);
         const outX=ox+hw, outY=oy;
         const jx=75, r2y=28, r2Right=outX+18;
-        // Vin → stub → R1 → stub → junction → − input
-        ln(svg,14,topY,26,topY); tx(svg,7,topY,'Vin',C.green,8);
-        ln(svg,26,topY,30,topY);
-        zigzag(svg,30,topY,68,topY,C.orange);
-        ln(svg,68,topY,jx,topY);
-        tx(svg,49,topY-11,'R1',C.orange,8);
+        // Vin → R1 → junction → − input
+        ln(svg,14,topY,28,topY); tx(svg,7,topY,'Vin',C.green,8);
+        zigzag(svg,28,topY,jx,topY,C.orange);
+        tx(svg,51,topY-11,'R1',C.orange,8);
         el(svg,'circle',{cx:jx,cy:topY,r:2.5,fill:C.wire});
         ln(svg,jx,topY,ox,topY);
         // R2 feedback: junction UP → stub → R2 → stub → down to output junction
