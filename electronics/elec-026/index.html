@@ -288,7 +288,7 @@
     }
     function drawSumming() {
         const svg=mkSvg(278,145);
-        const amp=opamp(svg,148,72,52);
+        const amp=opamp(svg,148,72,52,true);
         const inputs=[{label:'V1',y:40,rl:'R1'},{label:'V2',y:72,rl:'R2'},{label:'Vn',y:104,rl:'Rn'}];
         const jx=88;
         inputs.forEach(inp=>{
