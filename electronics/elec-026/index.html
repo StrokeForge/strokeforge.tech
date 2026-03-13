@@ -196,18 +196,8 @@
 
     // ── Draw functions ───────────────────────────────────────────
     function drawComparator() {
-        const svg=mkSvg(220,120);
-        const ox=75,oy=60,h=52,hw=Math.round(h*0.55);
-        const amp=opamp(svg,ox,oy,h);
-        // VS+ / VS− supply pins — start exactly on triangle edge at spx
-        const spx=ox+Math.round(hw*0.55);
-        const t=(spx-ox)/hw;
-        const yTop=Math.round((oy-h/2)+t*(h/2));
-        const yBot=Math.round((oy+h/2)-t*(h/2));
-        ln(svg,spx,yTop,spx,yTop-14,C.yellow,1.2);
-        tx(svg,spx,yTop-20,'Vs+',C.yellow,7,'middle');
-        ln(svg,spx,yBot,spx,yBot+14,C.gray,1.2);
-        tx(svg,spx,yBot+22,'Vs−',C.gray,7,'middle');
+        const svg=mkSvg(220,110);
+        const amp=opamp(svg,75,55,52);
         ln(svg,18,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,10,amp.inP.y,'V1',C.green,8);
         ln(svg,18,amp.inN.y,amp.inN.x,amp.inN.y); tx(svg,10,amp.inN.y,'V2',C.orange,8);
         ln(svg,amp.out.x,amp.out.y,212,amp.out.y);
@@ -218,57 +208,68 @@
         const svg=mkSvg(220,110),amp=opamp(svg,75,55,52);
         ln(svg,18,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,10,amp.inP.y,'Vin',C.green,8);
         ln(svg,amp.out.x,amp.out.y,210,amp.out.y); tx(svg,202,amp.out.y-9,'Vout',C.light,8);
-        // feedback: junction on Vout wire → down → left past triangle → up to − level → right to − input
-        const fby=92, fbxL=amp.inN.x-12, fdx=amp.out.x+14;
-        el(svg,'circle',{cx:fdx,cy:amp.out.y,r:2.5,fill:C.wire});
-        ln(svg,fdx,amp.out.y,fdx,fby);
-        ln(svg,fdx,fby,fbxL,fby);
-        ln(svg,fbxL,fby,fbxL,amp.inN.y);
-        ln(svg,fbxL,amp.inN.y,amp.inN.x,amp.inN.y);
+        el(svg,'circle',{cx:amp.out.x,cy:amp.out.y,r:2.5,fill:C.wire});
+        // feedback: − input → down → right → up to output (U-loop below)
+        const fby=90;
+        ln(svg,amp.inN.x,amp.inN.y,amp.inN.x,fby);
+        ln(svg,amp.inN.x,fby,amp.out.x,fby);
+        ln(svg,amp.out.x,fby,amp.out.x,amp.out.y);
         return svg;
     }
     function drawNonInv() {
-        const svg=mkSvg(240,118),amp=opamp(svg,90,50,52);
-        // Vin → + input
+        const svg=mkSvg(230,148),amp=opamp(svg,75,55,52);
         ln(svg,12,amp.inP.y,amp.inP.x,amp.inP.y); tx(svg,6,amp.inP.y,'Vin',C.green,8);
-        // output wire + Vout
-        ln(svg,amp.out.x,amp.out.y,226,amp.out.y); tx(svg,218,amp.out.y-9,'Vout',C.light,8);
-        // feedback dot on Vout wire
-        const fdx=amp.out.x+18, jy=95, jx=72; // jx well left of triangle (triangle at ox=90)
-        el(svg,'circle',{cx:fdx,cy:amp.out.y,r:2.5,fill:C.wire});
-        ln(svg,fdx,amp.out.y,fdx,jy);            // feedback dot DOWN to jy
-        // R2: jx → fdx horizontal
-        zigzag(svg,jx,jy,fdx,jy,C.blue);
-        tx(svg,(jx+fdx)/2,jy-11,'R2',C.blue,8);
-        // junction dot + wire UP to − input (clear of triangle)
-        el(svg,'circle',{cx:jx,cy:jy,r:2.5,fill:C.wire});
-        ln(svg,jx,jy,jx,amp.inN.y);              // UP (stays left of triangle at x=90)
-        ln(svg,jx,amp.inN.y,amp.inN.x,amp.inN.y); // right to − input pin
-        // R1: GND → jx horizontal
-        const gx=28;
-        zigzag(svg,gx,jy,jx,jy,C.orange);
-        tx(svg,(gx+jx)/2,jy-11,'R1',C.orange,8);
-        gnd(svg,gx,jy);
+        el(svg,'circle',{cx:amp.out.x,cy:amp.out.y,r:2.5,fill:C.wire});
+        ln(svg,amp.out.x,amp.out.y,218,amp.out.y); tx(svg,210,amp.out.y-9,'Vout',C.light,8);
+        // vertical R1, R2 divider below the output pin
+        const rdx=amp.out.x, jy=92;
+        ln(svg,rdx,amp.out.y,rdx,amp.out.y+5);
+        zigzagV(svg,rdx,amp.out.y+5,jy-5,C.orange);
+        ln(svg,rdx,jy-5,rdx,jy);
+        tx(svg,rdx+13,(amp.out.y+jy)/2,'R1',C.orange,8);
+        el(svg,'circle',{cx:rdx,cy:jy,r:2.5,fill:C.wire});
+        ln(svg,rdx,jy,rdx,jy+5);
+        zigzagV(svg,rdx,jy+5,jy+33,C.orange);
+        ln(svg,rdx,jy+33,rdx,jy+36);
+        tx(svg,rdx+13,jy+19,'R2',C.orange,8);
+        gnd(svg,rdx,jy+36);
+        // feedback: junction → left (outside triangle) → up → right to − input
+        const fbx=amp.inN.x-8;
+        ln(svg,rdx,jy,fbx,jy);
+        ln(svg,fbx,jy,fbx,amp.inN.y);
+        ln(svg,fbx,amp.inN.y,amp.inN.x,amp.inN.y);
         return svg;
     }
     function drawInv() {
-        const svg=mkSvg(245,135),amp=opamp(svg,98,62,52);
-        ln(svg,14,amp.inN.y,36,amp.inN.y); tx(svg,8,amp.inN.y,'Vin',C.green,8);
-        zigzag(svg,36,amp.inN.y,68,amp.inN.y,C.orange);
-        tx(svg,52,amp.inN.y-12,'R1',C.orange,8);
-        ln(svg,68,amp.inN.y,amp.inN.x,amp.inN.y);
-        // + input: wire down to GND
-        ln(svg,amp.inP.x,amp.inP.y,amp.inP.x,amp.inP.y+12);
-        gnd(svg,amp.inP.x,amp.inP.y+12);
-        ln(svg,amp.out.x,amp.out.y,235,amp.out.y); tx(svg,227,amp.out.y-9,'Vout',C.light,8);
-        // feedback R2 on top
-        const jx=68;
-        ln(svg,amp.out.x,amp.out.y,amp.out.x,18);
-        ln(svg,amp.out.x,18,jx,18);
-        zigzag(svg,jx,18,jx+52,18,C.blue);
-        tx(svg,jx+26,9,'R2',C.blue,8);
-        ln(svg,jx+52,18,amp.out.x,18);
-        ln(svg,jx,18,jx,amp.inN.y);
+        const svg=mkSvg(245,135);
+        const ox=105, oy=65, h=52, hw=Math.round(h*0.55);
+        // op-amp with − at top, + at bottom (schema orientation)
+        el(svg,'polygon',{points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
+            fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
+        tx(svg,ox+9,oy-h/4,'−',C.orange,11,'middle');
+        tx(svg,ox+9,oy+h/4,'+',C.green,9,'middle');
+        el(svg,'circle',{cx:ox+hw,cy:oy,r:2,fill:C.wire});
+        const topY=Math.round(oy-h/4), botY=Math.round(oy+h/4);
+        const outX=ox+hw, outY=oy;
+        // Vin → R1 → junction → − input (top pin)
+        const jx=75, r2y=28;
+        ln(svg,14,topY,28,topY); tx(svg,7,topY,'Vin',C.green,8);
+        zigzag(svg,28,topY,jx,topY,C.orange);
+        tx(svg,51,topY-11,'R1',C.orange,8);
+        el(svg,'circle',{cx:jx,cy:topY,r:2.5,fill:C.wire});
+        ln(svg,jx,topY,ox,topY);
+        // R2 feedback: junction UP → R2 horizontal → DOWN to output dot
+        ln(svg,jx,topY,jx,r2y);
+        zigzag(svg,jx,r2y,outX,r2y,C.blue);
+        tx(svg,Math.round((jx+outX)/2),r2y-10,'R2',C.blue,8);
+        ln(svg,outX,r2y,outX,outY);
+        el(svg,'circle',{cx:outX,cy:outY,r:2.5,fill:C.wire});
+        // + input → left to junction column → down → GND
+        ln(svg,ox,botY,jx,botY);
+        ln(svg,jx,botY,jx,botY+28);
+        gnd(svg,jx,botY+28);
+        // output → right → Vout
+        ln(svg,outX,outY,233,outY); tx(svg,225,outY-9,'Vout',C.light,8);
         return svg;
     }
     function drawSumming() {
