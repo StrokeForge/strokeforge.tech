@@ -340,11 +340,13 @@
         const jxB=80; // junction x for inN (R2 feedback)
         // output + Vout
         ln(svg,amp.out.x,amp.out.y,258,amp.out.y); tx(svg,254,amp.out.y-8,'Vout',C.light,7);
-        // R2 feedback: output → up → R2 horizontal → jxB
-        ln(svg,amp.out.x,amp.out.y,amp.out.x,18);
+        // R2 feedback: junction on Vout wire → up → R2 horizontal → jxB
+        const rfR2=amp.out.x+28;
+        el(svg,'circle',{cx:rfR2,cy:amp.out.y,r:2.5,fill:C.wire});
+        ln(svg,rfR2,amp.out.y,rfR2,18);
         zigzag(svg,jxB,18,jxB+52,18,C.blue);
         tx(svg,jxB+26,9,'R2',C.blue,7);
-        ln(svg,jxB+52,18,amp.out.x,18);
+        ln(svg,jxB+52,18,rfR2,18);
         return svg;
     }
     function drawDifferentiator() {
