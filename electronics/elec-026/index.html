@@ -347,6 +347,22 @@
         zigzag(svg,jxB,18,jxB+52,18,C.blue);
         tx(svg,jxB+26,9,'R2',C.blue,7);
         ln(svg,jxB+52,18,rfR2,18);
+        // Bottom mirror: V2 → R3–R4 → inN (−)
+        const y_bot=130;
+        tx(svg,8,y_bot,'V2',C.yellow,8);
+        ln(svg,14,y_bot,40,y_bot);
+        zigzag(svg,40,y_bot,82,y_bot,C.orange);
+        tx(svg,61,y_bot+10,'R3',C.orange,7);
+        ln(svg,82,y_bot,100,y_bot);
+        const jxN=91;
+        el(svg,'circle',{cx:jxN,cy:y_bot,r:2.5,fill:C.wire});
+        ln(svg,jxN,y_bot,jxN,amp.inN.y);
+        el(svg,'circle',{cx:jxN,cy:amp.inN.y,r:2.5,fill:C.wire});
+        ln(svg,jxN,amp.inN.y,amp.inN.x,amp.inN.y);
+        zigzag(svg,100,y_bot,152,y_bot,C.blue);
+        tx(svg,126,y_bot+10,'R4',C.blue,7);
+        ln(svg,152,y_bot,rfR2,y_bot);
+        ln(svg,rfR2,amp.out.y,rfR2,y_bot);
         return svg;
     }
     function drawDifferentiator() {
