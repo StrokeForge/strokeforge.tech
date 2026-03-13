@@ -206,6 +206,7 @@
         el(svg,'circle',{cx:dotX,cy:amp.inN.y,r:2.5,fill:C.wire});
         tx(svg,10,amp.inN.y,'V2',C.orange,8);
         ln(svg,amp.out.x,amp.out.y,212,amp.out.y);
+        el(svg,'circle',{cx:Math.round((amp.out.x+212)/2),cy:amp.out.y,r:2.5,fill:C.wire});
         tx(svg,202,amp.out.y-9,'Vout',C.light,8);
         return svg;
     }
