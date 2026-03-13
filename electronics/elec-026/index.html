@@ -395,21 +395,21 @@
     function drawIntegrator() {
         const svg=mkSvg(240,130);
         const amp=opamp(svg,105,62,52);
-        ln(svg,14,amp.inN.y,34,amp.inN.y); tx(svg,8,amp.inN.y,'Vin',C.green,8);
-        zigzag(svg,34,amp.inN.y,68,amp.inN.y,C.orange);
-        tx(svg,51,amp.inN.y-12,'R',C.orange,8);
-        ln(svg,68,amp.inN.y,amp.inN.x,amp.inN.y);
-        ln(svg,amp.inP.x,amp.inP.y,amp.inP.x-10,amp.inP.y);
-        gnd(svg,amp.inP.x-10,amp.inP.y);
+        ln(svg,14,amp.inP.y,34,amp.inP.y); tx(svg,8,amp.inP.y,'Vin',C.green,8);
+        zigzag(svg,34,amp.inP.y,68,amp.inP.y,C.orange);
+        tx(svg,51,amp.inP.y-12,'R',C.orange,8);
+        ln(svg,68,amp.inP.y,amp.inP.x,amp.inP.y);
+        ln(svg,amp.inN.x,amp.inN.y,amp.inN.x-10,amp.inN.y);
+        gnd(svg,amp.inN.x-10,amp.inN.y);
         ln(svg,amp.out.x,amp.out.y,230,amp.out.y); tx(svg,222,amp.out.y-9,'Vout',C.light,8);
         const jx=68;
         ln(svg,amp.out.x,amp.out.y,amp.out.x,18);
         ln(svg,amp.out.x,18,jx+30,18);
         capH(svg,jx+26,18,C.blue);
-        tx(svg,jx+29,7,'C',C.blue,8);
+        tx(svg,jx+29,2,'C',C.blue,8);
         ln(svg,jx,18,jx+26,18);
         ln(svg,jx+33,18,amp.out.x,18);
-        ln(svg,jx,18,jx,amp.inN.y);
+        ln(svg,jx,18,jx,amp.inP.y);
         return svg;
     }
 
