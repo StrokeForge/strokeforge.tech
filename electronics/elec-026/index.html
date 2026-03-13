@@ -237,12 +237,12 @@
         ln(svg,rdx,amp.out.y,rdx,amp.out.y+5);
         zigzagV(svg,rdx,amp.out.y+5,jy-5,C.orange);
         ln(svg,rdx,jy-5,rdx,jy);
-        tx(svg,rdx+13,(amp.out.y+jy)/2,'R1',C.orange,8);
+        tx(svg,rdx+13,(amp.out.y+jy)/2,'Rf',C.orange,8);
         el(svg,'circle',{cx:rdx,cy:jy,r:2.5,fill:C.wire});
         ln(svg,rdx,jy,rdx,jy+5);
         zigzagV(svg,rdx,jy+5,jy+33,C.orange);
         ln(svg,rdx,jy+33,rdx,jy+36);
-        tx(svg,rdx+13,jy+19,'R2',C.orange,8);
+        tx(svg,rdx+13,jy+19,'Rg',C.orange,8);
         gnd(svg,rdx,jy+36);
         // feedback: junction → left → up → right to − input
         const fbx=amp.inN.x-8;
@@ -266,11 +266,12 @@
         ln(svg,14,topY,28,topY); tx(svg,7,topY,'Vin',C.green,8);
         zigzag(svg,28,topY,jx,topY,C.orange);
         tx(svg,51,topY-11,'R1',C.orange,8);
-        el(svg,'circle',{cx:jx,cy:topY,r:2.5,fill:C.wire});
-        ln(svg,jx,topY,ox,topY);
-        // R2 feedback: junction UP → wire+stub → R2 → stub → down to output junction
-        ln(svg,jx,topY,jx,r2y);
-        ln(svg,jx,r2y,jx+28,r2y);
+        ln(svg,jx,topY,jx+22,topY);
+        el(svg,'circle',{cx:jx+22,cy:topY,r:2.5,fill:C.wire});
+        ln(svg,jx+22,topY,ox,topY);
+        // R2 feedback: junction UP → stub → R2 → stub → down to output junction
+        ln(svg,jx+22,topY,jx+22,r2y);
+        ln(svg,jx+22,r2y,jx+28,r2y);
         zigzag(svg,jx+28,r2y,r2Right-6,r2y,C.blue);
         ln(svg,r2Right-6,r2y,r2Right,r2y);
         tx(svg,Math.round((jx+28+r2Right)/2),r2y-10,'R2',C.blue,8);
@@ -278,9 +279,9 @@
         el(svg,'circle',{cx:r2Right,cy:outY,r:2.5,fill:C.wire});
         ln(svg,outX,outY,r2Right,outY);
         // + input → left → GND
-        ln(svg,ox,botY,jx,botY);
-        ln(svg,jx,botY,jx,botY+28);
-        gnd(svg,jx,botY+28);
+        ln(svg,ox,botY,jx+22,botY);
+        ln(svg,jx+22,botY,jx+22,botY+28);
+        gnd(svg,jx+22,botY+28);
         // output → right → Vout
         ln(svg,r2Right,outY,294,outY); tx(svg,286,outY-9,'Vout',C.light,8);
         return svg;
@@ -307,11 +308,13 @@
         el(svg,'circle',{cx:rfR,cy:amp.out.y,r:2.5,fill:C.wire});
         ln(svg,rfR,amp.out.y,266,amp.out.y); tx(svg,258,amp.out.y-9,'Vout',C.light,8);
         ln(svg,rfR,amp.out.y,rfR,16);
-        ln(svg,rfR,16,jx,16);
-        zigzag(svg,jx+30,16,jx+82,16,C.blue);
+        const jxRf=jx+20;                              // levá svislá Rf posunuta +20
+        ln(svg,jxRf,16,jx+30,16);                     // levý drát před Rf
+        zigzag(svg,jx+30,16,jx+82,16,C.blue);         // Rf (poloha beze změny)
         tx(svg,jx+56,7,'Rf',C.blue,8);
-        ln(svg,jx+82,16,rfR,16);
-        ln(svg,jx,16,jx,amp.inP.y);  // Rf dolů → + vstup
+        ln(svg,jx+82,16,rfR,16);                      // pravý drát za Rf
+        ln(svg,jxRf,16,jxRf,amp.inP.y);               // nová levá svislá dolů
+        el(svg,'circle',{cx:jxRf,cy:amp.inP.y,r:2.5,fill:C.wire});
         return svg;
     }
     function drawDiff() {
@@ -450,8 +453,8 @@
         const r1=parseFloat(document.getElementById(id+'-r1').value);
         const r2=parseFloat(document.getElementById(id+'-r2').value);
         const el=document.getElementById(id+'-res');
-        if(isNaN(r1)||isNaN(r2)||r1<=0){el.textContent='';return;}
-        el.textContent='Gain = '+(1+r2/r1).toFixed(3);
+        if(isNaN(r1)||isNaN(r2)||r2<=0){el.textContent='';return;}
+        el.textContent='Gain = '+(1+r1/r2).toFixed(3);
     }
     function calcInv(id) {
         const r1=parseFloat(document.getElementById(id+'-r1').value);
@@ -470,9 +473,11 @@
          formula:'Vout = Vin\nGain = 1',
          desc:'Unity-gain buffer. High input impedance, low output impedance. Used to isolate stages without loading the signal source.'},
         {id:'ni',  title:'Non-Inverting Amplifier',    draw:drawNonInv,   calc:calcNonInv, badge:'Calculator',
-         formula:'Gain = 1 + R2 / R1\nVout = Vin × Gain',
-         desc:'Output in phase with input. Gain always ≥ 1. R1 to GND, R2 as feedback from output to − input.'},
+         calcLabels:['Rf','Rg'],
+         formula:'Gain = 1 + Rf / Rg\nVout = Vin × Gain',
+         desc:'Output in phase with input. Gain always ≥ 1. Rf is the feedback resistor (output to − input), Rg goes to GND.'},
         {id:'inv', title:'Inverting Amplifier',        draw:drawInv,      calc:calcInv,    badge:'Calculator',
+         calcLabels:['R1','R2'],
          formula:'Gain = −R2 / R1\nVout = −Vin × R2 / R1',
          desc:'Output is 180° inverted. Gain can be < 1. V+ is tied to GND (or bias resistor R1‖R2).'},
         {id:'sum', title:'Inverting Summing Amp',      draw:drawSumming,
@@ -521,12 +526,13 @@
 
             if(cfg.calc){
                 const calcWrap=document.createElement('div');
+                const [lbl1,lbl2]=cfg.calcLabels||['R1','R2'];
                 calcWrap.innerHTML=`
                     <div class="calc-row">
-                        <label>R1&nbsp;(Ω)</label>
+                        <label>${lbl1}&nbsp;(Ω)</label>
                         <input class="calc-inp" type="number" id="${cfg.id}-r1" placeholder="1000" min="1"
                             oninput="${cfg.calc.name}('${cfg.id}')">
-                        <label>R2&nbsp;(Ω)</label>
+                        <label>${lbl2}&nbsp;(Ω)</label>
                         <input class="calc-inp" type="number" id="${cfg.id}-r2" placeholder="10000" min="0"
                             oninput="${cfg.calc.name}('${cfg.id}')">
                     </div>
