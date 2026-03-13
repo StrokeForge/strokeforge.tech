@@ -406,7 +406,7 @@
         ln(svg,amp.inN.x,amp.inN.y,amp.inN.x-31,amp.inN.y);
         gnd(svg,amp.inN.x-31,amp.inN.y);
         ln(svg,amp.out.x,amp.out.y,230,amp.out.y); tx(svg,222,amp.out.y-9,'Vout',C.light,8);
-        const jx=68;
+        const jx=78;
         ln(svg,amp.out.x,amp.out.y,amp.out.x,18);
         ln(svg,amp.out.x,18,jx+30,18);
         capH(svg,jx+26,18,C.blue);
@@ -414,6 +414,7 @@
         ln(svg,jx,18,jx+26,18);
         ln(svg,jx+33,18,amp.out.x,18);
         ln(svg,jx,18,jx,amp.inP.y);
+        el(svg,'circle',{cx:jx,cy:amp.inP.y,r:2.5,fill:C.wire});
         return svg;
     }
 
