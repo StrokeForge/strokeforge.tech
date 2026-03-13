@@ -324,7 +324,7 @@
     }
     function drawDiff() {
         const svg=mkSvg(268,150);
-        const amp=opamp(svg,134,74,52);
+        const amp=opamp(svg,134,74,52,true);
         // V1 → R1 → inP (top, +), R2 feedback from output to inP node
         const jxT=82; // junction x for V1 path (inP side)
         tx(svg,8,18,'V1',C.green,8);
@@ -335,7 +335,6 @@
         const jxP=91; // junction mid R1–R2 → inP
         el(svg,'circle',{cx:jxP,cy:18,r:2.5,fill:C.wire});
         ln(svg,jxP,18,jxP,amp.inP.y);
-        el(svg,'circle',{cx:jxP,cy:amp.inP.y,r:2.5,fill:C.wire});
         ln(svg,jxP,amp.inP.y,amp.inP.x,amp.inP.y);
         const jxB=100; // junction x for R2 start
         // output + Vout
@@ -357,7 +356,6 @@
         const jxN=91;
         el(svg,'circle',{cx:jxN,cy:y_bot,r:2.5,fill:C.wire});
         ln(svg,jxN,y_bot,jxN,amp.inN.y);
-        el(svg,'circle',{cx:jxN,cy:amp.inN.y,r:2.5,fill:C.wire});
         ln(svg,jxN,amp.inN.y,amp.inN.x,amp.inN.y);
         zigzag(svg,100,y_bot,152,y_bot,C.blue);
         tx(svg,126,y_bot+10,'R4',C.blue,7);
