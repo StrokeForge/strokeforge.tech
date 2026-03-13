@@ -151,12 +151,14 @@
     function tx(svg,x,y,t,col,sz,anc) {
         return el(svg,'text',{x,y,fill:col||C.light,'font-size':sz||9,'font-family':'monospace','text-anchor':anc||'middle','dominant-baseline':'middle'},t);
     }
-    function zigzag(svg,x1,y,x2,col) {
+    function zigzag(svg,x1,y,x2,y2_or_col,col) {
+        // supports both zigzag(svg,x1,y,x2,col) and zigzag(svg,x1,y,x2,y,col)
+        const actualCol = col || y2_or_col || C.orange;
         const steps=6,zh=6,zw=(x2-x1)/steps;
         let pts=`${x1},${y}`;
         for(let i=0;i<=steps;i++) pts+=` ${x1+i*zw},${y+(i%2===0?-zh:zh)}`;
         pts+=` ${x2},${y}`;
-        el(svg,'polyline',{points:pts,stroke:col||C.orange,'stroke-width':1.8,fill:'none','stroke-linejoin':'round'});
+        el(svg,'polyline',{points:pts,stroke:actualCol,'stroke-width':1.8,fill:'none','stroke-linejoin':'round'});
     }
     function zigzagV(svg,x,y1,y2,col) {
         const steps=6,zh=6,zw=(y2-y1)/steps;
