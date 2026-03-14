@@ -470,10 +470,10 @@
         txt(cx, py - 18, `t = ${t} mm  |  l = ${l} mm`, orange, 10);
 
         // Thickness dimension
-        ln(cx - weldW/2 - 30, py,           cx - weldW/2 - 30, py + plateH, gray, 1);
-        ln(cx - weldW/2 - 36, py,           cx - weldW/2 - 24, py,          gray, 1);
-        ln(cx - weldW/2 - 36, py + plateH,  cx - weldW/2 - 24, py + plateH, gray, 1);
-        txt(cx - weldW/2 - 44, py + plateH/2, `t`, gray, 10);
+        ln(cx - weldW/2 - 30, py, cx - weldW/2 - 30, py + plateH, blue, 1);
+        arrow(cx - weldW/2 - 30, py + 10,        cx - weldW/2 - 30, py,           blue);
+        arrow(cx - weldW/2 - 30, py + plateH - 10, cx - weldW/2 - 30, py + plateH, blue);
+        txt(cx - weldW/2 - 44, py + plateH/2, `t`, blue, 10);
 
         // Dimension line: l — above top edge
         const dimY = py - 36;
