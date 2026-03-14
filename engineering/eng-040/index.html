@@ -372,16 +372,17 @@
             p.setAttribute('fill',col);svg.appendChild(p);
         }
 
-        // Pulley positions — scale to fit diagram
+        // Pulley positions — scale to fit diagram, then centre horizontally
         const margin = 55;
         const maxR   = Math.min(80, W * 0.15);
-        // Scale pulleys to fit within the SVG
-        const scale  = Math.min(maxR / (d2/2), (W - 2*margin) / (a + d1/2 + d2/2) );
+        const scale  = Math.min(maxR / (d2/2), (W - 2*margin) / (a + d1/2 + d2/2));
         const r1 = Math.max(d1/2 * scale, 12);
         const r2 = Math.max(d2/2 * scale, 18);
-        const cx1 = margin + r1;
-        const cx2 = Math.min(W - margin - r2, cx1 + a * scale);
-        const cy  = H / 2;
+        const aScaled   = Math.min(a * scale, W - 2*margin - r1 - r2);
+        const totalW    = r1 + aScaled + r2;
+        const cx1 = Math.round((W - totalW) / 2 + r1);
+        const cx2 = cx1 + Math.round(aScaled);
+        const cy  = Math.round(H * 0.44);
 
         // Belt tangent lines (open drive) — correct external tangent geometry
         // sin(α) = (r2−r1)/D,  cos(α) = sqrt(1−sin²)
