@@ -411,7 +411,7 @@
         arcA.setAttribute('d',`M ${cx1+ar},${cy} A ${ar} ${ar} 0 0 1 ${cx1-ar},${cy}`);
         arcA.setAttribute('stroke',orange);arcA.setAttribute('fill','none');arcA.setAttribute('stroke-width','1.5');
         svg.appendChild(arcA);
-        arrow(cx1-ar, cy, cx1-ar, cy+1, orange, 1.5);
+        arrow(cx1+ar, cy, cx1+ar, cy+1, orange, 1.5);
 
         // Labels
         txt(cx1 + r1 + 6, cy, `d₁=${d1}`, orange, 9, 'start');
