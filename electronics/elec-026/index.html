@@ -420,59 +420,60 @@
     }
 
     function drawTransimpedance() {
-        const svg=mkSvg(240,192);
+        const svg=mkSvg(310,250);
         // Op-amp inverted: − on top, + on bottom
-        const ox=98,oy=78,h=52,hw=Math.round(h*0.55);
+        const ox=115,oy=105,h=60,hw=Math.round(h*0.55);
         el(svg,'polygon',{points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
             fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
-        tx(svg,ox+9,oy-h/4,'−',C.orange,11,'middle');
-        tx(svg,ox+9,oy+h/4,'+',C.green,9,'middle');
-        const inN={x:ox,y:Math.round(oy-h/4)};
-        const inP={x:ox,y:Math.round(oy+h/4)};
-        const out={x:ox+hw,y:oy};
+        tx(svg,ox+10,oy-h/4,'−',C.orange,11,'middle');
+        tx(svg,ox+10,oy+h/4,'+',C.green,9,'middle');
+        const inN={x:ox,y:Math.round(oy-h/4)};   // {115, 90}
+        const inP={x:ox,y:Math.round(oy+h/4)};   // {115, 120}
+        const out={x:ox+hw,y:oy};                 // {148, 105}
         // Current source (circle, arrow pointing right)
-        const csX=30,csY=inN.y,csR=13;
+        const csX=34,csY=inN.y,csR=14;
         el(svg,'circle',{cx:csX,cy:csY,r:csR,fill:'none',stroke:C.blue,'stroke-width':1.5});
-        ln(svg,csX-6,csY,csX+2,csY,C.blue,1.5);
-        el(svg,'polygon',{points:`${csX+2},${csY-3} ${csX+7},${csY} ${csX+2},${csY+3}`,fill:C.blue});
+        ln(svg,csX-7,csY,csX+2,csY,C.blue,1.5);
+        el(svg,'polygon',{points:`${csX+2},${csY-3} ${csX+8},${csY} ${csX+2},${csY+3}`,fill:C.blue});
         ln(svg,14,csY,csX-csR,csY,C.blue);
-        ln(svg,csX+csR,csY,50,csY,C.blue);
-        ln(svg,14,csY,14,csY+16); gnd(svg,14,csY+16);
-        tx(svg,csX,csY-21,'Iin',C.blue,8,'middle');
+        ln(svg,csX+csR,csY,62,csY,C.blue);
+        ln(svg,14,csY,14,csY+20); gnd(svg,14,csY+20);
+        tx(svg,csX,csY-24,'Iin',C.blue,8,'middle');
         // Node 1 (junction: Iin out, − input, R1 bottom)
-        const n1x=50,n1y=csY;
+        const n1x=62,n1y=csY;
         el(svg,'circle',{cx:n1x,cy:n1y,r:2.5,fill:C.wire});
         ln(svg,n1x,n1y,inN.x,inN.y);
         // + input → GND
-        ln(svg,inP.x,inP.y,72,inP.y); ln(svg,72,inP.y,72,inP.y+16); gnd(svg,72,inP.y+16);
+        const gndX=88;
+        ln(svg,inP.x,inP.y,gndX,inP.y); ln(svg,gndX,inP.y,gndX,inP.y+20); gnd(svg,gndX,inP.y+20);
         // Output junction
-        const jx=out.x+16,jy=out.y;
+        const jx=out.x+24,jy=out.y;
         ln(svg,out.x,out.y,jx,jy);
         el(svg,'circle',{cx:jx,cy:jy,r:2.5,fill:C.wire});
         // R1 feedback: junction → up → stub → zigzag → stub → down → Node 1
-        const feedY=24;
+        const feedY=32;
         ln(svg,jx,jy,jx,feedY);
-        ln(svg,jx,feedY,jx-8,feedY);
-        zigzag(svg,jx-8,feedY,n1x+8,feedY,C.orange);
-        ln(svg,n1x+8,feedY,n1x,feedY);
+        ln(svg,jx,feedY,jx-10,feedY);
+        zigzag(svg,jx-10,feedY,n1x+10,feedY,C.orange);
+        ln(svg,n1x+10,feedY,n1x,feedY);
         ln(svg,n1x,feedY,n1x,n1y);
-        tx(svg,Math.round((jx+n1x)/2),feedY-9,'R1',C.orange,8,'middle');
+        tx(svg,Math.round((jx+n1x)/2),feedY-10,'R1',C.orange,8,'middle');
         // Output chain: junction → right → R2↓ → Ammeter↓ → R3↓ → GND
-        const cx=170;
+        const cx=248;
         ln(svg,jx,jy,cx,jy);
-        const r2t=jy,r2b=jy+34;
-        ln(svg,cx-6,r2t,cx+6,r2t);
+        const r2t=jy,r2b=jy+46;
+        ln(svg,cx-7,r2t,cx+7,r2t);
         ln(svg,cx,r2t,cx,r2t+5); zigzagV(svg,cx,r2t+5,r2b-5,C.orange); ln(svg,cx,r2b-5,cx,r2b);
-        ln(svg,cx-6,r2b,cx+6,r2b);
-        tx(svg,cx+13,Math.round((r2t+r2b)/2),'R2',C.orange,8,'start');
-        const amY=r2b+10;
-        el(svg,'circle',{cx:cx,cy:amY,r:10,fill:'none',stroke:C.green,'stroke-width':1.5});
-        el(svg,'text',{x:cx,y:amY,fill:C.green,'font-size':9,'font-family':'monospace','text-anchor':'middle','dominant-baseline':'middle'},'A');
-        const r3t=amY+10,r3b=r3t+34;
-        ln(svg,cx-6,r3t,cx+6,r3t);
+        ln(svg,cx-7,r2b,cx+7,r2b);
+        tx(svg,cx+14,Math.round((r2t+r2b)/2),'R2',C.orange,8,'start');
+        const amY=r2b+14,amR=13;
+        el(svg,'circle',{cx:cx,cy:amY,r:amR,fill:'none',stroke:C.green,'stroke-width':1.5});
+        el(svg,'text',{x:cx,y:amY,fill:C.green,'font-size':10,'font-family':'monospace','text-anchor':'middle','dominant-baseline':'middle'},'A');
+        const r3t=amY+amR,r3b=r3t+46;
+        ln(svg,cx-7,r3t,cx+7,r3t);
         ln(svg,cx,r3t,cx,r3t+5); zigzagV(svg,cx,r3t+5,r3b-5,C.orange); ln(svg,cx,r3b-5,cx,r3b);
-        ln(svg,cx-6,r3b,cx+6,r3b);
-        tx(svg,cx+13,Math.round((r3t+r3b)/2),'R3',C.orange,8,'start');
+        ln(svg,cx-7,r3b,cx+7,r3b);
+        tx(svg,cx+14,Math.round((r3t+r3b)/2),'R3',C.orange,8,'start');
         gnd(svg,cx,r3b);
         return svg;
     }
