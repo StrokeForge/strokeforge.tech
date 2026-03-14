@@ -420,7 +420,7 @@
     }
 
     function drawTransimpedance() {
-        const svg=mkSvg(310,260);
+        const svg=mkSvg(310,280);
         // Op-amp: − on top, + on bottom
         const ox=105,oy=95,h=60,hw=Math.round(h*0.55);
         el(svg,'polygon',{points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
@@ -454,31 +454,33 @@
         const cx=200;
         ln(svg,out.x,out.y,cx,out.y);   // op-amp tip → chain top
 
-        // R2 (vertical)
-        const r2t=out.y, r2b=r2t+42;   // 95 → 137
+        // R2 (vertical) — 13 px drát nad i pod
+        const r2t=out.y+13, r2b=r2t+42;   // 108 → 150
+        ln(svg,cx,out.y,cx,r2t);           // drát nad R2 (13 px)
         ln(svg,cx,r2t,cx,r2t+5); zigzagV(svg,cx,r2t+5,r2b-5,C.orange); ln(svg,cx,r2b-5,cx,r2b);
         tx(svg,cx+13,Math.round((r2t+r2b)/2),'R2',C.orange,8,'start');
 
-        // Wire R2 → ammeter
-        ln(svg,cx,r2b,cx,r2b+13);   // 137 → 150
+        // Wire R2 → ammeter (13 px, symetrické s drátem nad)
+        ln(svg,cx,r2b,cx,r2b+13);   // 150 → 163
 
         // Ammeter
-        const amR=12,amY=r2b+25;   // center y=162
+        const amR=12,amY=r2b+25;   // center y=175
         el(svg,'circle',{cx:cx,cy:amY,r:amR,fill:'none',stroke:C.green,'stroke-width':1.5});
         el(svg,'text',{x:cx,y:amY,fill:C.green,'font-size':10,'font-family':'monospace','text-anchor':'middle','dominant-baseline':'middle'},'A');
 
         // Wire ammeter → junction C
-        ln(svg,cx,amY+amR,cx,amY+amR+10);   // 174 → 184
+        ln(svg,cx,amY+amR,cx,amY+amR+10);   // 187 → 197
 
         // Junction C: output splits — R3 down, feedback right
-        const jcY=amY+amR+10;   // 184
+        const jcY=amY+amR+10;   // 197
         el(svg,'circle',{cx:cx,cy:jcY,r:2.5,fill:C.wire});
 
-        // R3 (vertical) → GND
-        const r3t=jcY, r3b=r3t+42;   // 184 → 226
+        // R3 (vertical) — 8 px drát nad i pod
+        const r3t=jcY+8, r3b=r3t+42;   // 205 → 247
+        ln(svg,cx,jcY,cx,r3t);           // drát nad R3 (8 px)
         ln(svg,cx,r3t,cx,r3t+5); zigzagV(svg,cx,r3t+5,r3b-5,C.orange); ln(svg,cx,r3b-5,cx,r3b);
         tx(svg,cx+13,Math.round((r3t+r3b)/2),'R3',C.orange,8,'start');
-        ln(svg,cx,r3b,cx,r3b+8); gnd(svg,cx,r3b+8);   // GND at y=234
+        ln(svg,cx,r3b,cx,r3b+8); gnd(svg,cx,r3b+8);   // GND at y=255
 
         // Feedback: junction C → right wire → up → R1 horizontal → down → node A
         const rfX=270, feedY=38;
