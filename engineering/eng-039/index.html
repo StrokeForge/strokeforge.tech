@@ -493,8 +493,8 @@
         ln(cx+33, botY, cx+43, botY, gray, 1);
         txt(cx+52, (topY+botY)/2, `L₀`, gray, 9);
 
-        // D — text only on left side, no line through spring
-        txt(6, topY + bodyH * 0.5, '⌀D', gray, 9, 'start');
+        // D — label just left of spring coils, mid-height
+        txt(cx - r - 3, topY + bodyH * 0.5, '⌀D', gray, 12, 'end');
 
         // n, d labels — centered below all hook/arrow geometry
         txt(cx, H - 20, `n = ${n}`, gray, 9, 'middle');
