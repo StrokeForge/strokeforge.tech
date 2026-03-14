@@ -48,7 +48,8 @@
         .steel-en { font-size: 0.74rem; color: var(--text-gray); margin-top: 0.1rem; }
 
         /* Category badge */
-        .cat-badge { font-size: 0.68rem; font-weight: 700; padding: 0.12rem 0.45rem; border-radius: 4px; white-space: nowrap; display: inline-block; }
+        .cat-badge { font-size: 0.68rem; font-weight: 700; padding: 0.12rem 0.45rem; border-radius: 4px; display: inline-block; max-width: 90px; line-height: 1.4; }
+        td.cat-col { max-width: 100px; }
         .cat-struct   { background: rgba(96,165,250,0.12); color:#60a5fa; border:1px solid rgba(96,165,250,0.25); }
         .cat-through  { background: rgba(249,115,22,0.12); color:#f97316; border:1px solid rgba(249,115,22,0.3); }
         .cat-case     { background: rgba(167,139,250,0.12); color:#a78bfa; border:1px solid rgba(167,139,250,0.3); }
@@ -67,7 +68,7 @@
         .mini-bar-fill { height: 100%; border-radius: 3px; }
 
         /* Notes */
-        .note-cell { font-size: 0.74rem; color: var(--text-gray); max-width: 280px; }
+        .note-cell { font-size: 0.74rem; color: var(--text-gray); max-width: 340px; }
         .cat-tz { font-size: 0.68rem; color: var(--text-gray); margin-top: 0.25rem; }
 
         /* Info */
@@ -358,7 +359,7 @@
                 <div class="steel-cs">${s.cs}</div>
                 <div class="steel-en">${s.en}</div>
             </td>
-            <td>
+            <td class="cat-col">
                 <span class="cat-badge ${CAT_CLASSES[s.cat]}">${CAT_LABELS[s.cat]}</span>
                 <div class="cat-tz">${TZ_LABELS[s.tz]}</div>
             </td>
