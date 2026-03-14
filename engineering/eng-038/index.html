@@ -67,7 +67,8 @@
         .mini-bar-fill { height: 100%; border-radius: 3px; }
 
         /* Notes */
-        .note-cell { font-size: 0.74rem; color: var(--text-gray); max-width: 200px; }
+        .note-cell { font-size: 0.74rem; color: var(--text-gray); max-width: 280px; }
+        .cat-tz { font-size: 0.68rem; color: var(--text-gray); margin-top: 0.25rem; }
 
         /* Info */
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -148,7 +149,7 @@
                             <th class="center">Low temper<br>150–250 °C</th>
                             <th class="center">QT / High temp.<br>550–650 °C</th>
                             <th class="center">Surface<br>(case/nitride)</th>
-                            <th class="center">Hardness bar (max)</th>
+                            <th class="center">Hardness bar<br>(max)</th>
                             <th>Notes</th>
                         </tr>
                     </thead>
@@ -313,6 +314,10 @@
         struct:'Structural', through:'Through-hardening', case:'Case-hardening',
         nitriding:'Nitriding', tool:'Tool', stainless:'Stainless'
     };
+    const TZ_LABELS = {
+        qt:'Quench & Temper', case:'Case Hardening',
+        nitriding:'Nitriding', anneal:'Annealing only'
+    };
     const CAT_CLASSES = {
         struct:'cat-struct', through:'cat-through', case:'cat-case',
         nitriding:'cat-nitriding', tool:'cat-tool', stainless:'cat-stainless'
@@ -340,12 +345,10 @@
         const pct = (maxV / 70 * 100).toFixed(1);
         const col = hrcColor(maxV);
         return `<td>
-            <div class="mini-bar-wrap">
-                <div class="mini-bar-track">
-                    <div class="mini-bar-fill" style="width:${pct}%;background:${col};"></div>
-                </div>
-                <span style="font-size:0.72rem;color:${col};white-space:nowrap;">${maxV} HRC</span>
+            <div class="mini-bar-track" style="margin-bottom:0.3rem;">
+                <div class="mini-bar-fill" style="width:${pct}%;background:${col};"></div>
             </div>
+            <div style="font-size:0.72rem;color:${col};white-space:nowrap;text-align:center;">${maxV} HRC</div>
         </td>`;
     }
 
@@ -355,7 +358,10 @@
                 <div class="steel-cs">${s.cs}</div>
                 <div class="steel-en">${s.en}</div>
             </td>
-            <td><span class="cat-badge ${CAT_CLASSES[s.cat]}">${CAT_LABELS[s.cat]}</span></td>
+            <td>
+                <span class="cat-badge ${CAT_CLASSES[s.cat]}">${CAT_LABELS[s.cat]}</span>
+                <div class="cat-tz">${TZ_LABELS[s.tz]}</div>
+            </td>
             <td class="hrd-cell"><span class="hrd-val" style="color:#9ca3af">${s.hb_del}</span></td>
             ${hrdCell(s.hrc_q)}
             ${hrdCell(s.hrc_lt)}
