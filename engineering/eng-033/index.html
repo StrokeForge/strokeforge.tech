@@ -510,7 +510,7 @@
         }
 
         if (mode === 'single') {
-            const gap  = 4;
+            const gap  = 14;
             const p1Y  = Math.round(H / 2 - plateH - gap / 2) - 4;  // Plate A top
             const p2Y  = p1Y + plateH + gap;                          // Plate B top
             const midF = p1Y + plateH + gap / 2;
@@ -520,9 +520,9 @@
             rect(pLeft, p2Y, plateW, plateH, gray, '#1a1a1a');
             txt(W / 2, p2Y + plateH / 2, 'PLATE B', gray, 10);
 
-            // Shear plane
-            ln(pLeft, p1Y + plateH, pRight, p1Y + plateH, red, 1, '6,3');
-            txt(pRight + 20, p1Y + plateH, 'shear', red, 8, 'start');
+            // Shear plane — in the middle of the gap
+            ln(pLeft, midF, pRight, midF, red, 1.5, '6,3');
+            txt(pRight + 20, midF, 'shear', red, 8, 'start');
 
             rivets.forEach(rv => drawRivet(rv.x, rv.dashed, p1Y, p2Y + plateH));
             if (!showAll) txt(W / 2, p1Y - headRy - 9, '· · ·', gray, 12);
@@ -574,9 +574,9 @@
             { label: 'Net sec.', eta: etaN },
         ];
         checks.forEach((c, i) => {
-            const lx  = 14 + i * 110;
+            const lx  = W / 2 + (i - 1) * 120;
             const col = c.eta > 1 ? red : c.eta > 0.8 ? yellow : green;
-            txt(lx, H - 12, `${c.eta > 1 ? '✗' : '✓'} ${c.label}: ${fmt1(c.eta * 100)} %`, col, 9.5, 'start');
+            txt(lx, H - 12, `${c.eta > 1 ? '✗' : '✓'} ${c.label}: ${fmt1(c.eta * 100)} %`, col, 9.5, 'middle');
         });
     }
 
