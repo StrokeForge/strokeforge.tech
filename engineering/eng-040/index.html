@@ -383,18 +383,16 @@
         const cx2 = Math.min(W - margin - r2, cx1 + a * scale);
         const cy  = H / 2;
 
-        // Belt tangent lines (open drive)
-        const dy  = (r2 - r1);
-        const dx  = cx2 - cx1;
-        const dist= Math.sqrt(dx*dx + dy*dy);
-        const sinT= dy / dist;
-        const cosT= dx / dist;
-        // Top belt: from top of small to top of large
-        const bx1T = cx1 - sinT * r1,  by1T = cy - cosT * r1;
-        const bx2T = cx2 - sinT * r2,  by2T = cy - cosT * r2;
-        // Bottom belt
-        const bx1B = cx1 + sinT * r1,  by1B = cy + cosT * r1;
-        const bx2B = cx2 + sinT * r2,  by2B = cy + cosT * r2;
+        // Belt tangent lines (open drive) — correct external tangent geometry
+        // sin(α) = (r2−r1)/D,  cos(α) = sqrt(1−sin²)
+        const D    = cx2 - cx1;
+        const sinA = D > 0 ? (r2 - r1) / D : 0;
+        const cosA = Math.sqrt(Math.max(0, 1 - sinA * sinA));
+        // Both belts share the same x-offset (−r·sinA), mirrored y (±r·cosA)
+        const bx1T = cx1 - sinA * r1,  by1T = cy - cosA * r1;
+        const bx2T = cx2 - sinA * r2,  by2T = cy - cosA * r2;
+        const bx1B = cx1 - sinA * r1,  by1B = cy + cosA * r1;
+        const bx2B = cx2 - sinA * r2,  by2B = cy + cosA * r2;
 
         // Belt lines (tight side = top, slack = bottom conventionally for driver rotating CW)
         ln(bx1T, by1T, bx2T, by2T, beltColor, 3);
