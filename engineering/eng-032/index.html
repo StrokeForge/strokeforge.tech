@@ -461,9 +461,15 @@
         } else {
             // Full penetration — solid weld bead
             rect(cx - weldW/2, py, weldW, plateH, weldColor, 'rgba(249,115,22,0.25)');
-            // Weld bead crowns (top and bottom)
-            poly(`${cx-weldW/2},${py} ${cx},${py-7} ${cx+weldW/2},${py}`, weldColor, 'none', '0.85');
-            poly(`${cx-weldW/2},${py+plateH} ${cx},${py+plateH+7} ${cx+weldW/2},${py+plateH}`, weldColor, 'none', '0.85');
+            // Weld bead crowns — convex arcs (top and bottom)
+            const crownTop = document.createElementNS(ns, 'path');
+            crownTop.setAttribute('d', `M ${cx-weldW/2},${py} Q ${cx},${py-10} ${cx+weldW/2},${py}`);
+            crownTop.setAttribute('fill', weldColor); crownTop.setAttribute('opacity', '0.85');
+            svg.appendChild(crownTop);
+            const crownBot = document.createElementNS(ns, 'path');
+            crownBot.setAttribute('d', `M ${cx-weldW/2},${py+plateH} Q ${cx},${py+plateH+10} ${cx+weldW/2},${py+plateH}`);
+            crownBot.setAttribute('fill', weldColor); crownBot.setAttribute('opacity', '0.85');
+            svg.appendChild(crownBot);
         }
 
         // Weld label
