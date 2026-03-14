@@ -427,26 +427,36 @@
             s.setAttribute('viewBox', '0 0 60 52');
 
             // ISO 1302 surface texture symbol:
-            // Closed triangle, tip at bottom, horizontal line from upper-right corner
+            // 1) Closed triangle (tip at bottom)
+            // 2) Diagonal line continuing from upper-right corner upward (same slope as right leg)
+            // 3) Horizontal line from top of diagonal
             const poly = document.createElementNS(ns, 'polygon');
-            poly.setAttribute('points', '8,20 34,20 21,44');
+            poly.setAttribute('points', '6,30 32,30 19,48');
             poly.setAttribute('fill', 'none');
             poly.setAttribute('stroke', '#f97316');
-            poly.setAttribute('stroke-width', '2');
+            poly.setAttribute('stroke-width', '1.8');
             poly.setAttribute('stroke-linejoin', 'round');
             s.appendChild(poly);
 
-            // Horizontal line extending right from upper-right corner
-            const line = document.createElementNS(ns, 'line');
-            line.setAttribute('x1', '34'); line.setAttribute('y1', '20');
-            line.setAttribute('x2', '56'); line.setAttribute('y2', '20');
-            line.setAttribute('stroke', '#f97316');
-            line.setAttribute('stroke-width', '2');
-            s.appendChild(line);
+            // Diagonal: from (32,30) continuing right-leg slope (Δx=+13,Δy=-18) → (45,12)
+            const diag = document.createElementNS(ns, 'line');
+            diag.setAttribute('x1', '32'); diag.setAttribute('y1', '30');
+            diag.setAttribute('x2', '45'); diag.setAttribute('y2', '12');
+            diag.setAttribute('stroke', '#f97316');
+            diag.setAttribute('stroke-width', '1.8');
+            s.appendChild(diag);
+
+            // Horizontal line from top of diagonal to the right
+            const horiz = document.createElementNS(ns, 'line');
+            horiz.setAttribute('x1', '45'); horiz.setAttribute('y1', '12');
+            horiz.setAttribute('x2', '58'); horiz.setAttribute('y2', '12');
+            horiz.setAttribute('stroke', '#f97316');
+            horiz.setAttribute('stroke-width', '1.8');
+            s.appendChild(horiz);
 
             // Ra value above the horizontal line
             const t = document.createElementNS(ns, 'text');
-            t.setAttribute('x', '45'); t.setAttribute('y', '13');
+            t.setAttribute('x', '51'); t.setAttribute('y', '6');
             t.setAttribute('text-anchor', 'middle');
             t.setAttribute('font-size', '9');
             t.setAttribute('fill', '#94a3b8');
