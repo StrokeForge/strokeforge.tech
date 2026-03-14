@@ -267,7 +267,7 @@
         <div class="card">
             <h2>Cross-Section & τ Distribution</h2>
             <div class="diagram-wrap">
-                <svg id="diagram" width="540" height="300" viewBox="0 0 540 300" style="max-width:100%;height:auto;"></svg>
+                <svg id="diagram" width="580" height="370" viewBox="0 0 580 370" style="max-width:100%;height:auto;"></svg>
             </div>
         </div>
 
@@ -457,7 +457,7 @@
         const ns    = 'http://www.w3.org/2000/svg';
         const orange='#f97316', gray='#9ca3af', light='#e5e7eb', blue='#60a5fa',
               green='#4ade80', red='#f87171', yellow='#fbbf24';
-        const W=540, H=300;
+        const W=580, H=370;
         const secColor = eta>1 ? red : eta>0.8 ? yellow : '#60a5fa';
 
         function ln(x1,y1,x2,y2,col,w,dash) {
@@ -487,10 +487,10 @@
         }
 
         // Layout: cross-section on left, τ diagram on right
-        const cx = 150, cy = 150; // centre of cross-section drawing
-        const scH = 110;           // half-height of drawn section
-        const dxBase = 280;        // x-baseline of τ diagram
-        const dScale = tauMax > 0 ? 110 / tauMax : 1; // px per MPa
+        const cx = 150, cy = 185; // centre of cross-section drawing
+        const scH = 130;           // half-height of drawn section
+        const dxBase = 315;        // x-baseline of τ diagram
+        const dScale = tauMax > 0 ? 130 / tauMax : 1; // px per MPa
 
         // ----- Draw cross-section -----
         if (sec === 'rect') {
@@ -630,16 +630,16 @@
         }
 
         // τ diagram axis and labels
-        ln(dxBase, cy-120, dxBase, cy+120, gray, 1);
-        txt(dxBase, cy-130, 'τ [MPa]', gray, 9);
+        ln(dxBase, cy-145, dxBase, cy+145, gray, 1);
+        txt(dxBase, cy-158, 'τ [MPa]', gray, 9);
         // τ_max marker
         const tmX = dxBase + tauMax*dScale;
-        ln(tmX, cy-4, tmX, cy+4, secColor, 1.5);
-        txt(tmX+4, cy-12, `τ_max=${(tauMax).toFixed(1)}`, secColor, 9, 'start');
+        ln(tmX, cy-5, tmX, cy+5, secColor, 1.5);
+        txt(tmX+4, cy-16, `τ_max=${(tauMax).toFixed(1)}`, secColor, 9, 'start');
         // τ_Rd marker
         const trdX = dxBase + tauRd*dScale;
-        ln(trdX, cy-120, trdX, cy+120, green, 1, '3,2');
-        txt(trdX+3, cy+130, `τ_Rd=${(tauRd).toFixed(1)}`, green, 9, 'start');
+        ln(trdX, cy-145, trdX, cy+145, green, 1, '3,2');
+        txt(trdX+3, cy+158, `τ_Rd=${(tauRd).toFixed(1)}`, green, 9, 'start');
         // V arrow label
         txt(cx, H-14, `V = ${(V/1000).toFixed(1)} kN`, orange, 10);
         // NA label
