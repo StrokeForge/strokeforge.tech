@@ -818,12 +818,14 @@
 
     // ── Config data ──────────────────────────────────────────────
     const CONFIGS=[
+        // ── Základní ──────────────────────────────────────────────
         {id:'cmp', title:'Voltage Comparator',        draw:drawComparator,
          formula:'Vout = Vs+  if V1 > V2\nVout = Vs−  if V1 < V2',
          desc:'Open-loop. Output swings to supply rail. No feedback. Use dedicated comparator ICs (LM393) for speed and open-collector output.'},
         {id:'flw', title:'Voltage Follower',           draw:drawFollower,
          formula:'Vout = Vin\nGain = 1',
          desc:'Unity-gain buffer. High input impedance, low output impedance. Used to isolate stages without loading the signal source.'},
+        // ── Zesilovače ────────────────────────────────────────────
         {id:'ni',  title:'Non-Inverting Amplifier',    draw:drawNonInv,   calc:calcNonInv, badge:'Calculator',
          calcLabels:['Rf','Rg'],
          formula:'Gain = 1 + Rf / Rg\nVout = Vin × Gain',
@@ -838,12 +840,21 @@
         {id:'dif', title:'Differential Amplifier',     draw:drawDiff,
          formula:'If R1=R3, R2=R4:\nVout = (R2/R1) × (V1 − V2)',
          desc:'Amplifies the difference between two signals while rejecting common-mode noise. Basis of instrumentation amps.'},
+        // ── Matematické operace ───────────────────────────────────
         {id:'der', title:'Differentiator',             draw:drawDifferentiator,
          formula:'Vout = −R × C × dVin/dt',
          desc:'Output proportional to the rate of change of input. Sensitive to high-frequency noise — add small R in series with C.'},
         {id:'int', title:'Integrator',                 draw:drawIntegrator,
          formula:'Vout = −(1/RC) × ∫Vin dt',
          desc:'Output is time-integral of input. Converts square → triangle, triangle → sine. Add large R in parallel with C to prevent saturation.'},
+        // ── Filtry ────────────────────────────────────────────────
+        {id:'lpf', title:'Active Low-Pass Filter',     draw:drawLPF,
+         formula:'fc = 1 / (2π√(R1·R2·C1·C2))\nGain = 1 (unity)',
+         desc:'Sallen-Key 2nd-order active low-pass filter with unity gain. R1/R2 form the input resistor chain, C1 feeds back from output to the R1/R2 junction, C2 shunts the + input to GND. Roll-off: −40 dB/dec.'},
+        {id:'hpf', title:'Active High-Pass Filter',    draw:drawHPF,
+         formula:'fc = 1 / (2π√(R1·R2·C1·C2))\nGain = 1 (unity)',
+         desc:'Sallen-Key 2nd-order active high-pass filter with unity gain. C1/C2 form the input capacitor chain, R2 feeds back from output to the C1/C2 junction, R1 shunts the + input to GND. Roll-off: −40 dB/dec above fc.'},
+        // ── Konvertory ────────────────────────────────────────────
         {id:'tia', title:'Transimpedance Amplifier',   draw:drawTransimpedance,
          formula:'Vout = −Iin × R1\nIout = −Iin × R1 / (R2 + R3)',
          desc:'Converts input current to output voltage. Virtual ground at (−) forces all Iin through R1. Output current through R2+R3 is read by the ammeter.'},
@@ -856,12 +867,6 @@
         {id:'uu',  title:'U/U Converter',              draw:drawUtoU,
          formula:'Gain = 1 + R1/R2\nVout = Vin × Gain',
          desc:'Non-inverting amplifier with output load RL. Feedback divider R1/R2 sets gain. For R1=R2: Gain=2. RL does not affect gain — op-amp output impedance is near zero.'},
-        {id:'lpf', title:'Active Low-Pass Filter',     draw:drawLPF,
-         formula:'fc = 1 / (2π√(R1·R2·C1·C2))\nGain = 1 (unity)',
-         desc:'Sallen-Key 2nd-order active low-pass filter with unity gain. R1/R2 form the input resistor chain, C1 feeds back from output to the R1/R2 junction, C2 shunts the + input to GND. Roll-off: −40 dB/dec.'},
-        {id:'hpf', title:'Active High-Pass Filter',    draw:drawHPF,
-         formula:'fc = 1 / (2π√(R1·R2·C1·C2))\nGain = 1 (unity)',
-         desc:'Sallen-Key 2nd-order active high-pass filter with unity gain. C1/C2 form the input capacitor chain, R2 feeds back from output to the C1/C2 junction, R1 shunts the + input to GND. Roll-off: −40 dB/dec above fc.'},
     ];
 
     // ── Build grid ───────────────────────────────────────────────
