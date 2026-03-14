@@ -485,13 +485,13 @@
         // Load arrows
         const arrowOff = plateW + weldW/2 + 12;
         if (mode === 'tension') {
-            arrow(cx - arrowOff - 32, py + plateH/2, cx - arrowOff,      py + plateH/2, blue);
-            arrow(cx + arrowOff + 32, py + plateH/2, cx + arrowOff,      py + plateH/2, blue);
+            arrow(cx - arrowOff,      py + plateH/2, cx - arrowOff - 32, py + plateH/2, blue);
+            arrow(cx + arrowOff,      py + plateH/2, cx + arrowOff + 32, py + plateH/2, blue);
             txt(cx - arrowOff - 44, py + plateH/2 - 13, 'F', blue, 11, 'middle', '700');
             txt(cx + arrowOff + 44, py + plateH/2 - 13, 'F', blue, 11, 'middle', '700');
         } else if (mode === 'compression') {
-            arrow(cx - arrowOff,      py + plateH/2, cx - arrowOff - 32, py + plateH/2, blue);
-            arrow(cx + arrowOff,      py + plateH/2, cx + arrowOff + 32, py + plateH/2, blue);
+            arrow(cx - arrowOff - 32, py + plateH/2, cx - arrowOff,      py + plateH/2, blue);
+            arrow(cx + arrowOff + 32, py + plateH/2, cx + arrowOff,      py + plateH/2, blue);
             txt(cx - arrowOff - 44, py + plateH/2 - 13, 'F', blue, 11, 'middle', '700');
             txt(cx + arrowOff + 44, py + plateH/2 - 13, 'F', blue, 11, 'middle', '700');
         } else {
