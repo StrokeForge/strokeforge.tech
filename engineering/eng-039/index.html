@@ -17,8 +17,9 @@
 
         .input-grid   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
         .input-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        @media (max-width: 640px) { .input-grid { grid-template-columns: 1fr 1fr; } .input-grid-2 { grid-template-columns: 1fr; } }
-        @media (max-width: 400px) { .input-grid { grid-template-columns: 1fr; } }
+        .input-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+        @media (max-width: 640px) { .input-grid { grid-template-columns: 1fr 1fr; } .input-grid-2 { grid-template-columns: 1fr; } .input-grid-4 { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 400px) { .input-grid { grid-template-columns: 1fr; } .input-grid-4 { grid-template-columns: 1fr 1fr; } }
 
         .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
         .field label { font-size: 0.8rem; color: var(--text-gray); }
@@ -98,7 +99,7 @@
             <h2>Spring geometry &amp; loading</h2>
             <div class="side-layout">
                 <div>
-                    <div class="input-grid" style="margin-bottom:1rem;">
+                    <div class="input-grid-4" style="margin-bottom:1rem;">
                         <div class="field">
                             <label>Wire diameter <i>d</i></label>
                             <div class="field-row">
@@ -128,6 +129,8 @@
                             </div>
                             <span class="hint">Built-in pretension (typ. 10–40 N)</span>
                         </div>
+                    </div>
+                    <div class="input-grid-2" style="margin-bottom:1rem;">
                         <div class="field">
                             <label>Hook type</label>
                             <select id="hooks" class="sel" onchange="calc()">
