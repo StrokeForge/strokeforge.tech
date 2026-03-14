@@ -426,24 +426,25 @@
             s.setAttribute('height', '52');
             s.setAttribute('viewBox', '0 0 60 52');
 
-            // Check-mark symbol body
+            // ISO 1302 surface texture symbol: asymmetric V, tip at bottom
+            // Left leg: short & steep  Right leg: long & shallow
             const poly = document.createElementNS(ns, 'polygon');
-            poly.setAttribute('points', '10,44 30,10 50,44');
+            poly.setAttribute('points', '8,18 20,44 52,18');
             poly.setAttribute('fill', 'none');
             poly.setAttribute('stroke', '#f97316');
             poly.setAttribute('stroke-width', '2');
             s.appendChild(poly);
 
-            // Horizontal bar at bottom
+            // Horizontal bar at top (ISO basic symbol)
             const line = document.createElementNS(ns, 'line');
-            line.setAttribute('x1', '10'); line.setAttribute('y1', '44');
-            line.setAttribute('x2', '50'); line.setAttribute('y2', '44');
-            line.setAttribute('stroke', '#f97316'); line.setAttribute('stroke-width', '2');
+            line.setAttribute('x1', '8');  line.setAttribute('y1', '18');
+            line.setAttribute('x2', '52'); line.setAttribute('y2', '18');
+            line.setAttribute('stroke', '#f97316'); line.setAttribute('stroke-width', '1.5');
             s.appendChild(line);
 
-            // Ra value text above
+            // Ra value text above the bar
             const t = document.createElementNS(ns, 'text');
-            t.setAttribute('x', '30'); t.setAttribute('y', '7');
+            t.setAttribute('x', '30'); t.setAttribute('y', '10');
             t.setAttribute('text-anchor', 'middle');
             t.setAttribute('font-size', '9');
             t.setAttribute('fill', '#94a3b8');
