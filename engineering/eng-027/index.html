@@ -426,25 +426,21 @@
             s.setAttribute('height', '52');
             s.setAttribute('viewBox', '0 0 60 52');
 
-            // ISO 1302 surface texture symbol: asymmetric V, tip at bottom
-            // Left leg: short & steep  Right leg: long & shallow
-            const poly = document.createElementNS(ns, 'polygon');
-            poly.setAttribute('points', '8,18 20,44 52,18');
+            // ISO 1302 basic surface texture symbol:
+            // Two lines (polyline, NOT polygon) meeting at tip, both ~60° from horizontal
+            // Left leg: shorter  Right leg: longer
+            // Tip at (28,44), left top at (14,20), right top at (50,8)
+            const poly = document.createElementNS(ns, 'polyline');
+            poly.setAttribute('points', '14,20 28,44 50,8');
             poly.setAttribute('fill', 'none');
             poly.setAttribute('stroke', '#f97316');
             poly.setAttribute('stroke-width', '2');
+            poly.setAttribute('stroke-linejoin', 'round');
             s.appendChild(poly);
 
-            // Horizontal bar at top (ISO basic symbol)
-            const line = document.createElementNS(ns, 'line');
-            line.setAttribute('x1', '8');  line.setAttribute('y1', '18');
-            line.setAttribute('x2', '52'); line.setAttribute('y2', '18');
-            line.setAttribute('stroke', '#f97316'); line.setAttribute('stroke-width', '1.5');
-            s.appendChild(line);
-
-            // Ra value text above the bar
+            // Ra value — above the longer (right) leg
             const t = document.createElementNS(ns, 'text');
-            t.setAttribute('x', '30'); t.setAttribute('y', '10');
+            t.setAttribute('x', '54'); t.setAttribute('y', '6');
             t.setAttribute('text-anchor', 'middle');
             t.setAttribute('font-size', '9');
             t.setAttribute('fill', '#94a3b8');
