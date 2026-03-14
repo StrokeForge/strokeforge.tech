@@ -189,7 +189,7 @@
                 </div>
 
                 <!-- Spring SVG -->
-                <svg id="springSvg" width="150" height="260" viewBox="0 0 150 260"></svg>
+                <svg id="springSvg" width="150" height="280" viewBox="0 0 150 280"></svg>
             </div>
         </div>
 
@@ -408,7 +408,7 @@
         const svg = document.getElementById('springSvg');
         const ns  = 'http://www.w3.org/2000/svg';
         svg.innerHTML = '';
-        const W = 150, H = 260;
+        const W = 150, H = 280;
         const cx = 75;
         const springColor = etaPct > 100 ? '#f87171' : etaPct > 80 ? '#fbbf24' : '#f97316';
         const gray = '#9ca3af', blue = '#60a5fa', light = '#e5e7eb';
@@ -496,9 +496,9 @@
         // D — text only on left side, no line through spring
         txt(6, topY + bodyH * 0.5, '⌀D', gray, 9, 'start');
 
-        // n, d labels — right side, below L0 bottom marker
-        txt(W - 4, botY + 16, `n = ${n}`, gray, 8, 'end');
-        txt(W - 4, botY + 27, `d = ${d} mm`, gray, 8, 'end');
+        // n, d labels — centered below all hook/arrow geometry
+        txt(cx, H - 20, `n = ${n}`, gray, 9, 'middle');
+        txt(cx, H - 8,  `d = ${d} mm`, gray, 9, 'middle');
     }
 
     // Initial render
