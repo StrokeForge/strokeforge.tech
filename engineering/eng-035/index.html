@@ -276,7 +276,7 @@
         <div class="card">
             <h2>Bending Moment Diagram</h2>
             <div class="diagram-wrap">
-                <svg id="diagram" width="560" height="420" viewBox="0 0 560 420" style="max-width:100%;height:auto;"></svg>
+                <svg id="diagram" width="560" height="500" viewBox="0 0 560 500" style="max-width:100%;height:auto;"></svg>
             </div>
         </div>
 
@@ -458,7 +458,7 @@
         const ns    = 'http://www.w3.org/2000/svg';
         const orange= '#f97316', gray='#9ca3af', light='#e5e7eb', blue='#60a5fa',
               green='#4ade80', red='#f87171', yellow='#fbbf24', purple='#a78bfa';
-        const W=560, H=420;
+        const W=560, H=500;
         const bx=60, ex=500, by=95, beamH=16; // beam x-start, x-end, y, height
 
         function ln(x1,y1,x2,y2,col,w,dash) {
@@ -547,9 +547,9 @@
         txt(ex,by+beamH+38,`R\u2071=${(RB/1000).toFixed(2)}kN`,green,9);
 
         // M-diagram — below beam
-        const mdY0 = by + (mode==='eccentric' ? 120 : 95); // baseline
+        const mdY0 = by + (mode==='eccentric' ? 170 : 140); // baseline
         const Mmax_kNm = Math.max(Math.abs(MA/1e6), Math.abs(MB/1e6), Math.abs(Mspan/1e6), 0.001);
-        const mS = 65 / Mmax_kNm; // max 65px
+        const mS = 80 / Mmax_kNm; // max 80px
 
         // Draw M-diagram as filled path
         const pts = [];
