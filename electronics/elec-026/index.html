@@ -739,12 +739,12 @@
 
     function drawHPF() {
         const svg=mkSvg(310,215);
-        // Op-amp: standard (− top, + bottom)
+        // Op-amp: + top, − bottom
         const ox=220,oy=130,h=58,hw=Math.round(h*0.55);
         el(svg,'polygon',{points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
             fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
-        tx(svg,ox+9,oy-h/4,'−',C.orange,11,'middle');
-        tx(svg,ox+9,oy+h/4,'+',C.green,9,'middle');
+        tx(svg,ox+9,oy-h/4,'+',C.green,9,'middle');
+        tx(svg,ox+9,oy+h/4,'−',C.orange,11,'middle');
         const inN={x:ox,y:Math.round(oy-h/4)};  // {220,116}
         const inP={x:ox,y:Math.round(oy+h/4)};  // {220,145}
         const out={x:ox+hw,y:oy};               // {252,130}
