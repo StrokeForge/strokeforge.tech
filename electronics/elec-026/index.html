@@ -456,9 +456,7 @@
 
         // R2 (vertical)
         const r2t=out.y, r2b=r2t+42;   // 95 → 137
-        ln(svg,cx-7,r2t,cx+7,r2t);
         ln(svg,cx,r2t,cx,r2t+5); zigzagV(svg,cx,r2t+5,r2b-5,C.orange); ln(svg,cx,r2b-5,cx,r2b);
-        ln(svg,cx-7,r2b,cx+7,r2b);
         tx(svg,cx+13,Math.round((r2t+r2b)/2),'R2',C.orange,8,'start');
 
         // Wire R2 → ammeter
@@ -478,9 +476,7 @@
 
         // R3 (vertical) → GND
         const r3t=jcY, r3b=r3t+42;   // 184 → 226
-        ln(svg,cx-7,r3t,cx+7,r3t);
         ln(svg,cx,r3t,cx,r3t+5); zigzagV(svg,cx,r3t+5,r3b-5,C.orange); ln(svg,cx,r3b-5,cx,r3b);
-        ln(svg,cx-7,r3b,cx+7,r3b);
         tx(svg,cx+13,Math.round((r3t+r3b)/2),'R3',C.orange,8,'start');
         ln(svg,cx,r3b,cx,r3b+8); gnd(svg,cx,r3b+8);   // GND at y=234
 
