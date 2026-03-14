@@ -536,12 +536,14 @@
             txt(W / 2, p1Y - headRy * 2 - 20, `Single shear (m = 1)  ·  d = ${d} mm  ·  n = ${n}`, gray, 10);
 
         } else {
-            const coverH = 14, gap = 3;
+            const coverH = 14, gap = 12;
             const totalH = coverH + gap + plateH + gap + coverH;
             const covTop = Math.round(H / 2 - totalH / 2) - 4;
             const mainY  = covTop + coverH + gap;
             const covBot = mainY + plateH + gap;
             const midF   = mainY + plateH / 2;
+            const shear1 = covTop + coverH + gap / 2;   // middle of top gap
+            const shear2 = mainY  + plateH  + gap / 2;  // middle of bottom gap
 
             rect(pLeft, covTop, plateW, coverH, '#60a5fa', 'rgba(96,165,250,0.1)');
             txt(W / 2, covTop + coverH / 2, 'cover plate', '#60a5fa', 9);
@@ -550,15 +552,15 @@
             rect(pLeft, covBot, plateW, coverH, '#60a5fa', 'rgba(96,165,250,0.1)');
             txt(W / 2, covBot + coverH / 2, 'cover plate', '#60a5fa', 9);
 
-            // Two shear planes
-            ln(pLeft, mainY,          pRight, mainY,          red, 1, '6,3');
-            ln(pLeft, mainY + plateH, pRight, mainY + plateH, red, 1, '6,3');
-            txt(pRight + 20, mainY + plateH / 2, 'shear ×2', red, 8, 'start');
+            // Two shear planes — in the middle of each gap
+            ln(pLeft, shear1, pRight, shear1, red, 1.5, '6,3');
+            ln(pLeft, shear2, pRight, shear2, red, 1.5, '6,3');
+            txt(pRight + 20, midF, 'shear ×2', red, 8, 'start');
 
             rivets.forEach(rv => drawRivet(rv.x, rv.dashed, covTop, covBot + coverH));
             if (!showAll) txt(W / 2, covTop - headRy - 9, '· · ·', gray, 12);
 
-            // Main plates pull apart: A ← left, B → right
+            // Plate A ← left, Plate B → right — arrows at main plate center
             arrow(pLeft - 6,  midF, pLeft - 44, midF, blue);
             arrow(pRight + 6, midF, pRight + 44, midF, blue);
             txt(pLeft - 56, midF, 'F', blue, 12, 'middle', '700');
