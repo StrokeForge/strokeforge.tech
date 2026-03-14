@@ -22,7 +22,7 @@
         @media (max-width: 400px) { .input-grid { grid-template-columns: 1fr; } .input-grid-4 { grid-template-columns: 1fr 1fr; } }
 
         .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
-        .field label { font-size: 0.8rem; color: var(--text-gray); min-height: 2.4em; display: flex; align-items: flex-end; }
+        .field label { font-size: 0.8rem; color: var(--text-gray); min-height: 2.4em; display: block; }
         .field-row { display: flex; gap: 0.5rem; align-items: center; }
         .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
         .inp:focus { border-color: var(--primary-orange); }
@@ -127,7 +127,7 @@
                                 <input type="number" id="F0" class="inp" value="15" min="0" step="0.5" oninput="calc()">
                                 <span class="unit">N</span>
                             </div>
-                            <span class="hint">Built-in pretension (typ. 10–40 N)</span>
+                            <span class="hint">Built-in pretension<br>(typ. 10–40 N)</span>
                         </div>
                     </div>
                     <div class="input-grid-2" style="margin-bottom:1rem;">
