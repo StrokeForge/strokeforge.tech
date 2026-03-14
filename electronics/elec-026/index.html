@@ -540,8 +540,9 @@
         el(svg,'circle',{cx:jx,cy:jy,r:2.5,fill:C.wire});
 
         // RL load (vertical) right of junction
-        const rlX=215,rlT=jy,rlB=rlT+42;
+        const rlX=215,rlT=jy+14,rlB=rlT+42;
         ln(svg,jx,jy,rlX,jy);
+        ln(svg,rlX,jy,rlX,rlT);
         ln(svg,rlX,rlT,rlX,rlT+5); zigzagV(svg,rlX,rlT+5,rlB-5,C.orange); ln(svg,rlX,rlB-5,rlX,rlB);
         tx(svg,rlX+11,Math.round((rlT+rlB)/2),'RL',C.orange,8,'start');
 
