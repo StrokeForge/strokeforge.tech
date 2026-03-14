@@ -432,7 +432,7 @@
             const ang=2*Math.PI*i/nt1;
             circ(cx1+(r1d+4)*Math.cos(ang), cy+(r1d+4)*Math.sin(ang), 3, orange, null, 0);
         }
-        txt(cx1, cy, `z₁=${z1}`, orange, 9);
+        txt(cx1, cy+r1d+14, `z₁=${z1}`, orange, 9);
 
         // Large sprocket
         circ(cx2, cy, r2d, dark, gray, 2);
@@ -442,7 +442,7 @@
             const ang=2*Math.PI*i/nt2;
             circ(cx2+(r2d+4)*Math.cos(ang), cy+(r2d+4)*Math.sin(ang), 3, gray, null, 0);
         }
-        txt(cx2, cy, `z₂=${z2}`, gray, 9);
+        txt(cx2, cy+r2d+14, `z₂=${z2}`, gray, 9);
 
         // Speed label
         txt(W/2, H-12, `v = ${isFinite(v)?v.toFixed(2):'—'} m/s`, gray, 8.5);
