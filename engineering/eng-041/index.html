@@ -161,9 +161,9 @@
                         </div>
                     </div>
 
-            <!-- Mini chain diagram -->
+            <!-- Chain diagram -->
             <div class="diagram-wrap" style="margin-top:1rem;">
-                <svg id="chainSvg" width="160" height="200" viewBox="0 0 160 200"></svg>
+                <svg id="chainSvg" width="100%" viewBox="0 0 500 200" style="max-width:500px;display:block;margin:0 auto;"></svg>
             </div>
         </div>
 
@@ -367,8 +367,8 @@
         const svg = document.getElementById('chainSvg');
         svg.innerHTML = '';
         const ns = 'http://www.w3.org/2000/svg';
-        const W=160, H=200;
-        const orange='#f97316', gray='#9ca3af';
+        const W=500, H=200;
+        const orange='#f97316', gray='#9ca3af', dark='#1e1e1e';
 
         function txt(x,y,t,col,size,anchor) {
             const e=document.createElementNS(ns,'text');
@@ -383,54 +383,67 @@
             if(stroke){e.setAttribute('stroke',stroke);e.setAttribute('stroke-width',sw||1.5);}
             svg.appendChild(e);
         }
-        function ln(x1,y1,x2,y2,col,w) {
+        function ln(x1,y1,x2,y2,col,w,dash) {
             const e=document.createElementNS(ns,'line');
             e.setAttribute('x1',x1);e.setAttribute('y1',y1);e.setAttribute('x2',x2);e.setAttribute('y2',y2);
-            e.setAttribute('stroke',col||gray);e.setAttribute('stroke-width',w||1.5);svg.appendChild(e);
+            e.setAttribute('stroke',col||gray);e.setAttribute('stroke-width',w||1.5);
+            if(dash) e.setAttribute('stroke-dasharray',dash);
+            svg.appendChild(e);
         }
 
-        // Small sprocket
-        const cx1=45, cy1=100, r1=35;
-        circ(cx1,cy1,r1,'rgba(30,30,30,0.8)',orange,2);
-        circ(cx1,cy1,r1*0.4,'rgba(249,115,22,0.15)',orange,1);
-        // Teeth on small
-        const nt=Math.min(z1,8);
-        for(let i=0;i<nt;i++){
-            const ang=2*Math.PI*i/nt;
-            const tx=cx1+(r1+5)*Math.cos(ang), ty=cy1+(r1+5)*Math.sin(ang);
-            const e=document.createElementNS(ns,'circle');
-            e.setAttribute('cx',tx);e.setAttribute('cy',ty);e.setAttribute('r',3);
-            e.setAttribute('fill',orange);svg.appendChild(e);
+        // Scale sprocket display radii based on tooth ratio
+        let r2d = 65, r1d = r2d * z1/z2;
+        if (r1d < 18) { r1d = 18; r2d = 18 * z2/z1; }
+        if (r2d > 75) { r2d = 75; r1d = 75 * z1/z2; }
+        if (r1d > 75) { r1d = 75; }
+        r1d = Math.round(r1d); r2d = Math.round(r2d);
+
+        const margin = 22;
+        const cy = Math.round(H * 0.48);
+        const cx1 = margin + r1d;
+        const cx2 = W - margin - r2d;
+
+        // External tangent geometry
+        const D = cx2 - cx1;
+        const sinA = D > 0 ? (r2d - r1d) / D : 0;
+        const cosA = Math.sqrt(Math.max(0, 1 - sinA*sinA));
+        const tx1T = cx1 - sinA*r1d, ty1T = cy - cosA*r1d;
+        const tx2T = cx2 - sinA*r2d, ty2T = cy - cosA*r2d;
+        const tx1B = cx1 - sinA*r1d, ty1B = cy + cosA*r1d;
+        const tx2B = cx2 - sinA*r2d, ty2B = cy + cosA*r2d;
+
+        // Chain strands
+        ln(tx1T, ty1T, tx2T, ty2T, orange, 2);
+        ln(tx1B, ty1B, tx2B, ty2B, orange, 1.5);
+
+        // Chain links on top strand
+        const dx=tx2T-tx1T, dy=ty2T-ty1T, len=Math.sqrt(dx*dx+dy*dy);
+        const np = Math.min(10, Math.floor(len/20));
+        for(let i=1;i<np;i++){
+            const t=i/np;
+            circ(tx1T+t*dx, ty1T+t*dy, 5, 'rgba(249,115,22,0.1)', orange, 1.5);
         }
-        txt(cx1,cy1,`z₁=${parseInt(document.getElementById('z1').value)||19}`,orange,8.5);
 
-        // Large sprocket (partially visible on right)
-        const cx2=145, cy2=100, r2=55;
-        const clipEl=document.createElementNS(ns,'clipPath');
-        clipEl.setAttribute('id','clip1');
-        const clipRect=document.createElementNS(ns,'rect');
-        clipRect.setAttribute('x','100');clipRect.setAttribute('y','0');
-        clipRect.setAttribute('width','60');clipRect.setAttribute('height',H.toString());
-        clipEl.appendChild(clipRect);svg.appendChild(clipEl);
-        const gLarge=document.createElementNS(ns,'g');
-        gLarge.setAttribute('clip-path','url(#clip1)');
-        const c2=document.createElementNS(ns,'circle');
-        c2.setAttribute('cx',cx2.toString());c2.setAttribute('cy',cy2.toString());c2.setAttribute('r',r2.toString());
-        c2.setAttribute('fill','rgba(30,30,30,0.8)');c2.setAttribute('stroke',gray);c2.setAttribute('stroke-width','2');
-        gLarge.appendChild(c2);
-        svg.appendChild(gLarge);
-        txt(W-10,cy2,`z₂`,gray,8.5,'end');
-
-        // Chain spans
-        ln(cx1,cy1-r1,W,cy1-r1,orange,2);
-        ln(cx1,cy1+r1,W,cy1+r1,orange,1.5);
-
-        // Chain links (top strand)
-        const np=Math.min(6, Math.floor((W-cx1-r1)/16));
-        for(let i=0;i<np;i++){
-            const lx=cx1+r1+4+i*16;
-            circ(lx,cy1-r1,5,'rgba(249,115,22,0.1)',orange,1.5);
+        // Small sprocket (draw on top of chain)
+        circ(cx1, cy, r1d, dark, orange, 2);
+        circ(cx1, cy, r1d*0.38, 'rgba(249,115,22,0.12)', orange, 1);
+        const nt1=Math.min(z1,12);
+        for(let i=0;i<nt1;i++){
+            const ang=2*Math.PI*i/nt1;
+            circ(cx1+(r1d+4)*Math.cos(ang), cy+(r1d+4)*Math.sin(ang), 3, orange, null, 0);
         }
+        txt(cx1, cy, `z₁=${z1}`, orange, 9);
+
+        // Large sprocket
+        circ(cx2, cy, r2d, dark, gray, 2);
+        circ(cx2, cy, r2d*0.38, 'rgba(156,163,175,0.08)', gray, 1);
+        const nt2=Math.min(z2,16);
+        for(let i=0;i<nt2;i++){
+            const ang=2*Math.PI*i/nt2;
+            circ(cx2+(r2d+4)*Math.cos(ang), cy+(r2d+4)*Math.sin(ang), 3, gray, null, 0);
+        }
+        txt(cx2, cy, `z₂=${z2}`, gray, 9);
+
         // Speed label
         txt(W/2, H-12, `v = ${isFinite(v)?v.toFixed(2):'—'} m/s`, gray, 8.5);
     }
