@@ -527,10 +527,11 @@
             rivets.forEach(rv => drawRivet(rv.x, rv.dashed, p1Y, p2Y + plateH));
             if (!showAll) txt(W / 2, p1Y - headRy - 9, '· · ·', gray, 12);
 
-            arrow(pLeft - 44, midF, pLeft - 6, midF, blue);
-            arrow(pRight + 6,  midF, pRight + 44, midF, blue);
-            txt(pLeft - 56, midF, 'F', blue, 12, 'middle', '700');
-            txt(pRight + 56, midF, 'F', blue, 12, 'middle', '700');
+            // Plate A ← left,  Plate B → right
+            arrow(pLeft - 6,  p1Y + plateH / 2, pLeft - 44, p1Y + plateH / 2, blue);
+            arrow(pRight + 6, p2Y + plateH / 2, pRight + 44, p2Y + plateH / 2, blue);
+            txt(pLeft - 56, p1Y + plateH / 2, 'F', blue, 12, 'middle', '700');
+            txt(pRight + 56, p2Y + plateH / 2, 'F', blue, 12, 'middle', '700');
 
             txt(W / 2, p1Y - headRy * 2 - 20, `Single shear (m = 1)  ·  d = ${d} mm  ·  n = ${n}`, gray, 10);
 
@@ -557,8 +558,9 @@
             rivets.forEach(rv => drawRivet(rv.x, rv.dashed, covTop, covBot + coverH));
             if (!showAll) txt(W / 2, covTop - headRy - 9, '· · ·', gray, 12);
 
-            arrow(pLeft - 44, midF, pLeft - 6, midF, blue);
-            arrow(pRight + 6,  midF, pRight + 44, midF, blue);
+            // Main plates pull apart: A ← left, B → right
+            arrow(pLeft - 6,  midF, pLeft - 44, midF, blue);
+            arrow(pRight + 6, midF, pRight + 44, midF, blue);
             txt(pLeft - 56, midF, 'F', blue, 12, 'middle', '700');
             txt(pRight + 56, midF, 'F', blue, 12, 'middle', '700');
 
