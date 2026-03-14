@@ -592,7 +592,7 @@
         txt(dimX2 + 14, (leffTop + leffBot) / 2 + 7, `β·L`, purple, 9, 'start');
 
         // Info panel on right
-        const ix = 310, iy = 50, iw = 210, rowH = 22;
+        const ix = 310, iy = Math.round((H - 180) / 2), iw = 210, rowH = 22;
         rect(ix, iy, iw, 180, 'none', 'rgba(255,255,255,0.03)', 8);
         const rows = [
             [`Case ${caseNum} — β = ${beta}`,  orange],
