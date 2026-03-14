@@ -573,9 +573,10 @@
         tx(svg,8,inP.y,'Vin',C.green,8,'start');
         ln(svg,36,inP.y,inP.x,inP.y);
 
-        // Op-amp output → ammeter (ammeter top touches output wire)
-        const cx=205,amR=12,amY=out.y+amR;   // center y=102
+        // Op-amp output → ammeter (10 px wire above ammeter)
+        const cx=205,amR=12,amY=out.y+amR+10;   // center y=112
         ln(svg,out.x,out.y,cx,out.y);
+        ln(svg,cx,out.y,cx,amY-amR);
         el(svg,'circle',{cx:cx,cy:amY,r:amR,fill:'none',stroke:C.green,'stroke-width':1.5});
         el(svg,'text',{x:cx,y:amY,fill:C.green,'font-size':10,'font-family':'monospace','text-anchor':'middle','dominant-baseline':'middle'},'A');
         tx(svg,cx+16,amY+1,'Iout',C.light,7,'start');
