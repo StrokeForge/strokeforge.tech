@@ -512,10 +512,10 @@
                 const y_loc = (frac-0.5)*h; // mm from NA
                 const tau = 1.5 * (V/A) * (1 - 4*y_loc*y_loc/(h*h));
                 const px = dxBase + tau*dScale;
-                const py = cy + (frac-0.5)*dh*2;
+                const py = cy + (frac-0.5)*dh;
                 pts.push(`${px},${py}`);
             }
-            const baseL = `${dxBase},${cy-dh}`, baseR = `${dxBase},${cy+dh}`;
+            const baseL = `${dxBase},${cy-dh/2}`, baseR = `${dxBase},${cy+dh/2}`;
             poly([baseL].concat(pts).concat([baseR]).join(' '), 'rgba(96,165,250,0.15)', blue);
             // Outline
             const pathEl=document.createElementNS(ns,'polyline');
