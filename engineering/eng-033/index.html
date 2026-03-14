@@ -560,11 +560,13 @@
             rivets.forEach(rv => drawRivet(rv.x, rv.dashed, covTop, covBot + coverH));
             if (!showAll) txt(W / 2, covTop - headRy - 9, '· · ·', gray, 12);
 
-            // Plate A ← left, Plate B → right — arrows at main plate center
-            arrow(pLeft - 6,  midF, pLeft - 44, midF, blue);
-            arrow(pRight + 6, midF, pRight + 44, midF, blue);
-            txt(pLeft - 56, midF, 'F', blue, 12, 'middle', '700');
-            txt(pRight + 56, midF, 'F', blue, 12, 'middle', '700');
+            // Cover top ← left, cover bottom → right — arrows at cover plate centers
+            const covMidT = covTop + coverH / 2;
+            const covMidB = covBot + coverH / 2;
+            arrow(pLeft - 6,  covMidT, pLeft - 44, covMidT, blue);
+            arrow(pRight + 6, covMidB, pRight + 44, covMidB, blue);
+            txt(pLeft - 56, covMidT, 'F', blue, 12, 'middle', '700');
+            txt(pRight + 56, covMidB, 'F', blue, 12, 'middle', '700');
 
             txt(W / 2, covTop - headRy * 2 - 20, `Double shear (m = 2)  ·  d = ${d} mm  ·  n = ${n}`, gray, 10);
         }
