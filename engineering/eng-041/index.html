@@ -180,7 +180,7 @@
         <div class="card">
             <h2>Drive Diagram</h2>
             <div class="diagram-wrap">
-                <svg id="diagram" width="560" height="250" viewBox="0 0 560 250" style="max-width:100%;height:auto;"></svg>
+                <svg id="diagram" width="560" height="300" viewBox="0 0 560 300" style="max-width:100%;height:auto;"></svg>
             </div>
         </div>
 
@@ -432,7 +432,7 @@
             const ang=2*Math.PI*i/nt1;
             circ(cx1+(r1d+4)*Math.cos(ang), cy+(r1d+4)*Math.sin(ang), 3, orange, null, 0);
         }
-        txt(cx1, cy+r1d+14, `z₁=${z1}`, orange, 9);
+        txt(cx1, cy+r1d+22, `z₁=${z1}`, orange, 9);
 
         // Large sprocket
         circ(cx2, cy, r2d, dark, gray, 2);
@@ -442,7 +442,7 @@
             const ang=2*Math.PI*i/nt2;
             circ(cx2+(r2d+4)*Math.cos(ang), cy+(r2d+4)*Math.sin(ang), 3, gray, null, 0);
         }
-        txt(cx2, cy+r2d+14, `z₂=${z2}`, gray, 9);
+        txt(cx2, cy+r2d+22, `z₂=${z2}`, gray, 9);
 
         // Speed label
         txt(W/2, H-12, `v = ${isFinite(v)?v.toFixed(2):'—'} m/s`, gray, 8.5);
@@ -455,7 +455,9 @@
         const ns    = 'http://www.w3.org/2000/svg';
         const orange='#f97316', gray='#9ca3af', light='#e5e7eb', blue='#60a5fa',
               green='#4ade80', red='#f87171', yellow='#fbbf24';
-        const W=560, H=250;
+        const W=560, H=300;
+        svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+        svg.setAttribute('height', H);
         const chainColor = allOk ? orange : (alpha1 < 120 ? red : yellow);
 
         function ln(x1,y1,x2,y2,col,w,dash) {
@@ -486,21 +488,20 @@
         const r2 = Math.max(d2/2*scale, 24);
         const cx1 = margin + r1;
         const cx2 = Math.min(W - margin - r2, cx1 + a*scale);
-        const cy  = H/2;
+        const cy  = Math.round(H * 0.46);
 
-        // Belt tangent
-        const dy  = (r2 - r1);
-        const dx  = cx2 - cx1;
-        const dist= Math.sqrt(dx*dx + dy*dy);
-        const sinT= dy/dist, cosT= dx/dist;
+        // External tangent geometry
+        const ddx = cx2 - cx1, ddy = r2 - r1;
+        const dist = Math.sqrt(ddx*ddx + ddy*ddy);
+        const sinT = ddy/dist, cosT = ddx/dist;
         const bx1T=cx1-sinT*r1, by1T=cy-cosT*r1;
         const bx2T=cx2-sinT*r2, by2T=cy-cosT*r2;
         const bx1B=cx1+sinT*r1, by1B=cy+cosT*r1;
         const bx2B=cx2+sinT*r2, by2B=cy+cosT*r2;
 
-        // Chain strands — draw as thick lines with link dots
-        ln(bx1T,by1T,bx2T,by2T,chainColor,3.5);  // tight
-        ln(bx1B,by1B,bx2B,by2B,chainColor,2,'5,3'); // slack (dashed)
+        // Chain strands
+        ln(bx1T,by1T,bx2T,by2T,chainColor,3.5);
+        ln(bx1B,by1B,bx2B,by2B,chainColor,2,'5,3');
 
         // Chain link pins along tight side
         const spanLen = Math.sqrt((bx2T-bx1T)**2+(by2T-by1T)**2);
@@ -512,7 +513,13 @@
             circ(lx,ly,2.5,'rgba(249,115,22,0.25)',chainColor,1);
         }
 
-        // Sprockets
+        // Strand labels (above/below midpoints, offset from strand)
+        const tmx=(bx1T+bx2T)/2, tmy=(by1T+by2T)/2;
+        const bmx=(bx1B+bx2B)/2, bmy=(by1B+by2B)/2;
+        txt(tmx, tmy-16, 'tight side', chainColor, 8.5);
+        txt(bmx, bmy+16, 'slack side (sag)', gray, 8.5);
+
+        // Sprockets (drawn on top of strands)
         circ(cx1,cy,r1,'rgba(25,25,25,0.9)',orange,2);
         circ(cx1,cy,r1*0.35,'rgba(249,115,22,0.12)',orange,1);
         const nTeeth1=Math.min(z1,12);
@@ -535,11 +542,13 @@
             e.setAttribute('fill',gray);svg.appendChild(e);
         }
 
-        // Labels
-        txt(cx1,cy,`z₁=${z1}`,orange,9);
-        txt(cx2,cy,`z₂=${z2}`,gray,9);
-        txt(cx1,cy+r1+14,`d₁=${d1.toFixed(1)}`,orange,8.5);
-        txt(cx2,cy+r2+14,`d₂=${d2.toFixed(1)}`,gray,8.5);
+        // z labels — above each sprocket
+        txt(cx1, cy-r1-12, `z₁=${z1}`, orange, 9);
+        txt(cx2, cy-r2-12, `z₂=${z2}`, gray, 9);
+
+        // d labels — below each sprocket
+        txt(cx1, cy+r1+14, `d₁=${d1.toFixed(1)} mm`, orange, 8.5);
+        txt(cx2, cy+r2+14, `d₂=${d2.toFixed(1)} mm`, gray, 8.5);
 
         // Wrap angle arc on small sprocket
         const arcR = r1+9;
@@ -551,21 +560,17 @@
         arcPath.setAttribute('stroke',alpha1<120?red:blue);arcPath.setAttribute('fill','none');
         arcPath.setAttribute('stroke-width','1.5');arcPath.setAttribute('stroke-dasharray','3,2');
         svg.appendChild(arcPath);
-        txt(cx1-arcR-16,cy,`α₁=${alpha1.toFixed(1)}°`,alpha1<120?red:blue,8,'end');
+        txt(cx1-arcR-14, cy, `α₁=${alpha1.toFixed(1)}°`, alpha1<120?red:blue, 8, 'end');
 
-        // Centre distance
-        ln(cx1,cy+Math.max(r1,r2)+22,cx2,cy+Math.max(r1,r2)+22,gray,1);
-        ln(cx1,cy+Math.max(r1,r2)+16,cx1,cy+Math.max(r1,r2)+28,gray,1);
-        ln(cx2,cy+Math.max(r1,r2)+16,cx2,cy+Math.max(r1,r2)+28,gray,1);
-        txt((cx1+cx2)/2,cy+Math.max(r1,r2)+38,`a = ${document.getElementById('a').value||'—'} mm`,gray,9);
-
-        // Strand labels
-        const tmx=(bx1T+bx2T)/2, tmy=(by1T+by2T)/2;
-        txt(tmx,tmy-10,`tight side`,chainColor,8.5);
-        txt((bx1B+bx2B)/2,(by1B+by2B)/2+12,'slack side (sag)',gray,8.5);
+        // Centre distance dimension
+        const dimY = cy + Math.max(r1,r2) + 36;
+        ln(cx1, dimY, cx2, dimY, gray, 1);
+        ln(cx1, dimY-6, cx1, dimY+6, gray, 1);
+        ln(cx2, dimY-6, cx2, dimY+6, gray, 1);
+        txt((cx1+cx2)/2, dimY+14, `a = ${document.getElementById('a').value||'—'} mm`, gray, 9);
 
         // Top label
-        txt(W/2,14,`p = ${document.getElementById('pitch').value} mm  ·  L = ${L_links} links`,gray,9);
+        txt(W/2, 14, `p = ${document.getElementById('pitch').value} mm  ·  L = ${L_links} links`, gray, 9);
     }
 
     calc();
