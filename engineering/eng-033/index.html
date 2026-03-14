@@ -486,16 +486,16 @@
             rect(cx, botY, plateW, plateH, gray, '#1a1a1a');
             txt(cx + plateW/2, botY + plateH/2, 'PLATE B', gray, 10);
 
-            // Overlap zone
-            const ovlapW = 80;
+            // Overlap zone — dynamic width based on rivet count
+            const nVis = Math.min(n, 8);
+            const pitch = 18;
+            const ovlapW = (nVis + 1) * pitch;
             rect(cx - ovlapW/2, topY, ovlapW, plateH + (botY - topY) + plateH, gray, 'rgba(255,255,255,0.03)');
 
-            // Rivets in overlap — show nr rivets in a row
-            const nVis = Math.min(nr, 4);
-            const spacing = ovlapW / (nVis + 1);
+            // Rivets in overlap
             const ry = topY + plateH + (botY - topY) / 2;
             for (let i = 0; i < nVis; i++) {
-                const rx = cx - ovlapW/2 + spacing * (i + 1);
+                const rx = cx - ovlapW/2 + pitch * (i + 1);
                 circ(rx, ry, d/2 + 1, 'rgba(249,115,22,0.2)', weldColor, 2);
                 circ(rx, ry, 3, weldColor);
                 // Shear plane indicator
@@ -525,18 +525,18 @@
             rect(cx + gap/2, midY, plateW, midH, gray, '#1a1a1a');
             txt(cx + plateW/2 + gap/2, midY + midH/2, 'PLATE B', gray, 10);
 
-            // Cover plates (top and bottom)
-            const coverW = 100;
+            // Cover plates (top and bottom) — dynamic width based on rivet count
+            const nVis = Math.min(n, 6);
+            const pitch = 18;
+            const coverW = (nVis + 1) * pitch;
             rect(cx - coverW/2, midY - coverH - 4, coverW, coverH, '#60a5fa', 'rgba(96,165,250,0.1)');
             rect(cx - coverW/2, midY + midH + 4,   coverW, coverH, '#60a5fa', 'rgba(96,165,250,0.1)');
             txt(cx, midY - coverH/2 - 4, 'cover', '#60a5fa', 9);
             txt(cx, midY + midH + coverH/2 + 4, 'cover', '#60a5fa', 9);
 
-            // Rivets — 2 planes shown
-            const nVis = Math.min(nr, 3);
-            const spacing = coverW / (nVis + 1);
+            // Rivets — dynamic count
             for (let i = 0; i < nVis; i++) {
-                const rx = cx - coverW/2 + spacing * (i + 1);
+                const rx = cx - coverW/2 + pitch * (i + 1);
                 const ry = midY + midH/2;
                 // Vertical rivet
                 ln(rx, midY - coverH - 4, rx, midY + midH + coverH + 4, weldColor, d/2);
