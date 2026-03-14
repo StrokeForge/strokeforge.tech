@@ -426,12 +426,10 @@
                 <td class="val-cell">${a.A}</td>
                 <td class="val-cell">${a.HB}</td>
                 <td>
-                    <div class="rating-wrap">
-                        <div class="rating-track">
-                            <div class="rating-fill" style="width:${a.mach}%;background:${MACH_COLOR[mc]||'#fbbf24'};"></div>
-                        </div>
-                        <span style="font-size:0.74rem;color:${MACH_COLOR[mc]};white-space:nowrap;">${machLabel(a.mach)} (${a.mach}%)</span>
+                    <div class="rating-track" style="margin-bottom:0.3rem;">
+                        <div class="rating-fill" style="width:${a.mach}%;background:${MACH_COLOR[mc]||'#fbbf24'};"></div>
                     </div>
+                    <div style="font-size:0.74rem;color:${MACH_COLOR[mc]};white-space:nowrap;">${machLabel(a.mach)} (${a.mach}%)</div>
                 </td>
                 <td>
                     <div class="rating-wrap">
