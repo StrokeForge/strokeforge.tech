@@ -518,7 +518,7 @@
 
         const colX = 180; // column centre x
         const colW = 16;
-        const colTop = 40, colBot = 240;
+        const colTop = 75, colBot = 240;
         const colH = colBot - colTop;
         const colColor = eta > 1 ? red : eta > 0.8 ? yellow : orange;
 
@@ -566,16 +566,10 @@
             fixed(colX, colBot, false);// bot: fixed
         }
 
-        // Force arrow at top
-        const arrowTopY = caseNum === 2 ? colTop + 2 : colTop - 32;
-        if (caseNum !== 2) {
-            arrow(colX, arrowTopY, colX, colTop, blue);
-            txt(colX + 16, arrowTopY + 8, 'F', blue, 12, 'start', '700');
-        } else {
-            // cantilever — reaction at base
-            arrow(colX, colBot - 32, colX, colBot, blue);
-            txt(colX + 16, colBot - 28, 'F', blue, 12, 'start', '700');
-        }
+        // Force arrow — always at free/loaded top end, 48 px clearance
+        const arrowTopY = colTop - 48;
+        arrow(colX, arrowTopY, colX, colTop, blue);
+        txt(colX + 14, arrowTopY + 10, 'F', blue, 12, 'start', '700');
 
         // Dimension L
         const dimX = colX - 50;
