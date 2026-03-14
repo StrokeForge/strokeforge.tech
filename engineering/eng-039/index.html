@@ -433,7 +433,7 @@
         }
 
         // Draw extension spring
-        const topY = 55, botY = 205;
+        const topY = 70, botY = 190;
         const nCoils = Math.max(Math.round(n), 3);
         const r = Math.min(28, D * 1.2); // visual coil radius
         const hr = r / 2;                // hook arc radius
@@ -476,16 +476,16 @@
         arcB.setAttribute('fill','none'); arcB.setAttribute('stroke',springColor); arcB.setAttribute('stroke-width','2');
         svg.appendChild(arcB);
 
-        // Force arrows — LEFT side with horizontal leader from hook tip
+        // Force arrows — on axis (cx), extended further from hook tip
         const hookTopY = topY - shankLen - 2*hr;
         const hookBotY = botY + shankLen + 2*hr;
-        const Fx = cx - 28;
-        ln(cx, hookTopY, Fx, hookTopY, blue, 1.5);       // horizontal leader
-        arrow(Fx, hookTopY, Fx, hookTopY - 12, blue);    // arrow up
-        txt(Fx - 2, hookTopY - 6, 'F', blue, 10, 'end');
-        ln(cx, hookBotY, Fx, hookBotY, blue, 1.5);       // horizontal leader
-        arrow(Fx, hookBotY, Fx, hookBotY + 12, blue);    // arrow down
-        txt(Fx - 2, hookBotY + 6, 'F', blue, 10, 'end');
+        const ext = 14;                                            // extension line beyond hook tip
+        ln(cx, hookTopY, cx, hookTopY - ext, blue, 1.5);         // extension line up
+        arrow(cx, hookTopY - ext, cx, hookTopY - ext - 12, blue); // arrow up
+        txt(cx + 10, hookTopY - ext - 6, 'F', blue, 10, 'start');
+        ln(cx, hookBotY, cx, hookBotY + ext, blue, 1.5);         // extension line down
+        arrow(cx, hookBotY + ext, cx, hookBotY + ext + 12, blue); // arrow down
+        txt(cx + 10, hookBotY + ext + 6, 'F', blue, 10, 'start');
 
         // L0 dimension (right side)
         ln(cx+38, topY, cx+38, botY, gray, 1);
@@ -496,9 +496,9 @@
         // D — text only on left side, no line through spring
         txt(6, topY + bodyH * 0.5, '⌀D', gray, 9, 'start');
 
-        // n, d labels — right side below L0 marker
-        txt(W - 4, botY + 14, `n = ${n}`, gray, 8, 'end');
-        txt(W - 4, botY + 24, `d = ${d} mm`, gray, 8, 'end');
+        // n, d labels — right side, below L0 bottom marker
+        txt(W - 4, botY + 16, `n = ${n}`, gray, 8, 'end');
+        txt(W - 4, botY + 27, `d = ${d} mm`, gray, 8, 'end');
     }
 
     // Initial render
