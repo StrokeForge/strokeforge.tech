@@ -109,11 +109,11 @@
                 <span class="filter-label">Type:</span>
                 <div class="filter-group" id="typeGroup">
                     <button class="fb active" data-type="all" onclick="setFilter('type','all',this)">All</button>
-                    <button class="fb" data-type="brass" onclick="setFilter('type','brass',this)">CuZn — Mosaz</button>
-                    <button class="fb" data-type="tin" onclick="setFilter('type','tin',this)">CuSn — Cínový bronz</button>
-                    <button class="fb" data-type="al" onclick="setFilter('type','al',this)">CuAl — Hliníkový bronz</button>
-                    <button class="fb" data-type="ni" onclick="setFilter('type','ni',this)">CuNi — Kuproniklová</button>
-                    <button class="fb" data-type="be" onclick="setFilter('type','be',this)">CuBe — Berylliový bronz</button>
+                    <button class="fb" data-type="brass" onclick="setFilter('type','brass',this)">CuZn — Brass</button>
+                    <button class="fb" data-type="tin" onclick="setFilter('type','tin',this)">CuSn — Tin Bronze</button>
+                    <button class="fb" data-type="al" onclick="setFilter('type','al',this)">CuAl — Aluminium Bronze</button>
+                    <button class="fb" data-type="ni" onclick="setFilter('type','ni',this)">CuNi — Cupronickel</button>
+                    <button class="fb" data-type="be" onclick="setFilter('type','be',this)">CuBe — Beryllium Bronze</button>
                 </div>
             </div>
 
@@ -160,34 +160,34 @@
             <h2>Notes &amp; design guidelines</h2>
             <div class="info-grid">
                 <div class="info-block">
-                    <h3>CuZn — Mosaz (Brass)</h3>
-                    <p>Nejrozšířenější skupina. Zvyšující se obsah Zn zlepšuje pevnost, snižuje tažnost. CuZn39Pb3 je nejlépe obrobitelný kov vůbec (referenční 100 %). Pozor na sezonní praskavost při napětí v prostředí amoniaku.</p>
+                    <h3>CuZn — Brass</h3>
+                    <p>The most widely used group. Increasing Zn content improves strength but reduces ductility. CuZn39Pb3 is the most machinable metal available (reference 100 %). Caution: season cracking risk under stress in ammonia environments.</p>
                 </div>
                 <div class="info-block">
-                    <h3>CuSn — Cínový bronz (Tin Bronze)</h3>
-                    <p>Výborná korozní odolnost, vhodný pro ložiska a pouzdra (nízký koeficient tření). CuSn6 je standardní pružinový materiál. Odlévané varianty (EN 1982) mají nižší Rm než tvářené.</p>
+                    <h3>CuSn — Tin Bronze</h3>
+                    <p>Excellent corrosion resistance, well suited for bearings and bushings (low friction coefficient). CuSn6 is the standard spring material. Cast variants (EN 1982) have lower Rm than wrought grades.</p>
                 </div>
                 <div class="info-block">
-                    <h3>CuAl — Hliníkový bronz</h3>
-                    <p>Vysoká pevnost (srovnatelná s nízkouhlíkovou ocelí), výborná korozní odolnost včetně mořské vody. Obtížněji obrobitelný. Používá se pro lodní vruty, hydraulické armatury, ložiska.</p>
+                    <h3>CuAl — Aluminium Bronze</h3>
+                    <p>High strength (comparable to low-carbon steel), excellent corrosion resistance including seawater. More difficult to machine. Used for ship propellers, hydraulic fittings, and bearings.</p>
                 </div>
                 <div class="info-block">
-                    <h3>CuNi — Kuproniklová slitina</h3>
-                    <p>Výborná odolnost vůči mořské vodě a erozi. Používá se pro výměníky tepla, kondenzátory, trubkovnice. CuNi30 je odolnější než CuNi10 — vyšší obsah Ni.</p>
+                    <h3>CuNi — Cupronickel</h3>
+                    <p>Excellent resistance to seawater and erosion. Used for heat exchangers, condensers, and tube sheets. CuNi30 is more resistant than CuNi10 due to higher Ni content.</p>
                 </div>
                 <div class="info-block">
-                    <h3>CuBe — Berylliový bronz</h3>
-                    <p>Jediná tvrzená měděná slitina. Po precipitačním vytvrzení dosahuje Rm až 1 300 MPa. Nevytváří jiskry — vhodný pro nástroje v Ex prostředí. Pozor: prach a výpary CuBe jsou toxické (karcinogen).</p>
+                    <h3>CuBe — Beryllium Bronze</h3>
+                    <p>The only hardenable copper alloy. After precipitation hardening, Rm reaches up to 1 300 MPa. Non-sparking — suitable for tools in explosive environments. Caution: CuBe dust and fumes are toxic (carcinogen).</p>
                 </div>
                 <div class="info-block">
-                    <h3>Obrobitelnost — referenční stupnice</h3>
+                    <h3>Machinability — reference scale</h3>
                     <ul>
-                        <li><strong>Excellent (&gt;80 %):</strong> CuZn39Pb3, CuZn36Pb3 — referenční materiál</li>
+                        <li><strong>Excellent (&gt;80 %):</strong> CuZn39Pb3, CuZn36Pb3 — reference material</li>
                         <li><strong>Good (50–80 %):</strong> CuZn37, CuSn8, CuBe2</li>
                         <li><strong>Fair (20–50 %):</strong> CuSn12, CuAl10Fe3</li>
                         <li><strong>Poor (&lt;20 %):</strong> CuNi, CuAl10Ni5Fe4</li>
                     </ul>
-                    <p style="margin-top:0.5rem;">Referenční standard: CuZn39Pb3 = 100 %.</p>
+                    <p style="margin-top:0.5rem;">Reference standard: CuZn39Pb3 = 100 %.</p>
                 </div>
             </div>
         </div>
@@ -208,31 +208,31 @@
             type: 'brass',
             Rm: '280–360', Rp02: '60–300', A: '45–5', HB: '60–110',
             mach: 30, form: 95,
-            apps: 'Dekorativní předměty, mince, zlatění, klempíř. výrobky',
+            apps: 'Decorative items, coins, gilding, sheet-metal parts',
             norm: 'EN 1652'
         },
         {
-            en: 'CuZn30', alt: 'Cartridge brass / mosaz 70/30',
+            en: 'CuZn30', alt: 'Cartridge brass / 70/30 brass',
             type: 'brass',
             Rm: '310–430', Rp02: '80–350', A: '42–4', HB: '65–130',
             mach: 35, form: 90,
-            apps: 'Nábojnice, hluboce tažené díly, tepelné výměníky',
+            apps: 'Cartridge cases, deep-drawn parts, heat exchangers',
             norm: 'EN 1652'
         },
         {
-            en: 'CuZn37', alt: 'Common brass / mosaz 63/37',
+            en: 'CuZn37', alt: 'Common brass / 63/37 brass',
             type: 'brass',
             Rm: '340–470', Rp02: '100–380', A: '40–3', HB: '75–135',
             mach: 55, form: 75,
-            apps: 'Plechy, trubky, tvarové díly, elektrotechnika',
+            apps: 'Sheets, tubes, formed parts, electrical engineering',
             norm: 'EN 1652'
         },
         {
-            en: 'CuZn39Pb3', alt: 'Free-cutting brass / automatová mosaz',
+            en: 'CuZn39Pb3', alt: 'Free-cutting brass / automatic brass',
             type: 'brass',
             Rm: '390–490', Rp02: '150–430', A: '25–3', HB: '90–140',
             mach: 100, form: 30,
-            apps: 'CNC soustružení, armatury, šroubové spoje, spojovací materiál',
+            apps: 'CNC turning, fittings, screw joints, fasteners',
             norm: 'EN 1509'
         },
         {
@@ -240,15 +240,15 @@
             type: 'brass',
             Rm: '360–500', Rp02: '120–420', A: '35–3', HB: '80–140',
             mach: 50, form: 55,
-            apps: 'Lodní kování, kondenzátorové trubky, výkovky',
+            apps: 'Marine hardware, condenser tubes, forgings',
             norm: 'EN 1652'
         },
         {
-            en: 'CuZn40Mn1Pb', alt: 'Naval brass / lodní mosaz',
+            en: 'CuZn40Mn1Pb', alt: 'Naval brass',
             type: 'brass',
             Rm: '380–530', Rp02: '150–460', A: '30–3', HB: '90–150',
             mach: 70, form: 45,
-            apps: 'Námořní armatury, šrouby, kování odolná mořské vodě',
+            apps: 'Marine fittings, bolts, seawater-resistant hardware',
             norm: 'EN 1652'
         },
 
@@ -258,15 +258,15 @@
             type: 'tin',
             Rm: '300–550', Rp02: '100–500', A: '45–3', HB: '70–160',
             mach: 50, form: 85,
-            apps: 'Pružiny, elektrické kontakty, pletivo, tažené trubky',
+            apps: 'Springs, electrical contacts, wire mesh, drawn tubes',
             norm: 'EN 1652'
         },
         {
-            en: 'CuSn6', alt: 'Phosphor bronze 6 % / pružinový bronz',
+            en: 'CuSn6', alt: 'Phosphor bronze 6 % / spring bronze',
             type: 'tin',
             Rm: '340–640', Rp02: '130–590', A: '40–2', HB: '80–185',
             mach: 50, form: 80,
-            apps: 'Pružiny, pouzdra, kontakty, membrány, vodní armatury',
+            apps: 'Springs, bushings, contacts, diaphragms, water fittings',
             norm: 'EN 1652'
         },
         {
@@ -274,15 +274,15 @@
             type: 'tin',
             Rm: '380–680', Rp02: '150–640', A: '35–2', HB: '90–200',
             mach: 55, form: 65,
-            apps: 'Ložiska, pouzdra, ozubená kola, šnekové kola',
+            apps: 'Bearings, bushings, gears, worm wheels',
             norm: 'EN 1652'
         },
         {
-            en: 'CuSn12', alt: 'Tin bronze 12 % (odlitek)',
+            en: 'CuSn12', alt: 'Tin bronze 12 % (cast)',
             type: 'tin',
             Rm: '230–280', Rp02: '120–150', A: '8–5', HB: '80–100',
             mach: 40, form: 20,
-            apps: 'Ložiska, kluzná pouzdra, šnekové kola, čerpadlová tělesa',
+            apps: 'Bearings, plain bushings, worm wheels, pump casings',
             norm: 'EN 1982'
         },
 
@@ -292,15 +292,15 @@
             type: 'al',
             Rm: '430–650', Rp02: '180–550', A: '30–5', HB: '110–190',
             mach: 35, form: 55,
-            apps: 'Pouzdra, armatury, odolné součásti strojů',
+            apps: 'Bushings, fittings, wear-resistant machine parts',
             norm: 'EN 1652'
         },
         {
-            en: 'CuAl10Fe3', alt: 'Aluminium bronze / kondurit',
+            en: 'CuAl10Fe3', alt: 'Aluminium bronze / condurite',
             type: 'al',
             Rm: '530–700', Rp02: '200–600', A: '25–4', HB: '140–200',
             mach: 30, form: 35,
-            apps: 'Lodní vruty, hydraulické armatury, ložiska vysoké zátěže',
+            apps: 'Ship propellers, hydraulic fittings, heavy-duty bearings',
             norm: 'EN 1652'
         },
         {
@@ -308,7 +308,7 @@
             type: 'al',
             Rm: '620–800', Rp02: '250–700', A: '20–3', HB: '160–230',
             mach: 20, form: 25,
-            apps: 'Lodní vruty, podmořská technika, ventily, čerpadla v mořské vodě',
+            apps: 'Ship propellers, subsea equipment, valves, seawater pumps',
             norm: 'EN 1982'
         },
 
@@ -318,7 +318,7 @@
             type: 'ni',
             Rm: '290–380', Rp02: '100–350', A: '35–10', HB: '75–120',
             mach: 20, form: 70,
-            apps: 'Kondenzátorové trubky, výměníky tepla, mořská vodní potrubí',
+            apps: 'Condenser tubes, heat exchangers, seawater pipework',
             norm: 'EN 1652'
         },
         {
@@ -326,7 +326,7 @@
             type: 'ni',
             Rm: '340–440', Rp02: '120–380', A: '30–8', HB: '85–130',
             mach: 20, form: 60,
-            apps: 'Vysoce korozně namáhané výměníky, kondenzátory, desalinizační zařízení',
+            apps: 'High-corrosion-duty heat exchangers, condensers, desalination plants',
             norm: 'EN 1652'
         },
 
@@ -336,7 +336,7 @@
             type: 'be',
             Rm: '500–1300', Rp02: '200–1200', A: '35–1', HB: '140–400',
             mach: 65, form: 60,
-            apps: 'Pružiny, elektrické kontakty, nástroje do Ex prostředí, formy pro vstřikování',
+            apps: 'Springs, electrical contacts, non-sparking tools for Ex environments, injection moulds',
             norm: 'EN 1654'
         },
         {
@@ -344,7 +344,7 @@
             type: 'be',
             Rm: '400–800', Rp02: '150–750', A: '20–3', HB: '110–240',
             mach: 60, form: 55,
-            apps: 'Elektrické konektory, svářecí elektrody, výhřevné formy',
+            apps: 'Electrical connectors, welding electrodes, heated moulds',
             norm: 'EN 1654'
         },
     ];
