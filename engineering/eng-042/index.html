@@ -210,7 +210,7 @@
 
             <!-- Gear diagram SVG -->
             <div class="diagram-wrap" style="margin-top:1rem;">
-                <svg id="gearSvg" width="200" height="200" viewBox="0 0 200 200" style="display:block;margin:0 auto;"></svg>
+                <svg id="gearSvg" width="100%" viewBox="0 0 500 240" style="max-width:500px;display:block;margin:0 auto;"></svg>
             </div>
             </div>
         </div>
@@ -497,17 +497,20 @@
         const svg = document.getElementById('gearSvg');
         const ns  = 'http://www.w3.org/2000/svg';
         svg.innerHTML = '';
-        const W = 200, H = 200;
+        const W = 500, H = 240;
+        svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+        svg.setAttribute('height', H);
 
-        // Scale: fit both gears (max radius = ra1 + a + ra2 = a + ra2 in worst case; centre-to-centre = a)
-        const ra1 = da1 / 2, ra2 = da2 / 2;
-        const maxSpan = (ra1 + a + ra2) * 1.05;
-        const scale = Math.min(W, H) / maxSpan;
+        const ra1 = da1/2, ra2 = da2/2, raMax = Math.max(ra1, ra2);
+        const margin = 30, dimSpace = 30;
+        const scaleX = (W - 2*margin) / (ra1 + a + ra2);
+        const scaleY = (H - 2*margin - dimSpace) / (raMax * 2);
+        const scale  = Math.min(scaleX, scaleY);
 
-        // Centres: place gear1 left, gear2 right, both centred vertically
-        const cy = H / 2;
-        const cx1 = W / 2 - (a / 2) * scale;
-        const cx2 = W / 2 + (a / 2) * scale;
+        const totalW = (ra1 + a + ra2) * scale;
+        const cy  = margin + raMax * scale;
+        const cx1 = (W - totalW) / 2 + ra1 * scale;
+        const cx2 = cx1 + a * scale;
 
         function circle(cx, cy, r, col, sw, dash) {
             if (r * scale < 1) return;
@@ -570,8 +573,8 @@
         ln(cx1 - ra1*scale - 4, cy, cx2 + ra2*scale + 4, cy, '#374151', 0.8, '4,3');
 
         // Labels
-        txt(cx1, cy, `z₁=${Math.round(d1/getM())}`, '#e5e7eb', 8);
-        txt(cx2, cy, `z₂=${Math.round(d2/getM())}`, '#e5e7eb', 8);
+        txt(cx1, cy - ra1*scale - 12, `z₁=${Math.round(d1/getM())}`, '#f97316', 9);
+        txt(cx2, cy - ra2*scale - 12, `z₂=${Math.round(d2/getM())}`, '#9ca3af', 9);
 
         // εα indicator top-right corner
         const epCol = eps < 1.0 ? '#f87171' : eps < 1.2 ? '#fbbf24' : '#4ade80';
