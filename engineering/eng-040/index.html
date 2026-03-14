@@ -18,7 +18,7 @@
 
         .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
         @media (max-width: 600px) { .input-grid { grid-template-columns: 1fr 1fr; } }
-        .field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
         .field label { font-size: 0.8rem; color: var(--text-gray); }
         .field-row { display: flex; gap: 0.5rem; align-items: center; }
         .inp { flex: 1; background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.5rem 0.8rem; font-size: 0.95rem; outline: none; min-width: 0; transition: border-color 0.2s; }
@@ -176,7 +176,7 @@
         <div class="card">
             <h2>Diagram</h2>
             <div class="diagram-wrap">
-                <svg id="diagram" width="560" height="260" viewBox="0 0 560 260"></svg>
+                <svg id="diagram" width="560" height="260" viewBox="0 0 560 260" style="max-width:100%;height:auto;"></svg>
             </div>
         </div>
 
