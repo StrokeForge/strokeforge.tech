@@ -120,6 +120,63 @@
                     <span class="conv-range">MPa — Range: 250 – 2500</span>
                 </div>
             </div>
+
+            <!-- Result cards -->
+            <div class="result-cards" style="margin-top:1.25rem;">
+                <div class="result-card" id="rcHRC">
+                    <div class="rc-scale">Rockwell C</div>
+                    <div class="rc-val" id="rvHRC">—</div>
+                    <div class="rc-unit">HRC</div>
+                </div>
+                <div class="result-card" id="rcHV">
+                    <div class="rc-scale">Vickers</div>
+                    <div class="rc-val" id="rvHV">—</div>
+                    <div class="rc-unit">HV</div>
+                </div>
+                <div class="result-card" id="rcHB">
+                    <div class="rc-scale">Brinell</div>
+                    <div class="rc-val" id="rvHB">—</div>
+                    <div class="rc-unit">HB</div>
+                </div>
+                <div class="result-card" id="rcRm">
+                    <div class="rc-scale">Tensile strength</div>
+                    <div class="rc-val" id="rvRm">—</div>
+                    <div class="rc-unit">MPa</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHART -->
+        <div class="card">
+            <h2>HRC → HV curve</h2>
+            <div style="overflow-x:auto;">
+                <svg id="chartSvg" width="500" height="160" viewBox="0 0 500 160" style="max-width:100%;display:block;margin:0 auto;"></svg>
+            </div>
+            <p class="chart-label">HRC (x-axis) vs HV (y-axis) — orange marker shows current value</p>
+        </div>
+
+        <!-- REFERENCE TABLE -->
+        <div class="card">
+            <h2>Reference table (EN ISO 18265)</h2>
+            <div style="overflow-x:auto;">
+                <table class="ref-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Material / condition</th>
+                            <th>HRC</th>
+                            <th>HV</th>
+                            <th>HB</th>
+                            <th>Rm (MPa)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="refBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>© 2025 StrokeForge · <a href="/engineering.html">Engineering tools</a></p>
     </footer>
 
     <script src="../../js/nav.js"></script>
