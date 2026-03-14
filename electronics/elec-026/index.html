@@ -495,6 +495,306 @@
         return svg;
     }
 
+    function drawItoU() {
+        const svg=mkSvg(262,190);
+        // Op-amp: − on top, + on bottom
+        const ox=105,oy=90,h=58,hw=Math.round(h*0.55);
+        el(svg,'polygon',{points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
+            fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
+        tx(svg,ox+9,oy-h/4,'−',C.orange,11,'middle');
+        tx(svg,ox+9,oy+h/4,'+',C.green,9,'middle');
+        const inN={x:ox,y:Math.round(oy-h/4)};  // {105,76}
+        const inP={x:ox,y:Math.round(oy+h/4)};  // {105,105}
+        const out={x:ox+hw,y:oy};               // {137,90}
+
+        // Current source Iin (→ right)
+        const csX=32,csY=inN.y,csR=13;
+        el(svg,'circle',{cx:csX,cy:csY,r:csR,fill:'none',stroke:C.blue,'stroke-width':1.5});
+        ln(svg,csX-6,csY,csX+2,csY,C.blue,1.5);
+        el(svg,'polygon',{points:`${csX+2},${csY-3} ${csX+7},${csY} ${csX+2},${csY+3}`,fill:C.blue});
+        ln(svg,14,csY,csX-csR,csY);
+        ln(svg,csX+csR,csY,62,csY);
+        ln(svg,14,csY,14,csY+18); gnd(svg,14,csY+18);
+        tx(svg,csX,csY-20,'Iin',C.blue,8,'middle');
+
+        // Node A: junction at − input level
+        const n1x=62,n1y=csY;
+        el(svg,'circle',{cx:n1x,cy:n1y,r:2.5,fill:C.wire});
+        ln(svg,n1x,n1y,inN.x,inN.y);
+
+        // R1 feedback (horizontal at top)
+        const feedY=32,jx=160,jy=out.y;
+        ln(svg,n1x,n1y,n1x,feedY);          // node A → up to R1 left end
+        ln(svg,jx,jy,jx,feedY);             // output junction → up to R1 right end
+        ln(svg,n1x,feedY,n1x+10,feedY);
+        zigzag(svg,n1x+10,feedY,jx-10,feedY,C.orange);
+        ln(svg,jx-10,feedY,jx,feedY);
+        tx(svg,Math.round((n1x+jx)/2),feedY-10,'R1',C.orange,8,'middle');
+
+        // Op-amp out → output junction (dot)
+        ln(svg,out.x,out.y,jx,jy);
+        el(svg,'circle',{cx:jx,cy:jy,r:2.5,fill:C.wire});
+        tx(svg,jx+5,jy-9,'Vout',C.light,7,'start');
+
+        // RL load (vertical) right of junction
+        const rlX=215,rlT=jy,rlB=rlT+42;
+        ln(svg,jx,jy,rlX,jy);
+        ln(svg,rlX,rlT,rlX,rlT+5); zigzagV(svg,rlX,rlT+5,rlB-5,C.orange); ln(svg,rlX,rlB-5,rlX,rlB);
+        tx(svg,rlX+11,Math.round((rlT+rlB)/2),'RL',C.orange,8,'start');
+
+        // GND loop: RL bottom → down → left → up to + input, GND symbol down
+        const gndY=160;
+        ln(svg,rlX,rlB,rlX,gndY);
+        ln(svg,rlX,gndY,n1x,gndY);
+        el(svg,'circle',{cx:n1x,cy:gndY,r:2.5,fill:C.wire});
+        ln(svg,n1x,gndY,n1x,inP.y);
+        ln(svg,n1x,inP.y,inP.x,inP.y);
+        gnd(svg,n1x,gndY);
+        return svg;
+    }
+
+    function drawUtoI() {
+        const svg=mkSvg(255,265);
+        // Op-amp: + on TOP, − on BOTTOM
+        const ox=110,oy=90,h=58,hw=Math.round(h*0.55);
+        el(svg,'polygon',{points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
+            fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
+        tx(svg,ox+9,oy-h/4,'+',C.green,9,'middle');    // + TOP
+        tx(svg,ox+9,oy+h/4,'−',C.orange,11,'middle');  // − BOTTOM
+        const inP={x:ox,y:Math.round(oy-h/4)};  // {110,76}
+        const inN={x:ox,y:Math.round(oy+h/4)};  // {110,105}
+        const out={x:ox+hw,y:oy};               // {142,90}
+
+        // Vin → + input
+        tx(svg,8,inP.y,'Vin',C.green,8,'start');
+        ln(svg,36,inP.y,inP.x,inP.y);
+
+        // Op-amp output → ammeter (ammeter top touches output wire)
+        const cx=205,amR=12,amY=out.y+amR;   // center y=102
+        ln(svg,out.x,out.y,cx,out.y);
+        el(svg,'circle',{cx:cx,cy:amY,r:amR,fill:'none',stroke:C.green,'stroke-width':1.5});
+        el(svg,'text',{x:cx,y:amY,fill:C.green,'font-size':10,'font-family':'monospace','text-anchor':'middle','dominant-baseline':'middle'},'A');
+        tx(svg,cx+16,amY+1,'Iout',C.light,7,'start');
+
+        // RS (sense resistor) — 13 px drát nad i pod
+        const rsT=amY+amR+13,rsB=rsT+42;   // 127 → 169
+        ln(svg,cx,amY+amR,cx,rsT);
+        ln(svg,cx,rsT,cx,rsT+5); zigzagV(svg,cx,rsT+5,rsB-5,C.orange); ln(svg,cx,rsB-5,cx,rsB);
+        tx(svg,cx+12,Math.round((rsT+rsB)/2),'RS',C.orange,8,'start');
+
+        // Wire RS → junction C (13 px)
+        const jcY=rsB+13;   // 182
+        ln(svg,cx,rsB,cx,jcY);
+        el(svg,'circle',{cx:cx,cy:jcY,r:2.5,fill:C.wire});
+
+        // RL (load) — 8 px drát nad i pod
+        const rlT=jcY+8,rlB=rlT+42;   // 190 → 232
+        ln(svg,cx,jcY,cx,rlT);
+        ln(svg,cx,rlT,cx,rlT+5); zigzagV(svg,cx,rlT+5,rlB-5,C.orange); ln(svg,cx,rlB-5,cx,rlB);
+        tx(svg,cx+12,Math.round((rlT+rlB)/2),'RL',C.orange,8,'start');
+        ln(svg,cx,rlB,cx,rlB+8); gnd(svg,cx,rlB+8);   // GND at y=240
+
+        // Feedback: junction C → LEFT → UP → − input
+        const fbX=22;
+        ln(svg,cx,jcY,fbX,jcY);            // horizontal left
+        ln(svg,fbX,jcY,fbX,inN.y);         // vertical up to − input level
+        ln(svg,fbX,inN.y,inN.x,inN.y);     // right to − input pin
+        return svg;
+    }
+
+    function drawUtoU() {
+        const svg=mkSvg(300,240);
+        // Op-amp: + on TOP, − on BOTTOM
+        const ox=110,oy=90,h=58,hw=Math.round(h*0.55);
+        el(svg,'polygon',{points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
+            fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
+        tx(svg,ox+9,oy-h/4,'+',C.green,9,'middle');
+        tx(svg,ox+9,oy+h/4,'−',C.orange,11,'middle');
+        const inP={x:ox,y:Math.round(oy-h/4)};  // {110,76}
+        const inN={x:ox,y:Math.round(oy+h/4)};  // {110,105}
+        const out={x:ox+hw,y:oy};               // {142,90}
+
+        // Vin → + input
+        tx(svg,8,inP.y,'Vin',C.green,8,'start');
+        ln(svg,28,inP.y,inP.x,inP.y);
+
+        // Output wire: op-amp → J1 (divider top) → J2 (RL top)
+        const cx=200,cx2=260;
+        ln(svg,out.x,out.y,cx2,out.y);
+        el(svg,'circle',{cx:cx,cy:out.y,r:2.5,fill:C.wire});
+        el(svg,'circle',{cx:cx2,cy:out.y,r:2.5,fill:C.wire});
+
+        // Vout TP stub up from J2
+        ln(svg,cx2,out.y,cx2,out.y-18);
+        tx(svg,cx2+5,out.y-22,'Vout',C.light,7,'start');
+
+        // R1 (top of feedback divider)
+        const r1t=out.y,r1b=r1t+42;   // 90 → 132
+        ln(svg,cx,r1t,cx,r1t+5); zigzagV(svg,cx,r1t+5,r1b-5,C.orange); ln(svg,cx,r1b-5,cx,r1b);
+        tx(svg,cx+12,Math.round((r1t+r1b)/2),'R1',C.orange,8,'start');
+
+        // Wire R1 → feedback junction (13 px)
+        const fbY=r1b+13;   // 145
+        ln(svg,cx,r1b,cx,fbY);
+        el(svg,'circle',{cx:cx,cy:fbY,r:2.5,fill:C.wire});
+
+        // R2 (bottom of feedback divider)
+        const r2t=fbY+13,r2b=r2t+42;   // 158 → 200
+        ln(svg,cx,fbY,cx,r2t);
+        ln(svg,cx,r2t,cx,r2t+5); zigzagV(svg,cx,r2t+5,r2b-5,C.orange); ln(svg,cx,r2b-5,cx,r2b);
+        tx(svg,cx+12,Math.round((r2t+r2b)/2),'R2',C.orange,8,'start');
+
+        // Wire R2 → GND node + GND symbol + horizontal to RL
+        const gndY=r2b+15;   // 215
+        ln(svg,cx,r2b,cx,gndY);
+        el(svg,'circle',{cx:cx,cy:gndY,r:2.5,fill:C.wire});
+        gnd(svg,cx,gndY);
+        ln(svg,cx,gndY,cx2,gndY);   // horizontal to RL bottom
+
+        // RL centered between J2 (y=90) and GND (y=215)
+        const rlT=132,rlB=174;   // wire above: 42 px, wire below: 41 px
+        ln(svg,cx2,out.y,cx2,rlT);
+        ln(svg,cx2,rlT,cx2,rlT+5); zigzagV(svg,cx2,rlT+5,rlB-5,C.orange); ln(svg,cx2,rlB-5,cx2,rlB);
+        tx(svg,cx2+12,Math.round((rlT+rlB)/2),'RL',C.orange,8,'start');
+        ln(svg,cx2,rlB,cx2,gndY);
+
+        // Feedback: junction → left → up → − input
+        ln(svg,cx,fbY,102,fbY);
+        ln(svg,102,fbY,102,inN.y);
+        ln(svg,102,inN.y,inN.x,inN.y);
+        return svg;
+    }
+
+    function drawLPF() {
+        const svg=mkSvg(310,215);
+        // Op-amp: standard (− top, + bottom)
+        const ox=220,oy=130,h=58,hw=Math.round(h*0.55);
+        el(svg,'polygon',{points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
+            fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
+        tx(svg,ox+9,oy-h/4,'−',C.orange,11,'middle');
+        tx(svg,ox+9,oy+h/4,'+',C.green,9,'middle');
+        const inN={x:ox,y:Math.round(oy-h/4)};  // {220,116}
+        const inP={x:ox,y:Math.round(oy+h/4)};  // {220,145}
+        const out={x:ox+hw,y:oy};               // {252,130}
+
+        // Vin → R1 → junction A → R2 → junction B → + input
+        const yi=inP.y;  // 145
+        tx(svg,8,yi,'Vin',C.green,8,'start');
+        ln(svg,25,yi,38,yi);
+        // R1
+        ln(svg,38,yi,48,yi);
+        zigzag(svg,48,yi,88,yi,C.orange);
+        ln(svg,88,yi,98,yi);
+        tx(svg,68,yi-11,'R1',C.orange,8);
+        // Junction A
+        const xA=98;
+        el(svg,'circle',{cx:xA,cy:yi,r:2.5,fill:C.wire});
+        // R2
+        ln(svg,xA,yi,xA+10,yi);
+        zigzag(svg,xA+10,yi,xA+50,yi,C.orange);
+        ln(svg,xA+50,yi,xA+60,yi);
+        tx(svg,xA+30,yi-11,'R2',C.orange,8);
+        // Junction B
+        const xB=xA+60;  // 158
+        el(svg,'circle',{cx:xB,cy:yi,r:2.5,fill:C.wire});
+        ln(svg,xB,yi,inP.x,yi);  // wire to + input
+
+        // C2 (vertical shunt): junction B → GND
+        const c2t=yi+16;
+        ln(svg,xB,yi,xB,c2t);
+        ln(svg,xB-12,c2t,xB+12,c2t,C.blue,2);
+        ln(svg,xB-12,c2t+8,xB+12,c2t+8,C.blue,2);
+        ln(svg,xB,c2t+8,xB,c2t+22); gnd(svg,xB,c2t+22);
+        tx(svg,xB+14,c2t+4,'C2',C.blue,7,'start');
+
+        // C1 (horizontal feedback): junction A → junction C
+        const yc=90;  // cap level
+        ln(svg,xA,yi,xA,yc);                    // junction A up
+        ln(svg,xA,yc,xA+8,yc);                  // wire to left plate
+        ln(svg,xA+8,yc-10,xA+8,yc+10,C.blue,2); // left plate bar
+        ln(svg,xA+16,yc-10,xA+16,yc+10,C.blue,2); // right plate bar
+        const xC=185;
+        ln(svg,xA+16,yc,xC,yc);                 // wire to junction C
+        tx(svg,xA+12,yc-13,'C1',C.blue,7);
+
+        // Junction C: C1 right, output wire, − input path
+        el(svg,'circle',{cx:xC,cy:yc,r:2.5,fill:C.wire});
+        ln(svg,xC,yc,xC,inN.y);      // down to − input level
+        ln(svg,xC,inN.y,inN.x,inN.y); // right to − input pin
+
+        // Output: op-amp → Vout dot → UP → LEFT → junction C
+        const xOut=275;
+        ln(svg,out.x,out.y,xOut,out.y);
+        el(svg,'circle',{cx:xOut,cy:out.y,r:2.5,fill:C.wire});
+        tx(svg,xOut+4,out.y-10,'Vout',C.light,7,'start');
+        ln(svg,xOut,out.y,xOut,yc);   // up to cap level
+        ln(svg,xOut,yc,xC,yc);        // left to junction C
+        return svg;
+    }
+
+    function drawHPF() {
+        const svg=mkSvg(310,215);
+        // Op-amp: standard (− top, + bottom)
+        const ox=220,oy=130,h=58,hw=Math.round(h*0.55);
+        el(svg,'polygon',{points:`${ox},${oy-h/2} ${ox},${oy+h/2} ${ox+hw},${oy}`,
+            fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
+        tx(svg,ox+9,oy-h/4,'−',C.orange,11,'middle');
+        tx(svg,ox+9,oy+h/4,'+',C.green,9,'middle');
+        const inN={x:ox,y:Math.round(oy-h/4)};  // {220,116}
+        const inP={x:ox,y:Math.round(oy+h/4)};  // {220,145}
+        const out={x:ox+hw,y:oy};               // {252,130}
+
+        // Vin → C1 → junction A → C2 → junction B → + input
+        const yi=inP.y;  // 145
+        tx(svg,8,yi,'Vin',C.green,8,'start');
+        ln(svg,25,yi,48,yi);
+        // C1
+        capH(svg,48,yi,C.blue);       // bars at 48, 55
+        ln(svg,55,yi,98,yi);
+        tx(svg,51,yi-11,'C1',C.blue,8);
+        // Junction A
+        const xA=98;
+        el(svg,'circle',{cx:xA,cy:yi,r:2.5,fill:C.wire});
+        // C2
+        ln(svg,xA,yi,xA+10,yi);
+        capH(svg,xA+10,yi,C.blue);    // bars at 108, 115
+        ln(svg,xA+17,yi,xA+60,yi);
+        tx(svg,xA+13,yi-11,'C2',C.blue,8);
+        // Junction B
+        const xB=xA+60;  // 158
+        el(svg,'circle',{cx:xB,cy:yi,r:2.5,fill:C.wire});
+        ln(svg,xB,yi,inP.x,yi);  // wire to + input
+
+        // R1 (vertical shunt): junction B → GND
+        ln(svg,xB,yi,xB,yi+13);
+        zigzagV(svg,xB,yi+13,yi+45);
+        ln(svg,xB,yi+45,xB,yi+58); gnd(svg,xB,yi+58);
+        tx(svg,xB+6,yi+29,'R1',C.orange,7,'start');
+
+        // R2 (horizontal feedback): junction A up → zigzag → junction C
+        const yc=90;
+        ln(svg,xA,yi,xA,yc);                       // junction A up
+        ln(svg,xA,yc,xA+10,yc);                    // wire to R2
+        zigzag(svg,xA+10,yc,xA+70,yc,C.orange);    // R2
+        const xC=185;
+        ln(svg,xA+70,yc,xC,yc);                    // wire to junction C
+        tx(svg,xA+40,yc-11,'R2',C.orange,8);
+
+        // Junction C: R2, output feedback, − input
+        el(svg,'circle',{cx:xC,cy:yc,r:2.5,fill:C.wire});
+        ln(svg,xC,yc,xC,inN.y);       // down to − input level
+        ln(svg,xC,inN.y,inN.x,inN.y); // right to − input pin
+
+        // Output: op-amp → Vout dot → up → left → junction C
+        const xOut=275;
+        ln(svg,out.x,out.y,xOut,out.y);
+        el(svg,'circle',{cx:xOut,cy:out.y,r:2.5,fill:C.wire});
+        tx(svg,xOut+4,out.y-10,'Vout',C.light,7,'start');
+        ln(svg,xOut,out.y,xOut,yc);   // up to feedback level
+        ln(svg,xOut,yc,xC,yc);        // left to junction C
+        return svg;
+    }
+
     // ── Calc functions ───────────────────────────────────────────
     function calcNonInv(id) {
         const r1=parseFloat(document.getElementById(id+'-r1').value);
@@ -542,6 +842,21 @@
         {id:'tia', title:'Transimpedance Amplifier',   draw:drawTransimpedance,
          formula:'Vout = −Iin × R1\nIout = −Iin × R1 / (R2 + R3)',
          desc:'Converts input current to output voltage. Virtual ground at (−) forces all Iin through R1. Output current through R2+R3 is read by the ammeter.'},
+        {id:'itu', title:'I/U Converter',              draw:drawItoU,
+         formula:'Vout = −Iin × R1',
+         desc:'Basic transimpedance configuration. Virtual ground at (−) forces Iin through R1, generating Vout = −Iin·R1. RL is the output load. Input impedance ≈ 0.'},
+        {id:'utu', title:'U/I Converter',              draw:drawUtoI,
+         formula:'Iout = Vin / RS',
+         desc:'Voltage-controlled current source (VCCS). Negative feedback through RS sets Iout = Vin/RS regardless of load RL. RS is the sense resistor, RL is the load.'},
+        {id:'uu',  title:'U/U Converter',              draw:drawUtoU,
+         formula:'Gain = 1 + R1/R2\nVout = Vin × Gain',
+         desc:'Non-inverting amplifier with output load RL. Feedback divider R1/R2 sets gain. For R1=R2: Gain=2. RL does not affect gain — op-amp output impedance is near zero.'},
+        {id:'lpf', title:'Active Low-Pass Filter',     draw:drawLPF,
+         formula:'fc = 1 / (2π√(R1·R2·C1·C2))\nGain = 1 (unity)',
+         desc:'Sallen-Key 2nd-order active low-pass filter with unity gain. R1/R2 form the input resistor chain, C1 feeds back from output to the R1/R2 junction, C2 shunts the + input to GND. Roll-off: −40 dB/dec.'},
+        {id:'hpf', title:'Active High-Pass Filter',    draw:drawHPF,
+         formula:'fc = 1 / (2π√(R1·R2·C1·C2))\nGain = 1 (unity)',
+         desc:'Sallen-Key 2nd-order active high-pass filter with unity gain. C1/C2 form the input capacitor chain, R2 feeds back from output to the C1/C2 junction, R1 shunts the + input to GND. Roll-off: −40 dB/dec above fc.'},
     ];
 
     // ── Build grid ───────────────────────────────────────────────
