@@ -408,7 +408,7 @@
         const svg = document.getElementById('springSvg');
         const ns  = 'http://www.w3.org/2000/svg';
         svg.innerHTML = '';
-        const W = 150, H = 240;
+        const W = 150, H = 260;
         const cx = 75;
         const springColor = etaPct > 100 ? '#f87171' : etaPct > 80 ? '#fbbf24' : '#f97316';
         const gray = '#9ca3af', blue = '#60a5fa', light = '#e5e7eb';
@@ -438,13 +438,17 @@
         const r = Math.min(28, D * 1.2); // visual coil radius
         const hr = r / 2;                // hook arc radius
 
-        // Top end: 3/4 arc (CW from right to top) + vertical shank up
-        // Arc center: (cx, topY), arc from (cx+hr, topY) CW 270° → (cx, topY-hr)
+        const shankLen = 12; // short vertical shank connecting spring body to hook arc
+
+        // Top hook: shank up from spring body → 3/4 arc loops left→up→right
+        // Shank connects spring to arc bottom (6 o'clock).
+        ln(cx, topY, cx, topY - shankLen, springColor, 2);
+        // Arc center: (cx, topY-shankLen-hr). Start: 6 o'clock (cx, topY-shankLen).
+        // CW sweep=1 270°: 6→9→12→3. End at 3 o'clock (cx+hr, topY-shankLen-hr).
         const arcT = document.createElementNS(ns,'path');
-        arcT.setAttribute('d', `M ${cx+hr},${topY} A ${hr} ${hr} 0 1 1 ${cx},${topY-hr}`);
+        arcT.setAttribute('d', `M ${cx},${topY-shankLen} A ${hr} ${hr} 0 1 1 ${cx+hr},${topY-shankLen-hr}`);
         arcT.setAttribute('fill','none'); arcT.setAttribute('stroke',springColor); arcT.setAttribute('stroke-width','2');
         svg.appendChild(arcT);
-        ln(cx, topY-hr, cx, topY-hr-16, springColor, 2); // vertical shank up
 
         // Spring body — sinusoidal
         const pts = [];
@@ -462,21 +466,23 @@
         springPath.setAttribute('fill','none'); springPath.setAttribute('stroke',springColor);
         springPath.setAttribute('stroke-width','2.5'); svg.appendChild(springPath);
 
-        // Bottom end: 3/4 arc (CCW from left to bottom) + vertical shank down
-        // Arc center: (cx, botY), arc from (cx-hr, botY) CCW 270° → (cx, botY+hr)
+        // Bottom hook: shank down from spring body → 3/4 arc loops right→down→left
+        // Shank connects spring to arc top (12 o'clock).
+        ln(cx, botY, cx, botY + shankLen, springColor, 2);
+        // Arc center: (cx, botY+shankLen+hr). Start: 12 o'clock (cx, botY+shankLen).
+        // CW sweep=1 270°: 12→3→6→9. End at 9 o'clock (cx-hr, botY+shankLen+hr).
         const arcB = document.createElementNS(ns,'path');
-        arcB.setAttribute('d', `M ${cx-hr},${botY} A ${hr} ${hr} 0 1 0 ${cx},${botY+hr}`);
+        arcB.setAttribute('d', `M ${cx},${botY+shankLen} A ${hr} ${hr} 0 1 1 ${cx-hr},${botY+shankLen+hr}`);
         arcB.setAttribute('fill','none'); arcB.setAttribute('stroke',springColor); arcB.setAttribute('stroke-width','2');
         svg.appendChild(arcB);
-        ln(cx, botY+hr, cx, botY+hr+16, springColor, 2); // vertical shank down
 
-        // Force arrows
-        const arrowTopY = topY - hr - 16;
-        const arrowBotY = botY + hr + 16;
-        arrow(cx, arrowTopY - 12, cx, arrowTopY, blue);
-        arrow(cx, arrowBotY + 12, cx, arrowBotY, blue);
-        txt(cx+14, arrowTopY - 6, 'F', blue, 10, 'start');
-        txt(cx+14, arrowBotY + 6, 'F', blue, 10, 'start');
+        // Force arrows at hook tips (12 o'clock of top arc, 6 o'clock of bottom arc)
+        const hookTopY = topY - shankLen - 2*hr;
+        const hookBotY = botY + shankLen + 2*hr;
+        arrow(cx, hookTopY, cx, hookTopY - 12, blue);
+        arrow(cx, hookBotY, cx, hookBotY + 12, blue);
+        txt(cx + 14, hookTopY - 6, 'F', blue, 10, 'start');
+        txt(cx + 14, hookBotY + 6, 'F', blue, 10, 'start');
 
         // L0 dimension
         ln(cx+38, topY, cx+38, botY, gray, 1);
