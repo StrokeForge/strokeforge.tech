@@ -530,11 +530,14 @@
         zigzag(svg,n1x+10,feedY,jx-10,feedY,C.orange);
         ln(svg,jx-10,feedY,jx,feedY);
         tx(svg,Math.round((n1x+jx)/2),feedY-10,'R1',C.orange,8,'middle');
+        // Vout stub right of R1
+        el(svg,'circle',{cx:jx,cy:feedY,r:2.5,fill:C.wire});
+        ln(svg,jx,feedY,jx+45,feedY);
+        tx(svg,jx+47,feedY,'Vout',C.light,7,'start');
 
         // Op-amp out → output junction (dot)
         ln(svg,out.x,out.y,jx,jy);
         el(svg,'circle',{cx:jx,cy:jy,r:2.5,fill:C.wire});
-        tx(svg,jx+5,jy-9,'Vout',C.light,7,'start');
 
         // RL load (vertical) right of junction
         const rlX=215,rlT=jy,rlB=rlT+42;
