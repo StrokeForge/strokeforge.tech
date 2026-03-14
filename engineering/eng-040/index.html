@@ -413,7 +413,7 @@
         arrow(cx1-r1*0.6,cy-r1*0.6,cx1-r1*0.6,cy-r1*0.6+1,orange,1.5);
 
         // Labels
-        txt(cx1, cy, `d₁=${d1}`, orange, 9);
+        txt(cx1 + r1 + 6, cy, `d₁=${d1}`, orange, 9, 'start');
         txt(cx2, cy, `d₂=${d2}`, gray, 9);
         txt(cx1, cy+r1+16, `n₁=${(document.getElementById('n1').value||'—')} rpm`, orange, 8.5);
 
