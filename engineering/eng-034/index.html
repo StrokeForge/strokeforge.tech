@@ -603,7 +603,8 @@
             [`F = ${F} kN`,                    light],
             [`η = ${F > 0 && isFinite(eta) ? (eta*100).toFixed(1) : '—'} %`, eta > 1 ? red : eta > 0.8 ? yellow : green],
         ];
-        rows.forEach((r, i) => txt(ix + iw/2, iy + 16 + i * rowH, r[0], r[1], 10.5));
+        const rowsTop = iy + Math.round((180 - (rows.length - 1) * rowH) / 2);
+        rows.forEach((r, i) => txt(ix + iw/2, rowsTop + i * rowH, r[0], r[1], 10.5));
 
         // β legend
         const cases = [{n:1,b:'1.0',label:'pin–pin'},{n:2,b:'2.0',label:'fixed–free'},{n:3,b:'0.7',label:'fixed–pin'},{n:4,b:'0.5',label:'fixed–fix'}];
