@@ -435,25 +435,29 @@
     function drawDiagram(d, n, nr, t, b, mode, maxEta, etaS, etaB, etaN) {
         const svg = document.getElementById('diagram');
         svg.innerHTML = '';
-        const ns    = 'http://www.w3.org/2000/svg';
+        const ns = 'http://www.w3.org/2000/svg';
         const orange = '#f97316', gray = '#9ca3af', light = '#e5e7eb', blue = '#60a5fa', green = '#4ade80', red = '#f87171', yellow = '#fbbf24';
         const W = 540, H = 260;
 
-        function ln(x1,y1,x2,y2,col,w) {
+        function ln(x1,y1,x2,y2,col,w,dash) {
             const e = document.createElementNS(ns,'line');
             e.setAttribute('x1',x1); e.setAttribute('y1',y1); e.setAttribute('x2',x2); e.setAttribute('y2',y2);
-            e.setAttribute('stroke',col||gray); e.setAttribute('stroke-width',w||1.8); svg.appendChild(e);
+            e.setAttribute('stroke',col||gray); e.setAttribute('stroke-width',w||1.8);
+            if (dash) e.setAttribute('stroke-dasharray',dash);
+            svg.appendChild(e);
         }
-        function rect(x,y,w,h,col,fill,rx) {
+        function rect(x,y,w,h,col,fill) {
             const e = document.createElementNS(ns,'rect');
             e.setAttribute('x',x); e.setAttribute('y',y); e.setAttribute('width',w); e.setAttribute('height',h);
             e.setAttribute('stroke',col||gray); e.setAttribute('fill',fill||'none'); e.setAttribute('stroke-width',1.8);
-            if (rx) e.setAttribute('rx',rx); svg.appendChild(e);
+            svg.appendChild(e);
         }
-        function circ(cx,cy,r,fill,stroke,sw) {
-            const e = document.createElementNS(ns,'circle');
-            e.setAttribute('cx',cx); e.setAttribute('cy',cy); e.setAttribute('r',r);
-            e.setAttribute('fill',fill||'none'); if (stroke) { e.setAttribute('stroke',stroke); e.setAttribute('stroke-width',sw||1.5); } svg.appendChild(e);
+        function elps(cx,cy,rx,ry,col,fill,dash) {
+            const e = document.createElementNS(ns,'ellipse');
+            e.setAttribute('cx',cx); e.setAttribute('cy',cy); e.setAttribute('rx',rx); e.setAttribute('ry',ry);
+            e.setAttribute('stroke',col||gray); e.setAttribute('fill',fill||'none'); e.setAttribute('stroke-width',1.5);
+            if (dash) e.setAttribute('stroke-dasharray',dash);
+            svg.appendChild(e);
         }
         function txt(x,y,t,col,size,anchor,weight) {
             const e = document.createElementNS(ns,'text');
@@ -462,112 +466,115 @@
             e.setAttribute('dominant-baseline','middle'); if (weight) e.setAttribute('font-weight',weight);
             e.textContent = t; svg.appendChild(e);
         }
-        function arrow(x1,y1,x2,y2,col,w) {
-            ln(x1,y1,x2,y2,col,w||2.5);
-            const angle = Math.atan2(y2-y1,x2-x1);
-            const s = 9;
+        function arrow(x1,y1,x2,y2,col) {
+            ln(x1,y1,x2,y2,col,2.5);
+            const angle = Math.atan2(y2-y1,x2-x1), s = 9;
             const p = document.createElementNS(ns,'polygon');
             p.setAttribute('points',`${x2},${y2} ${x2-s*Math.cos(angle-0.4)},${y2-s*Math.sin(angle-0.4)} ${x2-s*Math.cos(angle+0.4)},${y2-s*Math.sin(angle+0.4)}`);
             p.setAttribute('fill',col); svg.appendChild(p);
         }
 
         const weldColor = maxEta > 1 ? red : maxEta > 0.8 ? yellow : orange;
+        const plateW = 300;
+        const pLeft  = (W - plateW) / 2;   // 120
+        const pRight = pLeft + plateW;      // 420
+        const plateH = 26;
+        const headRx = Math.max(Math.round(d / 2) + 3, 8);
+        const headRy = 5;
 
-        if (mode === 'single') {
-            // Single shear — lap joint view (side elevation)
-            const topY = 90, botY = 140, plateH = 32, plateW = 220;
-            const cx = W / 2;
-
-            // Top plate (left side)
-            rect(cx - plateW, topY, plateW, plateH, gray, '#1e1e1e');
-            txt(cx - plateW/2, topY + plateH/2, 'PLATE A', gray, 10);
-
-            // Bottom plate (right side)
-            rect(cx, botY, plateW, plateH, gray, '#1a1a1a');
-            txt(cx + plateW/2, botY + plateH/2, 'PLATE B', gray, 10);
-
-            // Overlap zone — dynamic width based on rivet count
-            const nVis = Math.min(n, 8);
-            const pitch = 18;
-            const ovlapW = (nVis + 1) * pitch;
-            rect(cx - ovlapW/2, topY, ovlapW, plateH + (botY - topY) + plateH, gray, 'rgba(255,255,255,0.03)');
-
-            // Rivets in overlap
-            const ry = topY + plateH + (botY - topY) / 2;
-            for (let i = 0; i < nVis; i++) {
-                const rx = cx - ovlapW/2 + pitch * (i + 1);
-                circ(rx, ry, d/2 + 1, 'rgba(249,115,22,0.2)', weldColor, 2);
-                circ(rx, ry, 3, weldColor);
-                // Shear plane indicator
-                ln(rx - d - 4, ry, rx + d + 4, ry, red, 1);
-            }
-
-            // Force arrows
-            arrow(cx - plateW - 40, topY + plateH/2, cx - plateW - 8, topY + plateH/2, blue);
-            arrow(cx + plateW + 8,  botY + plateH/2, cx + plateW + 40, botY + plateH/2, blue);
-            txt(cx - plateW - 52, topY + plateH/2, 'F', blue, 12, 'middle', '700');
-            txt(cx + plateW + 52, botY + plateH/2, 'F', blue, 12, 'middle', '700');
-
-            // Labels
-            txt(cx, topY - 12, `Single shear (m = 1)  ·  d = ${d} mm  ·  n = ${n}`, gray, 10);
-            txt(cx, botY + plateH + 18, 'Shear plane', red, 9);
-
+        // Rivet X positions: ≤5 → exact count, >5 → 2 + dashed + 2
+        const showAll = n <= 5;
+        let rivets = [];
+        if (showAll) {
+            const pitch = plateW / (n + 1);
+            for (let i = 1; i <= n; i++) rivets.push({ x: pLeft + i * pitch, dashed: false });
         } else {
-            // Double shear — butt joint with cover plates
-            const midY = 108, midH = 32, plateW = 160, coverH = 22, gap = 10;
-            const cx = W / 2;
-
-            // Main plate left
-            rect(cx - plateW - gap/2, midY, plateW, midH, gray, '#1e1e1e');
-            txt(cx - plateW/2 - gap/2, midY + midH/2, 'PLATE A', gray, 10);
-
-            // Main plate right
-            rect(cx + gap/2, midY, plateW, midH, gray, '#1a1a1a');
-            txt(cx + plateW/2 + gap/2, midY + midH/2, 'PLATE B', gray, 10);
-
-            // Cover plates (top and bottom) — dynamic width based on rivet count
-            const nVis = Math.min(n, 6);
-            const pitch = 18;
-            const coverW = (nVis + 1) * pitch;
-            rect(cx - coverW/2, midY - coverH - 4, coverW, coverH, '#60a5fa', 'rgba(96,165,250,0.1)');
-            rect(cx - coverW/2, midY + midH + 4,   coverW, coverH, '#60a5fa', 'rgba(96,165,250,0.1)');
-            txt(cx, midY - coverH/2 - 4, 'cover', '#60a5fa', 9);
-            txt(cx, midY + midH + coverH/2 + 4, 'cover', '#60a5fa', 9);
-
-            // Rivets — dynamic count
-            for (let i = 0; i < nVis; i++) {
-                const rx = cx - coverW/2 + pitch * (i + 1);
-                const ry = midY + midH/2;
-                // Vertical rivet
-                ln(rx, midY - coverH - 4, rx, midY + midH + coverH + 4, weldColor, d/2);
-                circ(rx, midY - coverH/2 - 4, 3, weldColor);
-                circ(rx, midY + midH + coverH/2 + 4, 3, weldColor);
-                // Two shear planes
-                ln(rx - d - 4, midY,          rx + d + 4, midY,          red, 1);
-                ln(rx - d - 4, midY + midH,   rx + d + 4, midY + midH,   red, 1);
-            }
-
-            // Force arrows
-            arrow(cx - plateW - gap/2 - 40, midY + midH/2, cx - plateW - gap/2 - 6, midY + midH/2, blue);
-            arrow(cx + plateW + gap/2 + 6,  midY + midH/2, cx + plateW + gap/2 + 40, midY + midH/2, blue);
-            txt(cx - plateW - gap/2 - 52, midY + midH/2, 'F', blue, 12, 'middle', '700');
-            txt(cx + plateW + gap/2 + 52, midY + midH/2, 'F', blue, 12, 'middle', '700');
-
-            txt(cx, midY - coverH - 24, `Double shear (m = 2)  ·  d = ${d} mm  ·  n = ${n}`, gray, 10);
-            txt(cx, midY + midH + coverH + 22, '2 shear planes', red, 9);
+            const pitch = 44;
+            rivets = [
+                { x: pLeft + pitch,      dashed: false },
+                { x: pLeft + 2 * pitch,  dashed: false },
+                { x: W / 2,              dashed: true  },
+                { x: pRight - 2 * pitch, dashed: false },
+                { x: pRight - pitch,     dashed: false },
+            ];
         }
 
-        // Check result legend
+        // Draw one rivet (top head, shaft, bottom head)
+        function drawRivet(rx, dashed, topEdge, botEdge) {
+            const col  = dashed ? gray : weldColor;
+            const dash = dashed ? '5,4' : null;
+            const hFill = dashed ? 'rgba(80,80,80,0.25)' : 'rgba(249,115,22,0.2)';
+            elps(rx, topEdge - headRy, headRx, headRy, col, hFill, dash);
+            ln(rx, topEdge, rx, botEdge, col, 1.2, dash);
+            elps(rx, botEdge + headRy, headRx, headRy, col, hFill, dash);
+        }
+
+        if (mode === 'single') {
+            const gap  = 4;
+            const p1Y  = Math.round(H / 2 - plateH - gap / 2) - 4;  // Plate A top
+            const p2Y  = p1Y + plateH + gap;                          // Plate B top
+            const midF = p1Y + plateH + gap / 2;
+
+            rect(pLeft, p1Y, plateW, plateH, gray, '#1e1e1e');
+            txt(W / 2, p1Y + plateH / 2, 'PLATE A', gray, 10);
+            rect(pLeft, p2Y, plateW, plateH, gray, '#1a1a1a');
+            txt(W / 2, p2Y + plateH / 2, 'PLATE B', gray, 10);
+
+            // Shear plane
+            ln(pLeft, p1Y + plateH, pRight, p1Y + plateH, red, 1, '6,3');
+            txt(pRight + 20, p1Y + plateH, 'shear', red, 8, 'start');
+
+            rivets.forEach(rv => drawRivet(rv.x, rv.dashed, p1Y, p2Y + plateH));
+            if (!showAll) txt(W / 2, p1Y - headRy - 9, '· · ·', gray, 12);
+
+            arrow(pLeft - 44, midF, pLeft - 6, midF, blue);
+            arrow(pRight + 6,  midF, pRight + 44, midF, blue);
+            txt(pLeft - 56, midF, 'F', blue, 12, 'middle', '700');
+            txt(pRight + 56, midF, 'F', blue, 12, 'middle', '700');
+
+            txt(W / 2, p1Y - headRy * 2 - 20, `Single shear (m = 1)  ·  d = ${d} mm  ·  n = ${n}`, gray, 10);
+
+        } else {
+            const coverH = 14, gap = 3;
+            const totalH = coverH + gap + plateH + gap + coverH;
+            const covTop = Math.round(H / 2 - totalH / 2) - 4;
+            const mainY  = covTop + coverH + gap;
+            const covBot = mainY + plateH + gap;
+            const midF   = mainY + plateH / 2;
+
+            rect(pLeft, covTop, plateW, coverH, '#60a5fa', 'rgba(96,165,250,0.1)');
+            txt(W / 2, covTop + coverH / 2, 'cover plate', '#60a5fa', 9);
+            rect(pLeft, mainY, plateW, plateH, gray, '#1e1e1e');
+            txt(W / 2, mainY + plateH / 2, 'PLATE A + B', gray, 10);
+            rect(pLeft, covBot, plateW, coverH, '#60a5fa', 'rgba(96,165,250,0.1)');
+            txt(W / 2, covBot + coverH / 2, 'cover plate', '#60a5fa', 9);
+
+            // Two shear planes
+            ln(pLeft, mainY,          pRight, mainY,          red, 1, '6,3');
+            ln(pLeft, mainY + plateH, pRight, mainY + plateH, red, 1, '6,3');
+            txt(pRight + 20, mainY + plateH / 2, 'shear ×2', red, 8, 'start');
+
+            rivets.forEach(rv => drawRivet(rv.x, rv.dashed, covTop, covBot + coverH));
+            if (!showAll) txt(W / 2, covTop - headRy - 9, '· · ·', gray, 12);
+
+            arrow(pLeft - 44, midF, pLeft - 6, midF, blue);
+            arrow(pRight + 6,  midF, pRight + 44, midF, blue);
+            txt(pLeft - 56, midF, 'F', blue, 12, 'middle', '700');
+            txt(pRight + 56, midF, 'F', blue, 12, 'middle', '700');
+
+            txt(W / 2, covTop - headRy * 2 - 20, `Double shear (m = 2)  ·  d = ${d} mm  ·  n = ${n}`, gray, 10);
+        }
+
+        // Legend
         const checks = [
-            { label: 'Shear', eta: etaS },
-            { label: 'Bearing', eta: etaB },
+            { label: 'Shear',    eta: etaS },
+            { label: 'Bearing',  eta: etaB },
             { label: 'Net sec.', eta: etaN },
         ];
         checks.forEach((c, i) => {
-            const lx = 14 + i * 110;
+            const lx  = 14 + i * 110;
             const col = c.eta > 1 ? red : c.eta > 0.8 ? yellow : green;
-            const sym = c.eta > 1 ? '✗' : '✓';
-            txt(lx, H - 12, `${sym} ${c.label}: ${fmt1(c.eta * 100)} %`, col, 9.5, 'start');
+            txt(lx, H - 12, `${c.eta > 1 ? '✗' : '✓'} ${c.label}: ${fmt1(c.eta * 100)} %`, col, 9.5, 'start');
         });
     }
 
