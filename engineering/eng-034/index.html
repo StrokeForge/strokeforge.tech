@@ -518,7 +518,7 @@
 
         const colX = 180; // column centre x
         const colW = 16;
-        const colTop = 75, colBot = 240;
+        const colTop = 95, colBot = 210;
         const colH = colBot - colTop;
         const colColor = eta > 1 ? red : eta > 0.8 ? yellow : orange;
 
@@ -566,9 +566,10 @@
             fixed(colX, colBot, false);// bot: fixed
         }
 
-        // Force arrow — always at free/loaded top end, 48 px clearance
-        const arrowTopY = colTop - 48;
-        arrow(colX, arrowTopY, colX, colTop, blue);
+        // Force arrow — ends above support symbol to avoid overlap
+        const arrowTopY = colTop - 50;
+        const arrowEnd  = (caseNum === 2) ? colTop - 14 : colTop - 24;
+        arrow(colX, arrowTopY, colX, arrowEnd, blue);
         txt(colX + 14, arrowTopY + 10, 'F', blue, 12, 'start', '700');
 
         // Dimension L
@@ -606,7 +607,7 @@
 
         // β legend
         const cases = [{n:1,b:'1.0',label:'pin–pin'},{n:2,b:'2.0',label:'fixed–free'},{n:3,b:'0.7',label:'fixed–pin'},{n:4,b:'0.5',label:'fixed–fix'}];
-        const ly = 245;
+        const ly = 252;
         txt(W / 2, ly - 4, 'β factors: ', gray, 9, 'middle');
         cases.forEach((c,i) => {
             const lx = 80 + i * 100;
