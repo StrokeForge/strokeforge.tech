@@ -312,7 +312,7 @@
         const col = from <= 5 ? '#4ade80' : from <= 8 ? '#60a5fa' : from <= 11 ? '#fb923c' : '#6b7280';
         return `<div style="min-width:160px;">
             <span class="it-label">IT${from}–IT${to}</span>
-            <div style="position:relative;height:6px;background:#1f2937;border-radius:3px;margin-top:4px;">
+            <div style="position:relative;height:6px;background:#1f2937;border-radius:3px;margin-top:4px;overflow:hidden;">
                 <div style="position:absolute;left:${w1}%;width:${barW}%;height:100%;background:${col};border-radius:3px;opacity:0.85;"></div>
             </div>
         </div>`;
