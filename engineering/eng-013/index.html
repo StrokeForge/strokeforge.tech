@@ -28,7 +28,8 @@
         .search-inp:focus { border-color: var(--primary-orange); }
 
         /* Profile table */
-        .profile-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; overflow-x: auto; display: block; }
+        .table-scroll { overflow-x: auto; }
+        .profile-table { width: auto; border-collapse: collapse; font-size: 0.82rem; display: table; margin: 0 auto; }
         .profile-table thead th { padding: 0.55rem 0.75rem; text-align: right; color: var(--text-gray); border-bottom: 2px solid var(--border-gray); font-size: 0.72rem; font-weight: 600; white-space: nowrap; background: var(--darker-bg); position: sticky; top: 0; z-index: 1; }
         .profile-table thead th:first-child { text-align: left; }
         .profile-table tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; }
@@ -110,7 +111,7 @@
             </div>
 
             <!-- Table -->
-            <div style="overflow-x:auto;">
+            <div class="table-scroll">
                 <table class="profile-table" id="profileTable">
                     <thead id="tableHead"></thead>
                     <tbody id="tableBody"></tbody>
