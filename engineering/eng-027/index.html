@@ -141,6 +141,66 @@
                     <span class="conv-range">N1 (finest) to N12 (roughest)</span>
                 </div>
             </div>
+
+            <!-- Result cards -->
+            <div class="result-cards" style="margin-top:1.25rem;">
+                <div class="result-card" id="rcRa">
+                    <div class="rc-scale">Arithmetic mean</div>
+                    <div class="rc-val" id="rvRa">—</div>
+                    <div class="rc-unit">Ra μm</div>
+                </div>
+                <div class="result-card" id="rcRz">
+                    <div class="rc-scale">Mean depth</div>
+                    <div class="rc-val" id="rvRz">—</div>
+                    <div class="rc-unit">Rz μm</div>
+                </div>
+                <div class="result-card" id="rcN">
+                    <div class="rc-scale">ISO grade</div>
+                    <div class="rc-val" id="rvN">—</div>
+                    <div class="rc-unit">N-grade</div>
+                </div>
+            </div>
+            <p id="matchNote" style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-gray);min-height:1.2em;"></p>
+        </div>
+
+        <!-- GRADE TABLE -->
+        <div class="card">
+            <h2>N-grade reference (ISO 1302)</h2>
+            <div style="overflow-x:auto;">
+                <table class="data-table" style="width:100%;border-collapse:collapse;font-size:0.82rem;">
+                    <thead>
+                        <tr>
+                            <th style="padding:0.5rem 0.75rem;text-align:center;color:var(--text-gray);border-bottom:2px solid var(--border-gray);font-size:0.72rem;">N</th>
+                            <th style="padding:0.5rem 0.75rem;text-align:right;color:var(--text-gray);border-bottom:2px solid var(--border-gray);font-size:0.72rem;">Ra (μm)</th>
+                            <th style="padding:0.5rem 0.75rem;text-align:right;color:var(--text-gray);border-bottom:2px solid var(--border-gray);font-size:0.72rem;">Rz (μm)</th>
+                            <th style="padding:0.5rem 0.75rem;text-align:left;color:var(--text-gray);border-bottom:2px solid var(--border-gray);font-size:0.72rem;">Surface quality</th>
+                            <th style="padding:0.5rem 0.75rem;text-align:left;color:var(--text-gray);border-bottom:2px solid var(--border-gray);font-size:0.72rem;">Typical processes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gradeBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MANUFACTURING CHART -->
+        <div class="card">
+            <h2>Achievable Ra by manufacturing process</h2>
+            <div class="mfg-grid" id="mfgChart"></div>
+            <p style="font-size:0.72rem;color:#4b5563;margin-top:0.5rem;">
+                <span style="display:inline-block;width:14px;height:8px;background:#60a5fa;opacity:0.5;border-radius:2px;vertical-align:middle;margin-right:4px;"></span>Full range &nbsp;
+                <span style="display:inline-block;width:14px;height:8px;background:#f97316;border-radius:2px;vertical-align:middle;margin-right:4px;"></span>Typical range
+            </p>
+        </div>
+
+        <!-- SURFACE SYMBOLS -->
+        <div class="card">
+            <h2>Surface finish symbols (ISO 1302)</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:0.75rem;" id="symbolGrid"></div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>© 2025 StrokeForge · <a href="/engineering.html">Engineering tools</a></p>
     </footer>
 
     <script src="../../js/nav.js"></script>
