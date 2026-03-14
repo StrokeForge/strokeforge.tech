@@ -189,7 +189,7 @@
                 </div>
 
                 <!-- Spring SVG -->
-                <svg id="springSvg" width="150" height="240" viewBox="0 0 150 240"></svg>
+                <svg id="springSvg" width="150" height="260" viewBox="0 0 150 260"></svg>
             </div>
         </div>
 
@@ -432,27 +432,23 @@
             p.setAttribute('fill',col);svg.appendChild(p);
         }
 
-        // Draw extension spring as zigzag coil pattern
-        const topY = 28, botY = 200;
-        const coilH = (botY - topY);
+        // Draw extension spring
+        const topY = 55, botY = 205;
         const nCoils = Math.max(Math.round(n), 3);
-        const r = Math.min(28, D * 1.2); // visual radius
+        const r = Math.min(28, D * 1.2); // visual coil radius
+        const hr = r / 2;                // hook arc radius
 
-        // Top hook
-        const pathTop = document.createElementNS(ns,'path');
-        pathTop.setAttribute('d',`M ${cx},${topY-14} L ${cx},${topY}`);
-        pathTop.setAttribute('stroke',springColor);pathTop.setAttribute('stroke-width','2');pathTop.setAttribute('fill','none');
-        svg.appendChild(pathTop);
-        // Hook circle (top)
-        const hCircT = document.createElementNS(ns,'circle');
-        hCircT.setAttribute('cx',cx+r/2);hCircT.setAttribute('cy',topY-7);
-        hCircT.setAttribute('r',r/2);hCircT.setAttribute('fill','none');
-        hCircT.setAttribute('stroke',springColor);hCircT.setAttribute('stroke-width','2');
-        svg.appendChild(hCircT);
+        // Top end: 3/4 arc (CW from right to top) + vertical shank up
+        // Arc center: (cx, topY), arc from (cx+hr, topY) CW 270° → (cx, topY-hr)
+        const arcT = document.createElementNS(ns,'path');
+        arcT.setAttribute('d', `M ${cx+hr},${topY} A ${hr} ${hr} 0 1 1 ${cx},${topY-hr}`);
+        arcT.setAttribute('fill','none'); arcT.setAttribute('stroke',springColor); arcT.setAttribute('stroke-width','2');
+        svg.appendChild(arcT);
+        ln(cx, topY-hr, cx, topY-hr-16, springColor, 2); // vertical shank up
 
-        // Spring body — sinusoidal zigzag
+        // Spring body — sinusoidal
         const pts = [];
-        const bodyTop = topY + 4, bodyBot = botY - 4;
+        const bodyTop = topY + 2, bodyBot = botY - 2;
         const bodyH = bodyBot - bodyTop;
         const steps = nCoils * 8;
         for (let i = 0; i <= steps; i++) {
@@ -463,25 +459,24 @@
         }
         const springPath = document.createElementNS(ns,'polyline');
         springPath.setAttribute('points', pts.join(' '));
-        springPath.setAttribute('fill','none');springPath.setAttribute('stroke',springColor);
-        springPath.setAttribute('stroke-width','2.5');svg.appendChild(springPath);
+        springPath.setAttribute('fill','none'); springPath.setAttribute('stroke',springColor);
+        springPath.setAttribute('stroke-width','2.5'); svg.appendChild(springPath);
 
-        // Bottom hook
-        const pathBot = document.createElementNS(ns,'path');
-        pathBot.setAttribute('d',`M ${cx},${botY} L ${cx},${botY+14}`);
-        pathBot.setAttribute('stroke',springColor);pathBot.setAttribute('stroke-width','2');pathBot.setAttribute('fill','none');
-        svg.appendChild(pathBot);
-        const hCircB = document.createElementNS(ns,'circle');
-        hCircB.setAttribute('cx',cx-r/2);hCircB.setAttribute('cy',botY+7);
-        hCircB.setAttribute('r',r/2);hCircB.setAttribute('fill','none');
-        hCircB.setAttribute('stroke',springColor);hCircB.setAttribute('stroke-width','2');
-        svg.appendChild(hCircB);
+        // Bottom end: 3/4 arc (CCW from left to bottom) + vertical shank down
+        // Arc center: (cx, botY), arc from (cx-hr, botY) CCW 270° → (cx, botY+hr)
+        const arcB = document.createElementNS(ns,'path');
+        arcB.setAttribute('d', `M ${cx-hr},${botY} A ${hr} ${hr} 0 1 0 ${cx},${botY+hr}`);
+        arcB.setAttribute('fill','none'); arcB.setAttribute('stroke',springColor); arcB.setAttribute('stroke-width','2');
+        svg.appendChild(arcB);
+        ln(cx, botY+hr, cx, botY+hr+16, springColor, 2); // vertical shank down
 
         // Force arrows
-        arrow(cx, topY-26, cx, topY-16, blue);
-        arrow(cx, botY+26, cx, botY+16, blue);
-        txt(cx+16, topY-22, 'F', blue, 10, 'start');
-        txt(cx+16, botY+22, 'F', blue, 10, 'start');
+        const arrowTopY = topY - hr - 16;
+        const arrowBotY = botY + hr + 16;
+        arrow(cx, arrowTopY - 12, cx, arrowTopY, blue);
+        arrow(cx, arrowBotY + 12, cx, arrowBotY, blue);
+        txt(cx+14, arrowTopY - 6, 'F', blue, 10, 'start');
+        txt(cx+14, arrowBotY + 6, 'F', blue, 10, 'start');
 
         // L0 dimension
         ln(cx+38, topY, cx+38, botY, gray, 1);
