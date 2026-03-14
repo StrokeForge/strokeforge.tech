@@ -393,8 +393,8 @@
         return svg;
     }
     function drawIntegrator() {
-        const svg=mkSvg(240,130);
-        const _o={ox:105,oy:62,h:52,hw:Math.round(52*0.55)};
+        const svg=mkSvg(240,142);
+        const _o={ox:105,oy:74,h:52,hw:Math.round(52*0.55)};
         el(svg,'polygon',{points:`${_o.ox},${_o.oy-_o.h/2} ${_o.ox},${_o.oy+_o.h/2} ${_o.ox+_o.hw},${_o.oy}`,fill:'rgba(255,107,53,0.08)',stroke:C.orange,'stroke-width':1.5});
         tx(svg,_o.ox+9,_o.oy-_o.h/4,'−',C.orange,11,'middle');
         tx(svg,_o.ox+9,_o.oy+_o.h/4,'+',C.green,9,'middle');
@@ -409,13 +409,13 @@
         const jx=78;
         const rfC=amp.out.x+19;
         el(svg,'circle',{cx:rfC,cy:amp.out.y,r:2.5,fill:C.wire});
-        ln(svg,rfC,amp.out.y,rfC,18);
-        ln(svg,rfC,18,jx+30,18);
-        capH(svg,jx+26,18,C.blue);
-        tx(svg,jx+29,2,'C',C.blue,8);
-        ln(svg,jx,18,jx+26,18);
-        ln(svg,jx+33,18,rfC,18);
-        ln(svg,jx,18,jx,amp.inP.y);
+        ln(svg,rfC,amp.out.y,rfC,30);
+        ln(svg,rfC,30,jx+30,30);
+        capH(svg,jx+26,30,C.blue);
+        tx(svg,jx+29,14,'C',C.blue,8);
+        ln(svg,jx,30,jx+26,30);
+        ln(svg,jx+33,30,rfC,30);
+        ln(svg,jx,30,jx,amp.inP.y);
         el(svg,'circle',{cx:jx,cy:amp.inP.y,r:2.5,fill:C.wire});
         return svg;
     }
