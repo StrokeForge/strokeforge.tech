@@ -118,7 +118,6 @@
                             <label>Active coils <i>n</i></label>
                             <div class="field-row">
                                 <input type="number" id="na" class="inp" value="10" min="2" step="0.5" oninput="calc()">
-                                <span class="unit">—</span>
                             </div>
                         </div>
                         <div class="field">
@@ -380,7 +379,9 @@
         html += row('L₂',        fmt(L2,1),        'mm',  'L₀ + δ₂');
 
         html += secHead('Material');
-        html += row('G',         fmt(G,0),         'MPa', document.getElementById('mat').options[document.getElementById('mat').selectedIndex].text.split(' ').slice(0,3).join(' '));
+        const matLabel = document.getElementById('mat').options[document.getElementById('mat').selectedIndex].text;
+        html += `<tr><td colspan="4" style="font-size:0.78rem;color:var(--text-gray);font-style:italic;padding-top:0.25rem;padding-bottom:0.5rem;">${matLabel}</td></tr>`;
+        html += row('G',         fmt(G,0),         'MPa', '');
         html += row('R_m',       fmt(Rm,0),        'MPa', `for d = ${d} mm`);
         html += row('τ_allow',   fmt(tauAllow,1),  'MPa', '0.45 × Rm  (static)');
 
