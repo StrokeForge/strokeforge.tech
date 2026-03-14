@@ -476,26 +476,29 @@
         arcB.setAttribute('fill','none'); arcB.setAttribute('stroke',springColor); arcB.setAttribute('stroke-width','2');
         svg.appendChild(arcB);
 
-        // Force arrows at hook tips (12 o'clock of top arc, 6 o'clock of bottom arc)
+        // Force arrows — LEFT side with horizontal leader from hook tip
         const hookTopY = topY - shankLen - 2*hr;
         const hookBotY = botY + shankLen + 2*hr;
-        arrow(cx, hookTopY, cx, hookTopY - 12, blue);
-        arrow(cx, hookBotY, cx, hookBotY + 12, blue);
-        txt(cx + 14, hookTopY - 6, 'F', blue, 10, 'start');
-        txt(cx + 14, hookBotY + 6, 'F', blue, 10, 'start');
+        const Fx = cx - 28;
+        ln(cx, hookTopY, Fx, hookTopY, blue, 1.5);       // horizontal leader
+        arrow(Fx, hookTopY, Fx, hookTopY - 12, blue);    // arrow up
+        txt(Fx - 2, hookTopY - 6, 'F', blue, 10, 'end');
+        ln(cx, hookBotY, Fx, hookBotY, blue, 1.5);       // horizontal leader
+        arrow(Fx, hookBotY, Fx, hookBotY + 12, blue);    // arrow down
+        txt(Fx - 2, hookBotY + 6, 'F', blue, 10, 'end');
 
-        // L0 dimension
+        // L0 dimension (right side)
         ln(cx+38, topY, cx+38, botY, gray, 1);
         ln(cx+33, topY, cx+43, topY, gray, 1);
         ln(cx+33, botY, cx+43, botY, gray, 1);
         txt(cx+52, (topY+botY)/2, `L₀`, gray, 9);
 
-        // D dimension
-        ln(cx-r, topY+bodyH/2, cx+r, topY+bodyH/2, gray, 1, '3,2');
-        txt(cx, topY+bodyH/2-10, 'D', gray, 9);
+        // D — text only on left side, no line through spring
+        txt(6, topY + bodyH * 0.5, '⌀D', gray, 9, 'start');
 
-        // n label
-        txt(cx, H-8, `n = ${n}  d = ${d} mm`, gray, 9);
+        // n, d labels — right side below L0 marker
+        txt(W - 4, botY + 14, `n = ${n}`, gray, 8, 'end');
+        txt(W - 4, botY + 24, `d = ${d} mm`, gray, 8, 'end');
     }
 
     // Initial render
