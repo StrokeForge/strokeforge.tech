@@ -447,11 +447,12 @@
         const profName = document.getElementById('profile').value.split(',')[1];
         txt(W/2, 14, `${profName} profile  ·  v = ${isFinite(v)?v.toFixed(2):'—'} m/s`, gray, 9);
 
-        // Legend
-        ln(10, H-14, 30, H-14, beltColor, 3);
-        txt(34, H-14, 'Tight side (F₁)', gray, 9, 'start');
-        ln(160, H-14, 180, H-14, beltColor, 1.5, '4,3');
-        txt(184, H-14, 'Slack side (F₂)', gray, 9, 'start');
+        // Legend — centred
+        const lgX = Math.round((W - 200) / 2);
+        ln(lgX,      H-14, lgX+20,  H-14, beltColor, 3);
+        txt(lgX+24,  H-14, 'Tight side (F₁)', gray, 9, 'start');
+        ln(lgX+110,  H-14, lgX+130, H-14, beltColor, 1.5, '4,3');
+        txt(lgX+134, H-14, 'Slack side (F₂)', gray, 9, 'start');
     }
 
     calc();
