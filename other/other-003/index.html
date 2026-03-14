@@ -29,12 +29,12 @@
         .unit-sel { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--text-gray); border-radius: 7px; padding: 0.5rem 0.5rem; font-size: 0.82rem; outline: none; cursor: pointer; width: 100%; }
 
         /* Converter */
-        .converter { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1.5rem; align-items: center; }
+        .converter { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1.5rem; align-items: center; min-width: 0; }
         @media (max-width: 500px) { .converter { grid-template-columns: 1fr; } .arrow { transform: rotate(90deg); } }
-        .conv-block { background: var(--darker-bg); border-radius: 10px; padding: 1.2rem 1.4rem; }
+        .conv-block { background: var(--darker-bg); border-radius: 10px; padding: 1.2rem 1.4rem; min-width: 0; overflow: hidden; }
         .conv-block h3 { font-size: 0.75rem; color: var(--text-gray); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
-        .conv-input-row { display: flex; gap: 0.5rem; align-items: center; }
-        .conv-inp { flex: 1; background: var(--card-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.6rem 0.9rem; font-size: 1.1rem; font-weight: 700; outline: none; min-width: 0; transition: border-color 0.2s; }
+        .conv-input-row { display: flex; gap: 0.5rem; align-items: center; min-width: 0; }
+        .conv-inp { flex: 1; min-width: 0; width: 100%; box-sizing: border-box; background: var(--card-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.6rem 0.9rem; font-size: 1.1rem; font-weight: 700; outline: none; transition: border-color 0.2s; }
         .conv-inp:focus { border-color: var(--primary-orange); }
         .arrow { font-size: 1.4rem; color: var(--primary-orange); text-align: center; user-select: none; }
         .scale-badge { display: inline-block; background: rgba(249,115,22,0.12); border: 1px solid rgba(249,115,22,0.3); color: var(--primary-orange); border-radius: 6px; padding: 0.25rem 0.75rem; font-size: 0.9rem; font-weight: 700; margin-top: 1rem; }
