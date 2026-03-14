@@ -436,8 +436,8 @@
         el(svg,'circle',{cx:csX,cy:csY,r:csR,fill:'none',stroke:C.blue,'stroke-width':1.5});
         ln(svg,csX-7,csY,csX+2,csY,C.blue,1.5);
         el(svg,'polygon',{points:`${csX+2},${csY-3} ${csX+8},${csY} ${csX+2},${csY+3}`,fill:C.blue});
-        ln(svg,14,csY,csX-csR,csY,C.blue);
-        ln(svg,csX+csR,csY,65,csY,C.blue);
+        ln(svg,14,csY,csX-csR,csY);
+        ln(svg,csX+csR,csY,65,csY);
         ln(svg,14,csY,14,csY+20); gnd(svg,14,csY+20);
         tx(svg,csX,csY-24,'Iin',C.blue,8,'middle');
 
