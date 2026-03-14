@@ -490,9 +490,9 @@
         ln(svg,rfX,jcY,rfX,feedY);      // right vertical up to R1
         // R1 horizontal at y=feedY
         ln(svg,n1x,n1y,n1x,feedY);      // node A → up to R1 left end
-        ln(svg,n1x,feedY,n1x+10,feedY);
-        zigzag(svg,n1x+10,feedY,rfX-10,feedY,C.orange);
-        ln(svg,rfX-10,feedY,rfX,feedY);
+        ln(svg,n1x,feedY,122,feedY);
+        zigzag(svg,122,feedY,214,feedY,C.orange);
+        ln(svg,214,feedY,rfX,feedY);
         tx(svg,Math.round((n1x+rfX)/2),feedY-10,'R1',C.orange,8,'middle');
         return svg;
     }
