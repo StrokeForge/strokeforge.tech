@@ -426,21 +426,27 @@
             s.setAttribute('height', '52');
             s.setAttribute('viewBox', '0 0 60 52');
 
-            // ISO 1302 basic surface texture symbol:
-            // Two lines (polyline, NOT polygon) meeting at tip, both ~60° from horizontal
-            // Left leg: shorter  Right leg: longer
-            // Tip at (28,44), left top at (14,20), right top at (50,8)
-            const poly = document.createElementNS(ns, 'polyline');
-            poly.setAttribute('points', '14,20 28,44 50,8');
+            // ISO 1302 surface texture symbol:
+            // Closed triangle, tip at bottom, horizontal line from upper-right corner
+            const poly = document.createElementNS(ns, 'polygon');
+            poly.setAttribute('points', '8,20 34,20 21,44');
             poly.setAttribute('fill', 'none');
             poly.setAttribute('stroke', '#f97316');
             poly.setAttribute('stroke-width', '2');
             poly.setAttribute('stroke-linejoin', 'round');
             s.appendChild(poly);
 
-            // Ra value — above the longer (right) leg
+            // Horizontal line extending right from upper-right corner
+            const line = document.createElementNS(ns, 'line');
+            line.setAttribute('x1', '34'); line.setAttribute('y1', '20');
+            line.setAttribute('x2', '56'); line.setAttribute('y2', '20');
+            line.setAttribute('stroke', '#f97316');
+            line.setAttribute('stroke-width', '2');
+            s.appendChild(line);
+
+            // Ra value above the horizontal line
             const t = document.createElementNS(ns, 'text');
-            t.setAttribute('x', '54'); t.setAttribute('y', '6');
+            t.setAttribute('x', '45'); t.setAttribute('y', '13');
             t.setAttribute('text-anchor', 'middle');
             t.setAttribute('font-size', '9');
             t.setAttribute('fill', '#94a3b8');
