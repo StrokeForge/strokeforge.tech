@@ -1,0 +1,7 @@
+{
+  "title": "Scale & Ratio Calculator",
+  "type": "tool",
+  "icon": "📐",
+  "description": "Convert real-world dimensions to model scale and back. Presets for RC cars, model trains, military models, architecture and more. Supports mm, cm, m and inch.",
+  "thumbnail": "thumb.jpg"
+}
