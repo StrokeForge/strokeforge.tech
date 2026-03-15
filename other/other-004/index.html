@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCII / Extended Table | StrokeForge</title>
+    <meta name="description" content="Interactive ASCII and extended ASCII reference (0–255). Decimal, hex, octal, binary, keyboard shortcuts. Click any row to copy.">
+    <meta name="keywords" content="ASCII table, extended ASCII, character codes, hex codes, keyboard shortcuts, ASCII reference, CP1252">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/other/other-004/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap {
+            max-width: 1100px;
+            margin: 2rem auto 4rem;
+            padding: 0 1.5rem;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Filter bar */
+        .filter-bar {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-btn {
+            background: var(--darker-bg);
+            border: 1px solid var(--border-gray);
+            color: var(--light-gray);
+            border-radius: 7px;
+            padding: 0.38rem 0.85rem;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .filter-btn:hover { border-color: var(--primary-orange); }
+        .filter-btn.active {
+            background: var(--primary-orange);
+            border-color: var(--primary-orange);
+            color: var(--dark-bg);
+            font-weight: 600;
+        }
+        .search-inp {
+            background: var(--darker-bg);
+            border: 1px solid var(--border-gray);
+            color: var(--light-gray);
+            border-radius: 7px;
+            padding: 0.38rem 0.9rem;
+            font-size: 0.88rem;
+            outline: none;
+            flex: 1;
+            min-width: 180px;
+            max-width: 280px;
+            transition: border-color 0.2s;
+        }
+        .search-inp:focus { border-color: var(--primary-orange); }
+        .search-inp::placeholder { color: var(--text-gray); }
+
+        .copy-mode {
+            display: flex;
+            gap: 0.45rem;
+            align-items: center;
+            font-size: 0.82rem;
+            color: var(--text-gray);
+            margin-left: auto;
+        }
+        .copy-mode select {
+            background: var(--darker-bg);
+            border: 1px solid var(--border-gray);
+            color: var(--light-gray);
+            border-radius: 6px;
+            padding: 0.35rem 0.5rem;
+            font-size: 0.82rem;
+            outline: none;
+            cursor: pointer;
+        }
+        .copy-mode select:focus { border-color: var(--primary-orange); }
+
+        .stats-bar {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            padding: 0.6rem 0 0;
+        }
+
+        /* Table */
+        .ascii-table-wrap { overflow-x: auto; }
+        .ascii-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .ascii-table thead th {
+            padding: 0.55rem 0.8rem;
+            text-align: left;
+            color: var(--text-gray);
+            border-bottom: 2px solid var(--border-gray);
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            z-index: 5;
+        }
+        .ascii-table thead th.th-center { text-align: center; }
+        .ascii-table tbody tr { cursor: pointer; }
+        .ascii-table tbody tr:hover td { background: rgba(249,115,22,0.08); }
+        .ascii-table tbody tr.flash td {
+            background: rgba(249,115,22,0.22) !important;
+            transition: background 0s !important;
+        }
+        .ascii-table td {
+            padding: 0.32rem 0.8rem;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            white-space: nowrap;
+            transition: background 0.12s;
+        }
+
+        .td-dec  { color: var(--primary-orange) !important; font-weight: 700; font-family: monospace; min-width: 42px; }
+        .td-hex  { font-family: monospace; color: #60a5fa !important; min-width: 56px; }
+        .td-oct  { font-family: monospace; color: var(--text-gray) !important; min-width: 44px; }
+        .td-bin  { font-family: monospace; color: var(--text-gray) !important; min-width: 82px; font-size: 0.74rem; letter-spacing: 0.03em; }
+        .td-char { font-family: monospace; font-size: 1.05rem; min-width: 44px; text-align: center; color: var(--light-gray) !important; }
+
+        .char-ctrl {
+            font-size: 0.68rem;
+            color: var(--text-gray);
+            background: rgba(255,255,255,0.08);
+            border-radius: 4px;
+            padding: 0.12rem 0.35rem;
+            font-family: monospace;
+            display: inline-block;
+            letter-spacing: 0;
+        }
+        .char-undef { color: var(--text-gray) !important; font-size: 0.8rem; }
+
+        .td-name  { min-width: 220px; color: var(--light-gray) !important; }
+        .abbr-tag {
+            font-family: monospace;
+            font-size: 0.73rem;
+            color: #a78bfa;
+            font-weight: 700;
+            margin-right: 0.4rem;
+            display: inline-block;
+            min-width: 2.6rem;
+        }
+        .td-shortcut { min-width: 110px; color: var(--text-gray) !important; font-size: 0.78rem; }
+        kbd {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-bottom-width: 2px;
+            border-radius: 4px;
+            padding: 0.08rem 0.38rem;
+            font-size: 0.74rem;
+            font-family: monospace;
+            color: var(--light-gray);
+        }
+
+        /* Section separator rows */
+        .ascii-table tr.sec-sep td {
+            padding-top: 0.8rem;
+            padding-bottom: 0.25rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--primary-orange) !important;
+            border-bottom: 1px solid rgba(249,115,22,0.3);
+            cursor: default;
+            font-weight: 600;
+        }
+        .ascii-table tr.sec-sep:hover td { background: transparent !important; }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(16px);
+            background: var(--primary-orange);
+            color: var(--dark-bg);
+            padding: 0.45rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.18s, transform 0.18s;
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 700px) {
+            .td-oct, .td-bin { display: none; }
+            .copy-mode { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html" class="active">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>ASCII / Extended Table</h1>
+        <p>All 256 characters — decimal, hex, octal, binary, shortcuts. Click any row to copy.</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/other.html" class="back-button">← Back to Other</a>
+
+        <!-- Controls -->
+        <div class="card">
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="setFilter('all',this)">All (0–255)</button>
+                <button class="filter-btn" onclick="setFilter('ctrl',this)">Control (0–31)</button>
+                <button class="filter-btn" onclick="setFilter('print',this)">Printable (32–126)</button>
+                <button class="filter-btn" onclick="setFilter('std',this)">Standard (0–127)</button>
+                <button class="filter-btn" onclick="setFilter('ext',this)">Extended (128–255)</button>
+                <input type="text" id="searchInp" class="search-inp" placeholder="Search: char, DEC, HEX, name…" oninput="onSearch()">
+                <div class="copy-mode">
+                    <span>Copy:</span>
+                    <select id="copyModeSel">
+                        <option value="char">Char</option>
+                        <option value="dec">DEC</option>
+                        <option value="hex">HEX (0x..)</option>
+                        <option value="hex_plain">HEX (plain)</option>
+                        <option value="esc">Escape (\x..)</option>
+                        <option value="bin">BIN</option>
+                        <option value="oct">OCT</option>
+                        <option value="html">HTML (&amp;#..;)</option>
+                        <option value="css">CSS (\00..)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="stats-bar" id="statsBar">Showing 256 characters</div>
+        </div>
+
+        <!-- Table -->
+        <div class="card" style="padding:0; overflow:hidden;">
+            <div class="ascii-table-wrap">
+                <table class="ascii-table">
+                    <thead>
+                        <tr>
+                            <th>DEC</th>
+                            <th>HEX</th>
+                            <th>OCT</th>
+                            <th>BIN</th>
+                            <th class="th-center">Char</th>
+                            <th>Name / Description</th>
+                            <th>Shortcut</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast"></div>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ── Control characters 0–31 + 127 ──────────────────────────────────────
+    const CTRL_DATA = [
+        [0,  'NUL', 'Null',                         'Ctrl+@'],
+        [1,  'SOH', 'Start of Heading',              'Ctrl+A'],
+        [2,  'STX', 'Start of Text',                 'Ctrl+B'],
+        [3,  'ETX', 'End of Text',                   'Ctrl+C'],
+        [4,  'EOT', 'End of Transmission',           'Ctrl+D'],
+        [5,  'ENQ', 'Enquiry',                       'Ctrl+E'],
+        [6,  'ACK', 'Acknowledge',                   'Ctrl+F'],
+        [7,  'BEL', 'Bell',                          'Ctrl+G'],
+        [8,  'BS',  'Backspace',                     'Ctrl+H / ⌫'],
+        [9,  'HT',  'Horizontal Tab',                'Ctrl+I / Tab'],
+        [10, 'LF',  'Line Feed (newline)',            'Ctrl+J / Enter'],
+        [11, 'VT',  'Vertical Tab',                  'Ctrl+K'],
+        [12, 'FF',  'Form Feed',                     'Ctrl+L'],
+        [13, 'CR',  'Carriage Return',               'Ctrl+M / Enter'],
+        [14, 'SO',  'Shift Out',                     'Ctrl+N'],
+        [15, 'SI',  'Shift In',                      'Ctrl+O'],
+        [16, 'DLE', 'Data Link Escape',              'Ctrl+P'],
+        [17, 'DC1', 'Device Control 1 (XON)',        'Ctrl+Q'],
+        [18, 'DC2', 'Device Control 2',              'Ctrl+R'],
+        [19, 'DC3', 'Device Control 3 (XOFF)',       'Ctrl+S'],
+        [20, 'DC4', 'Device Control 4',              'Ctrl+T'],
+        [21, 'NAK', 'Negative Acknowledge',          'Ctrl+U'],
+        [22, 'SYN', 'Synchronous Idle',              'Ctrl+V'],
+        [23, 'ETB', 'End of Transmission Block',     'Ctrl+W'],
+        [24, 'CAN', 'Cancel',                        'Ctrl+X'],
+        [25, 'EM',  'End of Medium',                 'Ctrl+Y'],
+        [26, 'SUB', 'Substitute',                    'Ctrl+Z'],
+        [27, 'ESC', 'Escape',                        'Ctrl+[ / Esc'],
+        [28, 'FS',  'File Separator',                'Ctrl+\\'],
+        [29, 'GS',  'Group Separator',               'Ctrl+]'],
+        [30, 'RS',  'Record Separator',              'Ctrl+^'],
+        [31, 'US',  'Unit Separator',                'Ctrl+_'],
+        [127,'DEL', 'Delete',                        'Del / Ctrl+?'],
+    ];
+    const ctrlMap = new Map(CTRL_DATA.map(r => [r[0], r]));
+
+    // ── Windows-1252 specifics for 128–159 ─────────────────────────────────
+    const WIN1252 = {
+        128: {ch:'\u20AC', name:'Euro Sign'},
+        130: {ch:'\u201A', name:'Single Low-9 Quotation Mark'},
+        131: {ch:'\u0192', name:'Latin Small Letter F with Hook'},
+        132: {ch:'\u201E', name:'Double Low-9 Quotation Mark'},
+        133: {ch:'\u2026', name:'Horizontal Ellipsis'},
+        134: {ch:'\u2020', name:'Dagger'},
+        135: {ch:'\u2021', name:'Double Dagger'},
+        136: {ch:'\u02C6', name:'Modifier Letter Circumflex Accent'},
+        137: {ch:'\u2030', name:'Per Mille Sign'},
+        138: {ch:'\u0160', name:'Latin Capital Letter S with Caron'},
+        139: {ch:'\u2039', name:'Single Left-Pointing Angle Quotation Mark'},
+        140: {ch:'\u0152', name:'Latin Capital Ligature OE'},
+        142: {ch:'\u017D', name:'Latin Capital Letter Z with Caron'},
+        145: {ch:'\u2018', name:'Left Single Quotation Mark'},
+        146: {ch:'\u2019', name:'Right Single Quotation Mark'},
+        147: {ch:'\u201C', name:'Left Double Quotation Mark'},
+        148: {ch:'\u201D', name:'Right Double Quotation Mark'},
+        149: {ch:'\u2022', name:'Bullet'},
+        150: {ch:'\u2013', name:'En Dash'},
+        151: {ch:'\u2014', name:'Em Dash'},
+        152: {ch:'\u02DC', name:'Small Tilde'},
+        153: {ch:'\u2122', name:'Trade Mark Sign'},
+        154: {ch:'\u0161', name:'Latin Small Letter S with Caron'},
+        155: {ch:'\u203A', name:'Single Right-Pointing Angle Quotation Mark'},
+        156: {ch:'\u0153', name:'Latin Small Ligature OE'},
+        158: {ch:'\u017E', name:'Latin Small Letter Z with Caron'},
+        159: {ch:'\u0178', name:'Latin Capital Letter Y with Diaeresis'},
+    };
+
+    // ── Printable ASCII names (32–126) ──────────────────────────────────────
+    const PRINT_NAMES = {
+        32:'Space', 33:'Exclamation Mark', 34:'Quotation Mark', 35:'Number Sign',
+        36:'Dollar Sign', 37:'Percent Sign', 38:'Ampersand', 39:'Apostrophe',
+        40:'Left Parenthesis', 41:'Right Parenthesis', 42:'Asterisk', 43:'Plus Sign',
+        44:'Comma', 45:'Hyphen-Minus', 46:'Full Stop', 47:'Solidus (/)',
+        58:'Colon', 59:'Semicolon', 60:'Less-Than Sign', 61:'Equals Sign',
+        62:'Greater-Than Sign', 63:'Question Mark', 64:'Commercial At (@)',
+        91:'Left Square Bracket', 92:'Reverse Solidus (\\)', 93:'Right Square Bracket',
+        94:'Circumflex Accent', 95:'Low Line (_)', 96:'Grave Accent',
+        123:'Left Curly Bracket', 124:'Vertical Line', 125:'Right Curly Bracket',
+        126:'Tilde',
+    };
+
+    // ── Latin-1 names 160–255 ───────────────────────────────────────────────
+    const LATIN1_NAMES = {
+        160:'No-Break Space', 161:'Inverted Exclamation Mark', 162:'Cent Sign',
+        163:'Pound Sign', 164:'Currency Sign', 165:'Yen Sign', 166:'Broken Bar',
+        167:'Section Sign', 168:'Diaeresis', 169:'Copyright Sign',
+        170:'Feminine Ordinal Indicator', 171:'Left-Pointing Double Angle Quotation',
+        172:'Not Sign', 173:'Soft Hyphen', 174:'Registered Sign', 175:'Macron',
+        176:'Degree Sign', 177:'Plus-Minus Sign', 178:'Superscript Two',
+        179:'Superscript Three', 180:'Acute Accent', 181:'Micro Sign',
+        182:'Pilcrow Sign', 183:'Middle Dot', 184:'Cedilla', 185:'Superscript One',
+        186:'Masculine Ordinal Indicator', 187:'Right-Pointing Double Angle Quotation',
+        188:'Vulgar Fraction One Quarter', 189:'Vulgar Fraction One Half',
+        190:'Vulgar Fraction Three Quarters', 191:'Inverted Question Mark',
+        192:'Latin Capital Letter A with Grave', 193:'Latin Capital Letter A with Acute',
+        194:'Latin Capital Letter A with Circumflex', 195:'Latin Capital Letter A with Tilde',
+        196:'Latin Capital Letter A with Diaeresis', 197:'Latin Capital Letter A with Ring Above',
+        198:'Latin Capital Ligature AE', 199:'Latin Capital Letter C with Cedilla',
+        200:'Latin Capital Letter E with Grave', 201:'Latin Capital Letter E with Acute',
+        202:'Latin Capital Letter E with Circumflex', 203:'Latin Capital Letter E with Diaeresis',
+        204:'Latin Capital Letter I with Grave', 205:'Latin Capital Letter I with Acute',
+        206:'Latin Capital Letter I with Circumflex', 207:'Latin Capital Letter I with Diaeresis',
+        208:'Latin Capital Letter Eth', 209:'Latin Capital Letter N with Tilde',
+        210:'Latin Capital Letter O with Grave', 211:'Latin Capital Letter O with Acute',
+        212:'Latin Capital Letter O with Circumflex', 213:'Latin Capital Letter O with Tilde',
+        214:'Latin Capital Letter O with Diaeresis', 215:'Multiplication Sign',
+        216:'Latin Capital Letter O with Stroke', 217:'Latin Capital Letter U with Grave',
+        218:'Latin Capital Letter U with Acute', 219:'Latin Capital Letter U with Circumflex',
+        220:'Latin Capital Letter U with Diaeresis', 221:'Latin Capital Letter Y with Acute',
+        222:'Latin Capital Letter Thorn', 223:'Latin Small Letter Sharp S',
+        224:'Latin Small Letter A with Grave', 225:'Latin Small Letter A with Acute',
+        226:'Latin Small Letter A with Circumflex', 227:'Latin Small Letter A with Tilde',
+        228:'Latin Small Letter A with Diaeresis', 229:'Latin Small Letter A with Ring Above',
+        230:'Latin Small Ligature AE', 231:'Latin Small Letter C with Cedilla',
+        232:'Latin Small Letter E with Grave', 233:'Latin Small Letter E with Acute',
+        234:'Latin Small Letter E with Circumflex', 235:'Latin Small Letter E with Diaeresis',
+        236:'Latin Small Letter I with Grave', 237:'Latin Small Letter I with Acute',
+        238:'Latin Small Letter I with Circumflex', 239:'Latin Small Letter I with Diaeresis',
+        240:'Latin Small Letter Eth', 241:'Latin Small Letter N with Tilde',
+        242:'Latin Small Letter O with Grave', 243:'Latin Small Letter O with Acute',
+        244:'Latin Small Letter O with Circumflex', 245:'Latin Small Letter O with Tilde',
+        246:'Latin Small Letter O with Diaeresis', 247:'Division Sign',
+        248:'Latin Small Letter O with Stroke', 249:'Latin Small Letter U with Grave',
+        250:'Latin Small Letter U with Acute', 251:'Latin Small Letter U with Circumflex',
+        252:'Latin Small Letter U with Diaeresis', 253:'Latin Small Letter Y with Acute',
+        254:'Latin Small Letter Thorn', 255:'Latin Small Letter Y with Diaeresis',
+    };
+
+    // ── Build full data array ───────────────────────────────────────────────
+    function buildData() {
+        const rows = [];
+        for (let n = 0; n <= 255; n++) {
+            const hex     = n.toString(16).toUpperCase().padStart(2,'0');
+            const oct     = n.toString(8).padStart(3,'0');
+            const bin     = n.toString(2).padStart(8,'0');
+            const hexPad  = '0x' + hex;
+            let charDisplay='', charValue='', abbr='', name='', shortcut='', undef=false;
+
+            if (ctrlMap.has(n)) {
+                const [,a,d,sc] = ctrlMap.get(n);
+                abbr      = a;
+                name      = d;
+                shortcut  = sc;
+                // Unicode control pictures: U+2400–U+241F for 0–31, U+2421 for DEL
+                charDisplay = n === 127 ? '\u2421' : String.fromCodePoint(0x2400 + n);
+                charValue   = String.fromCharCode(n);
+            } else if (n >= 32 && n <= 126) {
+                charDisplay = String.fromCharCode(n);
+                charValue   = String.fromCharCode(n);
+                if (n >= 48 && n <= 57) name = 'Digit ' + (n - 48);
+                else if (n >= 65 && n <= 90) name = 'Latin Capital Letter ' + String.fromCharCode(n);
+                else if (n >= 97 && n <= 122) name = 'Latin Small Letter ' + String.fromCharCode(n - 32);
+                else name = PRINT_NAMES[n] || '';
+            } else if (n >= 128 && n <= 159) {
+                if (WIN1252[n]) {
+                    charDisplay = WIN1252[n].ch;
+                    charValue   = WIN1252[n].ch;
+                    name        = WIN1252[n].name;
+                } else {
+                    charDisplay = '—';
+                    name        = 'Undefined (Win-1252)';
+                    charValue   = '';
+                    undef       = true;
+                }
+            } else {
+                // 160–255 Latin-1
+                charDisplay = String.fromCharCode(n);
+                charValue   = String.fromCharCode(n);
+                name        = LATIN1_NAMES[n] || '';
+            }
+
+            rows.push({ n, hex, oct, bin, hexPad, charDisplay, charValue, abbr, name, shortcut, undef });
+        }
+        return rows;
+    }
+
+    const DATA = buildData();
+    let currentFilter = 'all';
+    let currentSearch = '';
+    let toastTimer    = null;
+
+    // ── Filtering ──────────────────────────────────────────────────────────
+    function inRange(n) {
+        switch (currentFilter) {
+            case 'ctrl':  return n <= 31 || n === 127;
+            case 'print': return n >= 32 && n <= 126;
+            case 'std':   return n <= 127;
+            case 'ext':   return n >= 128;
+            default:      return true;
+        }
+    }
+
+    function matchesSearch(row) {
+        if (!currentSearch) return true;
+        const q = currentSearch.toLowerCase().trim();
+        if (!q) return true;
+        if (String(row.n) === q) return true;
+        if (String(row.n).startsWith(q)) return true;
+        const hexQ = q.startsWith('0x') ? q.slice(2) : q;
+        if (hexQ && row.hex.toLowerCase().includes(hexQ)) return true;
+        if (row.charValue && row.charValue.toLowerCase() === q) return true;
+        if (row.name.toLowerCase().includes(q)) return true;
+        if (row.abbr.toLowerCase().includes(q)) return true;
+        if (row.shortcut.toLowerCase().includes(q)) return true;
+        return false;
+    }
+
+    // ── Copy value ─────────────────────────────────────────────────────────
+    function getCopyValue(row) {
+        switch (document.getElementById('copyModeSel').value) {
+            case 'char':      return row.charValue !== '' ? row.charValue : '\\x' + row.hex;
+            case 'dec':       return String(row.n);
+            case 'hex':       return '0x' + row.hex;
+            case 'hex_plain': return row.hex;
+            case 'esc':       return '\\x' + row.hex;
+            case 'bin':       return row.bin;
+            case 'oct':       return row.oct;
+            case 'html':      return '&#' + row.n + ';';
+            case 'css':       return '\\' + row.n.toString(16).padStart(4,'0').toUpperCase();
+        }
+        return String(row.n);
+    }
+
+    // ── Render ─────────────────────────────────────────────────────────────
+    function buildTable() {
+        const visible = DATA.filter(r => inRange(r.n) && matchesSearch(r));
+        document.getElementById('statsBar').textContent =
+            'Showing ' + visible.length + ' of 256 characters';
+
+        const tbody = document.getElementById('tbody');
+        if (visible.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-gray);">No results</td></tr>';
+            return;
+        }
+
+        const sections = [
+            { label: 'Control Characters (0–31, 127)', test: n => n <= 31 || n === 127 },
+            { label: 'Printable ASCII (32–126)',        test: n => n >= 32 && n <= 126 },
+            { label: 'Extended — Windows-1252 (128–159)', test: n => n >= 128 && n <= 159 },
+            { label: 'Extended — Latin-1 (160–255)',    test: n => n >= 160 },
+        ];
+
+        const showSections = !currentSearch && currentFilter === 'all';
+        let lastSec = null;
+        const frag = [];
+
+        for (const row of visible) {
+            if (showSections) {
+                const sec = sections.find(s => s.test(row.n));
+                if (sec && sec.label !== lastSec) {
+                    frag.push(`<tr class="sec-sep"><td colspan="7">${sec.label}</td></tr>`);
+                    lastSec = sec.label;
+                }
+            }
+
+            const isCtrl = (row.n <= 31 || row.n === 127);
+
+            let charHtml;
+            if (row.undef) {
+                charHtml = `<span class="char-undef">—</span>`;
+            } else if (isCtrl) {
+                charHtml = `<span class="char-ctrl">${row.charDisplay}</span>`;
+            } else {
+                charHtml = esc(row.charDisplay);
+            }
+
+            const shortcutHtml = row.shortcut
+                ? row.shortcut.split(' / ').map(s => `<kbd>${esc(s)}</kbd>`).join(' ')
+                : '';
+
+            frag.push(`<tr data-n="${row.n}">
+                <td class="td-dec">${row.n}</td>
+                <td class="td-hex">${row.hexPad}</td>
+                <td class="td-oct">${row.oct}</td>
+                <td class="td-bin">${row.bin}</td>
+                <td class="td-char">${charHtml}</td>
+                <td class="td-name">${row.abbr ? `<span class="abbr-tag">${esc(row.abbr)}</span>` : ''}${esc(row.name)}</td>
+                <td class="td-shortcut">${shortcutHtml}</td>
+            </tr>`);
+        }
+
+        tbody.innerHTML = frag.join('');
+
+        tbody.querySelectorAll('tr[data-n]').forEach(tr => {
+            tr.addEventListener('click', () => {
+                const row = DATA[parseInt(tr.dataset.n)];
+                const val = getCopyValue(row);
+                copyToClipboard(val, tr);
+            });
+        });
+    }
+
+    function esc(s) {
+        return String(s)
+            .replace(/&/g,'&amp;')
+            .replace(/</g,'&lt;')
+            .replace(/>/g,'&gt;');
+    }
+
+    // ── Clipboard ──────────────────────────────────────────────────────────
+    function copyToClipboard(text, rowEl) {
+        const doFlash = () => {
+            rowEl.classList.add('flash');
+            setTimeout(() => rowEl.classList.remove('flash'), 280);
+        };
+        const label = text.length > 24 ? text.slice(0,24) + '…' : text;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                doFlash();
+                showToast('Copied: ' + label);
+            }).catch(() => fallbackCopy(text, doFlash, label));
+        } else {
+            fallbackCopy(text, doFlash, label);
+        }
+    }
+
+    function fallbackCopy(text, cb, label) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        cb();
+        showToast('Copied: ' + label);
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+    }
+
+    // ── Controls ───────────────────────────────────────────────────────────
+    function setFilter(f, btn) {
+        currentFilter = f;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        buildTable();
+    }
+
+    function onSearch() {
+        currentSearch = document.getElementById('searchInp').value;
+        buildTable();
+    }
+
+    // Init
+    buildTable();
+    </script>
+</body>
+</html>
