@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aluminium Alloys — Series 1xxx–7xxx | StrokeForge Engineering</title>
+    <meta name="description" content="Reference table for aluminium alloys series 1xxx–7xxx. EN AW designations, temper codes (T6, T4, H32), mechanical properties, machinability, weldability and typical applications.">
+    <meta name="keywords" content="aluminium alloys, aluminum grades, EN AW, 6082 T6, 7075 T6, 2024 T3, 5083, 6061, temper designation, machinability, weldability, aerospace aluminium">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://strokeforge.tech/engineering/eng-045/">
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .tool-wrap { max-width: 1120px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+        .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
+
+        /* Filters */
+        .filter-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.1rem; align-items: center; }
+        .filter-label { font-size: 0.77rem; color: var(--text-gray); align-self: center; white-space: nowrap; }
+        .filter-group { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .fb { padding: 0.35rem 0.85rem; border-radius: 6px; border: 1px solid var(--border-gray); background: none; color: var(--text-gray); cursor: pointer; font-size: 0.78rem; font-weight: 600; transition: all 0.18s; }
+        .fb.active { background: var(--primary-orange); color: #000; border-color: var(--primary-orange); }
+        .fb:not(.active):hover { border-color: var(--primary-orange); color: var(--light-gray); }
+
+        /* Search */
+        .search-wrap { position: relative; }
+        .search-inp { background: var(--darker-bg); border: 1px solid var(--border-gray); color: var(--light-gray); border-radius: 7px; padding: 0.45rem 0.85rem 0.45rem 2rem; font-size: 0.85rem; outline: none; width: 200px; transition: border-color 0.2s; }
+        .search-inp:focus { border-color: var(--primary-orange); }
+        .search-icon { position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); color: var(--text-gray); font-size: 0.85rem; pointer-events: none; }
+        .count-badge { background: rgba(249,115,22,0.12); color: var(--primary-orange); border: 1px solid rgba(249,115,22,0.25); border-radius: 5px; padding: 0.1rem 0.5rem; font-size: 0.75rem; font-weight: 700; margin-left: 0.5rem; }
+
+        /* Table */
+        .tbl-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        thead th { background: var(--darker-bg); color: var(--text-gray); font-size: 0.74rem; font-weight: 700; padding: 0.6rem 0.7rem; text-align: left; border-bottom: 2px solid var(--border-gray); white-space: nowrap; }
+        thead th.center { text-align: center; }
+        tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
+        tbody tr:hover { background: rgba(255,255,255,0.03); }
+        tbody tr.hidden { display: none; }
+        td { padding: 0.6rem 0.7rem; vertical-align: middle; }
+
+        /* Alloy name */
+        .alloy-en { font-weight: 700; color: var(--primary-orange); font-size: 0.86rem; }
+        .alloy-alt { font-size: 0.74rem; color: var(--text-gray); margin-top: 0.1rem; }
+
+        /* Series badge */
+        .cat-badge { font-size: 0.68rem; font-weight: 700; padding: 0.12rem 0.45rem; border-radius: 4px; white-space: nowrap; display: inline-block; }
+        .cat-1xxx { background: rgba(156,163,175,0.12); color: #9ca3af; border: 1px solid rgba(156,163,175,0.3); }
+        .cat-2xxx { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+        .cat-3xxx { background: rgba(96,165,250,0.12); color: #60a5fa; border: 1px solid rgba(96,165,250,0.25); }
+        .cat-5xxx { background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
+        .cat-6xxx { background: rgba(251,146,60,0.12); color: #fb923c; border: 1px solid rgba(251,146,60,0.3); }
+        .cat-7xxx { background: rgba(192,132,252,0.12); color: #c084fc; border: 1px solid rgba(192,132,252,0.3); }
+
+        /* Temper badge */
+        .temper { font-size: 0.71rem; font-weight: 700; font-family: monospace; color: var(--light-gray); background: var(--darker-bg); padding: 0.1rem 0.4rem; border-radius: 4px; }
+
+        /* Value cells */
+        .val-cell { text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; font-size: 0.85rem; color: var(--light-gray); }
+
+        /* Rating bars */
+        .rating-wrap { display: flex; align-items: center; gap: 0.4rem; }
+        .rating-track { flex: 1; background: rgba(255,255,255,0.07); border-radius: 3px; height: 5px; min-width: 55px; }
+        .rating-fill { height: 100%; border-radius: 3px; }
+        .rating-label { font-size: 0.72rem; white-space: nowrap; }
+
+        /* Notes */
+        .note-cell { font-size: 0.74rem; color: var(--text-gray); max-width: 200px; line-height: 1.45; }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-block { background: var(--darker-bg); border-radius: 8px; padding: 1rem 1.2rem; }
+        .info-block h3 { font-size: 0.85rem; color: var(--primary-orange); margin-bottom: 0.5rem; }
+        .info-block p, .info-block li { font-size: 0.81rem; color: var(--text-gray); line-height: 1.65; }
+        .info-block ul { padding-left: 1.1rem; margin: 0; }
+        .info-block li { margin-bottom: 0.25rem; }
+
+        /* Temper table inside info */
+        .temper-tbl { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 0.4rem; }
+        .temper-tbl td { padding: 0.25rem 0.4rem; color: var(--text-gray); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .temper-tbl td:first-child { font-family: monospace; font-weight: 700; color: var(--light-gray); width: 55px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html" class="active">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Aluminium Alloys — 1xxx · 2xxx · 3xxx · 5xxx · 6xxx · 7xxx</h1>
+        <p>EN AW designations · temper codes · mechanical properties · machinability · weldability</p>
+    </header>
+
+    <main class="tool-wrap">
+        <a href="/engineering.html" class="back-button">← Back to Engineering</a>
+
+        <!-- FILTER CARD -->
+        <div class="card">
+            <h2>Filter <span class="count-badge" id="countBadge">—</span></h2>
+
+            <div class="filter-row">
+                <span class="filter-label">Series:</span>
+                <div class="filter-group" id="seriesGroup">
+                    <button class="fb active" data-series="all"  onclick="setFilter('series','all',this)">All</button>
+                    <button class="fb" data-series="1xxx" onclick="setFilter('series','1xxx',this)">1xxx — Pure Al</button>
+                    <button class="fb" data-series="2xxx" onclick="setFilter('series','2xxx',this)">2xxx — Al-Cu</button>
+                    <button class="fb" data-series="3xxx" onclick="setFilter('series','3xxx',this)">3xxx — Al-Mn</button>
+                    <button class="fb" data-series="5xxx" onclick="setFilter('series','5xxx',this)">5xxx — Al-Mg</button>
+                    <button class="fb" data-series="6xxx" onclick="setFilter('series','6xxx',this)">6xxx — Al-Mg-Si</button>
+                    <button class="fb" data-series="7xxx" onclick="setFilter('series','7xxx',this)">7xxx — Al-Zn</button>
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <span class="filter-label">Weldability:</span>
+                <div class="filter-group" id="weldGroup">
+                    <button class="fb active" data-weld="all"       onclick="setFilter('weld','all',this)">All</button>
+                    <button class="fb" data-weld="excellent"         onclick="setFilter('weld','excellent',this)">Excellent</button>
+                    <button class="fb" data-weld="good"              onclick="setFilter('weld','good',this)">Good</button>
+                    <button class="fb" data-weld="limited"           onclick="setFilter('weld','limited',this)">Limited</button>
+                    <button class="fb" data-weld="poor"              onclick="setFilter('weld','poor',this)">Not weldable</button>
+                </div>
+                <div class="search-wrap" style="margin-left:auto;">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInp" class="search-inp" placeholder="Search…" oninput="applyFilters()">
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLE CARD -->
+        <div class="card">
+            <div class="tbl-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Designation (EN AW)</th>
+                            <th>Series</th>
+                            <th>Temper</th>
+                            <th class="center">R<sub>m</sub> (MPa)</th>
+                            <th class="center">R<sub>p0.2</sub> (MPa)</th>
+                            <th class="center">A<sub>5</sub> (%)</th>
+                            <th class="center">HB</th>
+                            <th>Machinability</th>
+                            <th>Weldability</th>
+                            <th>Typical applications</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- INFO CARD -->
+        <div class="card">
+            <h2>Notes &amp; design guidelines</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Temper designation system</h3>
+                    <table class="temper-tbl">
+                        <tr><td>O</td><td>Annealed — lowest strength, highest ductility</td></tr>
+                        <tr><td>H1x</td><td>Strain hardened only (H12 = ¼ hard, H14 = ½ hard, H18 = full hard)</td></tr>
+                        <tr><td>H3x</td><td>Strain hardened + stabilised (5xxx series)</td></tr>
+                        <tr><td>T4</td><td>Solution treated + naturally aged (room temp.)</td></tr>
+                        <tr><td>T6</td><td>Solution treated + artificially aged (peak strength)</td></tr>
+                        <tr><td>T651</td><td>T6 + stress relieved by stretching</td></tr>
+                        <tr><td>T73</td><td>Over-aged — lower strength, better SCC resistance (7xxx)</td></tr>
+                        <tr><td>T3</td><td>Solution treated + cold worked + naturally aged (2xxx)</td></tr>
+                    </table>
+                </div>
+                <div class="info-block">
+                    <h3>1xxx — Commercially pure aluminium</h3>
+                    <p>≥ 99 % Al. Excellent corrosion resistance and electrical conductivity. Very low strength — not suitable for structural loads. Excellent formability and weldability. Used in foil, capacitors, chemical vessels and electrical conductors.</p>
+                </div>
+                <div class="info-block">
+                    <h3>2xxx — Al-Cu (heat treatable)</h3>
+                    <p>High strength after heat treatment (T3/T4/T6). Poor weldability — susceptible to hot cracking and intergranular corrosion in the heat-affected zone. Typically protected by anodising or cladding. Workhorse of aerospace structures (2024, 2017A).</p>
+                </div>
+                <div class="info-block">
+                    <h3>5xxx — Al-Mg (non-heat-treatable)</h3>
+                    <p>Strengthened by cold working (H-tempers). Excellent corrosion resistance in marine environments. Good weldability — the preferred series for welded structures, shipbuilding and cryogenic tanks. Prone to work hardening during machining.</p>
+                </div>
+                <div class="info-block">
+                    <h3>6xxx — Al-Mg-Si (heat treatable)</h3>
+                    <p>The engineering workhorse. Good strength, excellent extrudability, anodising response and machinability. 6082-T6 is the most common structural aluminium in Europe; 6061-T6 dominates in North America. Both are CNC machining standards.</p>
+                </div>
+                <div class="info-block">
+                    <h3>7xxx — Al-Zn (heat treatable)</h3>
+                    <p>Highest strength of all aluminium alloys. Susceptible to stress corrosion cracking (SCC) — T73/T7351 tempers trade some strength for better SCC resistance. Practically not weldable by conventional methods. Used in aerospace primary structures, high-performance sports equipment and tooling plates.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+    <script>
+    // ─── DATA ─────────────────────────────────────────────────────────────────────
+    // Fields: en, alt, series, temper, Rm, Rp02, A5, HB, mach (0-100), weld (0-100), apps
+    // Properties listed for the stated typical temper.
+    const ALLOYS = [
+
+        // ── 1xxx — Commercially pure ──────────────────────────────────────────────
+        {
+            en: 'EN AW-1050A', alt: 'Al 99.5 / A1050',
+            series: '1xxx', temper: 'O',
+            Rm: 75, Rp02: 25, A5: 23, HB: 20,
+            mach: 15, weld: 95,
+            apps: 'Foil, chemical vessels, capacitors, electrical conductors'
+        },
+        {
+            en: 'EN AW-1100', alt: 'Al 99.0 / A1100',
+            series: '1xxx', temper: 'H14',
+            Rm: 125, Rp02: 115, A5: 5, HB: 32,
+            mach: 15, weld: 95,
+            apps: 'Cookware, packaging, heat exchangers, decorative sheet'
+        },
+
+        // ── 2xxx — Al-Cu ──────────────────────────────────────────────────────────
+        {
+            en: 'EN AW-2011', alt: 'AlCu6BiPb / Free-cutting Al',
+            series: '2xxx', temper: 'T3',
+            Rm: 370, Rp02: 295, A5: 12, HB: 95,
+            mach: 95, weld: 5,
+            apps: 'CNC screw machine parts, precision turned parts, fasteners'
+        },
+        {
+            en: 'EN AW-2017A', alt: 'AlCuMg1 / Duralumin',
+            series: '2xxx', temper: 'T4',
+            Rm: 425, Rp02: 275, A5: 15, HB: 105,
+            mach: 70, weld: 10,
+            apps: 'Aircraft structures, bolts, rivets, precision machined parts'
+        },
+        {
+            en: 'EN AW-2024', alt: 'AlCuMg2 / A2024',
+            series: '2xxx', temper: 'T3',
+            Rm: 485, Rp02: 345, A5: 18, HB: 120,
+            mach: 70, weld: 10,
+            apps: 'Aircraft skins, fuselage frames, structural aerospace, sports equipment'
+        },
+
+        // ── 3xxx — Al-Mn ──────────────────────────────────────────────────────────
+        {
+            en: 'EN AW-3003', alt: 'AlMn1Cu / A3003',
+            series: '3xxx', temper: 'H14',
+            Rm: 152, Rp02: 145, A5: 8, HB: 40,
+            mach: 30, weld: 90,
+            apps: 'Cookware, tanks, heat exchangers, packaging, roofing sheet'
+        },
+        {
+            en: 'EN AW-3105', alt: 'AlMn0.5Mg0.5',
+            series: '3xxx', temper: 'H14',
+            Rm: 165, Rp02: 150, A5: 7, HB: 45,
+            mach: 30, weld: 88,
+            apps: 'Roofing and cladding, automotive trim, bottle caps'
+        },
+
+        // ── 5xxx — Al-Mg ──────────────────────────────────────────────────────────
+        {
+            en: 'EN AW-5052', alt: 'AlMg2.5 / A5052',
+            series: '5xxx', temper: 'H32',
+            Rm: 230, Rp02: 195, A5: 12, HB: 60,
+            mach: 40, weld: 85,
+            apps: 'Fuel tanks, marine sheet, aircraft panels, sheet metal fabrication'
+        },
+        {
+            en: 'EN AW-5754', alt: 'AlMg3 / A5754',
+            series: '5xxx', temper: 'H22',
+            Rm: 220, Rp02: 150, A5: 11, HB: 60,
+            mach: 40, weld: 85,
+            apps: 'Automotive bodywork, boats, tanks, welded structures'
+        },
+        {
+            en: 'EN AW-5083', alt: 'AlMg4.5Mn / A5083',
+            series: '5xxx', temper: 'H111',
+            Rm: 290, Rp02: 145, A5: 16, HB: 75,
+            mach: 40, weld: 88,
+            apps: 'Marine construction, LNG cryogenic tanks, pressure vessels, shipbuilding'
+        },
+        {
+            en: 'EN AW-5086', alt: 'AlMg4 / A5086',
+            series: '5xxx', temper: 'H32',
+            Rm: 275, Rp02: 205, A5: 10, HB: 75,
+            mach: 38, weld: 88,
+            apps: 'Offshore structures, boat hulls, pressure vessels, drill pipe'
+        },
+
+        // ── 6xxx — Al-Mg-Si ───────────────────────────────────────────────────────
+        {
+            en: 'EN AW-6060', alt: 'AlMgSi / A6060',
+            series: '6xxx', temper: 'T6',
+            Rm: 215, Rp02: 170, A5: 8, HB: 65,
+            mach: 60, weld: 80,
+            apps: 'Architectural profiles, window frames, anodised extrusions'
+        },
+        {
+            en: 'EN AW-6061', alt: 'AlMgSi1 / A6061',
+            series: '6xxx', temper: 'T6',
+            Rm: 310, Rp02: 276, A5: 12, HB: 95,
+            mach: 85, weld: 75,
+            apps: 'CNC machine parts, aircraft frames, sports wheels, general machining'
+        },
+        {
+            en: 'EN AW-6063', alt: 'AlMgSi0.5 / A6063',
+            series: '6xxx', temper: 'T6',
+            Rm: 215, Rp02: 170, A5: 12, HB: 73,
+            mach: 60, weld: 80,
+            apps: 'Architectural extrusions, window/door frames, pipe, anodised products'
+        },
+        {
+            en: 'EN AW-6082', alt: 'AlSi1MgMn / A6082',
+            series: '6xxx', temper: 'T6',
+            Rm: 310, Rp02: 260, A5: 10, HB: 95,
+            mach: 80, weld: 75,
+            apps: 'Structural beams, flanges, machine parts — most common structural Al in Europe'
+        },
+
+        // ── 7xxx — Al-Zn ──────────────────────────────────────────────────────────
+        {
+            en: 'EN AW-7020', alt: 'AlZn4.5Mg1 / A7020',
+            series: '7xxx', temper: 'T6',
+            Rm: 350, Rp02: 280, A5: 10, HB: 100,
+            mach: 65, weld: 35,
+            apps: 'Military vehicles, bicycle frames, welded high-strength structures'
+        },
+        {
+            en: 'EN AW-7050', alt: 'AlZn6CuMgZr / A7050',
+            series: '7xxx', temper: 'T7451',
+            Rm: 510, Rp02: 435, A5: 11, HB: 135,
+            mach: 65, weld: 5,
+            apps: 'Aerospace thick plate, fuselage frames, wing spars'
+        },
+        {
+            en: 'EN AW-7075', alt: 'AlZn5.5MgCu / A7075',
+            series: '7xxx', temper: 'T6',
+            Rm: 572, Rp02: 503, A5: 11, HB: 150,
+            mach: 70, weld: 5,
+            apps: 'Aerospace primary structures, high-end CNC parts, sports equipment'
+        },
+        {
+            en: 'EN AW-7068', alt: 'AlZn7.2MgCu / A7068',
+            series: '7xxx', temper: 'T6511',
+            Rm: 640, Rp02: 595, A5: 9, HB: 175,
+            mach: 60, weld: 5,
+            apps: 'Ultra-high strength aerospace, military, tooling plates'
+        },
+    ];
+
+    // ─── STATE ────────────────────────────────────────────────────────────────────
+    let activeSeries = 'all';
+    let activeWeld   = 'all';
+
+    const WELD_RANGE = { excellent: [80, 100], good: [60, 79], limited: [20, 59], poor: [0, 19] };
+
+    function setFilter(dim, val, btn) {
+        if (dim === 'series') {
+            activeSeries = val;
+            document.querySelectorAll('#seriesGroup .fb').forEach(b => b.classList.remove('active'));
+        } else {
+            activeWeld = val;
+            document.querySelectorAll('#weldGroup .fb').forEach(b => b.classList.remove('active'));
+        }
+        btn.classList.add('active');
+        applyFilters();
+    }
+
+    function applyFilters() {
+        const q = document.getElementById('searchInp').value.toLowerCase();
+        let count = 0;
+        document.querySelectorAll('#tblBody tr').forEach(tr => {
+            const s = tr.dataset.series;
+            const w = parseInt(tr.dataset.weld);
+            const txt = tr.textContent.toLowerCase();
+            const seriesOk = activeSeries === 'all' || s === activeSeries;
+            let weldOk = true;
+            if (activeWeld !== 'all') {
+                const [lo, hi] = WELD_RANGE[activeWeld];
+                weldOk = w >= lo && w <= hi;
+            }
+            const qOk = !q || txt.includes(q);
+            const show = seriesOk && weldOk && qOk;
+            tr.classList.toggle('hidden', !show);
+            if (show) count++;
+        });
+        document.getElementById('countBadge').textContent = count;
+    }
+
+    // ─── RENDER ───────────────────────────────────────────────────────────────────
+    const SERIES_CLASS = { '1xxx':'cat-1xxx','2xxx':'cat-2xxx','3xxx':'cat-3xxx','5xxx':'cat-5xxx','6xxx':'cat-6xxx','7xxx':'cat-7xxx' };
+    const SERIES_LABEL = { '1xxx':'1xxx','2xxx':'2xxx','3xxx':'3xxx','5xxx':'5xxx','6xxx':'6xxx','7xxx':'7xxx' };
+
+    function ratingColor(v) {
+        if (v >= 80) return '#4ade80';
+        if (v >= 60) return '#a3e635';
+        if (v >= 30) return '#fbbf24';
+        return '#f87171';
+    }
+    function ratingLabel(v) {
+        if (v >= 80) return 'Excellent';
+        if (v >= 60) return 'Good';
+        if (v >= 30) return 'Limited';
+        return 'Poor';
+    }
+    function weldKey(v) {
+        if (v >= 80) return 'excellent';
+        if (v >= 60) return 'good';
+        if (v >= 30) return 'limited';
+        return 'poor';
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('tblBody');
+        tbody.innerHTML = '';
+        ALLOYS.forEach(a => {
+            const tr = document.createElement('tr');
+            tr.dataset.series = a.series;
+            tr.dataset.weld   = a.weld;
+            tr.innerHTML = `
+                <td>
+                    <div class="alloy-en">${a.en}</div>
+                    <div class="alloy-alt">${a.alt}</div>
+                </td>
+                <td><span class="cat-badge ${SERIES_CLASS[a.series]}">${SERIES_LABEL[a.series]}</span></td>
+                <td><span class="temper">${a.temper}</span></td>
+                <td class="val-cell">${a.Rm}</td>
+                <td class="val-cell">${a.Rp02}</td>
+                <td class="val-cell">${a.A5}</td>
+                <td class="val-cell">${a.HB}</td>
+                <td>
+                    <div class="rating-track" style="margin-bottom:0.3rem;">
+                        <div class="rating-fill" style="width:${a.mach}%;background:${ratingColor(a.mach)};"></div>
+                    </div>
+                    <div class="rating-label" style="color:${ratingColor(a.mach)};">${ratingLabel(a.mach)} (${a.mach} %)</div>
+                </td>
+                <td>
+                    <div class="rating-track" style="margin-bottom:0.3rem;">
+                        <div class="rating-fill" style="width:${a.weld}%;background:${ratingColor(a.weld)};"></div>
+                    </div>
+                    <div class="rating-label" style="color:${ratingColor(a.weld)};">${ratingLabel(a.weld)} (${a.weld} %)</div>
+                </td>
+                <td class="note-cell">${a.apps}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+        applyFilters();
+    }
+
+    renderTable();
+    </script>
+</body>
+</html>
