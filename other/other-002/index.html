@@ -305,7 +305,24 @@
 
         /* ===== PRINT ===== */
         @media print {
-            .navbar, .back-button, #inputSection { display: none !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            @page { margin: 15mm; }
+            .navbar, footer, .back-button, #inputSection, .action-bar, #errorBox { display: none !important; }
+            #resultsSection { display: block !important; }
+            #printHeader { display: block !important; }
+            .summary-card { break-inside: avoid; border-color: #ccc !important; }
+            .bar-row { break-inside: avoid; }
+            .bar-track { border-color: #999 !important; }
+            .bar-label { color: #444 !important; }
+            .offcut-seg { background: #d0d0d0 !important; color: #555 !important; }
+            .kerf-seg { background: #555 !important; }
+            .section-title { color: #e05a14 !important; border-color: #e05a14 !important; }
+            .card-label, .card-unit { color: #555 !important; }
+            .card-value { color: #e05a14 !important; }
+            .result-table th { background: #f4f4f4 !important; color: #e05a14 !important; }
+            .result-table td { color: #222 !important; border-color: #ddd !important; }
+            .td-bar-num { color: #666 !important; }
+            .result-table tr:hover td { background: none !important; }
         }
     </style>
 </head>
@@ -374,7 +391,7 @@
     <!-- Actions -->
     <section class="content-section action-bar">
         <button class="btn-calculate" id="calculateBtn" type="button">&#9658; Calculate</button>
-        <button class="btn-export" id="exportBtn" type="button" disabled>&#128196; Export PDF</button>
+        <button class="btn-export" id="exportBtn" type="button" disabled>🖨 Print / Save PDF</button>
     </section>
 
 </div>
@@ -383,6 +400,9 @@
 <div class="content-section" style="margin-top: 0;">
     <div class="error-box" id="errorBox" role="alert" aria-live="polite"></div>
 </div>
+
+<!-- Print-only header (hidden on screen) -->
+<div id="printHeader" style="display:none;font-family:sans-serif;padding-bottom:0.75rem;margin:0 2rem 1.5rem;border-bottom:2px solid #e05a14;"></div>
 
 <!-- ===== RESULTS SECTION ===== -->
 <div id="resultsSection" class="hidden">
@@ -419,7 +439,6 @@
         <p>Designs from concept to reality | 2026</p>
     </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 'use strict';
 
@@ -726,44 +745,19 @@ function calculate() {
 }
 
 // ============================================================
-// PDF EXPORT
+// PRINT / SAVE PDF
 // ============================================================
 function exportPDF() {
     if (!lastPlan) return;
-    if (typeof html2pdf === 'undefined') {
-        alert('PDF library not loaded. Please check your internet connection.');
-        return;
-    }
-
-    var stockLength = lastPlan.stockLength;
-    var kerf        = lastPlan.kerf;
-    var today       = new Date().toLocaleDateString('en-GB');
-    var el          = document.getElementById('resultsSection');
-
-    // Inject print header
-    var hdr = document.createElement('div');
-    hdr.id = 'pdfHeader';
-    hdr.style.cssText = 'padding-bottom:1rem;margin-bottom:1.5rem;border-bottom:2px solid #ff6b35;font-family:sans-serif;';
+    var today = new Date().toLocaleDateString('en-GB');
+    var hdr = document.getElementById('printHeader');
     hdr.innerHTML =
-        '<div style="font-size:1.4rem;font-weight:700;color:#ff6b35;">Cutting Plan</div>' +
-        '<div style="color:#aaa;font-size:0.85rem;margin-top:0.2rem;">' +
+        '<div style="font-size:1.4rem;font-weight:700;color:#e05a14;">Cutting Plan</div>' +
+        '<div style="font-size:0.85rem;color:#555;margin-top:0.2rem;">' +
             'StrokeForge Cutting Plan Optimizer &nbsp;&middot;&nbsp; ' + today + '<br>' +
-            'Stock: ' + stockLength + ' mm &nbsp;&middot;&nbsp; Kerf: ' + kerf + ' mm' +
+            'Stock: ' + lastPlan.stockLength + ' mm &nbsp;&middot;&nbsp; Kerf: ' + lastPlan.kerf + ' mm' +
         '</div>';
-    el.insertBefore(hdr, el.firstChild);
-
-    html2pdf().set({
-        margin:     [12, 12, 12, 12],
-        filename:   'cutting-plan-' + today.replace(/\//g, '-') + '.pdf',
-        image:      { type: 'jpeg', quality: 0.95 },
-        html2canvas:{ scale: 2, useCORS: true, backgroundColor: '#1a1a2e' },
-        jsPDF:      { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak:  { mode: ['css', 'legacy'] }
-    }).from(el).save().then(function() {
-        hdr.remove();
-    }).catch(function() {
-        hdr.remove();
-    });
+    window.print();
 }
 
 // ============================================================

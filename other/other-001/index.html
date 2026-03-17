@@ -33,9 +33,6 @@
     <link rel="stylesheet" href="../../css/colors.css">
     <link rel="stylesheet" href="../../css/style.css">
 
-    <!-- html2pdf for export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
     <style>
 /* ---- Tool Wrapper ---- */
         .tool-wrapper {
@@ -329,7 +326,26 @@
         /* ---- Responsive ---- */
         @media (max-width: 768px) {
             .settings-row { flex-direction: column; }
-}
+        }
+
+        /* ---- Print / Save PDF ---- */
+        @media print {
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            @page { margin: 15mm; }
+            .navbar, footer, .back-button, .settings-card, .cutlist-card,
+            .btn-row, .page-header { display: none !important; }
+            #results { display: block !important; }
+            #printHeader { display: block !important; }
+            .summary-card { break-inside: avoid; border-color: #ccc !important; }
+            .sheet-block { break-inside: avoid; border-color: #ccc !important; }
+            .sheet-block-title { color: #222 !important; }
+            .summary-card .card-value { color: #e05a14 !important; }
+            .summary-card .card-label { color: #555 !important; }
+            .sheet-detail-table th { background: #f4f4f4 !important; color: #555 !important; }
+            .sheet-detail-table td { color: #222 !important; border-color: #ddd !important; }
+            details { display: block !important; }
+            details summary { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -404,12 +420,15 @@
             <button class="btn-secondary" onclick="clearList()">🗑 Clear List</button>
         </div>
 
+        <!-- Print-only header (hidden on screen) -->
+        <div id="printHeader" style="display:none;font-family:sans-serif;padding-bottom:0.75rem;margin-bottom:1.5rem;border-bottom:2px solid #e05a14;"></div>
+
         <!-- Results -->
         <div id="results" style="display:none;">
             <div class="summary-grid" id="summary-grid"></div>
             <div id="sheets-output"></div>
             <div class="btn-row">
-                <button class="btn-export" onclick="exportPDF()">⬇ Export PDF</button>
+                <button class="btn-export" onclick="exportPDF()">🖨 Print / Save PDF</button>
             </div>
         </div>
     </main>
@@ -732,17 +751,20 @@
                    '</div>';
         }
 
-        // ---- PDF Export ----
+        // ---- Print / Save PDF ----
         function exportPDF() {
-            var element = document.getElementById('results');
-            var opt = {
-                margin:     [8, 8, 8, 8],
-                filename:   'sheet-cutting-plan.pdf',
-                image:      { type: 'jpeg', quality: 0.95 },
-                html2canvas: { scale: 1.5, backgroundColor: '#1a1a2e' },
-                jsPDF:      { unit: 'mm', format: 'a4', orientation: 'landscape' }
-            };
-            html2pdf().set(opt).from(element).save();
+            var sheetW = document.getElementById('sheetW').value;
+            var sheetH = document.getElementById('sheetH').value;
+            var kerf   = document.getElementById('kerf').value;
+            var today  = new Date().toLocaleDateString('en-GB');
+            var hdr    = document.getElementById('printHeader');
+            hdr.innerHTML =
+                '<div style="font-size:1.4rem;font-weight:700;color:#e05a14;">Sheet Cutting Plan</div>' +
+                '<div style="font-size:0.85rem;color:#555;margin-top:0.2rem;">' +
+                    'StrokeForge Sheet Cutting Optimizer &nbsp;&middot;&nbsp; ' + today + '<br>' +
+                    'Sheet: ' + sheetW + ' × ' + sheetH + ' mm &nbsp;&middot;&nbsp; Kerf: ' + kerf + ' mm' +
+                '</div>';
+            window.print();
         }
 
         // ---- Seed example: kitchen cabinet panels from one 2440×1220 sheet ----
