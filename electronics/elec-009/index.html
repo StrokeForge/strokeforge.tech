@@ -240,7 +240,7 @@
                 <div class="info-block">
                     <h3>Charge rate (C-rating)</h3>
                     <p>1C = charge current equal to capacity in mAh.<br>
-                    Example: 3000mAh cell at 1C = 3A charge rate.<br><br>
+                    Example: 3000 mAh cell at 1C = 3A charge rate.<br><br>
                     For parallel packs: total 1C = capacity × P.<br>
                     Most Li-Ion cells: safe at 0.5C–1C charge.<br>
                     LiPo racing cells: up to 5C charge possible.</p>
@@ -287,7 +287,7 @@
         { name:'4S1P', S:4, P:1, Vcell:3.7, Ccell:3000, desc:'5" FPV drone, 14.8V' },
         { name:'6S1P', S:6, P:1, Vcell:3.7, Ccell:3000, desc:'Long range, 22.2V' },
         { name:'2S2P', S:2, P:2, Vcell:3.7, Ccell:3000, desc:'7.4V, doubled capacity' },
-        { name:'3S2P', S:3, P:2, Vcell:3.7, Ccell:3000, desc:'11.1V, 6000mAh' },
+        { name:'3S2P', S:3, P:2, Vcell:3.7, Ccell:3000, desc:'11.1V, 6000 mAh' },
         { name:'4S2P', S:4, P:2, Vcell:3.7, Ccell:5000, desc:'E-bike / scooter pack' },
         { name:'LiFePO4 4S', S:4, P:1, Vcell:3.2, Ccell:3000, desc:'12.8V LiFePO4, DIY UPS' },
         { name:'NiMH 4×AA', S:4, P:1, Vcell:1.2, Ccell:2500, desc:'4.8V NiMH pack' },
@@ -317,11 +317,11 @@
     function initPresets() {
         const presets = document.getElementById('cell-presets');
         [
-            { label:'Li-Ion 18650 (3.7V 3000mAh)', Vcell:3.7, Ccell:3000 },
-            { label:'LiPo (3.7V 1000mAh)',         Vcell:3.7, Ccell:1000 },
-            { label:'LiFePO4 (3.2V 3000mAh)',       Vcell:3.2, Ccell:3000 },
-            { label:'NiMH AA (1.2V 2500mAh)',        Vcell:1.2, Ccell:2500 },
-            { label:'Alkaline AA (1.5V 2700mAh)',    Vcell:1.5, Ccell:2700 },
+            { label:'Li-Ion 18650 (3.7V 3000 mAh)', Vcell:3.7, Ccell:3000 },
+            { label:'LiPo (3.7V 1000 mAh)',         Vcell:3.7, Ccell:1000 },
+            { label:'LiFePO4 (3.2V 3000 mAh)',       Vcell:3.2, Ccell:3000 },
+            { label:'NiMH AA (1.2V 2500 mAh)',        Vcell:1.2, Ccell:2500 },
+            { label:'Alkaline AA (1.5V 2700 mAh)',    Vcell:1.5, Ccell:2700 },
         ].forEach(p => {
             const btn = document.createElement('button');
             btn.className = 'preset-btn';

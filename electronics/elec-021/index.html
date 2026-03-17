@@ -151,6 +151,8 @@
                     <thead id="thead">
                         <tr>
                             <th>Pin</th>
+                            <th title="MCU port/bit designation (AVR: PBx / PCx / PDx)">Port</th>
+                            <th title="Physical IC / module pin number">IC Pin</th>
                             <th>Name</th>
                             <th>Functions</th>
                             <th>Notes</th>
@@ -196,31 +198,31 @@
                 <li>SPI: D10 (SS), D11 (MOSI), D12 (MISO), D13 (SCK)</li>
             </ul>`,
             rows: [
-                { pin: 'D0',  name: 'RX',   fns: [F.dig(0), F.uart(0,'RX')],              tags: ['uart'], notes: 'Serial RX — shared with USB; avoid in projects using Serial' },
-                { pin: 'D1',  name: 'TX',   fns: [F.dig(1), F.uart(0,'TX')],              tags: ['uart'], notes: 'Serial TX — shared with USB' },
-                { pin: 'D2',  name: 'D2',   fns: [F.dig(2), F.int(0)],                    tags: ['int'],  notes: 'External interrupt INT0' },
-                { pin: 'D3',  name: 'D3',   fns: [F.dig(3), F.pwm(), F.int(1)],           tags: ['pwm','int'], notes: 'PWM + External interrupt INT1' },
-                { pin: 'D4',  name: 'D4',   fns: [F.dig(4)],                              tags: [], notes: 'General purpose digital' },
-                { pin: 'D5',  name: 'D5',   fns: [F.dig(5), F.pwm()],                     tags: ['pwm'], notes: 'PWM ~980 Hz (Timer0)' },
-                { pin: 'D6',  name: 'D6',   fns: [F.dig(6), F.pwm()],                     tags: ['pwm'], notes: 'PWM ~980 Hz (Timer0)' },
-                { pin: 'D7',  name: 'D7',   fns: [F.dig(7)],                              tags: [], notes: 'General purpose digital' },
-                { pin: 'D8',  name: 'D8',   fns: [F.dig(8)],                              tags: [], notes: 'General purpose digital' },
-                { pin: 'D9',  name: 'D9',   fns: [F.dig(9), F.pwm()],                     tags: ['pwm'], notes: 'PWM ~490 Hz (Timer1)' },
-                { pin: 'D10', name: 'SS',   fns: [F.dig(10), F.pwm(), F.spi('SS')],       tags: ['pwm','spi'], notes: 'SPI Slave Select; PWM ~490 Hz' },
-                { pin: 'D11', name: 'MOSI', fns: [F.dig(11), F.pwm(), F.spi('MOSI')],     tags: ['pwm','spi'], notes: 'SPI MOSI; PWM ~490 Hz' },
-                { pin: 'D12', name: 'MISO', fns: [F.dig(12), F.spi('MISO')],              tags: ['spi'], notes: 'SPI MISO' },
-                { pin: 'D13', name: 'SCK',  fns: [F.dig(13), F.spi('SCK'), F.led()],      tags: ['spi'], notes: 'SPI Clock; onboard LED (active HIGH)' },
-                { pin: 'A0',  name: 'A0',   fns: [F.adc(0), F.dig(14)],                   tags: ['adc'], notes: '10-bit ADC; usable as digital D14' },
-                { pin: 'A1',  name: 'A1',   fns: [F.adc(1), F.dig(15)],                   tags: ['adc'], notes: '10-bit ADC; usable as D15' },
-                { pin: 'A2',  name: 'A2',   fns: [F.adc(2), F.dig(16)],                   tags: ['adc'], notes: '10-bit ADC; usable as D16' },
-                { pin: 'A3',  name: 'A3',   fns: [F.adc(3), F.dig(17)],                   tags: ['adc'], notes: '10-bit ADC; usable as D17' },
-                { pin: 'A4',  name: 'SDA',  fns: [F.adc(4), F.dig(18), F.i2c('SDA')],     tags: ['adc','i2c'], notes: 'I²C Data + ADC channel 4' },
-                { pin: 'A5',  name: 'SCL',  fns: [F.adc(5), F.dig(19), F.i2c('SCL')],     tags: ['adc','i2c'], notes: 'I²C Clock + ADC channel 5' },
-                { pin: '5V',  name: '5V',   fns: [F.pwr('5 V out')],                       tags: [], notes: 'Regulated 5 V output (~500 mA via USB)' },
-                { pin: '3V3', name: '3.3V', fns: [F.pwr('3.3 V out')],                     tags: [], notes: '3.3 V output from on-board regulator (~50 mA)' },
-                { pin: 'GND', name: 'GND',  fns: [F.pwr('GND')],                           tags: [], notes: 'Ground' },
-                { pin: 'VIN', name: 'VIN',  fns: [F.pwr('VIN')],                           tags: [], notes: '7–12 V input to on-board regulator' },
-                { pin: 'RST', name: 'RESET',fns: [F.pwr('RESET')],                         tags: [], notes: 'Pull LOW to reset the microcontroller' },
+                { pin: 'D0',  name: 'RX',   port: 'PD0', icPin: 2,    fns: [F.dig(0), F.uart(0,'RX')],              tags: ['uart'], notes: 'Serial RX — shared with USB; avoid in projects using Serial' },
+                { pin: 'D1',  name: 'TX',   port: 'PD1', icPin: 3,    fns: [F.dig(1), F.uart(0,'TX')],              tags: ['uart'], notes: 'Serial TX — shared with USB' },
+                { pin: 'D2',  name: 'D2',   port: 'PD2', icPin: 4,    fns: [F.dig(2), F.int(0)],                    tags: ['int'],  notes: 'External interrupt INT0' },
+                { pin: 'D3',  name: 'D3',   port: 'PD3', icPin: 5,    fns: [F.dig(3), F.pwm(), F.int(1)],           tags: ['pwm','int'], notes: 'PWM + External interrupt INT1' },
+                { pin: 'D4',  name: 'D4',   port: 'PD4', icPin: 6,    fns: [F.dig(4)],                              tags: [], notes: 'General purpose digital' },
+                { pin: 'D5',  name: 'D5',   port: 'PD5', icPin: 11,   fns: [F.dig(5), F.pwm()],                     tags: ['pwm'], notes: 'PWM ~980 Hz (Timer0)' },
+                { pin: 'D6',  name: 'D6',   port: 'PD6', icPin: 12,   fns: [F.dig(6), F.pwm()],                     tags: ['pwm'], notes: 'PWM ~980 Hz (Timer0)' },
+                { pin: 'D7',  name: 'D7',   port: 'PD7', icPin: 13,   fns: [F.dig(7)],                              tags: [], notes: 'General purpose digital' },
+                { pin: 'D8',  name: 'D8',   port: 'PB0', icPin: 14,   fns: [F.dig(8)],                              tags: [], notes: 'General purpose digital' },
+                { pin: 'D9',  name: 'D9',   port: 'PB1', icPin: 15,   fns: [F.dig(9), F.pwm()],                     tags: ['pwm'], notes: 'PWM ~490 Hz (Timer1)' },
+                { pin: 'D10', name: 'SS',   port: 'PB2', icPin: 16,   fns: [F.dig(10), F.pwm(), F.spi('SS')],       tags: ['pwm','spi'], notes: 'SPI Slave Select; PWM ~490 Hz' },
+                { pin: 'D11', name: 'MOSI', port: 'PB3', icPin: 17,   fns: [F.dig(11), F.pwm(), F.spi('MOSI')],     tags: ['pwm','spi'], notes: 'SPI MOSI; PWM ~490 Hz' },
+                { pin: 'D12', name: 'MISO', port: 'PB4', icPin: 18,   fns: [F.dig(12), F.spi('MISO')],              tags: ['spi'], notes: 'SPI MISO' },
+                { pin: 'D13', name: 'SCK',  port: 'PB5', icPin: 19,   fns: [F.dig(13), F.spi('SCK'), F.led()],      tags: ['spi'], notes: 'SPI Clock; onboard LED (active HIGH)' },
+                { pin: 'A0',  name: 'A0',   port: 'PC0', icPin: 23,   fns: [F.adc(0), F.dig(14)],                   tags: ['adc'], notes: '10-bit ADC; usable as digital D14' },
+                { pin: 'A1',  name: 'A1',   port: 'PC1', icPin: 24,   fns: [F.adc(1), F.dig(15)],                   tags: ['adc'], notes: '10-bit ADC; usable as D15' },
+                { pin: 'A2',  name: 'A2',   port: 'PC2', icPin: 25,   fns: [F.adc(2), F.dig(16)],                   tags: ['adc'], notes: '10-bit ADC; usable as D16' },
+                { pin: 'A3',  name: 'A3',   port: 'PC3', icPin: 26,   fns: [F.adc(3), F.dig(17)],                   tags: ['adc'], notes: '10-bit ADC; usable as D17' },
+                { pin: 'A4',  name: 'SDA',  port: 'PC4', icPin: 27,   fns: [F.adc(4), F.dig(18), F.i2c('SDA')],     tags: ['adc','i2c'], notes: 'I²C Data + ADC channel 4' },
+                { pin: 'A5',  name: 'SCL',  port: 'PC5', icPin: 28,   fns: [F.adc(5), F.dig(19), F.i2c('SCL')],     tags: ['adc','i2c'], notes: 'I²C Clock + ADC channel 5' },
+                { pin: '5V',  name: '5V',   port: null,  icPin: null,  fns: [F.pwr('5 V out')],                      tags: [], notes: 'Regulated 5 V output (~500 mA via USB)' },
+                { pin: '3V3', name: '3.3V', port: null,  icPin: null,  fns: [F.pwr('3.3 V out')],                    tags: [], notes: '3.3 V output from on-board regulator (~50 mA)' },
+                { pin: 'GND', name: 'GND',  port: null,  icPin: null,  fns: [F.pwr('GND')],                          tags: [], notes: 'Ground' },
+                { pin: 'VIN', name: 'VIN',  port: null,  icPin: null,  fns: [F.pwr('VIN')],                          tags: [], notes: '7–12 V input to on-board regulator' },
+                { pin: 'RST', name: 'RESET',port: 'PC6', icPin: 1,    fns: [F.pwr('RESET')],                         tags: [], notes: 'Pull LOW to reset the microcontroller' },
             ]
         },
 
@@ -233,32 +235,32 @@
                 <li>5 V I/O; 40 mA per pin, 200 mA total</li>
             </ul>`,
             rows: [
-                { pin: 'D0',  name: 'RX',   fns: [F.dig(0), F.uart(0,'RX')],          tags: ['uart'], notes: 'Serial RX — shared with USB' },
-                { pin: 'D1',  name: 'TX',   fns: [F.dig(1), F.uart(0,'TX')],          tags: ['uart'], notes: 'Serial TX — shared with USB' },
-                { pin: 'D2',  name: 'D2',   fns: [F.dig(2), F.int(0)],                tags: ['int'],  notes: 'INT0' },
-                { pin: 'D3',  name: 'D3',   fns: [F.dig(3), F.pwm(), F.int(1)],       tags: ['pwm','int'], notes: 'PWM + INT1' },
-                { pin: 'D4',  name: 'D4',   fns: [F.dig(4)],                          tags: [], notes: '' },
-                { pin: 'D5',  name: 'D5',   fns: [F.dig(5), F.pwm()],                 tags: ['pwm'], notes: 'PWM ~980 Hz' },
-                { pin: 'D6',  name: 'D6',   fns: [F.dig(6), F.pwm()],                 tags: ['pwm'], notes: 'PWM ~980 Hz' },
-                { pin: 'D7',  name: 'D7',   fns: [F.dig(7)],                          tags: [], notes: '' },
-                { pin: 'D8',  name: 'D8',   fns: [F.dig(8)],                          tags: [], notes: '' },
-                { pin: 'D9',  name: 'D9',   fns: [F.dig(9), F.pwm()],                 tags: ['pwm'], notes: 'PWM ~490 Hz' },
-                { pin: 'D10', name: 'SS',   fns: [F.dig(10), F.pwm(), F.spi('SS')],   tags: ['pwm','spi'], notes: 'SPI SS; PWM' },
-                { pin: 'D11', name: 'MOSI', fns: [F.dig(11), F.pwm(), F.spi('MOSI')], tags: ['pwm','spi'], notes: 'SPI MOSI; PWM' },
-                { pin: 'D12', name: 'MISO', fns: [F.dig(12), F.spi('MISO')],          tags: ['spi'], notes: 'SPI MISO' },
-                { pin: 'D13', name: 'SCK',  fns: [F.dig(13), F.spi('SCK'), F.led()],  tags: ['spi'], notes: 'SPI CLK; onboard LED' },
-                { pin: 'A0',  name: 'A0',   fns: [F.adc(0), F.dig(14)],               tags: ['adc'], notes: '10-bit ADC / digital D14' },
-                { pin: 'A1',  name: 'A1',   fns: [F.adc(1), F.dig(15)],               tags: ['adc'], notes: '' },
-                { pin: 'A2',  name: 'A2',   fns: [F.adc(2), F.dig(16)],               tags: ['adc'], notes: '' },
-                { pin: 'A3',  name: 'A3',   fns: [F.adc(3), F.dig(17)],               tags: ['adc'], notes: '' },
-                { pin: 'A4',  name: 'SDA',  fns: [F.adc(4), F.dig(18), F.i2c('SDA')], tags: ['adc','i2c'], notes: 'I²C SDA + ADC4' },
-                { pin: 'A5',  name: 'SCL',  fns: [F.adc(5), F.dig(19), F.i2c('SCL')], tags: ['adc','i2c'], notes: 'I²C SCL + ADC5' },
-                { pin: 'A6',  name: 'A6',   fns: [F.adc(6), F.onlyIn()],              tags: ['adc'], notes: 'Analog input ONLY — no digital use' },
-                { pin: 'A7',  name: 'A7',   fns: [F.adc(7), F.onlyIn()],              tags: ['adc'], notes: 'Analog input ONLY — no digital use' },
-                { pin: '5V',  name: '5V',   fns: [F.pwr('5 V out')],                   tags: [], notes: '' },
-                { pin: '3V3', name: '3.3V', fns: [F.pwr('3.3 V out')],                 tags: [], notes: '' },
-                { pin: 'GND', name: 'GND',  fns: [F.pwr('GND')],                       tags: [], notes: '' },
-                { pin: 'VIN', name: 'VIN',  fns: [F.pwr('VIN')],                       tags: [], notes: '7–12 V input' },
+                { pin: 'D0',  name: 'RX',   port: 'PD0', icPin: 30,   fns: [F.dig(0), F.uart(0,'RX')],          tags: ['uart'], notes: 'Serial RX — shared with USB' },
+                { pin: 'D1',  name: 'TX',   port: 'PD1', icPin: 31,   fns: [F.dig(1), F.uart(0,'TX')],          tags: ['uart'], notes: 'Serial TX — shared with USB' },
+                { pin: 'D2',  name: 'D2',   port: 'PD2', icPin: 32,   fns: [F.dig(2), F.int(0)],                tags: ['int'],  notes: 'INT0' },
+                { pin: 'D3',  name: 'D3',   port: 'PD3', icPin: 1,    fns: [F.dig(3), F.pwm(), F.int(1)],       tags: ['pwm','int'], notes: 'PWM + INT1' },
+                { pin: 'D4',  name: 'D4',   port: 'PD4', icPin: 2,    fns: [F.dig(4)],                          tags: [], notes: '' },
+                { pin: 'D5',  name: 'D5',   port: 'PD5', icPin: 9,    fns: [F.dig(5), F.pwm()],                 tags: ['pwm'], notes: 'PWM ~980 Hz' },
+                { pin: 'D6',  name: 'D6',   port: 'PD6', icPin: 10,   fns: [F.dig(6), F.pwm()],                 tags: ['pwm'], notes: 'PWM ~980 Hz' },
+                { pin: 'D7',  name: 'D7',   port: 'PD7', icPin: 11,   fns: [F.dig(7)],                          tags: [], notes: '' },
+                { pin: 'D8',  name: 'D8',   port: 'PB0', icPin: 12,   fns: [F.dig(8)],                          tags: [], notes: '' },
+                { pin: 'D9',  name: 'D9',   port: 'PB1', icPin: 13,   fns: [F.dig(9), F.pwm()],                 tags: ['pwm'], notes: 'PWM ~490 Hz' },
+                { pin: 'D10', name: 'SS',   port: 'PB2', icPin: 14,   fns: [F.dig(10), F.pwm(), F.spi('SS')],   tags: ['pwm','spi'], notes: 'SPI SS; PWM' },
+                { pin: 'D11', name: 'MOSI', port: 'PB3', icPin: 15,   fns: [F.dig(11), F.pwm(), F.spi('MOSI')], tags: ['pwm','spi'], notes: 'SPI MOSI; PWM' },
+                { pin: 'D12', name: 'MISO', port: 'PB4', icPin: 16,   fns: [F.dig(12), F.spi('MISO')],          tags: ['spi'], notes: 'SPI MISO' },
+                { pin: 'D13', name: 'SCK',  port: 'PB5', icPin: 17,   fns: [F.dig(13), F.spi('SCK'), F.led()],  tags: ['spi'], notes: 'SPI CLK; onboard LED' },
+                { pin: 'A0',  name: 'A0',   port: 'PC0', icPin: 23,   fns: [F.adc(0), F.dig(14)],               tags: ['adc'], notes: '10-bit ADC / digital D14' },
+                { pin: 'A1',  name: 'A1',   port: 'PC1', icPin: 24,   fns: [F.adc(1), F.dig(15)],               tags: ['adc'], notes: '' },
+                { pin: 'A2',  name: 'A2',   port: 'PC2', icPin: 25,   fns: [F.adc(2), F.dig(16)],               tags: ['adc'], notes: '' },
+                { pin: 'A3',  name: 'A3',   port: 'PC3', icPin: 26,   fns: [F.adc(3), F.dig(17)],               tags: ['adc'], notes: '' },
+                { pin: 'A4',  name: 'SDA',  port: 'PC4', icPin: 27,   fns: [F.adc(4), F.dig(18), F.i2c('SDA')], tags: ['adc','i2c'], notes: 'I²C SDA + ADC4' },
+                { pin: 'A5',  name: 'SCL',  port: 'PC5', icPin: 28,   fns: [F.adc(5), F.dig(19), F.i2c('SCL')], tags: ['adc','i2c'], notes: 'I²C SCL + ADC5' },
+                { pin: 'A6',  name: 'A6',   port: null,  icPin: 19,   fns: [F.adc(6), F.onlyIn()],              tags: ['adc'], notes: 'Analog input ONLY — no digital use; no port register' },
+                { pin: 'A7',  name: 'A7',   port: null,  icPin: 22,   fns: [F.adc(7), F.onlyIn()],              tags: ['adc'], notes: 'Analog input ONLY — no digital use; no port register' },
+                { pin: '5V',  name: '5V',   port: null,  icPin: null,  fns: [F.pwr('5 V out')],                  tags: [], notes: '' },
+                { pin: '3V3', name: '3.3V', port: null,  icPin: null,  fns: [F.pwr('3.3 V out')],                tags: [], notes: '' },
+                { pin: 'GND', name: 'GND',  port: null,  icPin: null,  fns: [F.pwr('GND')],                      tags: [], notes: '' },
+                { pin: 'VIN', name: 'VIN',  port: null,  icPin: null,  fns: [F.pwr('VIN')],                      tags: [], notes: '7–12 V input' },
             ]
         },
 
@@ -271,39 +273,39 @@
                 <li>SPI (ICSP header): D50 (MISO), D51 (MOSI), D52 (SCK), D53 (SS)</li>
             </ul>`,
             rows: [
-                { pin: 'D0',  name: 'RX0',  fns: [F.dig(0), F.uart(0,'RX')],           tags: ['uart'], notes: 'Serial0 RX — USB' },
-                { pin: 'D1',  name: 'TX0',  fns: [F.dig(1), F.uart(0,'TX')],           tags: ['uart'], notes: 'Serial0 TX — USB' },
-                { pin: 'D2',  name: 'D2',   fns: [F.dig(2), F.pwm(), F.int(4)],        tags: ['pwm','int'], notes: 'PWM; INT4' },
-                { pin: 'D3',  name: 'D3',   fns: [F.dig(3), F.pwm(), F.int(5)],        tags: ['pwm','int'], notes: 'PWM; INT5' },
-                { pin: 'D4',  name: 'D4',   fns: [F.dig(4), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
-                { pin: 'D5',  name: 'D5',   fns: [F.dig(5), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
-                { pin: 'D6',  name: 'D6',   fns: [F.dig(6), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
-                { pin: 'D7',  name: 'D7',   fns: [F.dig(7), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
-                { pin: 'D8',  name: 'D8',   fns: [F.dig(8), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
-                { pin: 'D9',  name: 'D9',   fns: [F.dig(9), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
-                { pin: 'D10', name: 'D10',  fns: [F.dig(10), F.pwm()],                 tags: ['pwm'], notes: 'PWM' },
-                { pin: 'D11', name: 'D11',  fns: [F.dig(11), F.pwm()],                 tags: ['pwm'], notes: 'PWM' },
-                { pin: 'D12', name: 'D12',  fns: [F.dig(12), F.pwm()],                 tags: ['pwm'], notes: 'PWM' },
-                { pin: 'D13', name: 'D13',  fns: [F.dig(13), F.pwm(), F.led()],        tags: ['pwm'], notes: 'PWM; onboard LED' },
-                { pin: 'D14', name: 'TX3',  fns: [F.dig(14), F.uart(3,'TX')],          tags: ['uart'], notes: 'Serial3 TX' },
-                { pin: 'D15', name: 'RX3',  fns: [F.dig(15), F.uart(3,'RX')],          tags: ['uart'], notes: 'Serial3 RX' },
-                { pin: 'D16', name: 'TX2',  fns: [F.dig(16), F.uart(2,'TX')],          tags: ['uart'], notes: 'Serial2 TX' },
-                { pin: 'D17', name: 'RX2',  fns: [F.dig(17), F.uart(2,'RX')],          tags: ['uart'], notes: 'Serial2 RX' },
-                { pin: 'D18', name: 'TX1',  fns: [F.dig(18), F.uart(1,'TX'), F.int(5)],tags: ['uart','int'], notes: 'Serial1 TX; INT5' },
-                { pin: 'D19', name: 'RX1',  fns: [F.dig(19), F.uart(1,'RX'), F.int(4)],tags: ['uart','int'], notes: 'Serial1 RX; INT4' },
-                { pin: 'D20', name: 'SDA',  fns: [F.dig(20), F.i2c('SDA'), F.int(3)],  tags: ['i2c','int'], notes: 'I²C SDA; INT3' },
-                { pin: 'D21', name: 'SCL',  fns: [F.dig(21), F.i2c('SCL'), F.int(2)],  tags: ['i2c','int'], notes: 'I²C SCL; INT2' },
-                { pin: 'D22–D53', name: 'D22–D53', fns: [F.dig('22–53')],              tags: [], notes: 'General purpose digital I/O' },
-                { pin: 'D50', name: 'MISO', fns: [F.dig(50), F.spi('MISO')],           tags: ['spi'], notes: 'SPI MISO' },
-                { pin: 'D51', name: 'MOSI', fns: [F.dig(51), F.spi('MOSI')],           tags: ['spi'], notes: 'SPI MOSI' },
-                { pin: 'D52', name: 'SCK',  fns: [F.dig(52), F.spi('SCK')],            tags: ['spi'], notes: 'SPI Clock' },
-                { pin: 'D53', name: 'SS',   fns: [F.dig(53), F.spi('SS')],             tags: ['spi'], notes: 'SPI Slave Select' },
-                { pin: 'A0–A7',  name: 'A0–A7',  fns: [F.adc('0–7')],                  tags: ['adc'], notes: '10-bit ADC; can be used as D54–D61' },
-                { pin: 'A8–A15', name: 'A8–A15', fns: [F.adc('8–15')],                 tags: ['adc'], notes: '10-bit ADC; D62–D69' },
-                { pin: '5V',  name: '5V',   fns: [F.pwr('5 V out')],                    tags: [], notes: '' },
-                { pin: '3V3', name: '3.3V', fns: [F.pwr('3.3 V out')],                  tags: [], notes: '' },
-                { pin: 'GND', name: 'GND',  fns: [F.pwr('GND')],                        tags: [], notes: '' },
-                { pin: 'VIN', name: 'VIN',  fns: [F.pwr('VIN')],                        tags: [], notes: '7–12 V' },
+                { pin: 'D0',  name: 'RX0',  port: 'PE0', icPin: 2,    fns: [F.dig(0), F.uart(0,'RX')],           tags: ['uart'], notes: 'Serial0 RX — USB' },
+                { pin: 'D1',  name: 'TX0',  port: 'PE1', icPin: 3,    fns: [F.dig(1), F.uart(0,'TX')],           tags: ['uart'], notes: 'Serial0 TX — USB' },
+                { pin: 'D2',  name: 'D2',   port: 'PE4', icPin: 6,    fns: [F.dig(2), F.pwm(), F.int(4)],        tags: ['pwm','int'], notes: 'PWM; INT4' },
+                { pin: 'D3',  name: 'D3',   port: 'PE5', icPin: 7,    fns: [F.dig(3), F.pwm(), F.int(5)],        tags: ['pwm','int'], notes: 'PWM; INT5' },
+                { pin: 'D4',  name: 'D4',   port: 'PG5', icPin: 1,    fns: [F.dig(4), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D5',  name: 'D5',   port: 'PE3', icPin: 5,    fns: [F.dig(5), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D6',  name: 'D6',   port: 'PH3', icPin: 15,   fns: [F.dig(6), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D7',  name: 'D7',   port: 'PH4', icPin: 16,   fns: [F.dig(7), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D8',  name: 'D8',   port: 'PH5', icPin: 17,   fns: [F.dig(8), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D9',  name: 'D9',   port: 'PH6', icPin: 18,   fns: [F.dig(9), F.pwm()],                  tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D10', name: 'D10',  port: 'PB4', icPin: 23,   fns: [F.dig(10), F.pwm()],                 tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D11', name: 'D11',  port: 'PB5', icPin: 24,   fns: [F.dig(11), F.pwm()],                 tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D12', name: 'D12',  port: 'PB6', icPin: 25,   fns: [F.dig(12), F.pwm()],                 tags: ['pwm'], notes: 'PWM' },
+                { pin: 'D13', name: 'D13',  port: 'PB7', icPin: 26,   fns: [F.dig(13), F.pwm(), F.led()],        tags: ['pwm'], notes: 'PWM; onboard LED' },
+                { pin: 'D14', name: 'TX3',  port: 'PJ1', icPin: 64,   fns: [F.dig(14), F.uart(3,'TX')],          tags: ['uart'], notes: 'Serial3 TX' },
+                { pin: 'D15', name: 'RX3',  port: 'PJ0', icPin: 63,   fns: [F.dig(15), F.uart(3,'RX')],          tags: ['uart'], notes: 'Serial3 RX' },
+                { pin: 'D16', name: 'TX2',  port: 'PH1', icPin: 13,   fns: [F.dig(16), F.uart(2,'TX')],          tags: ['uart'], notes: 'Serial2 TX' },
+                { pin: 'D17', name: 'RX2',  port: 'PH0', icPin: 12,   fns: [F.dig(17), F.uart(2,'RX')],          tags: ['uart'], notes: 'Serial2 RX' },
+                { pin: 'D18', name: 'TX1',  port: 'PD3', icPin: 46,   fns: [F.dig(18), F.uart(1,'TX'), F.int(5)],tags: ['uart','int'], notes: 'Serial1 TX; INT5' },
+                { pin: 'D19', name: 'RX1',  port: 'PD2', icPin: 45,   fns: [F.dig(19), F.uart(1,'RX'), F.int(4)],tags: ['uart','int'], notes: 'Serial1 RX; INT4' },
+                { pin: 'D20', name: 'SDA',  port: 'PD1', icPin: 44,   fns: [F.dig(20), F.i2c('SDA'), F.int(3)],  tags: ['i2c','int'], notes: 'I²C SDA; INT3' },
+                { pin: 'D21', name: 'SCL',  port: 'PD0', icPin: 43,   fns: [F.dig(21), F.i2c('SCL'), F.int(2)],  tags: ['i2c','int'], notes: 'I²C SCL; INT2' },
+                { pin: 'D22–D53', name: 'D22–D53', port: null, icPin: null, fns: [F.dig('22–53')],              tags: [], notes: 'General purpose digital I/O (PA, PC, PG, PL ports)' },
+                { pin: 'D50', name: 'MISO', port: 'PB3', icPin: 22,   fns: [F.dig(50), F.spi('MISO')],           tags: ['spi'], notes: 'SPI MISO' },
+                { pin: 'D51', name: 'MOSI', port: 'PB2', icPin: 21,   fns: [F.dig(51), F.spi('MOSI')],           tags: ['spi'], notes: 'SPI MOSI' },
+                { pin: 'D52', name: 'SCK',  port: 'PB1', icPin: 20,   fns: [F.dig(52), F.spi('SCK')],            tags: ['spi'], notes: 'SPI Clock' },
+                { pin: 'D53', name: 'SS',   port: 'PB0', icPin: 19,   fns: [F.dig(53), F.spi('SS')],             tags: ['spi'], notes: 'SPI Slave Select' },
+                { pin: 'A0–A7',  name: 'A0–A7',  port: 'PF0–PF7', icPin: null, fns: [F.adc('0–7')],             tags: ['adc'], notes: '10-bit ADC; can be used as D54–D61' },
+                { pin: 'A8–A15', name: 'A8–A15', port: 'PK0–PK7', icPin: null, fns: [F.adc('8–15')],            tags: ['adc'], notes: '10-bit ADC; D62–D69' },
+                { pin: '5V',  name: '5V',   port: null,  icPin: null,  fns: [F.pwr('5 V out')],                   tags: [], notes: '' },
+                { pin: '3V3', name: '3.3V', port: null,  icPin: null,  fns: [F.pwr('3.3 V out')],                 tags: [], notes: '' },
+                { pin: 'GND', name: 'GND',  port: null,  icPin: null,  fns: [F.pwr('GND')],                       tags: [], notes: '' },
+                { pin: 'VIN', name: 'VIN',  port: null,  icPin: null,  fns: [F.pwr('VIN')],                       tags: [], notes: '7–12 V' },
             ]
         },
 
@@ -317,37 +319,37 @@
                 <li>Touch, DAC, RTC pins are additional multiplexed functions</li>
             </ul>`,
             rows: [
-                { pin: 'GPIO0',  name: 'GPIO0',  fns: [F.adc('2-ch1'), F.touch(1), F.warn('Boot pin')], tags: ['adc'], notes: 'Must be HIGH at boot for normal start; LOW = flash mode' },
-                { pin: 'GPIO1',  name: 'TXD0',   fns: [F.uart(0,'TX')],                   tags: ['uart'], notes: 'Serial0 TX — USB/debug output' },
-                { pin: 'GPIO2',  name: 'GPIO2',   fns: [F.adc('2-ch2'), F.touch(2), F.led(), F.warn('Boot pin')], tags: ['adc'], notes: 'Must be LOW or floating at boot; onboard LED on DevKit' },
-                { pin: 'GPIO3',  name: 'RXD0',   fns: [F.uart(0,'RX')],                   tags: ['uart'], notes: 'Serial0 RX — USB/debug' },
-                { pin: 'GPIO4',  name: 'GPIO4',   fns: [F.adc('2-ch0'), F.touch(0)],       tags: ['adc','touch'], notes: 'ADC2 — no WiFi use' },
-                { pin: 'GPIO5',  name: 'GPIO5',   fns: [F.spi('SS'), F.warn('Boot pin')],  tags: ['spi'], notes: 'SPI SS (VSPI); HIGH at boot required' },
-                { pin: 'GPIO12', name: 'GPIO12',  fns: [F.adc('2-ch5'), F.touch(5), F.spi('MISO'), F.warn('Boot pin')], tags: ['adc','spi'], notes: 'HSPI MISO; must be LOW at boot' },
-                { pin: 'GPIO13', name: 'GPIO13',  fns: [F.adc('2-ch4'), F.touch(4), F.spi('MOSI')], tags: ['adc','spi'], notes: 'HSPI MOSI' },
-                { pin: 'GPIO14', name: 'GPIO14',  fns: [F.adc('2-ch6'), F.touch(6), F.spi('SCK'), F.pwm()], tags: ['adc','spi','pwm'], notes: 'HSPI SCK; PWM output' },
-                { pin: 'GPIO15', name: 'GPIO15',  fns: [F.adc('2-ch3'), F.touch(3), F.spi('SS'), F.warn('Boot pin')], tags: ['adc','spi'], notes: 'HSPI SS; must be HIGH at boot' },
-                { pin: 'GPIO16', name: 'GPIO16',  fns: [F.uart(2,'RX')],                  tags: ['uart'], notes: 'UART2 RX; also PSRAM CS on some modules' },
-                { pin: 'GPIO17', name: 'GPIO17',  fns: [F.uart(2,'TX')],                  tags: ['uart'], notes: 'UART2 TX' },
-                { pin: 'GPIO18', name: 'GPIO18',  fns: [F.spi('SCK')],                    tags: ['spi'], notes: 'VSPI SCK (default SPI clock)' },
-                { pin: 'GPIO19', name: 'GPIO19',  fns: [F.spi('MISO')],                   tags: ['spi'], notes: 'VSPI MISO' },
-                { pin: 'GPIO21', name: 'SDA',     fns: [F.i2c('SDA')],                    tags: ['i2c'], notes: 'Default I²C SDA (Wire library)' },
-                { pin: 'GPIO22', name: 'SCL',     fns: [F.i2c('SCL')],                    tags: ['i2c'], notes: 'Default I²C SCL (Wire library)' },
-                { pin: 'GPIO23', name: 'GPIO23',  fns: [F.spi('MOSI')],                   tags: ['spi'], notes: 'VSPI MOSI' },
-                { pin: 'GPIO25', name: 'GPIO25',  fns: [F.adc('2-ch8'), F.dac(1)],        tags: ['adc','dac'], notes: 'DAC1 — analog voltage output; ADC2' },
-                { pin: 'GPIO26', name: 'GPIO26',  fns: [F.adc('2-ch9'), F.dac(2)],        tags: ['adc','dac'], notes: 'DAC2 — analog voltage output; ADC2' },
-                { pin: 'GPIO27', name: 'GPIO27',  fns: [F.adc('2-ch7'), F.touch(7)],      tags: ['adc'], notes: 'ADC2 — no WiFi use' },
-                { pin: 'GPIO32', name: 'GPIO32',  fns: [F.adc('1-ch4'), F.touch(9), F.rtc()], tags: ['adc'], notes: 'ADC1 — safe during WiFi' },
-                { pin: 'GPIO33', name: 'GPIO33',  fns: [F.adc('1-ch5'), F.touch(8), F.rtc()], tags: ['adc'], notes: 'ADC1 — safe during WiFi' },
-                { pin: 'GPIO34', name: 'GPIO34',  fns: [F.adc('1-ch6'), F.onlyIn()],      tags: ['adc'], notes: 'Input only — no output, no pull-up' },
-                { pin: 'GPIO35', name: 'GPIO35',  fns: [F.adc('1-ch7'), F.onlyIn()],      tags: ['adc'], notes: 'Input only — no output, no pull-up' },
-                { pin: 'GPIO36', name: 'VP',      fns: [F.adc('1-ch0'), F.onlyIn()],      tags: ['adc'], notes: 'Input only (VP); ADC1_CH0' },
-                { pin: 'GPIO39', name: 'VN',      fns: [F.adc('1-ch3'), F.onlyIn()],      tags: ['adc'], notes: 'Input only (VN); ADC1_CH3' },
-                { pin: 'GPIO6–11', name: 'FLASH', fns: [F.warn('FLASH — DO NOT USE')],    tags: [], notes: 'Connected to SPI flash — using these will crash the chip' },
-                { pin: 'EN',     name: 'EN',      fns: [F.pwr('ENABLE')],                  tags: [], notes: 'Pull LOW to reset / disable chip' },
-                { pin: '3V3',    name: '3.3V',    fns: [F.pwr('3.3 V out')],               tags: [], notes: 'Up to 600 mA from LDO on DevKit' },
-                { pin: 'GND',    name: 'GND',     fns: [F.pwr('GND')],                     tags: [], notes: '' },
-                { pin: 'VIN',    name: 'VIN',     fns: [F.pwr('VIN')],                     tags: [], notes: '5 V input to on-board LDO' },
+                { pin: 'GPIO0',  name: 'GPIO0',  icPin: 26,   fns: [F.adc('2-ch1'), F.touch(1), F.warn('Boot pin')], tags: ['adc'], notes: 'Must be HIGH at boot for normal start; LOW = flash mode' },
+                { pin: 'GPIO1',  name: 'TXD0',   icPin: 36,   fns: [F.uart(0,'TX')],                   tags: ['uart'], notes: 'Serial0 TX — USB/debug output' },
+                { pin: 'GPIO2',  name: 'GPIO2',   icPin: 25,   fns: [F.adc('2-ch2'), F.touch(2), F.led(), F.warn('Boot pin')], tags: ['adc'], notes: 'Must be LOW or floating at boot; onboard LED on DevKit' },
+                { pin: 'GPIO3',  name: 'RXD0',   icPin: 35,   fns: [F.uart(0,'RX')],                   tags: ['uart'], notes: 'Serial0 RX — USB/debug' },
+                { pin: 'GPIO4',  name: 'GPIO4',   icPin: 27,   fns: [F.adc('2-ch0'), F.touch(0)],       tags: ['adc','touch'], notes: 'ADC2 — no WiFi use' },
+                { pin: 'GPIO5',  name: 'GPIO5',   icPin: 30,   fns: [F.spi('SS'), F.warn('Boot pin')],  tags: ['spi'], notes: 'SPI SS (VSPI); HIGH at boot required' },
+                { pin: 'GPIO12', name: 'GPIO12',  icPin: 14,   fns: [F.adc('2-ch5'), F.touch(5), F.spi('MISO'), F.warn('Boot pin')], tags: ['adc','spi'], notes: 'HSPI MISO; must be LOW at boot' },
+                { pin: 'GPIO13', name: 'GPIO13',  icPin: 16,   fns: [F.adc('2-ch4'), F.touch(4), F.spi('MOSI')], tags: ['adc','spi'], notes: 'HSPI MOSI' },
+                { pin: 'GPIO14', name: 'GPIO14',  icPin: 13,   fns: [F.adc('2-ch6'), F.touch(6), F.spi('SCK'), F.pwm()], tags: ['adc','spi','pwm'], notes: 'HSPI SCK; PWM output' },
+                { pin: 'GPIO15', name: 'GPIO15',  icPin: 24,   fns: [F.adc('2-ch3'), F.touch(3), F.spi('SS'), F.warn('Boot pin')], tags: ['adc','spi'], notes: 'HSPI SS; must be HIGH at boot' },
+                { pin: 'GPIO16', name: 'GPIO16',  icPin: 28,   fns: [F.uart(2,'RX')],                  tags: ['uart'], notes: 'UART2 RX; also PSRAM CS on some modules' },
+                { pin: 'GPIO17', name: 'GPIO17',  icPin: 29,   fns: [F.uart(2,'TX')],                  tags: ['uart'], notes: 'UART2 TX' },
+                { pin: 'GPIO18', name: 'GPIO18',  icPin: 31,   fns: [F.spi('SCK')],                    tags: ['spi'], notes: 'VSPI SCK (default SPI clock)' },
+                { pin: 'GPIO19', name: 'GPIO19',  icPin: 32,   fns: [F.spi('MISO')],                   tags: ['spi'], notes: 'VSPI MISO' },
+                { pin: 'GPIO21', name: 'SDA',     icPin: 34,   fns: [F.i2c('SDA')],                    tags: ['i2c'], notes: 'Default I²C SDA (Wire library)' },
+                { pin: 'GPIO22', name: 'SCL',     icPin: 37,   fns: [F.i2c('SCL')],                    tags: ['i2c'], notes: 'Default I²C SCL (Wire library)' },
+                { pin: 'GPIO23', name: 'GPIO23',  icPin: 38,   fns: [F.spi('MOSI')],                   tags: ['spi'], notes: 'VSPI MOSI' },
+                { pin: 'GPIO25', name: 'GPIO25',  icPin: 10,   fns: [F.adc('2-ch8'), F.dac(1)],        tags: ['adc','dac'], notes: 'DAC1 — analog voltage output; ADC2' },
+                { pin: 'GPIO26', name: 'GPIO26',  icPin: 11,   fns: [F.adc('2-ch9'), F.dac(2)],        tags: ['adc','dac'], notes: 'DAC2 — analog voltage output; ADC2' },
+                { pin: 'GPIO27', name: 'GPIO27',  icPin: 12,   fns: [F.adc('2-ch7'), F.touch(7)],      tags: ['adc'], notes: 'ADC2 — no WiFi use' },
+                { pin: 'GPIO32', name: 'GPIO32',  icPin: 8,    fns: [F.adc('1-ch4'), F.touch(9), F.rtc()], tags: ['adc'], notes: 'ADC1 — safe during WiFi' },
+                { pin: 'GPIO33', name: 'GPIO33',  icPin: 9,    fns: [F.adc('1-ch5'), F.touch(8), F.rtc()], tags: ['adc'], notes: 'ADC1 — safe during WiFi' },
+                { pin: 'GPIO34', name: 'GPIO34',  icPin: 6,    fns: [F.adc('1-ch6'), F.onlyIn()],      tags: ['adc'], notes: 'Input only — no output, no pull-up' },
+                { pin: 'GPIO35', name: 'GPIO35',  icPin: 7,    fns: [F.adc('1-ch7'), F.onlyIn()],      tags: ['adc'], notes: 'Input only — no output, no pull-up' },
+                { pin: 'GPIO36', name: 'VP',      icPin: 4,    fns: [F.adc('1-ch0'), F.onlyIn()],      tags: ['adc'], notes: 'Input only (VP); ADC1_CH0' },
+                { pin: 'GPIO39', name: 'VN',      icPin: 5,    fns: [F.adc('1-ch3'), F.onlyIn()],      tags: ['adc'], notes: 'Input only (VN); ADC1_CH3' },
+                { pin: 'GPIO6–11', name: 'FLASH', icPin: null, fns: [F.warn('FLASH — DO NOT USE')],    tags: [], notes: 'Connected to SPI flash — using these will crash the chip' },
+                { pin: 'EN',     name: 'EN',      icPin: 3,    fns: [F.pwr('ENABLE')],                  tags: [], notes: 'Pull LOW to reset / disable chip' },
+                { pin: '3V3',    name: '3.3V',    icPin: 2,    fns: [F.pwr('3.3 V out')],               tags: [], notes: 'Up to 600 mA from LDO on DevKit' },
+                { pin: 'GND',    name: 'GND',     icPin: null, fns: [F.pwr('GND')],                     tags: [], notes: '' },
+                { pin: 'VIN',    name: 'VIN',     icPin: 20,   fns: [F.pwr('VIN')],                     tags: [], notes: '5 V input to on-board LDO' },
             ]
         },
 
@@ -360,23 +362,23 @@
                 <li>GPIO16: special — no PWM, no I²C, no SPI; wake from deep sleep using RST</li>
             </ul>`,
             rows: [
-                { pin: 'GPIO0',  name: 'D3',  fns: [F.warn('Boot pin'), F.pwm()],             tags: ['pwm'], notes: 'Must be HIGH for normal boot; LOW = flash mode; has internal pull-up' },
-                { pin: 'GPIO1',  name: 'TXD', fns: [F.uart(0,'TX'), F.warn('Boot pin')],      tags: ['uart'], notes: 'Serial TX; also outputs debug on boot' },
-                { pin: 'GPIO2',  name: 'D4',  fns: [F.uart(1,'TX'), F.pwm(), F.led(), F.warn('Boot pin')], tags: ['pwm','uart'], notes: 'Must be HIGH at boot; onboard LED active LOW; UART1 TX' },
-                { pin: 'GPIO3',  name: 'RXD', fns: [F.uart(0,'RX')],                          tags: ['uart'], notes: 'Serial RX' },
-                { pin: 'GPIO4',  name: 'D2',  fns: [F.i2c('SDA'), F.pwm()],                   tags: ['i2c','pwm'], notes: 'Default I²C SDA' },
-                { pin: 'GPIO5',  name: 'D1',  fns: [F.i2c('SCL'), F.pwm()],                   tags: ['i2c','pwm'], notes: 'Default I²C SCL' },
-                { pin: 'GPIO6–11', name: 'FLASH', fns: [F.warn('FLASH — DO NOT USE')],        tags: [], notes: 'Internal SPI flash — do not use' },
-                { pin: 'GPIO12', name: 'D6',  fns: [F.spi('MISO'), F.pwm()],                  tags: ['spi','pwm'], notes: 'HSPI MISO' },
-                { pin: 'GPIO13', name: 'D7',  fns: [F.spi('MOSI'), F.uart(0,'RX'), F.pwm()],  tags: ['spi','pwm','uart'], notes: 'HSPI MOSI; UART0 RX (alt)' },
-                { pin: 'GPIO14', name: 'D5',  fns: [F.spi('SCK'), F.pwm()],                   tags: ['spi','pwm'], notes: 'HSPI SCK' },
-                { pin: 'GPIO15', name: 'D8',  fns: [F.spi('SS'), F.uart(0,'TX'), F.warn('Boot pin')], tags: ['spi','uart'], notes: 'Must be LOW at boot; HSPI SS; has internal pull-down' },
-                { pin: 'GPIO16', name: 'D0',  fns: [F.rtc()],                                 tags: [], notes: 'Wake from deep sleep (connect to RST); no PWM/I²C/SPI; no interrupt' },
-                { pin: 'A0',     name: 'A0',  fns: [F.adc(), F.onlyIn()],                     tags: ['adc'], notes: '10-bit ADC; max 1.0 V direct on chip; NodeMCU divider → 3.3 V range' },
-                { pin: '3V3',    name: '3.3V',fns: [F.pwr('3.3 V out')],                      tags: [], notes: '~500 mA from NodeMCU regulator' },
-                { pin: 'GND',    name: 'GND', fns: [F.pwr('GND')],                            tags: [], notes: '' },
-                { pin: 'VIN',    name: 'VIN', fns: [F.pwr('5 V in')],                         tags: [], notes: 'NodeMCU on-board regulator input (5 V via USB or pin)' },
-                { pin: 'RST',    name: 'RST', fns: [F.pwr('RESET')],                          tags: [], notes: 'Pull LOW to reset; connect to GPIO16 for deep sleep wake' },
+                { pin: 'GPIO0',  name: 'D3',  icPin: 18,   fns: [F.warn('Boot pin'), F.pwm()],             tags: ['pwm'], notes: 'Must be HIGH for normal boot; LOW = flash mode; has internal pull-up' },
+                { pin: 'GPIO1',  name: 'TXD', icPin: 22,   fns: [F.uart(0,'TX'), F.warn('Boot pin')],      tags: ['uart'], notes: 'Serial TX; also outputs debug on boot' },
+                { pin: 'GPIO2',  name: 'D4',  icPin: 17,   fns: [F.uart(1,'TX'), F.pwm(), F.led(), F.warn('Boot pin')], tags: ['pwm','uart'], notes: 'Must be HIGH at boot; onboard LED active LOW; UART1 TX' },
+                { pin: 'GPIO3',  name: 'RXD', icPin: 21,   fns: [F.uart(0,'RX')],                          tags: ['uart'], notes: 'Serial RX' },
+                { pin: 'GPIO4',  name: 'D2',  icPin: 20,   fns: [F.i2c('SDA'), F.pwm()],                   tags: ['i2c','pwm'], notes: 'Default I²C SDA' },
+                { pin: 'GPIO5',  name: 'D1',  icPin: 19,   fns: [F.i2c('SCL'), F.pwm()],                   tags: ['i2c','pwm'], notes: 'Default I²C SCL' },
+                { pin: 'GPIO6–11', name: 'FLASH', icPin: null, fns: [F.warn('FLASH — DO NOT USE')],        tags: [], notes: 'Internal SPI flash — do not use' },
+                { pin: 'GPIO12', name: 'D6',  icPin: 6,    fns: [F.spi('MISO'), F.pwm()],                  tags: ['spi','pwm'], notes: 'HSPI MISO' },
+                { pin: 'GPIO13', name: 'D7',  icPin: 7,    fns: [F.spi('MOSI'), F.uart(0,'RX'), F.pwm()],  tags: ['spi','pwm','uart'], notes: 'HSPI MOSI; UART0 RX (alt)' },
+                { pin: 'GPIO14', name: 'D5',  icPin: 5,    fns: [F.spi('SCK'), F.pwm()],                   tags: ['spi','pwm'], notes: 'HSPI SCK' },
+                { pin: 'GPIO15', name: 'D8',  icPin: 16,   fns: [F.spi('SS'), F.uart(0,'TX'), F.warn('Boot pin')], tags: ['spi','uart'], notes: 'Must be LOW at boot; HSPI SS; has internal pull-down' },
+                { pin: 'GPIO16', name: 'D0',  icPin: 4,    fns: [F.rtc()],                                 tags: [], notes: 'Wake from deep sleep (connect to RST); no PWM/I²C/SPI; no interrupt' },
+                { pin: 'A0',     name: 'A0',  icPin: 2,    fns: [F.adc(), F.onlyIn()],                     tags: ['adc'], notes: '10-bit ADC; max 1.0 V direct on chip; NodeMCU divider → 3.3 V range' },
+                { pin: '3V3',    name: '3.3V',icPin: 8,    fns: [F.pwr('3.3 V out')],                      tags: [], notes: '~500 mA from NodeMCU regulator' },
+                { pin: 'GND',    name: 'GND', icPin: 15,   fns: [F.pwr('GND')],                            tags: [], notes: '' },
+                { pin: 'VIN',    name: 'VIN', icPin: 8,    fns: [F.pwr('5 V in')],                         tags: [], notes: 'NodeMCU on-board regulator input (5 V via USB or pin)' },
+                { pin: 'RST',    name: 'RST', icPin: 1,    fns: [F.pwr('RESET')],                          tags: [], notes: 'Pull LOW to reset; connect to GPIO16 for deep sleep wake' },
             ]
         }
     };
@@ -409,16 +411,19 @@
             const y = 25 + i * pitch;
             const clr = pinColor(row);
             const lbl = row.pin === row.name ? row.pin : `${row.pin} ${row.name}`;
+            const portLbl = row.port ?? (row.icPin != null ? String(row.icPin) : '');
             if (side === 'L') {
                 const ex = bx, lx = bx - pinLen;
                 s += `<line x1="${ex}" y1="${y}" x2="${lx}" y2="${y}" stroke="${clr}" stroke-width="2"/>`;
                 s += `<circle cx="${ex}" cy="${y}" r="3" fill="${clr}"/>`;
                 s += `<text x="${lx-4}" y="${y}" text-anchor="end" dominant-baseline="middle" fill="${clr}" font-size="${fs}" font-family="monospace">${lbl}</text>`;
+                if (portLbl) s += `<text x="${ex+7}" y="${y}" text-anchor="start" dominant-baseline="middle" fill="rgba(134,239,172,0.5)" font-size="8" font-family="monospace">${portLbl}</text>`;
             } else {
                 const ex = bx+bw, lx = ex + pinLen;
                 s += `<line x1="${ex}" y1="${y}" x2="${lx}" y2="${y}" stroke="${clr}" stroke-width="2"/>`;
                 s += `<circle cx="${ex}" cy="${y}" r="3" fill="${clr}"/>`;
                 s += `<text x="${lx+4}" y="${y}" text-anchor="start" dominant-baseline="middle" fill="${clr}" font-size="${fs}" font-family="monospace">${lbl}</text>`;
+                if (portLbl) s += `<text x="${ex-7}" y="${y}" text-anchor="end" dominant-baseline="middle" fill="rgba(134,239,172,0.5)" font-size="8" font-family="monospace">${portLbl}</text>`;
             }
         }
         leftPins.forEach((row, i) => drawPin(row, i, 'L'));
@@ -453,11 +458,13 @@
 
         const tbody = document.getElementById('table-body');
         if (rows.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" class="no-results">No pins match filter</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="no-results">No pins match filter</td></tr>';
         } else {
             tbody.innerHTML = rows.map(r =>
                 `<tr>
                     <td class="pin-num">${r.pin}</td>
+                    <td class="pin-name" style="color:#86efac;font-size:0.82rem;font-family:monospace;">${r.port ?? '—'}</td>
+                    <td class="pin-num" style="color:var(--text-gray);font-size:0.78rem;min-width:44px;">${r.icPin ?? '—'}</td>
                     <td class="pin-name">${r.name}</td>
                     <td>${r.fns.join('')}</td>
                     <td class="notes">${r.notes}</td>

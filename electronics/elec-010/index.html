@@ -155,7 +155,7 @@
                             <input class="inp" type="number" id="d-R1" placeholder="240" min="100" step="any" value="240" oninput="calculate()">
                             <span class="unit">Ω</span>
                         </div>
-                        <div class="hint">Typically 120–240Ω</div>
+                        <div class="hint">Typically 120–240 Ω</div>
                     </div>
                 </div>
             </div>
@@ -258,7 +258,7 @@
             <h2>Common output voltages — click to load</h2>
             <div style="overflow-x:auto">
             <table class="vout-table">
-                <thead><tr><th>Vout</th><th>R1 (240Ω)</th><th>R2 exact</th><th>R2 E24</th><th>Actual Vout</th><th>Error</th></tr></thead>
+                <thead><tr><th>Vout</th><th>R1 (240 Ω)</th><th>R2 exact</th><th>R2 E24</th><th>Actual Vout</th><th>Error</th></tr></thead>
                 <tbody id="common-tbody"></tbody>
             </table>
             </div>
@@ -276,7 +276,7 @@
                         <li>Max current: <strong>1.5A</strong> (with heatsink)</li>
                         <li>Dropout: <strong>~3V</strong> (Vin must be Vout + 3V)</li>
                         <li>Reference voltage: <strong>Vref = 1.25V</strong></li>
-                        <li>Adj current: <strong>Iadj ≈ 50µA</strong> (negligible)</li>
+                        <li>Adj current: <strong>Iadj ≈ 50 µA</strong> (negligible)</li>
                     </ul>
                 </div>
                 <div class="info-block">
@@ -285,8 +285,8 @@
                         Vout = 1.25 × (1 + R2/R1)<br><br>
                         R2 = R1 × (Vout/1.25 − 1)<br><br>
                         P_lm317 = (Vin − Vout) × Iout<br><br>
-                        Typical: R1 = 240Ω<br>
-                        Minimum R1: 120Ω<br>
+                        Typical: R1 = 240 Ω<br>
+                        Minimum R1: 120 Ω<br>
                         Use 0.1µF on input, 1µF on output
                     </p>
                 </div>
@@ -297,7 +297,7 @@
                         <li>0.5–2W — small heatsink recommended</li>
                         <li>2–5W — medium heatsink required</li>
                         <li>&gt; 5W — large heatsink + thermal paste</li>
-                        <li>Max junction temp: 125°C (θjc ≈ 5°C/W)</li>
+                        <li>Max junction temp: 125 °C (θjc ≈ 5 °C/W)</li>
                         <li>For high dissipation, consider a buck converter instead</li>
                     </ul>
                 </div>
@@ -308,7 +308,7 @@
                         <li>Add output diode (1N4001) from output to input to protect against reverse current</li>
                         <li>LM317 efficiency = Vout/Vin — at 5V from 12V it's only 42%!</li>
                         <li>LM338 is pin-compatible, handles up to 5A</li>
-                        <li>LM317T (TO-220) vs LM317L (TO-92, 100mA max)</li>
+                        <li>LM317T (TO-220) vs LM317L (TO-92, 100 mA max)</li>
                     </ul>
                 </div>
             </div>
@@ -424,7 +424,7 @@
                 <div class="res-block">
                     <div class="lbl">R1 (fixed)</div>
                     <div class="val">${fmtR(R1)}</div>
-                    <div class="sub">Standard: 240Ω (or 120Ω for lower noise)</div>
+                    <div class="sub">Standard: 240 Ω (or 120 Ω for lower noise)</div>
                 </div>
             </div>
             <div class="res-grid">

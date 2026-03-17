@@ -302,16 +302,16 @@
                 <div class="info-block">
                     <h3>Sleep mode matters</h3>
                     <ul>
-                        <li>An ESP32 active draws ~80–240mA → weeks on 18650</li>
-                        <li>ESP32 deep sleep → ~10µA → months or years on 18650</li>
-                        <li>Wake every 60s for 100ms: avg ≈ 0.013mA — huge difference</li>
+                        <li>An ESP32 active draws ~80–240 mA → weeks on 18650</li>
+                        <li>ESP32 deep sleep → ~10 µA → months or years on 18650</li>
+                        <li>Wake every 60s for 100ms: avg ≈ 0.013 mA — huge difference</li>
                         <li>Use the Active + Sleep mode tab to model this</li>
                     </ul>
                 </div>
                 <div class="info-block">
                     <h3>Real-world derating</h3>
                     <ul>
-                        <li>Cold temperatures reduce effective capacity (Li-Ion -20% at 0°C)</li>
+                        <li>Cold temperatures reduce effective capacity (Li-Ion -20% at 0 °C)</li>
                         <li>High discharge rates reduce capacity (Peukert effect)</li>
                         <li>Battery aging: expect 20–30% capacity loss over 2–3 years</li>
                         <li>Multiply result by 0.7–0.8 for a conservative estimate</li>
@@ -364,9 +364,9 @@
         { name:'CR123A',          voltage:3,    mAh:1500,  chem:'Li/MnO₂',  use:'Cameras, flashlights, security' },
         { name:'18650 Li-Ion',    voltage:3.7,  mAh:3000,  chem:'Li-Ion',   use:'Power banks, vapes, DIY projects' },
         { name:'21700 Li-Ion',    voltage:3.7,  mAh:5000,  chem:'Li-Ion',   use:'High-power devices, EVs' },
-        { name:'LiPo 1S 500mAh', voltage:3.7,  mAh:500,   chem:'LiPo',     use:'Small drones, wearables' },
-        { name:'LiPo 1S 2000mAh',voltage:3.7,  mAh:2000,  chem:'LiPo',     use:'RC models, medium projects' },
-        { name:'LiPo 2S 5000mAh',voltage:7.4,  mAh:5000,  chem:'LiPo',     use:'Racing drones, RC cars' },
+        { name:'LiPo 1S 500 mAh', voltage:3.7,  mAh:500,   chem:'LiPo',     use:'Small drones, wearables' },
+        { name:'LiPo 1S 2000 mAh',voltage:3.7,  mAh:2000,  chem:'LiPo',     use:'RC models, medium projects' },
+        { name:'LiPo 2S 5000 mAh',voltage:7.4,  mAh:5000,  chem:'LiPo',     use:'Racing drones, RC cars' },
         { name:'AA (NiMH)',       voltage:1.2,  mAh:2500,  chem:'NiMH',     use:'High-drain devices, rechargeable' },
         { name:'AAA (NiMH)',      voltage:1.2,  mAh:900,   chem:'NiMH',     use:'Small rechargeable devices' },
         { name:'Lead-acid 7Ah',   voltage:12,   mAh:7000,  chem:'Lead-acid', use:'UPS, alarm systems, solar' },
@@ -380,11 +380,11 @@
         // Battery presets
         const presets = document.getElementById('bat-presets');
         [
-            { label:'CR2032 (220mAh)', cap:220 },
-            { label:'AA (2700mAh)',    cap:2700 },
-            { label:'18650 (3000mAh)', cap:3000 },
-            { label:'LiPo 1S 2000mAh',cap:2000 },
-            { label:'9V (550mAh)',     cap:550 },
+            { label:'CR2032 (220 mAh)', cap:220 },
+            { label:'AA (2700 mAh)',    cap:2700 },
+            { label:'18650 (3000 mAh)', cap:3000 },
+            { label:'LiPo 1S 2000 mAh',cap:2000 },
+            { label:'9V (550 mAh)',     cap:550 },
         ].forEach(p => {
             const btn = document.createElement('button');
             btn.className = 'preset-btn';
