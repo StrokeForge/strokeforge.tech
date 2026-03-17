@@ -29,8 +29,8 @@
         .flt-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: var(--light-gray); }
 
         /* Table */
-        .tbl-wrap { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+        .tbl-wrap { overflow-x: visible; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.87rem; table-layout: fixed; }
         thead th { background: var(--darker-bg); color: var(--text-gray); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.65rem 0.75rem; border-bottom: 2px solid var(--border-gray); text-align: left; white-space: nowrap; cursor: pointer; user-select: none; }
         thead th:hover { color: var(--primary-orange); }
         thead th .sa { margin-left: 0.25rem; opacity: 0.4; }
@@ -38,21 +38,33 @@
         tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
         tbody tr:hover { background: rgba(255,165,0,0.04); }
         tbody td { padding: 0.6rem 0.75rem; color: var(--light-gray); vertical-align: middle; }
-        td.color-name { font-weight: 600; }
-        td.vf-typical { font-weight: 700; color: var(--primary-orange); font-variant-numeric: tabular-nums; }
-        td.notes { font-size: 0.79rem; color: var(--text-gray); }
         td.material { font-size: 0.8rem; color: var(--text-gray); font-family: monospace; }
 
-        /* Color dot */
-        .color-cell { display: flex; align-items: center; gap: 0.6rem; }
-        .dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0; box-shadow: 0 0 8px 1px currentColor; }
+        /* Color dot + name + note stacked */
+        .color-cell { display: flex; align-items: flex-start; gap: 0.6rem; }
+        .dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0; box-shadow: 0 0 8px 1px currentColor; margin-top: 2px; }
+        .color-name-wrap { display: flex; flex-direction: column; }
+        .color-name-main { font-weight: 600; color: var(--light-gray); }
+        .color-note { font-size: 0.77rem; color: var(--text-gray); margin-top: 0.2rem; line-height: 1.4; }
 
         .row-count { font-size: 0.78rem; color: var(--text-gray); margin-top: 0.6rem; }
         .no-results { text-align: center; color: var(--text-gray); padding: 2rem; }
 
+        /* Vf cell — typical + range stacked */
+        .vf-cell-wrap { display: flex; flex-direction: column; gap: 0.25rem; }
+        .vf-typ { font-weight: 700; color: var(--primary-orange); font-variant-numeric: tabular-nums; }
+        .vf-range { font-size: 0.76rem; color: var(--text-gray); display: flex; align-items: center; gap: 0.4rem; }
+
         /* Vf bar */
-        .vf-bar-wrap { position: relative; height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; width: 80px; display: inline-block; vertical-align: middle; margin-left: 0.5rem; }
-        .vf-bar { height: 100%; border-radius: 3px; background: var(--primary-orange); }
+        .vf-bar-wrap { height: 5px; background: rgba(255,255,255,0.07); border-radius: 3px; width: 60px; display: inline-block; vertical-align: middle; position: relative; }
+        .vf-bar { height: 100%; border-radius: 3px; background: var(--primary-orange); position: absolute; }
+
+        /* Column widths */
+        col.c-color { width: 38%; }
+        col.c-wl    { width: 9%; }
+        col.c-vf    { width: 18%; }
+        col.c-mat   { width: 22%; }
+        col.c-if    { width: 9%; }
 
         /* Info grid */
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -118,16 +130,20 @@
 
             <div class="tbl-wrap">
                 <table id="led-table">
+                    <colgroup>
+                        <col class="c-color">
+                        <col class="c-wl">
+                        <col class="c-vf">
+                        <col class="c-mat">
+                        <col class="c-if">
+                    </colgroup>
                     <thead>
                         <tr>
-                            <th data-col="order">Color <span class="sa">↕</span></th>
+                            <th data-col="order">Color &amp; Notes <span class="sa">↕</span></th>
                             <th data-col="wavelength">λ (nm) <span class="sa">↕</span></th>
-                            <th data-col="vf_min">Vf min (V) <span class="sa">↕</span></th>
-                            <th data-col="vf_typ">Vf typ @ 20 mA <span class="sa">↕</span></th>
-                            <th data-col="vf_max">Vf max (V) <span class="sa">↕</span></th>
+                            <th data-col="vf_typ">Vf @ 20 mA <span class="sa">↕</span></th>
                             <th>Semiconductor</th>
-                            <th data-col="if_max">If max (mA) <span class="sa">↕</span></th>
-                            <th>Notes</th>
+                            <th data-col="if_max">If max <span class="sa">↕</span></th>
                         </tr>
                     </thead>
                     <tbody id="table-body"></tbody>
@@ -239,7 +255,7 @@
 
     let sortCol = null, sortDir = 1, activeFlt = 'all';
 
-    const COL_IDX = { order:0, wavelength:3, vf_min:4, vf_typ:5, vf_max:6, if_max:8 };
+    const COL_IDX = { order:0, wavelength:3, vf_typ:5, if_max:8 };
 
     function fmtVf(v) { return v.toFixed(1); }
 
@@ -269,20 +285,23 @@
 
         const tbody = document.getElementById('table-body');
         if (rows.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" class="no-results">No results found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="no-results">No results found</td></tr>';
         } else {
             tbody.innerHTML = rows.map(r => {
-                const wl   = r[3] ? r[3] + ' nm' : '—';
-                const dot  = `<div class="dot" style="background:${r[2]};color:${r[2]}"></div>`;
+                const wl  = r[3] ? r[3] : '—';
+                const dot = `<div class="dot" style="background:${r[2]};color:${r[2]}"></div>`;
                 return `<tr>
-                    <td class="color-name"><div class="color-cell">${dot}${r[1]}</div></td>
+                    <td><div class="color-cell">${dot}<div class="color-name-wrap">
+                        <span class="color-name-main">${r[1]}</span>
+                        <span class="color-note">${r[9]}</span>
+                    </div></div></td>
                     <td>${wl}</td>
-                    <td>${fmtVf(r[4])}</td>
-                    <td class="vf-typical">${fmtVf(r[5])} V ${vfBar(r[4],r[6])}</td>
-                    <td>${fmtVf(r[6])}</td>
+                    <td><div class="vf-cell-wrap">
+                        <span class="vf-typ">${fmtVf(r[5])} V</span>
+                        <span class="vf-range">${fmtVf(r[4])}–${fmtVf(r[6])} V ${vfBar(r[4],r[6])}</span>
+                    </div></td>
                     <td class="material">${r[7]}</td>
                     <td>${r[8]}</td>
-                    <td class="notes">${r[9]}</td>
                 </tr>`;
             }).join('');
         }
