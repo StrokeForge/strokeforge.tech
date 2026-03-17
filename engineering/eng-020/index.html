@@ -78,10 +78,12 @@
                 </div>
             </div>
             <div class="info-box">
-                F = μ · N &nbsp;|&nbsp;
+                F<sub>f</sub> ≤ μ<sub>s</sub> · N (static &mdash; force builds up to limit) &nbsp;|&nbsp;
+                F<sub>f</sub> = μ<sub>k</sub> · N (kinetic &mdash; sliding) &nbsp;|&nbsp;
                 μ<sub>s</sub> = static (breakaway) coefficient &nbsp;|&nbsp;
-                μ<sub>k</sub> = kinetic (sliding) coefficient &nbsp;|&nbsp;
-                Values are approximate — surface finish, temperature and contamination affect results significantly.
+                μ<sub>k</sub> = kinetic (sliding) coefficient
+                <br><span style="color:var(--text-gray);font-size:0.82em;">Values are indicative — actual friction depends heavily on surface roughness (R<sub>a</sub>), contact pressure, temperature and contamination.</span>
+                <br>
                 <span style="color:#4ade80;">■</span> low (&lt;0.2) &nbsp;
                 <span style="color:#facc15;">■</span> medium (0.2–0.5) &nbsp;
                 <span style="color:#f87171;">■</span> high (&gt;0.5)
@@ -119,6 +121,7 @@
         // ── Metals ──────────────────────────────────────────────────────────
         ['Steel / Steel',           'unlubricated, clean',    0.74, 0.57, 0.16, 0.10, 'metals'],
         ['Steel / Steel',           'rusted / oxidised',      0.80, 0.60, null, null, 'metals'],
+        ['Stainless / Stainless',   'dry — prone to galling', 0.70, 0.55, 0.20, 0.15, 'metals'],
         ['Steel / Cast iron',       'dry, clean',             0.40, 0.30, 0.18, 0.12, 'metals'],
         ['Steel / Bronze',          'dry',                    0.35, 0.22, 0.12, 0.08, 'metals'],
         ['Steel / Brass',           'dry',                    0.35, 0.28, 0.13, 0.09, 'metals'],
