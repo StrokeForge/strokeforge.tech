@@ -305,22 +305,45 @@
 
         /* ===== PRINT ===== */
         @media print {
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { margin: 15mm; }
             .navbar, footer, .back-button, #inputSection, .action-bar, #errorBox { display: none !important; }
             #resultsSection { display: block !important; }
             #printHeader { display: block !important; }
-            .summary-card { break-inside: avoid; border-color: #ccc !important; }
-            .bar-row { break-inside: avoid; }
-            .bar-track { border-color: #999 !important; }
-            .bar-label { color: #444 !important; }
-            .offcut-seg { background: #d0d0d0 !important; color: #555 !important; }
-            .kerf-seg { background: #555 !important; }
-            .section-title { color: #e05a14 !important; border-color: #e05a14 !important; }
+            body { background: white !important; color: #222 !important; }
+            .summary-grid { break-inside: avoid; }
+            .summary-card {
+                break-inside: avoid;
+                background: white !important;
+                border: 1px solid #999 !important;
+            }
             .card-label, .card-unit { color: #555 !important; }
-            .card-value { color: #e05a14 !important; }
-            .result-table th { background: #f4f4f4 !important; color: #e05a14 !important; }
-            .result-table td { color: #222 !important; border-color: #ddd !important; }
+            .card-value { color: #222 !important; }
+            .section-title { color: #222 !important; border-color: #999 !important; }
+            /* Bar rows: outline only, no fill */
+            .bar-row { break-inside: avoid; }
+            .bar-label { color: #333 !important; }
+            .bar-track {
+                border: 1px solid #999 !important;
+                background: white !important;
+            }
+            .piece-seg {
+                background: white !important;
+                border-right: 2px solid #444 !important;
+                color: #000 !important;
+            }
+            .kerf-seg {
+                background: #444 !important;
+                min-width: 2px !important;
+            }
+            .offcut-seg {
+                background: repeating-linear-gradient(
+                    45deg, #ddd, #ddd 3px, white 3px, white 7px
+                ) !important;
+                color: #555 !important;
+            }
+            /* Result table */
+            .result-table th { background: #f0f0f0 !important; color: #333 !important; }
+            .result-table td { color: #222 !important; border-color: #ccc !important; }
             .td-bar-num { color: #666 !important; }
             .result-table tr:hover td { background: none !important; }
         }

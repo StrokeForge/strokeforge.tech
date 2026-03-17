@@ -330,19 +330,39 @@
 
         /* ---- Print / Save PDF ---- */
         @media print {
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { margin: 15mm; }
             .navbar, footer, .back-button, .settings-card, .cutlist-card,
             .btn-row, .page-header { display: none !important; }
             #results { display: block !important; }
             #printHeader { display: block !important; }
-            .summary-card { break-inside: avoid; border-color: #ccc !important; }
-            .sheet-block { break-inside: avoid; border-color: #ccc !important; }
-            .sheet-block-title { color: #222 !important; }
-            .summary-card .card-value { color: #e05a14 !important; }
+            body, main { background: white !important; color: #222 !important; }
+            .summary-grid { break-inside: avoid; }
+            .summary-card {
+                break-inside: avoid;
+                background: white !important;
+                border: 1px solid #999 !important;
+            }
+            .summary-card .card-value { color: #222 !important; }
             .summary-card .card-label { color: #555 !important; }
-            .sheet-detail-table th { background: #f4f4f4 !important; color: #555 !important; }
-            .sheet-detail-table td { color: #222 !important; border-color: #ddd !important; }
+            .sheet-block {
+                break-inside: avoid;
+                background: white !important;
+                border: 1px solid #999 !important;
+            }
+            .sheet-block-title { color: #222 !important; }
+            /* Outline-only pieces — no fill, just border */
+            .sheet-visual {
+                background: white !important;
+                border: 2px solid #333 !important;
+            }
+            .piece-block {
+                background: white !important;
+                border: 2px solid #333 !important;
+                color: #000 !important;
+            }
+            .piece-label { color: #000 !important; }
+            .sheet-detail-table th { background: #f0f0f0 !important; color: #333 !important; }
+            .sheet-detail-table td { color: #222 !important; border-color: #ccc !important; }
             details { display: block !important; }
             details summary { display: none !important; }
         }
