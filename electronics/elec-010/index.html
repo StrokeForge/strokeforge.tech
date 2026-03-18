@@ -518,6 +518,7 @@
                 ${Pdiss!==null ? `<div class="rg"><div class="lbl">LM317 dissipation</div><div class="val ${heatsinkNote(Pdiss).cls}">${fmtP(Pdiss)}</div></div>` : ''}
             </div>
         `;
+        if (Iout > 1.5) content.innerHTML += `<div class="warn-box">⚠️ Iout ${(Iout*1000).toFixed(0)} mA exceeds LM317 maximum (1500 mA). Use LM338 (5A, pin-compatible) or parallel configuration.</div>`;
         rc.style.display = '';
         drawCircuit(Vin, null, null, Rsc, null, 'climit');
     }
