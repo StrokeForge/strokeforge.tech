@@ -218,6 +218,7 @@
                     <select id="rev-bands" style="width:90px;">
                         <option value="4">4 bands</option>
                         <option value="5" selected>5 bands</option>
+                        <option value="6">6 bands</option>
                     </select>
                 </div>
                 <button class="rev-btn" onclick="reverseLookup()">Find colors</button>
@@ -439,7 +440,7 @@
         var ohms = v * unit;
 
         // Find best multiplier
-        var digitCount = n - 2; // 4-band=2 digits, 5-band=3 digits
+        var digitCount = n === 4 ? 2 : 3; // 4-band=2 digits, 5/6-band=3 digits
         var digitMults = MULT_COLORS.map(function(name) { return { name: name, mult: C[name].mult }; })
                          .filter(function(m){ return m.mult !== null; });
 
@@ -465,12 +466,16 @@
         });
         colorBands.push({ name: best.mult.name, hex: C[best.mult.name].hex });
         colorBands.push({ name: 'Gold', hex: C['Gold'].hex }); // default ±5%
+        if (n === 6) colorBands.push({ name: 'Brown', hex: C['Brown'].hex }); // default TC 100 ppm/°C
 
         var html = '<strong>Result: ' + fmtOhm(best.raw * best.mult.mult) + ' ±5%</strong><br>';
+        if (n === 6) html = '<strong>Result: ' + fmtOhm(best.raw * best.mult.mult) + ' ±5%, TC: 100 ppm/°C</strong><br>';
         html += '<div class="rev-bands">';
         var labels = n === 4
             ? ['Digit 1','Digit 2','Mult','Tol']
-            : ['Digit 1','Digit 2','Digit 3','Mult','Tol'];
+            : n === 5
+                ? ['Digit 1','Digit 2','Digit 3','Mult','Tol']
+                : ['Digit 1','Digit 2','Digit 3','Mult','Tol','TC'];
         colorBands.forEach(function(b, i) {
             html += '<div style="text-align:center;">' +
                     '<div class="rev-band" style="background:' + b.hex + ';"></div>' +
