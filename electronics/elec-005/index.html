@@ -483,7 +483,7 @@
         svg.appendChild(line(rx, rBot, rx, botY, '#6b7280'));
         svg.appendChild(el('rect',{x:rBx-rW/2, y:rTop, width:rW, height:rH, fill:'#1f2937', stroke:'#4ade80','stroke-width':2,'rx':4}));
         const Rlabel = R !== null ? fmtR(R) : 'R';
-        svg.appendChild(text(rBx, midY, Rlabel, '#4ade80', 10, 'middle'));
+        svg.appendChild(text(rBx+rW/2+8, midY-6, Rlabel, '#4ade80', 10, 'start'));
 
         // Current arrow on top wire
         const arrX = (lx+rx)/2;
