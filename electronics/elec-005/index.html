@@ -198,7 +198,7 @@
         <div class="card">
             <h2>Circuit diagram</h2>
             <div class="svg-wrap">
-                <svg id="circuit-svg" viewBox="0 0 300 200" width="450" height="300" xmlns="http://www.w3.org/2000/svg"></svg>
+                <svg id="circuit-svg" viewBox="0 0 360 200" width="540" height="300" xmlns="http://www.w3.org/2000/svg"></svg>
             </div>
         </div>
 
@@ -453,8 +453,8 @@
             return t;
         }
 
-        const W=300, H=200;
-        const lx=50, rx=250, topY=40, botY=170;
+        const W=360, H=200;
+        const lx=50, rx=270, topY=40, botY=170;
         const midY = (topY+botY)/2;
 
         // Top wire: left → right
@@ -492,7 +492,7 @@
         svg.appendChild(text(arrX, topY-14, Ilabel, '#60a5fa', 10, 'middle'));
 
         // Power label if known
-        if (P !== null) {
+        if (P !== null && !isNaN(P)) {
             svg.appendChild(text(rBx+30, midY, fmtP(P), '#fb923c', 10, 'start'));
             svg.appendChild(text(rBx+30, midY+14, '(heat)', '#fb923c', 9, 'start'));
         }
