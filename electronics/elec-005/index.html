@@ -483,7 +483,8 @@
         svg.appendChild(line(rx, rBot, rx, botY, '#6b7280'));
         svg.appendChild(el('rect',{x:rBx-rW/2, y:rTop, width:rW, height:rH, fill:'#1f2937', stroke:'#4ade80','stroke-width':2,'rx':4}));
         const Rlabel = R !== null ? fmtR(R) : 'R';
-        svg.appendChild(text(rBx+rW/2+8, midY-6, Rlabel, '#4ade80', 10, 'start'));
+        const rx2 = rBx+rW/2+8;
+        svg.appendChild(text(rx2, midY-(P !== null && !isNaN(P) ? 16 : 0), Rlabel, '#4ade80', 10, 'start'));
 
         // Current arrow on top wire
         const arrX = (lx+rx)/2;
@@ -493,8 +494,8 @@
 
         // Power label if known
         if (P !== null && !isNaN(P)) {
-            svg.appendChild(text(rBx+30, midY, fmtP(P), '#fb923c', 10, 'start'));
-            svg.appendChild(text(rBx+30, midY+14, '(heat)', '#fb923c', 9, 'start'));
+            svg.appendChild(text(rx2, midY, fmtP(P), '#fb923c', 10, 'start'));
+            svg.appendChild(text(rx2, midY+14, '(heat)', '#fb923c', 9, 'start'));
         }
 
         // + / - polarity
