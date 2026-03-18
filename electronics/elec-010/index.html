@@ -489,7 +489,7 @@
         const Vin   = g('cl-Vin');
         const Vload = g('cl-Vload');
 
-        if (!Iraw) { rc.style.display='none'; drawCircuit(null,null,null,null,'climit'); return; }
+        if (!Iraw) { rc.style.display='none'; drawCircuit(null,null,null,null,null,'climit'); return; }
 
         const Iout = Iraw * Iunit;
         const Rsc  = Vref / Iout; // in Ω
