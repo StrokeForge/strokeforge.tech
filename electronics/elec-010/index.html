@@ -551,15 +551,15 @@
 
         const W=340, H=220;
         svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
-        svg.setAttribute('width',W);
-        svg.setAttribute('height',H);
+        svg.setAttribute('width',Math.round(W*1.5));
+        svg.setAttribute('height',Math.round(H*1.5));
 
         if (mode2 === 'climit') {
             // Current limiter: IN→LM317→OUT ──Rsc──[ADJ junction]──Load+
             //                               ADJ ────────────────┘
             const ym=62, icL=78, icR=182, icT=ym-25, icB=ym+25, icCx=130;
             const rscCx=224, rscHW=20; // Rsc box center x, half-width
-            const adjX=rscCx+rscHW;   // 244 — node between Rsc and Load
+            const adjX=rscCx+rscHW+18; // 262 — ADJ junction, right of Rsc
 
             svg.appendChild(txt(W/2, 14, 'LM317 Current Limiter', '#fb923c', 11, 'middle'));
 
@@ -576,18 +576,28 @@
             svg.appendChild(txt(icR-7,ym+15,'OUT','#9ca3af',7,'end'));
             svg.appendChild(txt(icCx,icB-6,'ADJ','#60a5fa',7,'middle'));
 
-            // OUT → short wire → Rsc (inline) → ADJ junction → Load
-            svg.appendChild(line(icR,ym,rscCx-rscHW,ym));
-            svg.appendChild(box(rscCx,ym,rscHW*2,20,'#4ade80','Rsc', R2 ? fmtR(R2) : '?'));
-            svg.appendChild(el('circle',{cx:adjX,cy:ym,r:3,fill:'#60a5fa'}));
+            // OUT → short wire → Rsc (horizontal zigzag) → ADJ junction → Load
+            const rscX1=rscCx-rscHW, rscX2=rscCx+rscHW;
+            svg.appendChild(line(icR,ym,rscX1,ym));
+            // horizontal zigzag
+            const rszh=6, rszw=(rscX2-rscX1)/6;
+            let rscPts=`${rscX1},${ym}`;
+            for(let i=0;i<=6;i++) rscPts+=` ${rscX1+i*rszw},${ym+(i%2===0?-rszh:rszh)}`;
+            rscPts+=` ${rscX2},${ym}`;
+            svg.appendChild(el('polyline',{points:rscPts,stroke:'#4ade80','stroke-width':1.8,fill:'none','stroke-linejoin':'round'}));
+            svg.appendChild(txt(rscCx,ym-14,'Rsc','#4ade80',9,'middle'));
+            if(R2) svg.appendChild(txt(rscCx,ym-24,fmtR(R2),'#4ade80',8,'middle'));
+            svg.appendChild(line(rscX2,ym,adjX,ym));
+            svg.appendChild(el('circle',{cx:adjX,cy:ym,r:3,fill:'#9ca3af'}));
             svg.appendChild(line(adjX,ym,318,ym));
             svg.appendChild(el('circle',{cx:318,cy:ym,r:3,fill:'#9ca3af'}));
             svg.appendChild(txt(318,ym-13,'Load+','#9ca3af',8,'middle'));
 
-            // ADJ wire: IC bottom → horizontal → short 25px up to ADJ junction
-            svg.appendChild(line(icCx,icB,adjX,icB,'#60a5fa'));
-            svg.appendChild(line(adjX,icB,adjX,ym,'#60a5fa'));
-            svg.appendChild(txt((icCx+adjX)/2,icB+10,'ADJ','#60a5fa',7,'middle'));
+            // ADJ wire: IC bottom → down → horizontal → vertical up to ADJ junction
+            const adjWY = icB+22;
+            svg.appendChild(line(icCx,icB,icCx,adjWY,'#6b7280'));
+            svg.appendChild(line(icCx,adjWY,adjX,adjWY,'#6b7280'));
+            svg.appendChild(line(adjX,adjWY,adjX,ym,'#6b7280'));
 
             return;
         }
@@ -646,9 +656,9 @@
         for(let i=0;i<=6;i++) r2pts+=` ${nx+(i%2===0?-r2zh:r2zh)},${r2top+i*r2zw}`;
         r2pts+=` ${nx},${r2bot}`;
         svg.appendChild(el('polyline',{points:r2pts,stroke:'#60a5fa','stroke-width':1.8,fill:'none','stroke-linejoin':'round'}));
-        const r2disp=R2e24?fmtR(R2e24):(R2?fmtR(R2):'?');
+        const r2disp=R2e24?fmtR(R2e24):(R2?fmtR(R2):null);
         svg.appendChild(txt(nx+12,(r2top+r2bot)/2,'R2','#60a5fa',9,'start'));
-        svg.appendChild(txt(nx+12,(r2top+r2bot)/2+11,r2disp,'#60a5fa',8,'start'));
+        if(r2disp) svg.appendChild(txt(nx+12,(r2top+r2bot)/2+11,r2disp,'#60a5fa',8,'start'));
 
         // GND symbol
         const gwy=r2bot+8;
