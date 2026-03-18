@@ -555,25 +555,40 @@
         svg.setAttribute('height',H);
 
         if (mode2 === 'climit') {
-            // Simple current limiter
-            svg.appendChild(txt(W/2, 20, 'LM317 Current Limiter', '#fb923c', 11, 'middle'));
-            // Vin → IN pin
-            svg.appendChild(line(30,80,100,80,'#6b7280'));
-            svg.appendChild(txt(30,70,'Vin','#facc15',10,'middle'));
-            // LM317 block
-            svg.appendChild(el('rect',{x:100,y:55,width:80,height:50,fill:'#1a2433',stroke:'#fb923c','stroke-width':2,rx:6}));
-            svg.appendChild(txt(140,75,'LM317','#fb923c',11,'middle'));
-            svg.appendChild(txt(100,90,'IN','#6b7280',8,'start'));
-            svg.appendChild(txt(176,90,'OUT','#6b7280',8,'end'));
-            svg.appendChild(txt(140,100,'ADJ','#60a5fa',8,'middle'));
-            // OUT → Rsc → load
-            svg.appendChild(line(180,80,195,80,'#6b7280'));
-            svg.appendChild(box(215,80,40,20,'#4ade80','Rsc', R2 ? fmtR(R2) : '?'));
-            svg.appendChild(line(235,80,310,80,'#6b7280'));
-            svg.appendChild(txt(310,80,'Load →','#6b7280',9,'start'));
-            // ADJ wire: IC bottom → short stub (connects to load node)
-            svg.appendChild(line(140,105,140,120,'#60a5fa'));
-            svg.appendChild(el('circle',{cx:235,cy:80,r:3,fill:'#9ca3af'}));
+            // Current limiter: IN→LM317→OUT ──Rsc──[ADJ junction]──Load+
+            //                               ADJ ────────────────┘
+            const ym=62, icL=78, icR=182, icT=ym-25, icB=ym+25, icCx=130;
+            const rscCx=224, rscHW=20; // Rsc box center x, half-width
+            const adjX=rscCx+rscHW;   // 244 — node between Rsc and Load
+
+            svg.appendChild(txt(W/2, 14, 'LM317 Current Limiter', '#fb923c', 11, 'middle'));
+
+            // Input
+            svg.appendChild(el('circle',{cx:18,cy:ym,r:3,fill:'#9ca3af'}));
+            svg.appendChild(line(18,ym,icL,ym));
+            svg.appendChild(txt(18,ym-13,'Input','#9ca3af',8,'middle'));
+            if(Vin) svg.appendChild(txt(18,ym-24,Vin+'V','#facc15',9,'middle'));
+
+            // LM317 IC
+            svg.appendChild(el('rect',{x:icL,y:icT,width:icR-icL,height:icB-icT,fill:'#1a2433',stroke:'#fb923c','stroke-width':2,rx:5}));
+            svg.appendChild(txt(icCx,ym-8,'LM317','#fb923c',12,'middle'));
+            svg.appendChild(txt(icL+7,ym+15,'IN','#9ca3af',7,'start'));
+            svg.appendChild(txt(icR-7,ym+15,'OUT','#9ca3af',7,'end'));
+            svg.appendChild(txt(icCx,icB-6,'ADJ','#60a5fa',7,'middle'));
+
+            // OUT → short wire → Rsc (inline) → ADJ junction → Load
+            svg.appendChild(line(icR,ym,rscCx-rscHW,ym));
+            svg.appendChild(box(rscCx,ym,rscHW*2,20,'#4ade80','Rsc', R2 ? fmtR(R2) : '?'));
+            svg.appendChild(el('circle',{cx:adjX,cy:ym,r:3,fill:'#60a5fa'}));
+            svg.appendChild(line(adjX,ym,318,ym));
+            svg.appendChild(el('circle',{cx:318,cy:ym,r:3,fill:'#9ca3af'}));
+            svg.appendChild(txt(318,ym-13,'Load+','#9ca3af',8,'middle'));
+
+            // ADJ wire: IC bottom → horizontal → short 25px up to ADJ junction
+            svg.appendChild(line(icCx,icB,adjX,icB,'#60a5fa'));
+            svg.appendChild(line(adjX,icB,adjX,ym,'#60a5fa'));
+            svg.appendChild(txt((icCx+adjX)/2,icB+10,'ADJ','#60a5fa',7,'middle'));
+
             return;
         }
 
