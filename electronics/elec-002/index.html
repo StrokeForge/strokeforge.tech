@@ -238,6 +238,7 @@
     // ============================================================
     var E12 = [10,12,15,18,22,27,33,39,47,56,68,82];
     var E24 = [10,11,12,13,15,16,18,20,22,24,27,30,33,36,39,43,47,51,56,62,68,75,82,91];
+    var ledColor = '#fbbf24';   // LED colour in the diagram (set by presets)
 
     function nearestE(series, ohms) {
         var decades = [0.01,0.1,1,10,100,1000,10000,100000,1000000];
@@ -266,8 +267,9 @@
     function recPower(mw) {
         var thresholds = [62.5, 125, 250, 500, 1000, 2000, 5000];
         var labels     = ['1/16 W','1/8 W','1/4 W','1/2 W','1 W','2 W','5 W'];
+        var need = mw * 2;   // 2× safety derating — resistor should run at ≤50% of its rating
         for (var i = 0; i < thresholds.length; i++) {
-            if (mw < thresholds[i]) return labels[i] + ' (recommended min.)';
+            if (need <= thresholds[i]) return labels[i] + ' (recommended, 2× margin)';
         }
         return '> 5 W — use power resistor';
     }
@@ -309,7 +311,7 @@
         document.getElementById('result-card').style.display = 'block';
         document.getElementById('circuit-card').style.display = 'block';
 
-        drawCircuit(unap, uf, fmtR(e24v), ifma.toFixed(0));
+        drawCircuit(unap, uf, fmtR(e24v), iActual.toFixed(0));
         document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
@@ -322,7 +324,7 @@
         svg.setAttribute('viewBox','0 0 520 160');
 
         var ns = 'http://www.w3.org/2000/svg';
-        var orange = '#ff6b35', gray = '#9ca3af', light = '#e5e7eb', yellow = '#fbbf24', blue = '#60a5fa';
+        var orange = '#ff6b35', gray = '#9ca3af', light = '#e5e7eb', yellow = ledColor, blue = '#60a5fa';
 
         function add(tag, attrs) {
             var node = document.createElementNS(ns, tag);
@@ -368,7 +370,7 @@
         // LED symbol: anode at x=288, cathode at x=316
         var lx=288;
         add('polygon', {points:lx+','+(cy-14)+' '+lx+','+(cy+14)+' '+(lx+28)+','+cy,
-            fill:'rgba(245,158,11,0.25)', stroke:yellow, 'stroke-width':1.5});
+            fill:yellow, 'fill-opacity':0.22, stroke:yellow, 'stroke-width':1.5});
         add('line', {x1:lx+28, y1:cy-15, x2:lx+28, y2:cy+15, stroke:yellow, 'stroke-width':3});
         // LED rays
         add('line', {x1:lx+34, y1:cy-13, x2:lx+46, y2:cy-24, stroke:yellow, 'stroke-width':1.5});
@@ -397,7 +399,7 @@
         var n    = parseInt(document.getElementById('n-leds').value, 10);
         var out  = document.getElementById('multi-result');
 
-        if (isNaN(unap)||isNaN(uf)||isNaN(ifma)||isNaN(n)||n<1) {
+        if (isNaN(unap)||isNaN(uf)||isNaN(ifma)||isNaN(n)||n<1||ifma<=0) {
             out.textContent = 'Fill in all fields above first.'; return;
         }
 
@@ -420,8 +422,9 @@
     // ============================================================
     //  Preset helper
     // ============================================================
-    function setLed(uf) {
+    function setLed(uf, color) {
         document.getElementById('uf').value = uf;
+        if (color) ledColor = color;
     }
     </script>
 </body>
