@@ -575,41 +575,82 @@
             el.setAttribute('dominant-baseline','middle'); el.textContent=t; svg.appendChild(el);
         }
 
-        const W = 540, H = 200, cy = H / 2;
-        const showN = Math.min(nBolts, 5);
-        const spacing = 50;
-        const totalW = (showN - 1) * spacing;
-        const startX = W/2 - totalW/2;
+        const W = 540, H = 200;
+        const cx = W / 2;            // bolt centre x
+        const tp = 24;               // plate thickness (visual)
+        const sp = '#fbbf24';        // shear-plane colour
+        const lapL = cx - 80, lapR = cx + 80;   // overlap (lap) region
 
-        // Top plate
-        rect(60, cy - 50, W - 120, 40, gray, '#1e1e1e', 3);
-        txt(W/2, cy - 30, 'PLATE 1', gray, 10);
-
-        // Bottom plate (lap)
-        rect(60 + (nPlanes === 2 ? 0 : 40), cy + 10, W - 120 - (nPlanes === 2 ? 0 : 40), 40, gray, '#252525', 3);
-        txt(W/2, cy + 30, nPlanes === 2 ? 'PLATE 2' : 'PLATE 2 (lap joint)', gray, 10);
-
-        // Bolts
-        for (let i = 0; i < showN; i++) {
-            const bx = startX + i * spacing;
-            circ(bx, cy - 10, 8, boltColor, '#1a1a1a');
-            circ(bx, cy - 10, 3, boltColor, boltColor);
-        }
-        if (nBolts > showN) {
-            txt(startX + showN * spacing + 10, cy - 10, `+${nBolts - showN}`, gray, 10, 'start');
+        // dashed line helper (shear plane)
+        function dashLine(x1,y1,x2,y2,col){
+            const el = document.createElementNS(ns,'line');
+            el.setAttribute('x1',x1); el.setAttribute('y1',y1); el.setAttribute('x2',x2); el.setAttribute('y2',y2);
+            el.setAttribute('stroke',col); el.setAttribute('stroke-width',1.6);
+            el.setAttribute('stroke-dasharray','5 4'); svg.appendChild(el);
         }
 
-        // Force arrows
-        arrow(20, cy - 30, 65, cy - 30, blue);
-        txt(42, cy - 44, 'VEd', blue, 10);
-        if (nPlanes === 1) {
-            arrow(W - 20, cy + 30, W - 65, cy + 30, blue);
+        if (nPlanes === 2) {
+            // ── Double shear: two cover plates + main plate, 2 shear planes ──
+            const yb = [60, 60+tp, 60+2*tp, 60+3*tp];   // plate boundaries
+            // cover plates (outer) — pulled left
+            rect(40, yb[0], lapR-40, tp, gray, '#1e1e1e', 2);
+            rect(40, yb[2], lapR-40, tp, gray, '#1e1e1e', 2);
+            txt((40+lapL)/2, yb[0]+tp/2, 'COVER', gray, 9);
+            txt((40+lapL)/2, yb[2]+tp/2, 'COVER', gray, 9);
+            // main plate (middle) — pulled right
+            rect(lapL, yb[1], (W-40)-lapL, tp, gray, '#252525', 2);
+            txt((lapR+(W-40))/2, yb[1]+tp/2, 'PLATE (main)', gray, 9);
+            // shear planes at both interfaces
+            dashLine(lapL-6, yb[1], lapR+6, yb[1], sp);
+            dashLine(lapL-6, yb[2], lapR+6, yb[2], sp);
+            line(lapR+6, yb[1], lapR+30, yb[1]-14, sp, 1);
+            txt(lapR+34, yb[1]-16, 'shear planes', sp, 9, 'start');
+            // bolt: head top, shank through all, washer + nut bottom
+            const headTop = yb[0]-18, nutTop = yb[3]+6;
+            rect(cx-14, headTop, 28, 18, boltColor, '#2a2a2a', 1);   // head
+            rect(cx-7, yb[0], 14, 3*tp, boltColor, boltColor);       // shank
+            rect(cx-17, yb[3], 34, 6, gray, '#3a3a3a', 1);           // washer
+            rect(cx-13, nutTop, 26, 18, boltColor, '#2a2a2a', 1);    // nut
+            txt(cx, headTop-9, 'head', gray, 8);
+            txt(cx+26, nutTop+9, 'washer + nut', gray, 8, 'start');
+            // forces: covers left, main right (opposing)
+            arrow(40, yb[0]+tp/2, 12, yb[0]+tp/2, blue);
+            arrow(40, yb[2]+tp/2, 12, yb[2]+tp/2, blue);
+            arrow(W-40, yb[1]+tp/2, W-12, yb[1]+tp/2, blue);
+            txt(24, yb[0]-4, 'F', blue, 11);
+            txt(W-22, yb[1]+tp/2-12, 'F', blue, 11);
         } else {
-            arrow(W - 20, cy - 30, W - 65, cy - 30, blue);
-            arrow(W - 20, cy + 30, W - 65, cy + 30, blue);
+            // ── Single shear: lap joint (PLATE 1 over PLATE 2), 1 shear plane ──
+            const p1Top = 66, p1Bot = p1Top+tp;       // PLATE 1 (top)
+            const p2Top = p1Bot, p2Bot = p2Top+tp;    // PLATE 2 (bottom)
+            const iface = p1Bot;                      // shear plane = contact
+            // PLATE 1 (pulled left): left edge → right end of lap
+            rect(40, p1Top, lapR-40, tp, gray, '#1e1e1e', 2);
+            txt((40+lapL)/2, p1Top+tp/2, 'PLATE 1', gray, 9);
+            // PLATE 2 (pulled right): left of lap → right edge
+            rect(lapL, p2Top, (W-40)-lapL, tp, gray, '#252525', 2);
+            txt((lapR+(W-40))/2, p2Top+tp/2, 'PLATE 2', gray, 9);
+            // shear plane at the plate contact, across the lap
+            dashLine(lapL-6, iface, lapR+6, iface, sp);
+            line(lapR+6, iface, lapR+30, iface-16, sp, 1);
+            txt(lapR+34, iface-18, 'shear plane', sp, 9, 'start');
+            // bolt: head top, visible shank through both, washer + nut bottom
+            const headTop = p1Top-18, nutTop = p2Bot+6;
+            rect(cx-14, headTop, 28, 18, boltColor, '#2a2a2a', 1);  // head
+            rect(cx-7, p1Top, 14, 2*tp, boltColor, boltColor);      // shank
+            rect(cx-17, p2Bot, 34, 6, gray, '#3a3a3a', 1);          // washer
+            rect(cx-13, nutTop, 26, 18, boltColor, '#2a2a2a', 1);   // nut
+            txt(cx, headTop-9, 'head', gray, 8);
+            txt(cx+26, nutTop+9, 'washer + nut', gray, 8, 'start');
+            // forces: PLATE 1 left, PLATE 2 right (opposing)
+            arrow(40, p1Top+tp/2, 12, p1Top+tp/2, blue);
+            txt(24, p1Top-4, 'F', blue, 11);
+            arrow(W-40, p2Top+tp/2, W-12, p2Top+tp/2, blue);
+            txt(W-22, p2Bot+4, 'F', blue, 11);
         }
 
-        // Governs label
+        // caption + governing label
+        txt(cx, H-30, `${nBolts}× bolt${nBolts>1?'s':''} · ${nPlanes===2?'double':'single'} shear`, gray, 9);
         const govText = shearGoverns ? 'Shear governs (Fv,Rd)' : 'Bearing governs (Fb,Rd)';
         txt(W/2, H - 12, govText, eta > 1 ? '#f87171' : orange, 10);
     }
