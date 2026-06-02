@@ -133,6 +133,12 @@
             <div class="svg-wrap">
                 <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 730 200" style="width:100%;max-width:730px;height:auto;display:block;margin:0 auto;"></svg>
             </div>
+            <p style="font-size:0.82rem;color:var(--text-gray);text-align:center;margin-top:1rem;line-height:1.7;">
+                ⚠️ <strong style="color:#fb923c;">Pin order differs!</strong> TO‑220 pins 1‑2‑3 —
+                <span style="color:#4ade80;font-weight:600;">78xx = IN · GND · OUT</span>,
+                <span style="color:#60a5fa;font-weight:600;">79xx = GND · IN · OUT</span>.
+                Wiring a 79xx like a 78xx (or vice&#8209;versa) will destroy it.
+            </p>
         </div>
     </main>
 
@@ -145,7 +151,7 @@
     // ── Data ──────────────────────────────────────────────────────────────
     const DATA = [
         // 78xx positive regulators
-        { part:'LM7803', series:'78', vout:3.3,  imax:1.0, vin_min:5.5,  vin_max:35, dropout:2.0, pkgs:['TO-220','TO-92'], notes:'3.3 V variant (some brands)' },
+        { part:'LM7803', series:'78', vout:3.3,  imax:1.0, vin_min:5.3,  vin_max:35, dropout:2.0, pkgs:['TO-220','TO-92'], notes:'3.3 V variant (some brands)' },
         { part:'LM7805', series:'78', vout:5.0,  imax:1.5, vin_min:7.5,  vin_max:35, dropout:2.5, pkgs:['TO-220','TO-92','D2PAK','SOT-223'], notes:'Most common. USB / logic supply' },
         { part:'LM7806', series:'78', vout:6.0,  imax:1.5, vin_min:8.5,  vin_max:35, dropout:2.5, pkgs:['TO-220'], notes:'6 V supply' },
         { part:'LM7808', series:'78', vout:8.0,  imax:1.5, vin_min:10.5, vin_max:35, dropout:2.5, pkgs:['TO-220'], notes:'8 V supply' },
@@ -210,8 +216,8 @@
         rows.forEach(r => {
             const isPos = r.series === '78';
             const voutStr = isPos ? `+${r.vout} V` : `${r.vout} V`;
-            const vinMinStr = isPos ? `${r.vin_min} V` : `${r.vin_min} V`;
-            const vinMaxStr = isPos ? `${r.vin_max} V` : `${r.vin_max} V`;
+            const vinMinStr = `${r.vin_min} V`;
+            const vinMaxStr = `${r.vin_max} V`;
             const pkgsHtml = r.pkgs.map(p => `<span class="pkg">${p}</span>`).join('');
             const badge = isPos
                 ? `<span class="badge-78">78xx</span>`
@@ -266,7 +272,7 @@
         // Draw one complete circuit starting at ox
         // Layout (all x relative to ox):
         //  8=left rail | 32=Cin | 78=IC_in | 168=IC_out | 210=Cout | 230=Load_L | 275=Load_R | 290=right rail
-        function draw(ox, titleTxt, icTxt, vinTxt, voutTxt, titleCol) {
+        function draw(ox, titleTxt, icTxt, vinTxt, voutTxt, titleCol, cinTxt, coutTxt) {
             const ym = 95;   // main signal line y
             const yg = 178;  // GND bus y
 
@@ -286,7 +292,7 @@
             svg.appendChild(L(cx1, ym+35, cx1, yg));                              // wire to GND
             // Labels to the RIGHT of the cap wire — well clear of left rail (ox+8) and IC (ox+78)
             svg.appendChild(T(cx1+15, ym+28, 'Cin',    '#4ade80', 8, 'start'));
-            svg.appendChild(T(cx1+15, ym+38, '0.33µF', '#6b7280', 7, 'start'));
+            svg.appendChild(T(cx1+15, ym+38, cinTxt,   '#6b7280', 7, 'start'));
 
             // Cin node → IC
             svg.appendChild(L(ox+32, ym, ox+78, ym));
@@ -316,7 +322,7 @@
             svg.appendChild(L(cx2, ym+35, cx2, yg));
             // Labels to the LEFT of Cout — away from Load box (which starts at ox+230)
             svg.appendChild(T(cx2-15, ym+28, 'Cout',  '#60a5fa', 8, 'end'));
-            svg.appendChild(T(cx2-15, ym+38, '0.1µF', '#6b7280', 7, 'end'));
+            svg.appendChild(T(cx2-15, ym+38, coutTxt, '#6b7280', 7, 'end'));
 
             // Cout node → Load
             svg.appendChild(L(ox+210, ym, ox+230, ym));
@@ -338,8 +344,8 @@
             svg.appendChild(T(ox+150, yg+13, 'GND', '#6b7280', 8, 'middle'));
         }
 
-        draw(10,  '78xx — Positive Regulator', '78xx', 'Vin',  'Vout',  '#4ade80');
-        draw(380, '79xx — Negative Regulator', '79xx', 'Vin−', 'Vout−', '#60a5fa');
+        draw(10,  '78xx — Positive Regulator', '78xx', 'Vin',  'Vout',  '#4ade80', '0.33µF', '0.1µF');
+        draw(380, '79xx — Negative Regulator', '79xx', 'Vin−', 'Vout−', '#60a5fa', '2.2µF', '1µF');
     })();
 
     // ── Init ──────────────────────────────────────────────────────────────
