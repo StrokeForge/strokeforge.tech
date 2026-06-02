@@ -206,7 +206,7 @@
             <div id="res-notes"></div>
 
             <div class="svg-wrap" style="margin-top:1.25rem">
-                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 200" width="380" height="200"></svg>
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="15 0 260 200" style="width:100%;max-width:300px;height:auto;"></svg>
             </div>
         </div>
 
@@ -350,6 +350,27 @@
 
         if (!vin || !vref || vin <= 0 || vref <= 0) { rc.style.display='none'; return; }
 
+        // Vin already fits in the ADC range → no step-down divider needed
+        if (vin <= vref) {
+            document.getElementById('res-mode-badge').textContent = '— no divider needed';
+            ['res-vout','res-r-calc','res-r1','res-r2','res-adc','res-res','res-cur','res-util']
+                .forEach(id => document.getElementById(id).textContent = '—');
+            document.getElementById('res-vout-lbl').textContent = 'Vout';
+            document.getElementById('res-vout-sub').textContent = '';
+            document.getElementById('res-r-lbl').textContent = 'Resistors';
+            document.getElementById('res-r-sub').textContent = '';
+            document.getElementById('res-r-e24').textContent = '';
+            document.getElementById('res-util').className = 'val';
+            document.getElementById('adc-bar').style.width = '0%';
+            document.getElementById('adc-bar-pct').textContent = '';
+            document.getElementById('res-notes').innerHTML =
+                `<div class="info-box">Vin (${vin} V) is already within the ADC range (${vref} V) — a voltage divider is not needed. Connect Vin directly to the ADC, optionally via a ~1 kΩ series resistor for protection.</div>`;
+            const csvg = document.getElementById('circuit-svg');
+            while (csvg.firstChild) csvg.removeChild(csvg.firstChild);
+            rc.style.display = '';
+            return;
+        }
+
         const targetVout = vref * 0.95;
         const ratio = targetVout / vin; // R2/(R1+R2)
 
@@ -449,7 +470,6 @@
         else if (VoutDisp > vref * 0.98) notes += `<div class="warn-box">Vout is very close to Vref — a small overvoltage could damage the ADC. Add a Zener or adjust the ratio slightly.</div>`;
         if (utilPct < 60 && VoutDisp <= vref) notes += `<div class="warn-box">ADC utilisation is low (${utilPct.toFixed(0)}%). Consider adjusting R1/R2 to use more of the ADC range for better resolution.</div>`;
         if (R2 > 100e3) notes += `<div class="warn-box">R2 is very high (${fmtR(R2)}). ADC input impedance may cause reading errors. Keep R2 ≤ 10–100 kΩ depending on platform.</div>`;
-        if (vin < vref) notes += `<div class="info-box">Vin (${vin} V) is already within ADC range (${vref} V) — a voltage divider is not needed. Connect directly to ADC (with a small series resistor for protection).</div>`;
         document.getElementById('res-notes').innerHTML = notes;
 
         rc.style.display='';
