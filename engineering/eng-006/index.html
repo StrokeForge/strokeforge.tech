@@ -439,8 +439,9 @@
             arrow(W/2, py + ph, W/2, py + ph + 28, blue);
             txt(W/2, vy - 38, 'F (tension)', blue, 10);
         } else if (mode === 'shear') {
-            arrow(px - 40, py + ph/2, px - 10, py + ph/2, blue);
-            txt(px - 50, py + ph/2 - 14, 'V (shear)', blue, 10);
+            const shearY = (vy + py) / 2;
+            arrow(vx - 40, shearY, vx - 10, shearY, blue);
+            txt(vx - 50, shearY - 14, 'V (shear)', blue, 10);
         } else {
             txt(W/2, vy - 44, 'M (bending)', blue, 10);
             const arcEl = document.createElementNS(ns,'path');
