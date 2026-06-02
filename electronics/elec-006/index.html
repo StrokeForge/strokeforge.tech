@@ -337,7 +337,7 @@
             const v = parseFloat(r.val);
             return (!isNaN(v) && r.val !== '') ? v * r.unit : null;
         });
-        const valid = vals.filter(v => v !== null && v >= 0);
+        const valid = vals.filter(v => v !== null && v > 0);
 
         if (valid.length < 2) {
             document.getElementById('results-card').style.display = 'none';
@@ -383,7 +383,7 @@
         const body = document.getElementById('dist-body');
         body.innerHTML = '';
 
-        const validVals = vals.filter(v => v !== null && v >= 0);
+        const validVals = vals.filter(v => v !== null && v > 0);
         const Itotal = Vsup / Rtotal;
 
         const col3 = document.getElementById('dist-col3');
@@ -398,7 +398,7 @@
         }
 
         vals.forEach((v, i) => {
-            if (v === null) return;
+            if (v === null || v <= 0) return;
             const tr = document.createElement('tr');
             let Vr, Ir, P, sharePct;
 
@@ -463,7 +463,7 @@
             return e;
         }
 
-        const validVals = vals.filter(v => v !== null && v >= 0);
+        const validVals = vals.filter(v => v !== null && v > 0);
         const n = validVals.length;
         if (n === 0) { svg.setAttribute('viewBox','0 0 300 120'); svg.setAttribute('width','300'); svg.setAttribute('height','120'); return; }
 
@@ -536,51 +536,47 @@
 
     function drawParallel(svg, el, line, txt, ns, vals, Rtotal, Vsup) {
         const n = vals.length;
-        const rH = 22, rW = 60;
-        const rowSpacing = 42;
-        const leftX = 55, rightX = 220;
+        const rH = 22, rW = 64;
+        const rowSpacing = 40;
         const topY = 25;
-        const botY = topY + (n+1) * rowSpacing;
-        const H = botY + 40;
-        const W = 280;
+        const leftX = 65, rightX = 205, cx = (leftX + rightX) / 2;
+        const lastRowY = topY + n * rowSpacing;   // lowest resistor row
+        const busBot   = lastRowY + 16;           // + bus ends just below last resistor
+        const botY     = busBot + 24;             // − return rail (below everything)
+        const batMidY  = (topY + botY) / 2;
+        const H = botY + 28, W = 250;
 
         svg.setAttribute('viewBox', `-20 0 ${W+20} ${H}`);
         svg.setAttribute('width', W);
         svg.setAttribute('height', H);
 
-        const midY = (topY + botY) / 2;
+        // Battery (far left): + top, − bottom
+        const batX = 30;
+        svg.appendChild(line(batX, topY, batX, batMidY-14, '#6b7280'));
+        svg.appendChild(line(batX, batMidY+14, batX, botY, '#6b7280'));
+        svg.appendChild(el('line',{x1:batX-10,y1:batMidY-14,x2:batX+10,y2:batMidY-14,stroke:'#9ca3af','stroke-width':4}));
+        svg.appendChild(el('line',{x1:batX-6, y1:batMidY-6, x2:batX+6, y2:batMidY-6, stroke:'#9ca3af','stroke-width':2}));
+        svg.appendChild(el('line',{x1:batX-10,y1:batMidY+6, x2:batX+10,y2:batMidY+6, stroke:'#9ca3af','stroke-width':4}));
+        svg.appendChild(el('line',{x1:batX-6, y1:batMidY+14,x2:batX+6, y2:batMidY+14,stroke:'#9ca3af','stroke-width':2}));
+        if (Vsup) svg.appendChild(txt(batX-12, batMidY, Vsup+'V', '#facc15', 10, 'end'));
+        svg.appendChild(txt(batX-14, topY+4, '+', '#4ade80', 11, 'middle'));
+        svg.appendChild(txt(batX-14, botY-4, '−', '#f87171', 11, 'middle'));
 
-        // Battery on left
-        const batX = 28;
-        svg.appendChild(line(batX, topY, batX, midY-14, '#6b7280'));
-        svg.appendChild(line(batX, midY+14, batX, botY, '#6b7280'));
-        svg.appendChild(el('line',{x1:batX-10,y1:midY-14,x2:batX+10,y2:midY-14,stroke:'#9ca3af','stroke-width':4}));
-        svg.appendChild(el('line',{x1:batX-6, y1:midY-6, x2:batX+6, y2:midY-6, stroke:'#9ca3af','stroke-width':2}));
-        svg.appendChild(el('line',{x1:batX-10,y1:midY+6, x2:batX+10,y2:midY+6, stroke:'#9ca3af','stroke-width':4}));
-        svg.appendChild(el('line',{x1:batX-6, y1:midY+14,x2:batX+6, y2:midY+14,stroke:'#9ca3af','stroke-width':2}));
-        if (Vsup) svg.appendChild(txt(batX - 12, midY, Vsup+'V', '#facc15', 10, 'end'));
-        svg.appendChild(txt(batX-14, topY+6, '+', '#4ade80', 11, 'middle'));
-        svg.appendChild(txt(batX-14, botY-6, '−', '#f87171', 11, 'middle'));
-
-        // Left bus
+        // + node: top wire → left bus (ends just below the last resistor, so it never
+        //          touches the bottom return rail)
         svg.appendChild(line(batX, topY, leftX, topY, '#6b7280'));
-        svg.appendChild(line(batX, botY, leftX, botY, '#6b7280'));
-        svg.appendChild(line(leftX, topY, leftX, botY, '#6b7280'));
-
-        // Right bus
-        svg.appendChild(line(rightX, topY, W-20, topY, '#6b7280'));
-        svg.appendChild(line(rightX, botY, W-20, botY, '#6b7280'));
+        svg.appendChild(line(leftX, topY, leftX, busBot, '#6b7280'));
+        // − node: right bus + bottom return rail back to the battery's − terminal
         svg.appendChild(line(rightX, topY, rightX, botY, '#6b7280'));
-        svg.appendChild(line(W-20, topY, W-20, botY, '#6b7280'));
+        svg.appendChild(line(batX, botY, rightX, botY, '#6b7280'));
 
-        // Resistors
-        const cx = (leftX + rightX) / 2;
+        // Resistors (horizontal) in parallel between the + bus and the − bus
         vals.forEach((v, i) => {
             const cy = topY + (i+1) * rowSpacing;
-            // horizontal wires
             svg.appendChild(line(leftX, cy, cx-rW/2, cy, '#6b7280'));
             svg.appendChild(line(cx+rW/2, cy, rightX, cy, '#6b7280'));
-            // box
+            svg.appendChild(el('circle',{cx:leftX, cy:cy, r:2.5, fill:'#6b7280'}));
+            svg.appendChild(el('circle',{cx:rightX,cy:cy, r:2.5, fill:'#6b7280'}));
             svg.appendChild(el('rect',{x:cx-rW/2,y:cy-rH/2,width:rW,height:rH,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:3}));
             svg.appendChild(txt(cx, cy, `R${i+1}  ${fmtR(v)}`, '#4ade80', 9, 'middle'));
         });
