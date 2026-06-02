@@ -175,7 +175,7 @@
         <div class="card">
             <h2>Circuit diagram</h2>
             <div class="svg-wrap">
-                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 175" width="640" height="175"></svg>
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 175" width="100%" style="max-width:540px;display:block;margin:0 auto;"></svg>
             </div>
         </div>
 
@@ -428,56 +428,53 @@
             return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);
         }
 
+        // ── extra helpers ──
+        function circ(cx,cy,r,col){ return el('circle',{cx,cy,r:r||4,fill:'none',stroke:col||'#9ca3af','stroke-width':1.5}); }
+        function vArrow(x,y1,y2,col){
+            const c=col||'#facc15';
+            svg.appendChild(line(x,y1,x,y2,c,1.5));
+            svg.appendChild(el('polygon',{points:`${x-4},${y2-8} ${x+4},${y2-8} ${x},${y2}`,fill:c}));
+        }
+
+        // ── common frame: open input/output terminals, common (ground) rail, u1/u2 ──
+        const TLx=90, TRx=450, topY=55, botY=130, nodeX=300, midY=(topY+botY)/2;
+        [[TLx,topY],[TLx,botY],[TRx,topY],[TRx,botY]].forEach(p=>svg.appendChild(circ(p[0],p[1])));
+        svg.appendChild(line(TLx,botY,TRx,botY,'#6b7280',1.5));        // common bottom rail
+        vArrow(52,topY+4,botY-4);   svg.appendChild(txt(34,midY,'u1','#facc15',12,'middle'));
+        vArrow(488,topY+4,botY-4);  svg.appendChild(txt(506,midY,'u2','#facc15',12,'middle'));
+
         if (mode === 'lp') {
-            // Low-pass: R series, C to GND, output across C
-            svg.appendChild(txt(320,14,'Low-Pass Filter — output across C','#fb923c',11,'middle'));
-            svg.appendChild(line(40,60,110,60));
-            svg.appendChild(txt(40,48,'Vin','#facc15',10,'middle'));
-            // R box
-            svg.appendChild(el('rect',{x:110,y:48,width:70,height:24,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
-            svg.appendChild(txt(145,60,'R','#4ade80',11,'middle'));
-            svg.appendChild(line(180,60,290,60));
-            // C to GND
-            svg.appendChild(line(235,60,235,78));
-            svg.appendChild(line(220,78,250,78,  '#60a5fa',2));
-            svg.appendChild(line(222,83,248,83,  '#60a5fa',2));
-            svg.appendChild(line(235,83,235,105));
-            svg.appendChild(txt(262,80,'C','#60a5fa',11,'start'));
-            // GND
-            svg.appendChild(line(40,105,400,105,'#6b7280',1));
-            svg.appendChild(line(40,60,40,105));
-            // Output
-            svg.appendChild(line(290,60,370,60));
-            svg.appendChild(txt(385,60,'Vout','#facc15',10,'middle'));
-            svg.appendChild(line(370,60,370,105));
-            // Output label
-            svg.appendChild(txt(235,125,'Output across C (low freq pass)','#60a5fa',9,'middle'));
+            // Low-pass: R in series (top), C shunt to common rail, output u2 across C
+            svg.appendChild(txt(nodeX,18,'Low-Pass Filter — output across C','#fb923c',11,'middle'));
+            svg.appendChild(line(TLx,topY,150,topY));
+            svg.appendChild(el('rect',{x:150,y:topY-12,width:80,height:24,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
+            svg.appendChild(txt(190,topY,'R','#4ade80',12,'middle'));
+            svg.appendChild(line(230,topY,TRx,topY));
+            // shunt C at node
+            svg.appendChild(line(nodeX,topY,nodeX,88));
+            svg.appendChild(line(nodeX-20,88,nodeX+20,88,'#60a5fa',2));
+            svg.appendChild(line(nodeX-18,94,nodeX+18,94,'#60a5fa',2));
+            svg.appendChild(line(nodeX,94,nodeX,botY));
+            svg.appendChild(txt(nodeX+30,90,'C','#60a5fa',12,'start'));
+            svg.appendChild(el('circle',{cx:nodeX,cy:topY,r:3,fill:'#6b7280'}));
+            svg.appendChild(el('circle',{cx:nodeX,cy:botY,r:3,fill:'#6b7280'}));
+            svg.appendChild(txt(nodeX,152,'Output across C (low freq pass)','#60a5fa',9,'middle'));
         } else {
-            // High-pass: C series, R to GND, output across R
-            svg.appendChild(txt(320,14,'High-Pass Filter — output across R','#fb923c',11,'middle'));
-            svg.appendChild(line(40,70,120,70));
-            svg.appendChild(txt(40,58,'Vin','#facc15',10,'middle'));
-            // C plates
-            svg.appendChild(line(120,56,120,84,'#60a5fa',2));
-            svg.appendChild(line(130,56,130,84,'#60a5fa',2));
-            svg.appendChild(line(130,70,220,70));
-            svg.appendChild(txt(125,45,'C','#60a5fa',11,'middle'));
-            // R box (vertical, to GND) — stub from node at y=70 down to rect top at y=75
-            svg.appendChild(line(220,70,220,75));
-            svg.appendChild(el('rect',{x:208,y:75,width:24,height:55,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
-            svg.appendChild(txt(220,103,'R','#4ade80',11,'middle'));
-            svg.appendChild(line(220,130,220,145));
-            // GND symbol
-            svg.appendChild(line(206,145,234,145,'#6b7280',1.5));
-            svg.appendChild(line(209,149,231,149,'#6b7280',1));
-            svg.appendChild(line(213,153,227,153,'#6b7280',0.8));
-            // Output from node
-            svg.appendChild(line(220,70,330,70));
-            svg.appendChild(txt(345,70,'Vout','#facc15',10,'middle'));
-            // Vin GND
-            svg.appendChild(line(40,70,40,145));
-            svg.appendChild(line(40,145,220,145,'#6b7280',1));
-            svg.appendChild(txt(220,163,'Output across R (high freq pass)','#4ade80',9,'middle'));
+            // High-pass: C in series (top), R shunt to common rail, output u2 across R
+            svg.appendChild(txt(nodeX,18,'High-Pass Filter — output across R','#fb923c',11,'middle'));
+            svg.appendChild(line(TLx,topY,160,topY));
+            svg.appendChild(line(160,topY-14,160,topY+14,'#60a5fa',2));
+            svg.appendChild(line(170,topY-14,170,topY+14,'#60a5fa',2));
+            svg.appendChild(txt(165,topY-24,'C','#60a5fa',12,'middle'));
+            svg.appendChild(line(170,topY,TRx,topY));
+            // shunt R at node
+            svg.appendChild(line(nodeX,topY,nodeX,75));
+            svg.appendChild(el('rect',{x:nodeX-12,y:75,width:24,height:40,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
+            svg.appendChild(txt(nodeX,95,'R','#4ade80',12,'middle'));
+            svg.appendChild(line(nodeX,115,nodeX,botY));
+            svg.appendChild(el('circle',{cx:nodeX,cy:topY,r:3,fill:'#6b7280'}));
+            svg.appendChild(el('circle',{cx:nodeX,cy:botY,r:3,fill:'#6b7280'}));
+            svg.appendChild(txt(nodeX,152,'Output across R (high freq pass)','#4ade80',9,'middle'));
         }
     }
 
