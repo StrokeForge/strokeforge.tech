@@ -212,7 +212,7 @@
                     <div class="val" style="color:#4ade80" id="res-secondary">—</div>
                 </div>
                 <div>
-                    <div class="lbl">Time to 99% (≈ 5τ)</div>
+                    <div class="lbl">Time to 99% (≈ 4.6τ)</div>
                     <div class="val" style="color:#60a5fa;font-size:1.4rem" id="res-99">—</div>
                 </div>
             </div>
@@ -222,14 +222,14 @@
                 <div>
                     <div style="font-size:0.8rem;color:var(--text-gray);margin-bottom:0.5rem;font-weight:600">Charging</div>
                     <table class="time-table">
-                        <thead><tr><th>Time</th><th>%</th><th id="charge-v-head">V</th></tr></thead>
+                        <thead><tr><th>τ</th><th>Time</th><th>%</th><th id="charge-v-head">V</th></tr></thead>
                         <tbody id="charge-tbody"></tbody>
                     </table>
                 </div>
                 <div>
                     <div style="font-size:0.8rem;color:var(--text-gray);margin-bottom:0.5rem;font-weight:600">Discharging</div>
                     <table class="time-table">
-                        <thead><tr><th>Time</th><th>%</th><th id="discharge-v-head">V</th></tr></thead>
+                        <thead><tr><th>τ</th><th>Time</th><th>%</th><th id="discharge-v-head">V</th></tr></thead>
                         <tbody id="discharge-tbody"></tbody>
                     </table>
                 </div>
@@ -389,20 +389,25 @@
 
     // ── Tables ────────────────────────────────────────────────────────────
     const MILESTONES = [
-        { mult: 0.5,  charge: 39.35, label: '0.5τ' },
-        { mult: 1.0,  charge: 63.21, label: '1τ', tau: true },
-        { mult: 2.0,  charge: 86.47, label: '2τ' },
-        { mult: 3.0,  charge: 95.02, label: '3τ' },
-        { mult: 4.0,  charge: 98.17, label: '4τ' },
-        { mult: 4.605,charge: 99.00, label: '≈4.6τ' },
-        { mult: 5.0,  charge: 99.33, label: '5τ' },
+        { mult: 0.5,   label: '0.5τ' },
+        { mult: 1.0,   label: '1τ', tau: true },
+        { mult: 2.0,   label: '2τ' },
+        { mult: 3.0,   label: '3τ' },
+        { mult: 4.0,   label: '4τ' },
+        { mult: 4.605, label: '≈4.6τ' },
+        { mult: 5.0,   label: '5τ' },
     ];
 
     function buildTables(tau, vcc) {
         const chHead = document.getElementById('charge-v-head');
         const disHead = document.getElementById('discharge-v-head');
-        chHead.textContent  = vcc ? `V (Vcc=${vcc}V)` : 'V %';
-        disHead.textContent = vcc ? `V (V₀=${vcc}V)` : 'V %';
+        // Voltage column only makes sense when a supply voltage is given
+        chHead.style.display  = vcc ? '' : 'none';
+        disHead.style.display = vcc ? '' : 'none';
+        if (vcc) {
+            chHead.textContent  = `V (Vcc=${vcc}V)`;
+            disHead.textContent = `V (V₀=${vcc}V)`;
+        }
 
         const ctbody = document.getElementById('charge-tbody');
         const dtbody = document.getElementById('discharge-tbody');
@@ -413,17 +418,17 @@
             const t = tau * m.mult;
             const chPct  = (1 - Math.exp(-m.mult)) * 100;
             const disPct = Math.exp(-m.mult) * 100;
-            const chV    = vcc ? (vcc * (1 - Math.exp(-m.mult))).toFixed(3) + ' V' : chPct.toFixed(2) + '%';
-            const disV   = vcc ? (vcc * Math.exp(-m.mult)).toFixed(3) + ' V'        : disPct.toFixed(2) + '%';
+            const chVCell  = vcc ? `<td>${(vcc * (1 - Math.exp(-m.mult))).toFixed(3)} V</td>` : '';
+            const disVCell = vcc ? `<td>${(vcc * Math.exp(-m.mult)).toFixed(3)} V</td>`        : '';
 
             const ctr = document.createElement('tr');
             if (m.tau) ctr.className = 'tau-row';
-            ctr.innerHTML = `<td>${m.label}</td><td>${fmtTime(t)}</td><td>${chPct.toFixed(2)}%</td><td>${chV}</td>`;
+            ctr.innerHTML = `<td>${m.label}</td><td>${fmtTime(t)}</td><td>${chPct.toFixed(2)}%</td>${chVCell}`;
             ctbody.appendChild(ctr);
 
             const dtr = document.createElement('tr');
             if (m.tau) dtr.className = 'tau-row';
-            dtr.innerHTML = `<td>${m.label}</td><td>${fmtTime(t)}</td><td>${disPct.toFixed(2)}%</td><td>${disV}</td>`;
+            dtr.innerHTML = `<td>${m.label}</td><td>${fmtTime(t)}</td><td>${disPct.toFixed(2)}%</td>${disVCell}`;
             dtbody.appendChild(dtr);
         });
     }
@@ -478,7 +483,9 @@
 
         // Axis labels
         svg.appendChild(txt(PL + CW/2, H-5, 'Time', '#6b7280', 10, 'middle'));
-        svg.appendChild(txt(12, PT + CH/2, 'Voltage', '#6b7280', 10, 'middle'));
+        svg.appendChild(el('text', {x:16, y:PT+CH/2, fill:'#6b7280','font-size':10,
+            'text-anchor':'middle','dominant-baseline':'middle','font-family':'monospace',
+            transform:`rotate(-90 16 ${PT+CH/2})`}, 'Voltage'));
 
         // Draw curves
         function makePath(fn, col) {
