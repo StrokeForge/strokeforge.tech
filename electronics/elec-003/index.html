@@ -242,6 +242,7 @@
     function calculate() {
         var rl_el = document.getElementById('rl');
         var rl = rl_el && rl_el.value !== '' ? parseFloat(rl_el.value) : Infinity;
+        if (isFinite(rl) && rl <= 0) { alert('Load resistance R_L must be a positive value.'); return; }
 
         var uin, r1, r2, uout_noload;
 
@@ -280,7 +281,7 @@
         }
         items.push({ label: 'U<sub>out</sub>' + (isFinite(rl) ? ' (with load)' : ''), val: fmtV(uout), unit: '' });
         items.push({ label: 'Divider current', val: (i_total*1000).toPrecision(3).replace(/(\.[0-9]*[1-9])0+$/, '$1').replace(/\.0*$/, ''), unit: 'mA' });
-        items.push({ label: 'Total power', val: fmtP(p_total), unit: '' });
+        items.push({ label: 'Total power (source)', val: fmtP(p_total), unit: '' });
         items.push({ label: 'Power on R1', val: fmtP(p_r1), unit: '' });
         items.push({ label: 'Power on R2', val: fmtP(p_r2), unit: '' });
 
@@ -360,8 +361,9 @@
         var r2Top = 130, r2Bot = 200;
         var tapY = 130; // junction between R1 and R2
 
-        // Left rail (full height)
-        ln(lx, topY, lx, botY);
+        // Left rail — wire down to battery (+), gap for the cell, then (−) down to bottom
+        ln(lx, topY, lx, topY+50);
+        ln(lx, topY+86, lx, botY);
 
         // Battery on left rail
         ln(lx-12,topY+50,lx+12,topY+50,orange,3);
