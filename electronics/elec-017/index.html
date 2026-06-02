@@ -173,7 +173,7 @@
 
             <!-- SVG circuit -->
             <div class="svg-wrap" style="margin-top:1.25rem">
-                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 130" width="440" height="130"></svg>
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 130" style="width:100%;max-width:340px;height:auto;"></svg>
             </div>
         </div>
 
@@ -348,7 +348,15 @@
 
         if (!vgpio || !uf || !iLed || iLed <= 0) { rc.style.display='none'; return; }
         if (uf >= vgpio) {
-            rc.style.display='none';
+            ['res-exact','res-e24','res-e12','res-p','res-prating','res-if','res-gpio-cur','res-gpio-pct']
+                .forEach(id => document.getElementById(id).textContent = '—');
+            document.getElementById('res-gpio-cur').className = 'val';
+            document.getElementById('res-gpio-pct').className = 'val';
+            document.getElementById('res-warnings').innerHTML =
+                `<div class="err-box">LED forward voltage (${uf} V) must be lower than the GPIO voltage (${vgpio} V) — otherwise the LED won't light and no series resistor can be calculated.</div>`;
+            const csvg = document.getElementById('circuit-svg');
+            while (csvg.firstChild) csvg.removeChild(csvg.firstChild);
+            rc.style.display = '';
             return;
         }
 
@@ -383,7 +391,6 @@
             gpioEl.className = 'val';
             gpioP.className = 'val';
         }
-        if (uf >= vgpio) errs += `<div class="err-box">LED forward voltage (${uf}V) must be less than GPIO voltage (${vgpio}V).</div>`;
         document.getElementById('res-warnings').innerHTML = errs + warns;
 
         rc.style.display='';
