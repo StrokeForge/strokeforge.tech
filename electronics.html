@@ -30,6 +30,15 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://strokeforge.tech/electronics.html">
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X67CTG4DFM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-X67CTG4DFM');
+    </script>
+
     <link rel="stylesheet" href="css/colors.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
@@ -220,7 +229,294 @@
     </nav>
 
     <!-- Projects Grid (filled dynamically) -->
-    <section class="projects-grid"></section>
+    <section class="projects-grid">
+        <a href="electronics/elec-015/" class="project-card">
+            <div class="project-image">⏲️</div>
+            <div class="project-content">
+                <h3 class="project-title">555 Timer Calculator</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">555 timer calculator for astable (oscillator) and monostable (one-shot) modes. Astable: R1, R2, C → frequency, period, duty cycle, tH, tL. Monostable: R, C → pulse width. Includes output waveform and pin reference.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-011/" class="project-card">
+            <div class="project-image">🔌</div>
+            <div class="project-content">
+                <h3 class="project-title">78xx / 79xx Voltage Regulator Reference</h3>
+                <div class="project-meta">
+                    <span>⚡ Power</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Reference table for 78xx (positive) and 79xx (negative) fixed linear voltage regulators. Covers output voltages 3.3–24 V, current ratings, input range, dropout voltage, packages, and typical wiring diagrams.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-021/" class="project-card">
+            <div class="project-image">🔌</div>
+            <div class="project-content">
+                <h3 class="project-title">Arduino &amp; ESP32 Pinouts</h3>
+                <div class="project-meta">
+                    <span>⚡ Reference</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Complete pin function reference for Arduino Uno, Nano, Mega, ESP32, and ESP8266. Filterable by PWM, ADC, I2C, SPI, UART, and interrupt functions. Includes boot-sensitive and input-only pin warnings.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-022/" class="project-card">
+            <div class="project-image">🔧</div>
+            <div class="project-content">
+                <h3 class="project-title">AWG Wire Reference Table</h3>
+                <div class="project-meta">
+                    <span>⚡ Reference</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Complete AWG wire gauge reference from 0000 to AWG 40. Diameter in mm and inches, cross-section in mm², resistance per metre and per foot, max current for chassis and power wiring. Includes EU metric equivalents and selection guide.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-008/" class="project-card">
+            <div class="project-image">🔋</div>
+            <div class="project-content">
+                <h3 class="project-title">Battery Life Calculator</h3>
+                <div class="project-meta">
+                    <span>⚡ Power</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Estimate battery runtime from capacity and current draw. Supports multi-mode operation (active + sleep), efficiency factor, and includes a reference table for common battery types.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-009/" class="project-card">
+            <div class="project-image">🔌</div>
+            <div class="project-content">
+                <h3 class="project-title">Battery Series &amp; Parallel Configuration</h3>
+                <div class="project-meta">
+                    <span>⚡ Power</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate total voltage, capacity, and energy for batteries wired in series, parallel, or series-parallel (nSnP). Includes common LiPo/Li-Ion pack configurations and balancing tips.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-007/" class="project-card">
+            <div class="project-image">📊</div>
+            <div class="project-content">
+                <h3 class="project-title">E-Series Standard Resistor Values</h3>
+                <div class="project-meta">
+                    <span>⚡ Reference</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Browse and search standard resistor values in E6, E12, E24, E48, E96 series. Enter any resistance and instantly find the nearest standard value with percentage error.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-012/" class="project-card">
+            <div class="project-image">🔧</div>
+            <div class="project-content">
+                <h3 class="project-title">Fuse Selection Calculator</h3>
+                <div class="project-meta">
+                    <span>⚡ Power</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Select the right fuse for your circuit. Enter load current and application type (resistive, LED, motor, PSU) to get the recommended rating and type (fast/slow-blow). Includes IEC 60127 standard ratings table and housing reference.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-025/" class="project-card">
+            <div class="project-image">💡</div>
+            <div class="project-content">
+                <h3 class="project-title">LED Colors &amp; Forward Voltage</h3>
+                <div class="project-meta">
+                    <span>⚡ Reference</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">LED forward voltage (Vf) reference by color and wavelength. Covers standard, high-brightness, IR, UV, white, and RGB LEDs. Includes semiconductor material, max current, Vf range bar, and resistor calculation guide.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-017/" class="project-card">
+            <div class="project-image">💡</div>
+            <div class="project-content">
+                <h3 class="project-title">LED Resistor for GPIO Pin</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate the series resistor for an LED driven from a microcontroller GPIO pin. Platform presets for Arduino, ESP32, ESP8266, Raspberry Pi. LED colour selector, E12/E24 nearest values, GPIO current limit warnings, and circuit diagram.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-002/" class="project-card">
+            <div class="project-image">💡</div>
+            <div class="project-content">
+                <h3 class="project-title">LED Series Resistor Calculator</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate the correct series resistor for an LED. Enter supply voltage, LED forward voltage and current — get resistor value, nearest E12/E24 standard value, and power dissipation.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-010/" class="project-card">
+            <div class="project-image">⚙️</div>
+            <div class="project-content">
+                <h3 class="project-title">LM317 Voltage Regulator Calculator</h3>
+                <div class="project-meta">
+                    <span>⚡ Power</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate R1 and R2 resistors for the LM317 adjustable voltage regulator. Shows nearest E12/E24 values, actual output voltage, power dissipation, and a circuit diagram.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-020/" class="project-card">
+            <div class="project-image">⚡</div>
+            <div class="project-content">
+                <h3 class="project-title">Max GPIO Current Reference</h3>
+                <div class="project-meta">
+                    <span>⚡ Reference</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Maximum GPIO current limits for Arduino, ESP32, ESP8266, Raspberry Pi, STM32, Teensy, and more. Per-pin absolute max, recommended safe current, and total package budget. Filterable and searchable.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-004/" class="project-card">
+            <div class="project-image">🔺</div>
+            <div class="project-content">
+                <h3 class="project-title">Ohm&#x27;s Law Calculator</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Enter any 2 of 4 values (U, I, R, P) and get the remaining two. Visual Ohm&#x27;s law triangle with highlighted known/calculated values.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-026/" class="project-card">
+            <div class="project-image">〰️</div>
+            <div class="project-content">
+                <h3 class="project-title">Op-Amp Configurations</h3>
+                <div class="project-meta">
+                    <span>⚡ Reference</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Quick reference for 8 common op-amp configurations: comparator, voltage follower, inverting and non-inverting amplifiers, summing amplifier, differential amplifier, differentiator and integrator. SVG diagrams, formulas and gain calculator.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-018/" class="project-card">
+            <div class="project-image">🔼</div>
+            <div class="project-content">
+                <h3 class="project-title">Pull-up / Pull-down Resistor Calculator</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate pull-up and pull-down resistors for buttons, open-drain outputs, and GPIO inputs. Shows idle state, current drain, RC time constant, rise time, and max toggle frequency. Includes application reference table and circuit diagram.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-016/" class="project-card">
+            <div class="project-image">〰️</div>
+            <div class="project-content">
+                <h3 class="project-title">PWM Average Voltage Calculator</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate average output voltage from PWM duty cycle, or find the duty cycle needed for a target voltage. Shows tH, tL, period, analogWrite value, RC smoothing filter recommendation, and PWM waveform diagram.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-014/" class="project-card">
+            <div class="project-image">📉</div>
+            <div class="project-content">
+                <h3 class="project-title">RC Filter Calculator — Low-Pass &amp; High-Pass</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate RC low-pass and high-pass filter cutoff frequency fc = 1/(2πRC). Get attenuation at any frequency, attenuation table across decades, Bode plot, and circuit diagram.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-013/" class="project-card">
+            <div class="project-image">⏱️</div>
+            <div class="project-content">
+                <h3 class="project-title">RC Time Constant Calculator</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate RC circuit time constant τ = R × C. Three modes: R+C → τ, R+τ → C, C+τ → R. Charge and discharge tables with voltage at each multiple of τ, plus an interactive voltage vs time chart.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-001/" class="project-card">
+            <div class="project-image">🎨</div>
+            <div class="project-content">
+                <h3 class="project-title">Resistor Color Code Calculator</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Decode resistor color bands to get resistance value, tolerance, and temperature coefficient. Supports 4, 5, and 6 band resistors. Includes reverse lookup — enter a value to find matching color bands.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-005/" class="project-card">
+            <div class="project-image">🔥</div>
+            <div class="project-content">
+                <h3 class="project-title">Resistor Power Dissipation</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate power dissipated by a resistor. Enter any two of: voltage, current, resistance — get power, recommended wattage rating, and nearest standard resistor value.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-006/" class="project-card">
+            <div class="project-image">🔗</div>
+            <div class="project-content">
+                <h3 class="project-title">Series &amp; Parallel Resistors</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate total resistance for resistors in series or parallel. Add up to 8 resistors, see individual voltage/current distribution, nearest E12/E24 equivalent, and circuit diagram.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-003/" class="project-card">
+            <div class="project-image">⚡</div>
+            <div class="project-content">
+                <h3 class="project-title">Voltage Divider Calculator</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate output voltage of a resistor voltage divider. Enter Uin, R1, R2 and optional load resistance — get Uout, current, power dissipation and load effect.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-019/" class="project-card">
+            <div class="project-image">📊</div>
+            <div class="project-content">
+                <h3 class="project-title">Voltage Divider for ADC Input</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate voltage divider resistors for safe ADC input. Platform presets for Arduino, ESP32, ESP8266, Raspberry Pi Pico. Auto-calculates R1/R2, shows ADC count, resolution, divider current, and utilisation. Includes warnings for over-voltage conditions.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-023/" class="project-card">
+            <div class="project-image">🔌</div>
+            <div class="project-content">
+                <h3 class="project-title">Wire Color Codes</h3>
+                <div class="project-meta">
+                    <span>⚡ Reference</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Wire color code reference for AC mains, DC power, automotive, and data wiring. Covers IEC 60446, ČSN (Czech), old DIN, and US NEC standards with color swatches and searchable table.</p>
+            </div>
+        </a>
+        <a href="electronics/elec-024/" class="project-card">
+            <div class="project-image">⚡</div>
+            <div class="project-content">
+                <h3 class="project-title">Zener Diode Calculator</h3>
+                <div class="project-meta">
+                    <span>⚡ Basic</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Calculate the series resistor for a zener diode voltage regulator. Shows exact and nearest E12/E24 resistor value, zener current at full load and no load, power dissipation in R and zener, efficiency, and circuit diagram. Includes common zener diode reference table.</p>
+            </div>
+        </a>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">

@@ -30,6 +30,15 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://strokeforge.tech/other.html">
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X67CTG4DFM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-X67CTG4DFM');
+    </script>
+
     <link rel="stylesheet" href="css/colors.css">
     <link rel="stylesheet" href="css/style.css">
 
@@ -210,7 +219,52 @@
     <p class="page-intro">Tools that don't fit neatly into engineering or electronics — unit converters, general calculators, and one-off references built when something needed a quick answer. Useful occasionally, but not enough to warrant their own category.</p>
 
     <!-- Projects Grid (filled dynamically) -->
-    <section class="projects-grid"></section>
+    <section class="projects-grid">
+        <a href="other/other-004/" class="project-card">
+            <div class="project-image">🔣</div>
+            <div class="project-content">
+                <h3 class="project-title">ASCII / Extended Table</h3>
+                <div class="project-meta">
+                    <span>🔧 Web Tool</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Interactive reference for all 256 ASCII characters — decimal, hex, octal, binary, keyboard shortcuts. Click any row to copy.</p>
+            </div>
+        </a>
+        <a href="other/other-002/" class="project-card">
+            <div class="project-image">✂️</div>
+            <div class="project-content">
+                <h3 class="project-title">Cutting Plan Optimizer</h3>
+                <div class="project-meta">
+                    <span>🔧 Web Tool</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Browser-based tool for optimizing 1D cutting plans for bars, tubes, and profiles. Minimize waste using First Fit Decreasing algorithm.</p>
+            </div>
+        </a>
+        <a href="other/other-003/" class="project-card">
+            <div class="project-image">📐</div>
+            <div class="project-content">
+                <h3 class="project-title">Scale &amp; Ratio Calculator</h3>
+                <div class="project-meta">
+                    <span>🔧 Web Tool</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Convert real-world dimensions to model scale and back. Presets for RC cars, model trains, military models, architecture and more. Supports mm, cm, m and inch.</p>
+            </div>
+        </a>
+        <a href="other/other-001/" class="project-card">
+            <div class="project-image">🪵</div>
+            <div class="project-content">
+                <h3 class="project-title">Sheet Cutting Plan Optimizer</h3>
+                <div class="project-meta">
+                    <span>🔧 Web Tool</span>
+                    <span>🌐 Browser-based</span>
+                </div>
+                <p class="project-description">Browser-based tool for optimizing 2D cutting plans for sheet material — plywood, MDF, sheet metal. Minimize waste with shelf-packing algorithm and optional piece rotation.</p>
+            </div>
+        </a>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
