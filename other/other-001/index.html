@@ -672,10 +672,16 @@
             pieces.forEach(function(p, i) {
                 if (!p.w || p.w <= 0) errors.push('Row ' + (i + 1) + ': Width must be > 0.');
                 if (!p.h || p.h <= 0) errors.push('Row ' + (i + 1) + ': Height must be > 0.');
-                var fitsW = p.w <= sheetW || (p.canRotate && p.h <= sheetW);
-                var fitsH = p.h <= sheetH || (p.canRotate && p.w <= sheetH);
-                if (!fitsW) errors.push('Row ' + (i + 1) + ': "' + escHtml(p.label) + '" is too wide for the sheet' + (p.canRotate ? ' even when rotated' : '') + '.');
-                if (!fitsH) errors.push('Row ' + (i + 1) + ': "' + escHtml(p.label) + '" is too tall for the sheet' + (p.canRotate ? ' even when rotated' : '') + '.');
+                // A piece is valid only if at least one orientation fits BOTH sheet
+                // dimensions at the same time (checking W and H independently would let a
+                // piece pass that fits no single orientation — and it would be silently dropped).
+                var fitsNoRot = p.w <= sheetW && p.h <= sheetH;
+                var fitsRot   = p.canRotate && p.h <= sheetW && p.w <= sheetH;
+                if (p.w > 0 && p.h > 0 && !fitsNoRot && !fitsRot) {
+                    errors.push('Row ' + (i + 1) + ': "' + escHtml(p.label) + '" (' + p.w + '×' + p.h +
+                        ' mm) does not fit on the ' + sheetW + '×' + sheetH + ' mm sheet' +
+                        (p.canRotate ? ' (even rotated)' : '') + '.');
+                }
             });
 
             var resultsDiv = document.getElementById('results');
