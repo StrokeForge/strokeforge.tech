@@ -200,6 +200,8 @@
                 </div>
             </div>
 
+            <div id="res-warning" style="display:none; margin-top:0.9rem; padding:0.7rem 1rem; border-radius:8px; background:rgba(251,146,60,0.1); border:1px solid #fb923c; color:#fb923c; font-size:0.82rem;"></div>
+
             <div class="rating-bar" id="rating-bar"></div>
         </div>
 
@@ -207,7 +209,7 @@
         <div class="card">
             <h2>Circuit diagram</h2>
             <div class="svg-wrap">
-                <svg id="circuit-svg" viewBox="0 0 360 200" width="540" height="300" xmlns="http://www.w3.org/2000/svg"></svg>
+                <svg id="circuit-svg" viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:540px;height:auto;"></svg>
             </div>
         </div>
 
@@ -335,7 +337,7 @@
         const inp = document.getElementById('inp-' + id);
         const unit = document.getElementById('unit-' + id);
         const v = parseFloat(inp.value);
-        if (isNaN(v) || inp.value.trim() === '') return null;
+        if (isNaN(v) || inp.value.trim() === '' || v <= 0) return null;
         return v * parseFloat(unit.value);
     }
 
@@ -376,6 +378,23 @@
             document.getElementById('hint-'+computedKey).textContent = '= ' + fmt(computedVal);
         }
 
+        // Over-specified consistency check (all three entered)
+        const warnEl = document.getElementById('res-warning');
+        if (filled === 3) {
+            const expectedU = I * R;                    // U should equal I × R
+            const relErr = Math.abs(U - expectedU) / Math.max(Math.abs(U), Math.abs(expectedU));
+            if (relErr > 0.01) {
+                warnEl.textContent = '⚠ U, I and R don\'t match: U = ' + fmtV(U) +
+                    ', but I × R = ' + fmtV(expectedU) +
+                    '. Power is calculated from U × I — remove one value for a consistent result.';
+                warnEl.style.display = '';
+            } else {
+                warnEl.style.display = 'none';
+            }
+        } else {
+            warnEl.style.display = 'none';
+        }
+
         // Rating
         const rIdx = recommendedRating(P);
         const rLabel = RATING_LABELS[rIdx];
@@ -398,7 +417,7 @@
             document.getElementById('computed-value').textContent = fmt(computedVal);
             if (computedKey === 'R') {
                 const e24 = nearestE(E24, computedVal);
-                document.getElementById('computed-value').textContent += ' → E24: ' + fmtR(e24);
+                if (e24) document.getElementById('computed-value').textContent += ' → E24: ' + fmtR(e24);
             }
         } else {
             ci.style.display = 'none';
