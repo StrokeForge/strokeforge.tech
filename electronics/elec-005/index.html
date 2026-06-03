@@ -514,11 +514,11 @@
         const rx2 = rBx+rW/2+8;
         svg.appendChild(text(rx2, midY-(P !== null && !isNaN(P) ? 16 : 0), Rlabel, '#4ade80', 10, 'start'));
 
-        // Current arrow on top wire
+        // Current-direction arrow on the top wire (conventional current: + → resistor)
         const arrX = (lx+rx)/2;
-        svg.appendChild(el('polygon',{points:`${arrX-4},${topY-7} ${arrX+4},${topY-7} ${arrX},${topY-2}`,fill:'#60a5fa'}));
-        const Ilabel = I !== null ? fmtI(I) : 'I →';
-        svg.appendChild(text(arrX, topY-14, Ilabel, '#60a5fa', 10, 'middle'));
+        svg.appendChild(el('polygon',{points:`${arrX+7},${topY} ${arrX-3},${topY-5} ${arrX-3},${topY+5}`,fill:'#60a5fa'}));
+        const Ilabel = I !== null ? fmtI(I) : 'I';
+        svg.appendChild(text(arrX, topY-13, Ilabel, '#60a5fa', 10, 'middle'));
 
         // Power label if known
         if (P !== null && !isNaN(P)) {
