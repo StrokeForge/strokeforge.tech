@@ -483,24 +483,22 @@
         // Bottom wire right→node
         line(vin_x, bot_y, right_x, bot_y, gray);
 
-        // Zener from node down
-        const zen_top = top_y + 10, zen_bot = bot_y - 10;
-        const zen_mid = (zen_top + zen_bot) / 2;
-        line(node_x, top_y, node_x, zen_top, orange);
-        line(node_x, zen_bot, node_x, bot_y, gray);
-
-        // Zener symbol: triangle + bar
+        // Zener: cathode (bar) at top → node/Vout, anode (triangle base) at bottom → GND
         const tz = 14;
-        // Triangle (pointing down — cathode at top)
+        const zen_cath  = top_y + 30;          // cathode bar / tip of triangle
+        const zen_anode = zen_cath + 26;       // triangle base / anode
+        const zen_mid   = (zen_cath + zen_anode) / 2;
+        line(node_x, top_y, node_x, zen_cath, orange);   // node → cathode bar
+        line(node_x, zen_anode, node_x, bot_y, gray);    // anode → bottom (GND) rail
+        // Triangle pointing UP (tip at cathode bar, base = anode below)
         const poly = document.createElementNS(ns, 'polygon');
-        poly.setAttribute('points', `${node_x-tz},${zen_mid-tz} ${node_x+tz},${zen_mid-tz} ${node_x},${zen_mid+tz}`);
+        poly.setAttribute('points', `${node_x},${zen_cath} ${node_x-tz},${zen_anode} ${node_x+tz},${zen_anode}`);
         poly.setAttribute('fill', '#2a1a05'); poly.setAttribute('stroke', orange); poly.setAttribute('stroke-width', 1.8);
         svg.appendChild(poly);
-        // Cathode bar with zener "wings"
-        line(node_x-tz, zen_mid-tz, node_x+tz, zen_mid-tz, orange, 2.5);
-        // Zener wings
-        line(node_x-tz, zen_mid-tz, node_x-tz-5, zen_mid-tz-5, orange, 2);
-        line(node_x+tz, zen_mid-tz, node_x+tz+5, zen_mid-tz+5, orange, 2);
+        // Cathode bar with zener "wings" (Z-shape ends)
+        line(node_x-tz, zen_cath, node_x+tz, zen_cath, orange, 2.5);
+        line(node_x-tz, zen_cath, node_x-tz-5, zen_cath-5, orange, 2);
+        line(node_x+tz, zen_cath, node_x+tz+5, zen_cath+5, orange, 2);
 
         // Vin label
         txt(vin_x, top_y - 18, d ? `Vin = ${d.vin}V` : 'Vin', orange, 11);
@@ -519,7 +517,7 @@
         if (d) {
             const ir = d.iz_noload_mA + d.il_mA;
             txt((r_x1+r_x2)/2, top_y - 32, `IR = ${ir.toFixed(1)} mA`, gray, 10);
-            txt(node_x - 30, (zen_top+zen_bot)/2, `IZ=${d.iz_noload_mA.toFixed(1)}mA`, gray, 9, 'end');
+            txt(node_x - 30, zen_mid, `IZ=${d.iz_noload_mA.toFixed(1)}mA`, gray, 9, 'end');
             txt((load_x1+load_x2)/2, top_y + 28, `IL = ${d.il_mA} mA`, blue, 10);
         }
 
