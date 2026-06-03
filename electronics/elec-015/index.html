@@ -319,7 +319,7 @@
                 <div class="rg"><div class="lbl">Duty cycle</div><div class="val green">${dc.toFixed(2)}%</div></div>
                 <div class="rg"><div class="lbl">tH (output HIGH)</div><div class="val">${fmtTime(tH)}</div></div>
                 <div class="rg"><div class="lbl">tL (output LOW)</div><div class="val blue">${fmtTime(tL)}</div></div>
-                <div class="rg"><div class="lbl">τ = (R1+2×R2)×C</div><div class="val green">${fmtTime((R1+2*R2)*C)}</div></div>
+                <div class="rg"><div class="lbl">(R1+2×R2)×C</div><div class="val green">${fmtTime((R1+2*R2)*C)}</div></div>
             `;
             let warn = '';
             if (R1 < 1e3) warn += '<div class="warn-box">R1 should be ≥ 1 kΩ to protect the internal discharge transistor.</div>';
