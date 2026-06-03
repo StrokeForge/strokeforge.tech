@@ -266,15 +266,7 @@
         if (sortCol !== null) {
             const idx = COLS.indexOf(sortCol);
             if (idx >= 0) {
-                rows.sort((a, b) => {
-                    let av, bv;
-                    if (sortCol === 'awg') { av = a[1]; bv = b[1]; }
-                    else {
-                        const dataIdx = [1,2,3,4,5,6,7,8];
-                        av = a[idx+1]; bv = b[idx+1];
-                    }
-                    return (av - bv) * sortDir;
-                });
+                rows.sort((a, b) => (a[idx+1] - b[idx+1]) * sortDir);
             }
         }
 
@@ -285,7 +277,7 @@
             tbody.innerHTML = '<tr><td colspan="9" class="no-results">No results found</td></tr>';
         } else {
             tbody.innerHTML = rows.map(r => {
-                const hl = jumpVal !== '' && r[0] === jumpVal ? ' hl' : '';
+                const hl = jumpVal !== '' && Number(jumpVal) === r[1] ? ' hl' : '';
                 return `<tr class="${hl}">
                     <td class="awg">${r[0]}</td>
                     <td>${fmt(r[2],3)}</td>
@@ -315,7 +307,11 @@
             const col = th.dataset.col;
             if (sortCol === col) { sortDir *= -1; }
             else { sortCol = col; sortDir = col === 'awg' ? 1 : -1; }
-            document.querySelectorAll('thead th').forEach(t => t.classList.remove('sorted'));
+            document.querySelectorAll('thead th').forEach(t => {
+                t.classList.remove('sorted');
+                const a = t.querySelector('.sa');
+                if (a) a.textContent = '↕';
+            });
             th.classList.add('sorted');
             th.querySelector('.sa').textContent = sortDir === 1 ? '↑' : '↓';
             render();
