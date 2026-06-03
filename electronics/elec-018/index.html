@@ -173,7 +173,7 @@
             <div id="res-notes"></div>
 
             <div class="svg-wrap" style="margin-top:1.25rem">
-                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 160" width="440" height="160"></svg>
+                <svg id="circuit-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 210" style="width:100%;max-width:460px;height:auto;"></svg>
             </div>
         </div>
 
@@ -336,78 +336,69 @@
         function line(x1,y1,x2,y2,col,w){return el('line',{x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'round'});}
         function txt(x,y,t,col,sz,anc){return el('text',{x,y,fill:col||'#9ca3af','font-size':sz||10,'text-anchor':anc||'middle','dominant-baseline':'middle','font-family':'monospace'},t);}
 
+        const cx = 200;
         if (mode === 'pu') {
-            // Pull-up: Vcc → R → node → button → GND; node → GPIO
-            txt(220,12,'Pull-up Resistor','#fb923c',11,'middle');
+            svg.appendChild(txt(cx,18,'Pull-up — idle HIGH, active LOW','#fb923c',12,'middle'));
 
-            // Vcc rail top
-            svg.appendChild(line(160,30,280,30,'#facc15',1.5));
-            svg.appendChild(txt(140,30,'Vcc','#facc15',10,'middle'));
-            svg.appendChild(txt(300,30,vcc+'V','#facc15',9,'start'));
+            // Vcc rail
+            svg.appendChild(line(120,46,280,46,'#facc15',1.5));
+            svg.appendChild(txt(110,46,'Vcc','#facc15',11,'end'));
+            svg.appendChild(txt(cx,34,vcc+' V','#facc15',10,'middle'));
 
-            // R (vertical)
-            svg.appendChild(line(220,30,220,55));
-            svg.appendChild(el('rect',{x:200,y:55,width:40,height:30,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
-            svg.appendChild(txt(220,70,fmtR(R),'#4ade80',8,'middle'));
-            svg.appendChild(line(220,85,220,100));
+            // R: Vcc → node
+            svg.appendChild(line(cx,46,cx,66));
+            svg.appendChild(el('rect',{x:cx-23,y:66,width:46,height:38,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:5}));
+            svg.appendChild(txt(cx,85,fmtR(R),'#4ade80',10,'middle'));
+            svg.appendChild(line(cx,104,cx,128));
 
-            // Node
-            svg.appendChild(el('circle',{cx:220,cy:100,r:4,fill:'#fb923c'}));
+            // Node + GPIO branch
+            svg.appendChild(el('circle',{cx:cx,cy:128,r:4,fill:'#fb923c'}));
+            svg.appendChild(line(cx,128,312,128));
+            svg.appendChild(el('rect',{x:312,y:110,width:74,height:36,fill:'#1a2433',stroke:'#fb923c','stroke-width':1.5,rx:5}));
+            svg.appendChild(txt(349,123,'GPIO','#fb923c',11,'middle'));
+            svg.appendChild(txt(349,137,'reads HIGH','#4ade80',9,'middle'));
 
-            // GPIO output
-            svg.appendChild(line(220,100,320,100));
-            svg.appendChild(el('rect',{x:320,y:88,width:55,height:24,fill:'#1a2433',stroke:'#fb923c','stroke-width':1.5,rx:4}));
-            svg.appendChild(txt(347,100,'GPIO','#fb923c',10,'middle'));
-            svg.appendChild(txt(347,116,'reads HIGH','#4ade80',7,'middle'));
+            // Button: node → GND
+            svg.appendChild(line(cx,128,cx,154));
+            svg.appendChild(line(cx-18,154,cx+18,154,'#60a5fa',2));
+            svg.appendChild(line(cx-12,166,cx+12,166,'#60a5fa',1.5));
+            svg.appendChild(line(cx,166,cx,190));
+            svg.appendChild(txt(cx+28,160,'Button','#60a5fa',10,'start'));
 
-            // Button to GND
-            svg.appendChild(line(220,100,220,118));
-            // Button symbol
-            svg.appendChild(line(205,118,235,118,'#60a5fa',2));
-            svg.appendChild(line(210,130,230,130,'#60a5fa',1));
-            svg.appendChild(line(220,130,220,148));
-            svg.appendChild(txt(248,124,'Button','#60a5fa',8,'start'));
-
-            // GND
-            svg.appendChild(line(160,148,280,148,'#6b7280',1));
-            svg.appendChild(txt(220,155,'GND','#6b7280',8,'middle'));
-
-            svg.appendChild(txt(220,12,'Pull-up — idle HIGH, active LOW','#fb923c',10,'middle'));
+            // GND rail
+            svg.appendChild(line(120,190,280,190,'#6b7280',1.2));
+            svg.appendChild(txt(110,190,'GND','#6b7280',11,'end'));
         } else {
-            // Pull-down: GND → R → node → button → Vcc; node → GPIO
-            svg.appendChild(txt(220,12,'Pull-down — idle LOW, active HIGH','#fb923c',10,'middle'));
+            svg.appendChild(txt(cx,18,'Pull-down — idle LOW, active HIGH','#fb923c',12,'middle'));
 
-            // GND rail bottom
-            svg.appendChild(line(160,148,280,148,'#6b7280',1.5));
-            svg.appendChild(txt(140,148,'GND','#6b7280',10,'middle'));
+            // Vcc rail
+            svg.appendChild(line(120,46,280,46,'#facc15',1.5));
+            svg.appendChild(txt(110,46,'Vcc','#facc15',11,'end'));
+            svg.appendChild(txt(cx,34,vcc+' V','#facc15',10,'middle'));
 
-            // R (vertical)
-            svg.appendChild(line(220,118,220,148));
-            svg.appendChild(el('rect',{x:200,y:88,width:40,height:30,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:4}));
-            svg.appendChild(txt(220,103,fmtR(R),'#4ade80',8,'middle'));
-            svg.appendChild(line(220,85,220,88));
+            // Button: Vcc → node
+            svg.appendChild(line(cx,46,cx,62));
+            svg.appendChild(line(cx-18,62,cx+18,62,'#60a5fa',2));
+            svg.appendChild(line(cx-12,74,cx+12,74,'#60a5fa',1.5));
+            svg.appendChild(line(cx,74,cx,98));
+            svg.appendChild(txt(cx+28,68,'Button','#60a5fa',10,'start'));
 
-            // Node
-            svg.appendChild(el('circle',{cx:220,cy:85,r:4,fill:'#fb923c'}));
+            // Node + GPIO branch
+            svg.appendChild(el('circle',{cx:cx,cy:98,r:4,fill:'#fb923c'}));
+            svg.appendChild(line(cx,98,312,98));
+            svg.appendChild(el('rect',{x:312,y:80,width:74,height:36,fill:'#1a2433',stroke:'#fb923c','stroke-width':1.5,rx:5}));
+            svg.appendChild(txt(349,93,'GPIO','#fb923c',11,'middle'));
+            svg.appendChild(txt(349,107,'reads LOW','#60a5fa',9,'middle'));
 
-            // GPIO output
-            svg.appendChild(line(220,85,320,85));
-            svg.appendChild(el('rect',{x:320,y:73,width:55,height:24,fill:'#1a2433',stroke:'#fb923c','stroke-width':1.5,rx:4}));
-            svg.appendChild(txt(347,85,'GPIO','#fb923c',10,'middle'));
-            svg.appendChild(txt(347,101,'reads LOW','#60a5fa',7,'middle'));
+            // R: node → GND
+            svg.appendChild(line(cx,98,cx,122));
+            svg.appendChild(el('rect',{x:cx-23,y:122,width:46,height:38,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:5}));
+            svg.appendChild(txt(cx,141,fmtR(R),'#4ade80',10,'middle'));
+            svg.appendChild(line(cx,160,cx,190));
 
-            // Button to Vcc
-            svg.appendChild(line(220,85,220,68));
-            // Button symbol
-            svg.appendChild(line(205,68,235,68,'#60a5fa',1));
-            svg.appendChild(line(205,56,235,56,'#60a5fa',2));
-            svg.appendChild(line(220,56,220,36));
-            svg.appendChild(txt(248,62,'Button','#60a5fa',8,'start'));
-
-            // Vcc rail top
-            svg.appendChild(line(160,36,280,36,'#facc15',1.5));
-            svg.appendChild(txt(140,36,'Vcc','#facc15',10,'middle'));
-            svg.appendChild(txt(300,36,vcc+'V','#facc15',9,'start'));
+            // GND rail
+            svg.appendChild(line(120,190,280,190,'#6b7280',1.2));
+            svg.appendChild(txt(110,190,'GND','#6b7280',11,'end'));
         }
     }
 
