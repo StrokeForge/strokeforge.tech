@@ -43,6 +43,12 @@
         thead th:hover { color: var(--primary-orange); }
         thead th .sort-arrow { margin-left: 0.3rem; opacity: 0.4; }
         thead th.sorted .sort-arrow { opacity: 1; color: var(--primary-orange); }
+        thead th { vertical-align: top; }
+        /* unit on a second header line so the numeric columns stay narrow */
+        .th-unit { display: block; font-size: 0.72rem; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-gray); opacity: 0.7; margin-top: 0.15rem; }
+        /* keep data columns compact so the Notes column gets the remaining width */
+        td.platform, td.chip, td.num { white-space: nowrap; }
+        td.notes { white-space: normal; min-width: 260px; }
         tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
         tbody tr:hover { background: rgba(255,165,0,0.04); }
         tbody td { padding: 0.6rem 0.8rem; color: var(--light-gray); vertical-align: middle; }
@@ -58,8 +64,6 @@
         .badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
         .badge-5v { background: #1d4ed8; color: #93c5fd; }
         .badge-33v { background: #166534; color: #86efac; }
-        .badge-18v { background: #7c3aed; color: #c4b5fd; }
-        .badge-12v { background: #92400e; color: #fcd34d; }
 
         /* Info rows */
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -114,7 +118,6 @@
                     <button class="flt-btn active" data-flt="all">All</button>
                     <button class="flt-btn" data-flt="5v">5 V</button>
                     <button class="flt-btn" data-flt="3.3v">3.3 V</button>
-                    <button class="flt-btn" data-flt="other">Other</button>
                 </div>
             </div>
 
@@ -125,9 +128,9 @@
                             <th data-col="platform">Platform <span class="sort-arrow">↕</span></th>
                             <th data-col="chip">Chip <span class="sort-arrow">↕</span></th>
                             <th data-col="vcc">Vcc <span class="sort-arrow">↕</span></th>
-                            <th data-col="maxPin" title="Absolute maximum per GPIO pin">Max/Pin (mA) <span class="sort-arrow">↕</span></th>
-                            <th data-col="recPin" title="Recommended safe current per pin">Rec/Pin (mA) <span class="sort-arrow">↕</span></th>
-                            <th data-col="totalPkg" title="Total current from all GPIO pins combined">Total Pkg (mA) <span class="sort-arrow">↕</span></th>
+                            <th data-col="maxPin" title="Absolute maximum per GPIO pin">Max/Pin <span class="sort-arrow">↕</span><span class="th-unit">mA</span></th>
+                            <th data-col="recPin" title="Recommended safe current per pin">Rec/Pin <span class="sort-arrow">↕</span><span class="th-unit">mA</span></th>
+                            <th data-col="totalPkg" title="Total current from all GPIO pins combined">Total Pkg <span class="sort-arrow">↕</span><span class="th-unit">mA</span></th>
                             <th>Notes</th>
                         </tr>
                     </thead>
@@ -137,7 +140,7 @@
             </div>
         </div>
 
-        <div class="card info-section-card">
+        <div class="card">
             <h2>Important Notes</h2>
             <div class="info-grid">
                 <div class="info-block">
@@ -226,7 +229,7 @@
     function formatNum(n) { return n === null ? '—' : n.toString(); }
 
     function getVccBadge(row) {
-        const cls = row.vcc_class === '5v' ? 'badge-5v' : row.vcc_class === '3.3v' ? 'badge-33v' : 'badge-18v';
+        const cls = row.vcc_class === '5v' ? 'badge-5v' : 'badge-33v';
         return `<span class="badge ${cls}">${row.vcc}</span>`;
     }
 
@@ -274,7 +277,11 @@
             const col = th.dataset.col;
             if (sortCol === col) { sortDir *= -1; }
             else { sortCol = col; sortDir = 1; }
-            document.querySelectorAll('thead th').forEach(t => t.classList.remove('sorted'));
+            document.querySelectorAll('thead th').forEach(t => {
+                t.classList.remove('sorted');
+                const a = t.querySelector('.sort-arrow');
+                if (a) a.textContent = '↕';
+            });
             th.classList.add('sorted');
             th.querySelector('.sort-arrow').textContent = sortDir === 1 ? '↑' : '↓';
             render();
