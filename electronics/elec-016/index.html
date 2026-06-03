@@ -377,11 +377,11 @@
         const svg = document.getElementById('wave-svg');
         while (svg.firstChild) svg.removeChild(svg.firstChild);
         const ns = 'http://www.w3.org/2000/svg';
-        const W=760, H=170, PL=55, PR=20, PT=25, PB=35;
+        const W=820, H=170, PL=55, PR=80, PT=25, PB=35;
         const CW=W-PL-PR, CH=H-PT-PB;
         svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
         svg.setAttribute('width','100%');
-        svg.setAttribute('style','max-width:760px');
+        svg.setAttribute('style','max-width:820px');
 
         function el(tag,attrs,text){const e=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;return e;}
         function line(x1,y1,x2,y2,col,w,dash){const a={x1,y1,x2,y2,stroke:col||'#6b7280','stroke-width':w||1.5,'stroke-linecap':'square'};if(dash)a['stroke-dasharray']=dash;return el('line',a);}
