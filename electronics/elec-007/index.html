@@ -281,7 +281,7 @@
                 setSeries(sName);
                 highlightVal = nearest;
                 renderGrid();
-                document.querySelector('.card:nth-child(2)').scrollIntoView({behavior:'smooth'});
+                document.getElementById('val-grid').closest('.card').scrollIntoView({behavior:'smooth', block:'start'});
             });
             container.appendChild(card);
         });
