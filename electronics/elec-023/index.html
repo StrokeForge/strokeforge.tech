@@ -87,9 +87,11 @@
         .sw-orange      { background: #ea580c; }
         .sw-violet      { background: #7c3aed; }
         .sw-pink        { background: #db2777; }
-        .sw-red-black   { background: linear-gradient(135deg, #b91c1c 50%, #111 50%); }
+        .sw-white-black { background: linear-gradient(135deg, #e5e7eb 50%, #111 50%); border-color: #9ca3af !important; }
         .sw-red-white   { background: linear-gradient(135deg, #b91c1c 50%, #e5e7eb 50%); }
-        .sw-black-red   { background: linear-gradient(135deg, #111 50%, #b91c1c 50%); }
+        .sw-grey-black  { background: linear-gradient(135deg, #6b7280 50%, #111 50%); }
+        .sw-orange-white{ background: linear-gradient(135deg, #ea580c 50%, #e5e7eb 50%); }
+        .sw-green-white { background: linear-gradient(135deg, #15803d 50%, #e5e7eb 50%); }
         .sw-bare        { background: repeating-linear-gradient(45deg, #b45309, #b45309 3px, #111 3px, #111 6px); }
     </style>
 </head>
@@ -399,9 +401,9 @@
             },
             {
                 func: 'Left speaker (−)',
-                iec: sw('sw-black-red','White/Black stripe'),
-                old: sw('sw-black-red','White/Black stripe'),
-                us:  sw('sw-black-red','White/Black stripe'),
+                iec: sw('sw-white-black','White/Black stripe'),
+                old: sw('sw-white-black','White/Black stripe'),
+                us:  sw('sw-white-black','White/Black stripe'),
                 notes: 'Front Left −',
             },
             {
@@ -413,9 +415,9 @@
             },
             {
                 func: 'Right speaker (−)',
-                iec: sw('sw-black','Grey/Black stripe'),
-                old: sw('sw-black','Grey/Black stripe'),
-                us:  sw('sw-black','Grey/Black stripe'),
+                iec: sw('sw-grey-black','Grey/Black stripe'),
+                old: sw('sw-grey-black','Grey/Black stripe'),
+                us:  sw('sw-grey-black','Grey/Black stripe'),
                 notes: 'Front Right −',
             },
             {
@@ -521,16 +523,16 @@
             },
             {
                 func: 'Ethernet TX+ (T568B Pin 1)',
-                iec: sw('sw-orange','Orange/White stripe'),
-                old: sw('sw-orange','Orange/White stripe'),
-                us:  sw('sw-orange','Orange/White stripe'),
+                iec: sw('sw-orange-white','Orange/White stripe'),
+                old: sw('sw-orange-white','Orange/White stripe'),
+                us:  sw('sw-orange-white','Orange/White stripe'),
                 notes: 'T568B (most common): Pin 1 = Orange/White, Pin 2 = Orange',
             },
             {
                 func: 'Ethernet RX+ (T568B Pin 3)',
-                iec: sw('sw-green','Green/White stripe'),
-                old: sw('sw-green','Green/White stripe'),
-                us:  sw('sw-green','Green/White stripe'),
+                iec: sw('sw-green-white','Green/White stripe'),
+                old: sw('sw-green-white','Green/White stripe'),
+                us:  sw('sw-green-white','Green/White stripe'),
                 notes: 'T568B: Pin 3 = Green/White, Pin 6 = Green',
             },
             {
