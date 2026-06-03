@@ -423,7 +423,7 @@
         if (iz_full < 0.001)         document.getElementById('w-iz-low').classList.add('show');
         if (eff < 50)                document.getElementById('w-efficiency').classList.add('show');
 
-        drawDiagram({ vin, vz, r_std, iz_noload_mA: iz_noload*1000, il_mA });
+        drawDiagram({ vin, vz, r_std, ir_mA: ir_full*1000, iz_mA: iz_full*1000, il_mA });
     }
 
     // --- SVG Circuit Diagram ---
@@ -513,11 +513,10 @@
         line(gx-6,gy+4,gx+6,gy+4,gray,2);
         line(gx-2,gy+8,gx+2,gy+8,gray,2);
 
-        // Current labels
+        // Current labels (operating point at the shown load — KCL: IR = IZ + IL)
         if (d) {
-            const ir = d.iz_noload_mA + d.il_mA;
-            txt((r_x1+r_x2)/2, top_y - 32, `IR = ${ir.toFixed(1)} mA`, gray, 10);
-            txt(node_x - 30, zen_mid, `IZ=${d.iz_noload_mA.toFixed(1)}mA`, gray, 9, 'end');
+            txt((r_x1+r_x2)/2, top_y - 32, `IR = ${d.ir_mA.toFixed(1)} mA`, gray, 10);
+            txt(node_x - 30, zen_mid, `IZ = ${d.iz_mA.toFixed(1)} mA`, gray, 9, 'end');
             txt((load_x1+load_x2)/2, top_y + 28, `IL = ${d.il_mA} mA`, blue, 10);
         }
 
