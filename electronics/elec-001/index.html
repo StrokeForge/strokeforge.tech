@@ -456,7 +456,9 @@
         var best = null, bestRemainder = Infinity;
         digitMults.forEach(function(m) {
             var raw = ohms / m.mult;
-            if (raw < 1 || raw >= Math.pow(10, digitCount)) return;
+            // raw must use the full digit count with a non-zero leading digit —
+            // real resistors never start with a black (leading-zero) band.
+            if (raw < Math.pow(10, digitCount - 1) || raw >= Math.pow(10, digitCount)) return;
             var rounded = Math.round(raw);
             var diff = Math.abs(rounded * m.mult - ohms);
             if (diff < bestRemainder) {
