@@ -447,7 +447,7 @@
     }
     function fmtI(mA) {
         if (mA >= 1000) return (mA/1000).toPrecision(3) + ' A';
-        if (mA < 0.001) return (mA*1000).toPrecision(3) + ' nA';
+        if (mA < 0.001) return (mA*1e6).toPrecision(3) + ' nA';
         if (mA < 1)     return (mA*1000).toPrecision(3) + ' µA';
         return mA.toPrecision(3) + ' mA';
     }
@@ -458,7 +458,7 @@
         const capUnit = getUnit('cap');
         const eff = getInp('eff');
 
-        if (capRaw === null || eff === null) {
+        if (capRaw === null || eff === null || capRaw <= 0 || eff <= 0) {
             document.getElementById('results-card').style.display = 'none';
             return;
         }
