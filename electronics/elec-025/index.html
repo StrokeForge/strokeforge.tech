@@ -323,7 +323,11 @@
             const col = th.dataset.col;
             sortDir = sortCol === col ? sortDir * -1 : 1;
             sortCol = col;
-            document.querySelectorAll('thead th').forEach(t => t.classList.remove('sorted'));
+            document.querySelectorAll('thead th').forEach(t => {
+                t.classList.remove('sorted');
+                const a = t.querySelector('.sa');
+                if (a) a.textContent = '↕';
+            });
             th.classList.add('sorted');
             th.querySelector('.sa').textContent = sortDir === 1 ? '↑' : '↓';
             render();
