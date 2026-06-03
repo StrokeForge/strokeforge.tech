@@ -283,9 +283,10 @@
     }
     // Weight estimate per Wh (g/Wh) - rough
     function gPerWh(nom) {
-        if (nom >= 3.5 && nom <= 4.0) return 180; // Li-Ion ~180g/Wh
-        if (nom >= 3.1 && nom <= 3.3) return 250; // LiFePO4 heavier
-        return 200;
+        // grams per Wh ≈ 1000 / energy-density [Wh/kg]
+        if (nom >= 3.5 && nom <= 4.0) return 5.5; // Li-Ion / LiPo ~180 Wh/kg
+        if (nom >= 3.1 && nom <= 3.3) return 9;    // LiFePO4 ~110 Wh/kg
+        return 7;                                  // generic ~140 Wh/kg
     }
 
     // ── Common configs ────────────────────────────────────────────────────
