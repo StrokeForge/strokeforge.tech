@@ -44,11 +44,16 @@
         thead th .sort-arrow { margin-left: 0.3rem; opacity: 0.4; }
         thead th.sorted .sort-arrow { opacity: 1; color: var(--primary-orange); }
         thead th { vertical-align: top; }
-        /* unit on a second header line so the numeric columns stay narrow */
-        .th-unit { display: block; font-size: 0.72rem; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-gray); opacity: 0.7; margin-top: 0.15rem; }
-        /* keep data columns compact so the Notes column gets the remaining width */
-        td.platform, td.chip, td.num { white-space: nowrap; }
-        td.notes { white-space: normal; min-width: 260px; }
+        /* compact 3-line numeric headers so the table fits with no horizontal scrollbar */
+        .th-row2 { display: block; }
+        .th-unit { display: block; font-size: 0.72rem; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-gray); opacity: 0.7; margin-top: 0.1rem; }
+        /* let text columns wrap (incl. long chip codes) so nothing forces a scrollbar */
+        td.notes { white-space: normal; }
+        td.chip, td.platform { overflow-wrap: anywhere; }
+        @media (max-width: 640px) {
+            table { font-size: 0.8rem; }
+            thead th, tbody td { padding: 0.45rem 0.5rem; }
+        }
         tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
         tbody tr:hover { background: rgba(255,165,0,0.04); }
         tbody td { padding: 0.6rem 0.8rem; color: var(--light-gray); vertical-align: middle; }
@@ -61,7 +66,7 @@
         td.notes { font-size: 0.8rem; color: var(--text-gray); }
 
         /* Badge */
-        .badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
         .badge-5v { background: #1d4ed8; color: #93c5fd; }
         .badge-33v { background: #166534; color: #86efac; }
 
@@ -128,9 +133,9 @@
                             <th data-col="platform">Platform <span class="sort-arrow">↕</span></th>
                             <th data-col="chip">Chip <span class="sort-arrow">↕</span></th>
                             <th data-col="vcc">Vcc <span class="sort-arrow">↕</span></th>
-                            <th data-col="maxPin" title="Absolute maximum per GPIO pin">Max/Pin <span class="sort-arrow">↕</span><span class="th-unit">mA</span></th>
-                            <th data-col="recPin" title="Recommended safe current per pin">Rec/Pin <span class="sort-arrow">↕</span><span class="th-unit">mA</span></th>
-                            <th data-col="totalPkg" title="Total current from all GPIO pins combined">Total Pkg <span class="sort-arrow">↕</span><span class="th-unit">mA</span></th>
+                            <th data-col="maxPin" title="Absolute maximum per GPIO pin">Max <span class="sort-arrow">↕</span><span class="th-row2">Pin</span><span class="th-unit">mA</span></th>
+                            <th data-col="recPin" title="Recommended safe current per pin">Rec <span class="sort-arrow">↕</span><span class="th-row2">Pin</span><span class="th-unit">mA</span></th>
+                            <th data-col="totalPkg" title="Total current from all GPIO pins combined">Total <span class="sort-arrow">↕</span><span class="th-row2">Pkg</span><span class="th-unit">mA</span></th>
                             <th>Notes</th>
                         </tr>
                     </thead>
