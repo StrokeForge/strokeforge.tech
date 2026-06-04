@@ -24,9 +24,8 @@
         .card { background: var(--card-bg); border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
         .card h2 { color: var(--primary-orange); font-size: 1.05rem; margin-bottom: 1.25rem; }
 
-        .config-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-        @media (max-width: 780px) { .config-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 500px) { .config-grid { grid-template-columns: 1fr; } }
+        .config-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+        @media (max-width: 560px) { .config-grid { grid-template-columns: 1fr; } }
 
         .cfg-card {
             background: var(--darker-bg); border: 1px solid var(--border-gray);
@@ -138,7 +137,7 @@
     <script src="../../js/nav.js"></script>
     <script>
     const NS = 'http://www.w3.org/2000/svg';
-    const C = { orange:'#ff6b35', gray:'#6b7280', light:'#9ca3af', wire:'#cbd5e1', green:'#4ade80', blue:'#60a5fa', yellow:'#fbbf24' };
+    const C = { orange:'#ff6b35', gray:'#9ca3af', light:'#e2e8f0', wire:'#cbd5e1', green:'#4ade80', blue:'#60a5fa', yellow:'#fbbf24' };
 
     function mkSvg(w,h) {
         const s=document.createElementNS(NS,'svg');
