@@ -164,7 +164,7 @@
         <div id="section-tr" class="thread-section">
             <div class="ctrl-card">
                 <div class="info-box">
-                    d₂ = d − 0.5·p &nbsp;|&nbsp; d₃ = d − p (screw minor ∅) &nbsp;|&nbsp;
+                    d₂ = d − 0.5·p &nbsp;|&nbsp; d₃ = d − p − 2·a<sub>c</sub> (screw minor ∅, a<sub>c</sub> = DIN 103 clearance) &nbsp;|&nbsp;
                     A<sub>s</sub> = π/4·((d₂ + d₃)/2)² &nbsp;|&nbsp;
                     Standard: DIN 103 / ISO 2901–2905 &nbsp;|&nbsp; 30° thread angle
                 </div>
@@ -400,9 +400,12 @@
         tbody.innerHTML = '';
         TR_THREADS.forEach(function(t) {
             var label = t[0], d = t[1], p = t[2];
-            var d2 = (d - 0.5 * p).toFixed(3);
-            var d3 = (d - p).toFixed(3);
-            var d2n = d - 0.5 * p, d3n = d - p;
+            // DIN 103 clearance ac: p 2–5 → 0.25 mm, p 6–12 → 0.5 mm
+            var ac = p <= 5 ? 0.25 : 0.5;
+            var d2n = d - 0.5 * p;            // pitch diameter
+            var d3n = d - p - 2 * ac;         // external (screw) minor ∅, incl. clearance
+            var d2 = d2n.toFixed(3);
+            var d3 = d3n.toFixed(3);
             var As = (Math.PI / 4 * Math.pow((d2n + d3n) / 2, 2)).toFixed(2);
             var tr = document.createElement('tr');
             tr.innerHTML =

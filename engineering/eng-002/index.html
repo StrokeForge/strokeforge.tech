@@ -46,6 +46,13 @@
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: rgba(255,107,53,0.06); }
         .hi { color: var(--primary-orange); font-weight: 700; }
+
+        @media (max-width: 600px) {
+            .table-card { padding: 1.25rem 0.9rem; }
+            table { min-width: 0; font-size: 0.76rem; }
+            th, td { padding: 0.45rem 0.4rem; }
+            th { white-space: normal; }
+        }
     </style>
 </head>
 <body>
