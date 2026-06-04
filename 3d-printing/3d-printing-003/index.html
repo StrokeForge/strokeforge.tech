@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary Meta Tags -->
+    <title>Build Plate Guide | 3D Printer Surfaces, Adhesion & Cleaning | StrokeForge</title>
+    <meta name="description" content="3D printer build plate reference: PEI smooth and textured, glass, garolite and adhesive sheets — which filaments stick, what the part bottom looks like, how to get adhesion, and how to clean each surface safely.">
+    <meta name="keywords" content="3D printer build plate, print surface, PEI sheet, textured PEI, spring steel sheet, glass bed, garolite, build plate adhesion, cleaning build plate, isopropyl alcohol, dish soap">
+    <meta name="author" content="Stanislav Odolan - StrokeForge">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://strokeforge.tech/3d-printing/3d-printing-003/">
+    <meta property="og:title" content="Build Plate Guide | 3D Printer Surfaces, Adhesion & Cleaning">
+    <meta property="og:description" content="Which build surface for which filament: PEI, glass, garolite and adhesive sheets — adhesion, part finish, and safe cleaning for each.">
+    <meta property="og:image" content="https://strokeforge.tech/images/logo.png">
+    <meta property="og:site_name" content="StrokeForge">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://strokeforge.tech/3d-printing/3d-printing-003/">
+    <meta property="twitter:title" content="Build Plate Guide | 3D Printer Surfaces, Adhesion & Cleaning">
+    <meta property="twitter:description" content="Which build surface for which filament: adhesion, part finish, and safe cleaning for each.">
+    <meta property="twitter:image" content="https://strokeforge.tech/images/logo.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://strokeforge.tech/3d-printing/3d-printing-003/">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X67CTG4DFM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-X67CTG4DFM');
+    </script>
+
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "3D Printer Build Plate Guide: Surfaces, Adhesion & Cleaning",
+      "url": "https://strokeforge.tech/3d-printing/3d-printing-003/",
+      "description": "Reference for 3D printer build surfaces: PEI smooth and textured, glass, garolite and adhesive sheets — filament compatibility, adhesion, part finish, and safe cleaning.",
+      "author": { "@type": "Person", "name": "Stanislav Odolan", "url": "https://strokeforge.tech" },
+      "publisher": { "@type": "Organization", "name": "StrokeForge" }
+    }
+    </script>
+    <style>
+        .fg-intro {
+            color: var(--text-gray);
+            font-size: 1.02rem;
+            line-height: 1.8;
+        }
+        .fg-intro strong { color: var(--light-gray); }
+
+        .fg-note {
+            background: rgba(255, 107, 53, 0.08);
+            border-left: 3px solid var(--primary-orange);
+            border-radius: 6px;
+            padding: 0.9rem 1.2rem;
+            margin: 1.75rem 0;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .fg-section-title {
+            color: var(--primary-orange);
+            font-size: 1.5rem;
+            margin: 3rem 0 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        /* Reference tables */
+        .fg-table-scroll { margin: 0; }
+        .fg-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 0.92rem;
+        }
+        .fg-table th, .fg-table td {
+            padding: 0.7rem 0.6rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-gray);
+            vertical-align: top;
+            overflow-wrap: anywhere;
+        }
+        .fg-table thead th {
+            background: var(--darker-bg);
+            color: var(--primary-orange);
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-orange);
+        }
+        .fg-table tbody tr:hover { background: rgba(255, 107, 53, 0.05); }
+        .fg-table .mat { color: var(--light-gray); font-weight: 600; }
+        .fg-table .ok { color: #48bb78; }
+        .fg-table .bad { color: #ef4444; }
+
+        .badge {
+            display: inline-block;
+            padding: 0.12rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.74rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .badge-good { color: #48bb78; border: 1px solid rgba(72,187,120,0.5); }
+        .badge-mid  { color: #f59e0b; border: 1px solid rgba(245,158,11,0.5); }
+        .badge-low  { color: #ef4444; border: 1px solid rgba(239,68,68,0.5); }
+
+        /* Detail cards */
+        .fg-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .fg-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .fg-card h3 {
+            color: var(--light-gray);
+            font-size: 1.25rem;
+            margin-bottom: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .fg-card .fg-full {
+            color: var(--text-gray);
+            font-size: 0.82rem;
+            font-weight: 400;
+        }
+        .fg-difficulty {
+            font-size: 0.74rem;
+            font-weight: 600;
+            padding: 0.1rem 0.55rem;
+            border-radius: 999px;
+        }
+        .diff-easy { color: #48bb78; border: 1px solid rgba(72,187,120,0.5); }
+        .diff-med  { color: #f59e0b; border: 1px solid rgba(245,158,11,0.5); }
+        .diff-hard { color: #ef4444; border: 1px solid rgba(239,68,68,0.5); }
+        .fg-card p {
+            color: var(--text-gray);
+            font-size: 0.92rem;
+            line-height: 1.65;
+            margin: 0.85rem 0;
+        }
+        .fg-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0.75rem 0 0;
+        }
+        .fg-card li {
+            font-size: 0.86rem;
+            color: var(--text-gray);
+            padding: 0.3rem 0 0.3rem 1.4rem;
+            position: relative;
+            line-height: 1.5;
+        }
+        .fg-card li::before {
+            position: absolute;
+            left: 0;
+            top: 0.3rem;
+        }
+        .fg-card li.pro::before { content: "✓"; color: #48bb78; }
+        .fg-card li.con::before { content: "✕"; color: #ef4444; }
+        .fg-card li.use::before { content: "→"; color: var(--primary-orange); }
+        .fg-card li b { color: var(--light-gray); font-weight: 600; }
+
+        @media (max-width: 600px) {
+            .fg-table { font-size: 0.78rem; }
+            .fg-table th, .fg-table td { padding: 0.5rem 0.35rem; }
+            .badge { font-size: 0.66rem; padding: 0.1rem 0.3rem; }
+            .fg-cards { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html" class="active">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>🛏️ Build Plate Guide</h1>
+        <p>Print surfaces, adhesion, and how to clean each plate safely</p>
+    </header>
+
+    <div class="tool-wrap">
+        <a href="/3d-printing.html" class="back-button">← Back to 3D Printing</a>
+        <p class="fg-intro" style="margin-top:1.75rem;">
+            The build plate decides two things: whether your first layer sticks, and what the bottom of the part
+            looks like. Most modern printers use a <strong>removable spring-steel sheet</strong> with a coating
+            on it — usually PEI — but glass, garolite and stick-on sheets all still have their place. This guide
+            covers the surfaces you can actually buy, which filaments each one likes, and — just as important —
+            how to keep them clean without wrecking the coating.
+        </p>
+
+        <!-- SURFACES TABLE -->
+        <h2 class="fg-section-title">Print surfaces</h2>
+        <div class="fg-table-scroll">
+            <table class="fg-table">
+                <colgroup>
+                    <col style="width:22%;"><col style="width:28%;"><col style="width:18%;"><col style="width:16%;"><col style="width:16%;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Surface</th>
+                        <th>Best for</th>
+                        <th>Part bottom</th>
+                        <th>Glue aid</th>
+                        <th>Durability</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="mat">PEI smooth</td>
+                        <td>PLA, PETG, ABS, ASA</td>
+                        <td>Glossy</td>
+                        <td><span class="badge badge-mid">Sometimes</span></td>
+                        <td><span class="badge badge-mid">Medium</span></td>
+                    </tr>
+                    <tr>
+                        <td class="mat">PEI textured</td>
+                        <td>PLA, PETG, ABS, ASA, TPU</td>
+                        <td>Matte, speckled</td>
+                        <td><span class="badge badge-good">Rarely</span></td>
+                        <td><span class="badge badge-good">High</span></td>
+                    </tr>
+                    <tr>
+                        <td class="mat">Smooth glass</td>
+                        <td>PLA, ABS (with aid)</td>
+                        <td>Mirror-smooth</td>
+                        <td><span class="badge badge-low">Usually</span></td>
+                        <td><span class="badge badge-good">Very high</span></td>
+                    </tr>
+                    <tr>
+                        <td class="mat">Garolite (G10)</td>
+                        <td>Nylon (PA)</td>
+                        <td>Matte</td>
+                        <td><span class="badge badge-good">No</span></td>
+                        <td><span class="badge badge-mid">Medium</span></td>
+                    </tr>
+                    <tr>
+                        <td class="mat">Adhesive sheet</td>
+                        <td>PLA, PETG, ABS</td>
+                        <td>Matte</td>
+                        <td><span class="badge badge-good">No</span></td>
+                        <td><span class="badge badge-low">Low</span></td>
+                    </tr>
+                    <tr>
+                        <td class="mat">PC sheet</td>
+                        <td>PC, high-temp</td>
+                        <td>Glossy</td>
+                        <td><span class="badge badge-mid">Sometimes</span></td>
+                        <td><span class="badge badge-mid">Medium</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="fg-note">
+            <strong style="color:var(--light-gray);">Spring steel changes everything.</strong> On a flexible
+            sheet you pop the plate off the printer, flex it, and the part releases on its own — no scraping, no
+            chisel, no gouged bed. If you are still prying parts off a fixed glass plate with a blade, a
+            PEI-coated spring-steel sheet is the single best upgrade you can make.
+        </div>
+
+        <!-- SURFACE DETAIL CARDS -->
+        <h2 class="fg-section-title">The surfaces in detail</h2>
+        <div class="fg-cards">
+
+            <!-- PEI smooth -->
+            <div class="fg-card">
+                <h3>PEI smooth <span class="fg-difficulty diff-easy">Popular</span></h3>
+                <div class="fg-full">Smooth PEI on spring steel</div>
+                <p>Gives parts a clean, glossy bottom and grips most everyday filaments well. The one trap is
+                PETG, which can bond to bare smooth PEI so hard it tears a chunk out of the sheet — so use a glue
+                stick there as a <em>release</em> layer, not for extra grip.</p>
+                <ul>
+                    <li class="pro">Smooth, glossy part bottoms</li>
+                    <li class="pro">Great with PLA, ABS, ASA</li>
+                    <li class="con">PETG can stick too well — use glue as a release agent</li>
+                    <li class="con">Loses grip when coated in skin oil; needs regular washing</li>
+                    <li class="use"><b>Best for:</b> a glossy finish on common filaments</li>
+                </ul>
+            </div>
+
+            <!-- PEI textured -->
+            <div class="fg-card">
+                <h3>PEI textured <span class="fg-difficulty diff-easy">Easiest</span></h3>
+                <div class="fg-full">Powder-coated PEI on spring steel</div>
+                <p>The most forgiving everyday surface. The powder-coated texture grips strongly, releases
+                cleanly once cool, hides minor first-layer imperfections, and survives years of use. It leaves a
+                pleasant matte, lightly speckled finish on the bottom of the part.</p>
+                <ul>
+                    <li class="pro">Very forgiving grip, handles almost everything incl. TPU</li>
+                    <li class="pro">Durable, hides first-layer flaws, attractive matte bottom</li>
+                    <li class="con">Texture is printed into the part — not for a glassy bottom</li>
+                    <li class="use"><b>Best for:</b> a reliable do-everything plate</li>
+                </ul>
+            </div>
+
+            <!-- Glass -->
+            <div class="fg-card">
+                <h3>Smooth glass <span class="fg-difficulty diff-med">Classic</span></h3>
+                <div class="fg-full">Borosilicate / mirror glass</div>
+                <p>Dead flat and almost indestructible, glass gives the glossiest bottom of all — but bare glass
+                is slippery, so you usually need a glue stick or hairspray to make things stick, and you wait for
+                it to cool before parts let go. Many people keep a glass plate purely for that mirror finish.</p>
+                <ul>
+                    <li class="pro">Perfectly flat, extremely durable, mirror-smooth bottoms</li>
+                    <li class="pro">Tolerates aggressive cleaning (even acetone)</li>
+                    <li class="con">Needs an adhesion aid for most filaments</li>
+                    <li class="con">Rigid and heavy; wait for cool-down to release</li>
+                    <li class="use"><b>Best for:</b> flat parts with a glossy underside</li>
+                </ul>
+            </div>
+
+            <!-- Garolite -->
+            <div class="fg-card">
+                <h3>Garolite (G10) <span class="fg-difficulty diff-hard">Specialist</span></h3>
+                <div class="fg-full">Fibreglass-epoxy laminate</div>
+                <p>The go-to answer for nylon, which refuses to stick to PEI or glass. Garolite grips polyamide
+                beautifully with no glue at all. It is a niche plate you add for one job rather than an everyday
+                surface, and because it is a composite laminate you keep it dry rather than soaking it.</p>
+                <ul>
+                    <li class="pro">Excellent, glue-free adhesion for nylon (PA)</li>
+                    <li class="con">Niche — little benefit for common filaments</li>
+                    <li class="con">Composite: wipe clean, don't soak; refresh by light sanding</li>
+                    <li class="use"><b>Best for:</b> printing nylon</li>
+                </ul>
+            </div>
+
+            <!-- Adhesive sheet -->
+            <div class="fg-card">
+                <h3>Adhesive sheet <span class="fg-difficulty diff-med">Stick-on</span></h3>
+                <div class="fg-full">BuildTak-style surface stickers</div>
+                <p>A textured sticker you apply to a flat bed or a steel sheet. Grip is good and they suit
+                printers without a coated plate, but they are a consumable — the surface wears, scratches, and
+                eventually peels, so think of them as something you replace periodically.</p>
+                <ul>
+                    <li class="pro">Strong grip, cheap, no glue needed</li>
+                    <li class="pro">Easy retrofit for a bare or glass bed</li>
+                    <li class="con">Wears out and scratches; a true consumable</li>
+                    <li class="con">Solvents and hard scraping shorten its life fast</li>
+                    <li class="use"><b>Best for:</b> adding grip to a printer without a coated plate</li>
+                </ul>
+            </div>
+
+            <!-- PC sheet -->
+            <div class="fg-card">
+                <h3>PC sheet <span class="fg-difficulty diff-hard">High-temp</span></h3>
+                <div class="fg-full">Polycarbonate-coated plate</div>
+                <p>A specialist surface aimed at high-temperature materials like polycarbonate, where ordinary
+                coatings struggle to hold a warping part down. It gives a glossy bottom and pairs with a hot bed
+                and enclosure; for everyday PLA/PETG it offers no real advantage over PEI.</p>
+                <ul>
+                    <li class="pro">Holds high-temp materials like PC</li>
+                    <li class="pro">Glossy part bottoms</li>
+                    <li class="con">Overkill for everyday filaments</li>
+                    <li class="use"><b>Best for:</b> PC and other high-temperature prints</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- CLEANING SECTION -->
+        <h2 class="fg-section-title">Cleaning &amp; maintenance</h2>
+        <p class="fg-intro" style="font-size:0.96rem;">
+            Nine times out of ten, a part that won't stick isn't a temperature or Z-offset problem — it's a
+            <strong>greasy plate</strong>. Every time you touch the surface, you leave an invisible film of skin
+            oil that filament can't grip, and isopropyl alcohol on its own mostly just smears it around. The
+            single most effective routine is to <strong>wash the plate with warm water and a drop of dish
+            soap</strong>, rinse, and dry it with a clean paper towel — then handle it only by the edges.
+        </p>
+        <div class="fg-table-scroll" style="margin-top:1.5rem;">
+            <table class="fg-table">
+                <colgroup>
+                    <col style="width:22%;"><col style="width:28%;"><col style="width:24%;"><col style="width:26%;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Surface</th>
+                        <th>Routine wash</th>
+                        <th>Also OK</th>
+                        <th>Avoid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="mat">PEI smooth</td>
+                        <td class="ok">Warm water + dish soap</td>
+                        <td>IPA 90 %+ between washes</td>
+                        <td class="bad">Acetone, abrasives, steel wool</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">PEI textured</td>
+                        <td class="ok">Warm water + dish soap</td>
+                        <td>IPA 90 %+</td>
+                        <td class="bad">Acetone, metal scrapers, scrubbing the texture</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">Smooth glass</td>
+                        <td class="ok">Warm water + dish soap</td>
+                        <td>IPA, acetone, scraper, glass cleaner</td>
+                        <td class="bad">Thermal shock (cold water on a hot plate)</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">Garolite (G10)</td>
+                        <td>Wipe with IPA</td>
+                        <td>Light sanding to refresh grip</td>
+                        <td class="bad">Soaking / heavy water, acetone</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">Adhesive sheet</td>
+                        <td>Damp cloth, then dry</td>
+                        <td>Light IPA wipe</td>
+                        <td class="bad">Acetone, soaking, hard scraping</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">PC sheet</td>
+                        <td class="ok">Warm water + dish soap</td>
+                        <td>IPA</td>
+                        <td class="bad">Acetone, abrasives</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="fg-note" style="border-left-color:#ef4444;background:rgba(239,68,68,0.07);">
+            <strong style="color:var(--light-gray);">Two things that quietly ruin plates:</strong>
+            <b>acetone on PEI</b> (it attacks and clouds the coating — keep acetone for glass only), and
+            <b>abrasive pads or metal tools</b> on any coated sheet (they scratch the surface that does the
+            gripping). When in doubt, soap and warm water is always safe.
+        </div>
+        <div class="fg-note" style="border-left-color:#f59e0b;background:rgba(245,158,11,0.07);">
+            <strong style="color:var(--light-gray);">Glue-stick residue?</strong> PVA glue stick and most
+            hairsprays dissolve in plain warm water — another reason the soapy-water wash beats wiping with
+            alcohol. Let removable sheets warm up slightly and the residue lifts off easily.
+        </div>
+
+        <!-- ADHESION / QUICK TIPS -->
+        <h2 class="fg-section-title">Getting parts to stick (and release)</h2>
+        <div class="fg-cards">
+            <div class="fg-card">
+                <h3>Dial in the first layer</h3>
+                <ul>
+                    <li class="use">Set the <b>Z-offset</b> so the first layer is slightly squished, not round</li>
+                    <li class="use">Use the right <b>bed temperature</b> for the filament</li>
+                    <li class="use">Add a <b>brim</b> for tall or small-footprint parts</li>
+                </ul>
+            </div>
+            <div class="fg-card">
+                <h3>Glue is a tool, both ways</h3>
+                <p>A PVA glue stick adds grip on slippery glass — but on smooth PEI it does the opposite job,
+                acting as a <em>release</em> layer so aggressive filaments like PETG don't tear the surface.
+                Same stick, two reasons.</p>
+            </div>
+            <div class="fg-card">
+                <h3>Let it cool before you pull</h3>
+                <p>Most surfaces release best once the bed has cooled — adhesion drops as the part contracts.
+                On a spring-steel sheet, take it off and flex it gently rather than levering parts off hot.
+                For ABS, an enclosure or draft shield stops corners lifting mid-print.</p>
+            </div>
+        </div>
+
+        <div class="fg-note" style="margin-top:2rem;">
+            <strong style="color:var(--light-gray);">Work in progress.</strong> Part of a growing 3D-printing
+            knowledge section. See also the
+            <a href="/3d-printing/3d-printing-001/" style="color:var(--primary-orange);text-decoration:none;">Filament Guide</a>
+            and
+            <a href="/3d-printing/3d-printing-002/" style="color:var(--primary-orange);text-decoration:none;">Nozzle Guide</a>.
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>3D printing reference &amp; maker know-how | 2026</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+            <a href="https://www.printables.com/@TechMaster" target="_blank" style="color: #ff6b35; text-decoration: none;">
+                Printables: @TechMaster
+            </a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+</body>
+</html>

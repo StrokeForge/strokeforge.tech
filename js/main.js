@@ -10,26 +10,24 @@ async function loadProjectCounts() {
         { file: 'data/electronics-projects.json', id: 'count-electronics' },
         { file: 'data/other-projects.json', id: 'count-other' },
         { file: 'data/engineering-projects.json', id: 'count-engineering' },
-        { file: 'data/3d-printing-guides.json', id: 'count-3dprint' }
+        { file: 'data/3d-printing-projects.json', id: 'count-3dprint' }
     ];
 
     for (const category of categories) {
         try {
             const response = await fetch(category.file);
+            if (!response.ok) continue;            // leave the number already in the HTML
             const data = await response.json();
             const list = data.projects || data.guides;
-            const count = list ? list.length : 0;
+            if (!list) continue;
 
             const element = document.getElementById(category.id);
             if (element) {
-                element.textContent = count;
+                element.textContent = list.length;
             }
         } catch (error) {
-            // If file doesn't exist yet, show 0
-            const element = document.getElementById(category.id);
-            if (element) {
-                element.textContent = '0';
-            }
+            // Couldn't load the data — keep the value that's already in the HTML,
+            // don't reset it to 0.
         }
     }
 }
