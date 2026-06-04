@@ -518,20 +518,40 @@
         var it = getIT(grade, sizeIdx);
         if (it == null) return null;
         var up = letter.toUpperCase();
+        var lo = letter.toLowerCase();
         if (up === 'H') {
             return { ES: it, EI: 0, IT: it };
         }
         if (up === 'JS') {
             return { ES: Math.round(it / 2), EI: -Math.round(it / 2), IT: it };
         }
-        // For A-G holes: EI = negative of shaft es for same letter (lower)
-        // i.e. EI = -shaft_es_for_same_letter, ES = EI + IT
-        var shaftResult = calcShaft(letter.toLowerCase(), grade, sizeIdx);
-        if (!shaftResult) return null;
-        // Mirror: hole EI = |shaft es| (for clearance holes A-G, shaft es is negative → EI = -es > 0)
-        var EI = -shaftResult.es;
-        var ES = EI + it;
-        return { ES: ES, EI: EI, IT: it };
+
+        // Lower-deviation holes A–G: general rule EI = -es(shaft same letter), ES = EI + IT
+        var clearanceGroup = ['a','b','c','cd','d','e','ef','f','fg','g'];
+        if (clearanceGroup.indexOf(lo) !== -1) {
+            var shaftResult = calcShaft(lo, grade, sizeIdx);
+            if (!shaftResult) return null;
+            var EI = -shaftResult.es;
+            return { ES: EI + it, EI: EI, IT: it };
+        }
+
+        // Upper-deviation holes J/K/M/N/P…Z.
+        // General rule:  ES = -ei(shaft same letter)
+        // Special rule (K,M,N at grades ≤ IT8 and P…ZC at grades ≤ IT7):
+        //                ES = -ei(shaft) + Δ,  where Δ = IT(grade) − IT(grade−1)
+        var fd = SHAFT_FD[lo];
+        if (!fd) return null;
+        var eiShaft = fd[sizeIdx];          // shaft lower deviation (ei), positive for k–z
+        if (eiShaft === null) return null;
+        var delta = 0;
+        var needsDelta = ((lo === 'k' || lo === 'm' || lo === 'n') && grade <= 8) ||
+                         (['p','r','s','t','u','v','x','y','z'].indexOf(lo) !== -1 && grade <= 7);
+        if (needsDelta) {
+            var itPrev = getIT(grade - 1, sizeIdx);
+            if (itPrev != null) delta = it - itPrev;
+        }
+        var ES2 = -eiShaft + delta;
+        return { ES: ES2, EI: ES2 - it, IT: it };
     }
 
     // ---- Main calculation ----
@@ -595,10 +615,16 @@
                 'Max clearance: ' + maxClearance + ' μm   Max interference: ' + Math.abs(minClearance) + ' μm';
         }
 
-        document.getElementById('res-fit-max').textContent =
-            (fitType === 'Interference fit' ? 'Min interference: ' : 'Max clearance: ') + maxClearance + ' μm';
-        document.getElementById('res-fit-min').textContent =
-            (fitType === 'Clearance fit' ? 'Min clearance: ' : 'Max interference: ') + minClearance + ' μm';
+        if (fitType === 'Clearance fit') {
+            document.getElementById('res-fit-max').textContent = 'Max clearance: ' + maxClearance + ' μm';
+            document.getElementById('res-fit-min').textContent = 'Min clearance: ' + minClearance + ' μm';
+        } else if (fitType === 'Interference fit') {
+            document.getElementById('res-fit-max').textContent = 'Max interference: ' + Math.abs(minClearance) + ' μm';
+            document.getElementById('res-fit-min').textContent = 'Min interference: ' + Math.abs(maxClearance) + ' μm';
+        } else {
+            document.getElementById('res-fit-max').textContent = 'Max clearance: ' + maxClearance + ' μm';
+            document.getElementById('res-fit-min').textContent = 'Max interference: ' + Math.abs(minClearance) + ' μm';
+        }
 
         document.getElementById('results-card').classList.add('visible');
 
