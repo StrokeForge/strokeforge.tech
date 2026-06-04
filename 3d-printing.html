@@ -5,27 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Primary Meta Tags -->
-    <title>3D Printing Projects | StrokeForge</title>
-    <meta name="title" content="3D Printing Projects | StrokeForge">
-    <meta name="description" content="Collection of 3D printing projects: dryboxes, organizers, modular shelves, coasters, and functional prints. Free STL files and detailed build guides for Prusa printers.">
-    <meta name="keywords" content="3D printing, STL files, Prusa prints, functional prints, 3D models, drybox, storage solutions, printables, filament storage">
-    <meta name="author" content="StrokeForge">
+    <title>Filament Guide | 3D Printing Materials, Temperatures & Drying | StrokeForge</title>
+    <meta name="title" content="Filament Guide | 3D Printing Materials, Temperatures & Drying | StrokeForge">
+    <meta name="description" content="Practical 3D printing filament reference: nozzle and bed temperatures, drying conditions, enclosure needs, mechanical properties, and what each material (PLA, PETG, ABS, ASA, TPU, Nylon, PC) is actually good for.">
+    <meta name="keywords" content="3D printing filament, filament temperatures, nozzle temperature, bed temperature, filament drying, PLA, PETG, ABS, ASA, TPU, Nylon, polycarbonate, filament guide, material comparison">
+    <meta name="author" content="Stanislav Odolan - StrokeForge">
     <meta name="robots" content="index, follow">
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="article">
     <meta property="og:url" content="https://strokeforge.tech/3d-printing.html">
-    <meta property="og:title" content="3D Printing Projects | StrokeForge">
-    <meta property="og:description" content="Collection of 3D printing projects with free STL files and detailed build guides. Dryboxes, organizers, and functional prints for makers.">
-    <meta property="og:image" content="https://strokeforge.tech/3d-printing/3d-printing-001/main.jpg">
+    <meta property="og:title" content="Filament Guide | 3D Printing Materials, Temperatures & Drying">
+    <meta property="og:description" content="Practical 3D printing filament reference: temperatures, drying, enclosure needs, mechanical properties, and the right use case for each material.">
+    <meta property="og:image" content="https://strokeforge.tech/images/logo.png">
     <meta property="og:site_name" content="StrokeForge">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://strokeforge.tech/3d-printing.html">
-    <meta property="twitter:title" content="3D Printing Projects | StrokeForge">
-    <meta property="twitter:description" content="Collection of 3D printing projects with free STL files and detailed build guides.">
-    <meta property="twitter:image" content="https://strokeforge.tech/3d-printing/3d-printing-001/main.jpg">
+    <meta property="twitter:title" content="Filament Guide | 3D Printing Materials, Temperatures & Drying">
+    <meta property="twitter:description" content="Practical 3D printing filament reference: temperatures, drying, enclosure needs, and material use cases.">
+    <meta property="twitter:image" content="https://strokeforge.tech/images/logo.png">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://strokeforge.tech/3d-printing.html">
@@ -46,211 +46,152 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "3D Printing Projects | StrokeForge",
+      "@type": "Article",
+      "headline": "3D Printing Filament Guide: Temperatures, Drying & Material Selection",
       "url": "https://strokeforge.tech/3d-printing.html",
-      "description": "Collection of 3D printing projects with free STL files and detailed build guides. Dryboxes, organizers, and functional prints.",
-      "author": { "@type": "Person", "name": "Stanislav Odolan", "url": "https://strokeforge.tech" }
+      "description": "Practical reference for 3D printing filaments: nozzle and bed temperatures, drying conditions, enclosure needs, mechanical properties, and use cases.",
+      "author": { "@type": "Person", "name": "Stanislav Odolan", "url": "https://strokeforge.tech" },
+      "publisher": { "@type": "Organization", "name": "StrokeForge" }
     }
     </script>
     <style>
-/* Category Navigation */
-        .category-navbar {
-            background: rgba(0, 0, 0, 0.9);
+        .fg-intro {
+            color: var(--text-gray);
+            font-size: 1.02rem;
+            line-height: 1.8;
+        }
+        .fg-intro strong { color: var(--light-gray); }
+
+        .fg-note {
+            background: rgba(255, 107, 53, 0.08);
+            border-left: 3px solid var(--primary-orange);
+            border-radius: 6px;
+            padding: 0.9rem 1.2rem;
+            margin: 1.75rem 0;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .fg-section-title {
+            color: var(--primary-orange);
+            font-size: 1.5rem;
+            margin: 3rem 0 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        /* Quick-reference table */
+        .fg-table-scroll { margin: 0; }
+        .fg-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 0.92rem;
+        }
+        .fg-table th, .fg-table td {
+            padding: 0.7rem 0.6rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-gray);
+            vertical-align: top;
+            overflow-wrap: anywhere;
+        }
+        .fg-table thead th {
+            background: var(--darker-bg);
+            color: var(--primary-orange);
+            font-weight: 600;
             border-bottom: 2px solid var(--primary-orange);
-            position: sticky;
-            top: 70px;
-            z-index: 90;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
+        .fg-table tbody tr:hover { background: rgba(255, 107, 53, 0.05); }
+        .fg-table .mat { color: var(--light-gray); font-weight: 600; }
+        .fg-table col.c-mat { width: 24%; }
+        .fg-table col.c-noz { width: 19%; }
+        .fg-table col.c-bed { width: 19%; }
+        .fg-table col.c-enc { width: 19%; }
+        .fg-table col.c-dry { width: 19%; }
 
-        .category-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0.5rem 2rem;
-            display: flex;
-            justify-content: center;
-            gap: 0.75rem;
-            overflow-x: auto;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary-orange) rgba(0, 0, 0, 0.3);
-        }
-
-        .category-container::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .category-container::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .category-container::-webkit-scrollbar-thumb {
-            background: var(--primary-orange);
-            border-radius: 3px;
-        }
-
-        .category-link {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.15rem;
-            padding: 0.4rem 1rem;
-            min-width: 100px;
-            background: var(--card-bg);
-            border: 2px solid var(--border-gray);
-            border-radius: 8px;
-            color: var(--light-gray);
-            text-decoration: none;
+        .badge {
+            display: inline-block;
+            padding: 0.12rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.74rem;
+            font-weight: 600;
             white-space: nowrap;
-            transition: all 0.3s ease;
-            font-weight: 500;
         }
+        .badge-no   { color: #48bb78; border: 1px solid rgba(72,187,120,0.5); }
+        .badge-opt  { color: #f59e0b; border: 1px solid rgba(245,158,11,0.5); }
+        .badge-yes  { color: #ef4444; border: 1px solid rgba(239,68,68,0.5); }
 
-        .category-link:hover {
-            border-color: var(--primary-orange);
-            background: rgba(255, 107, 53, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .category-link.active {
-            border-color: var(--primary-orange);
-            background: var(--primary-orange);
-            color: var(--dark-bg);
-            box-shadow: 0 4px 10px rgba(255, 107, 53, 0.3);
-        }
-
-        .category-icon {
-            font-size: 1.1rem;
-            line-height: 1;
-        }
-
-        .category-text {
-            font-size: 0.75rem;
-            line-height: 1;
-        }
-
-        /* Projects Grid */
-        .projects-grid {
-            max-width: 1200px;
-            margin: 3rem auto;
-            padding: 0 2rem;
+        /* Material detail cards */
+        .fg-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
         }
-        
-        .project-card {
+        .fg-card {
             background: var(--card-bg);
             border: 1px solid var(--border-gray);
             border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: block;
-        }
-        
-        .project-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-orange);
-            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
-        }
-        
-        .project-image {
-            width: 100%;
-            height: 220px;
-            background: var(--darker-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-gray);
-            font-size: 4rem;
-            overflow: hidden;
-        }
-        
-        .project-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .project-content {
             padding: 1.5rem;
         }
-        
-        .project-title {
-            font-size: 1.4rem;
+        .fg-card h3 {
             color: var(--light-gray);
-            margin-bottom: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .project-meta {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.85rem;
-            color: var(--text-gray);
-            flex-wrap: wrap;
-        }
-        
-        .project-meta span {
+            font-size: 1.25rem;
+            margin-bottom: 0.15rem;
             display: flex;
             align-items: center;
-            gap: 0.3rem;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
-        
-        .difficulty-beginner { color: #48bb78; }
-        .difficulty-intermediate { color: #f59e0b; }
-        .difficulty-advanced { color: #ef4444; }
-        
-        .project-description {
+        .fg-card .fg-full {
             color: var(--text-gray);
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 0.82rem;
+            font-weight: 400;
         }
-        
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
+        .fg-difficulty {
+            font-size: 0.74rem;
+            font-weight: 600;
+            padding: 0.1rem 0.55rem;
+            border-radius: 999px;
+        }
+        .diff-easy { color: #48bb78; border: 1px solid rgba(72,187,120,0.5); }
+        .diff-med  { color: #f59e0b; border: 1px solid rgba(245,158,11,0.5); }
+        .diff-hard { color: #ef4444; border: 1px solid rgba(239,68,68,0.5); }
+        .fg-card p {
             color: var(--text-gray);
-            grid-column: 1 / -1;
+            font-size: 0.92rem;
+            line-height: 1.65;
+            margin: 0.85rem 0;
         }
-        
-        .empty-state h2 {
-            color: var(--primary-orange);
-            font-size: 2rem;
-            margin-bottom: 1rem;
+        .fg-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0.75rem 0 0;
         }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-.category-navbar {
-                top: 65px;
-            }
+        .fg-card li {
+            font-size: 0.86rem;
+            color: var(--text-gray);
+            padding: 0.3rem 0 0.3rem 1.4rem;
+            position: relative;
+            line-height: 1.5;
+        }
+        .fg-card li::before {
+            position: absolute;
+            left: 0;
+            top: 0.3rem;
+        }
+        .fg-card li.pro::before { content: "✓"; color: #48bb78; }
+        .fg-card li.con::before { content: "✕"; color: #ef4444; }
+        .fg-card li.use::before { content: "→"; color: var(--primary-orange); }
+        .fg-card li b { color: var(--light-gray); font-weight: 600; }
 
-            .category-container {
-                padding: 0.75rem 1rem;
-                gap: 0.75rem;
-            }
-
-            .category-link {
-                padding: 0.6rem 1rem;
-            }
-
-            .category-icon {
-                font-size: 1.1rem;
-            }
-
-            .category-text {
-                font-size: 0.85rem;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 600px) {
+            .fg-table { font-size: 0.8rem; }
+            .fg-table th, .fg-table td { padding: 0.55rem 0.4rem; }
+            .badge { font-size: 0.68rem; padding: 0.1rem 0.35rem; }
+            .fg-table col.c-mat { width: 26%; }
+            .fg-cards { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -265,55 +206,285 @@
                 <a href="electronics.html">Electronics</a>
                 <a href="other.html">Other</a>
                 <a href="3d-printing.html" class="active">3D Printing</a>
-</div>
+            </div>
             <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
     </nav>
 
     <!-- Page Header -->
     <header class="page-header">
-        <h1>🖨️ 3D Printing Projects</h1>
-        <p>Functional designs and custom solutions for everyday problems</p>
+        <h1>🖨️ Filament Guide</h1>
+        <p>Temperatures, drying, and choosing the right material for the job</p>
     </header>
 
-    <!-- Category Navigation -->
-    <nav class="category-navbar">
-        <div class="category-container">
-            <a href="#all" class="category-link active" data-category="all">
-                <span class="category-icon">📋</span>
-                <span class="category-text">All Projects</span>
-            </a>
-            <a href="#storage" class="category-link" data-category="storage">
-                <span class="category-icon">🗄️</span>
-                <span class="category-text">Storage</span>
-            </a>
-            <a href="#boxes" class="category-link" data-category="boxes">
-                <span class="category-icon">📦</span>
-                <span class="category-text">Boxes</span>
-            </a>
-            <a href="#decor" class="category-link" data-category="decor">
-                <span class="category-icon">🏠</span>
-                <span class="category-text">Decor</span>
-            </a>
-            <a href="#games" class="category-link" data-category="games">
-                <span class="category-icon">🎲</span>
-                <span class="category-text">Games</span>
-            </a>
-            <a href="#tech" class="category-link" data-category="tech">
-                <span class="category-icon">⚙️</span>
-                <span class="category-text">Tech</span>
-            </a>
-        </div>
-    </nav>
+    <div class="tool-wrap">
+        <a href="index.html" class="back-button">← Back to Home</a>
+        <p class="fg-intro" style="margin-top:1.75rem;">
+            Every filament is a trade-off between how easy it is to print and what the finished part can take.
+            This page is a <strong>working reference</strong> — the numbers you actually reach for at the slicer,
+            plus a plain-language note on where each material shines and where it lets you down. Treat the
+            temperatures as <strong>starting ranges</strong>: every spool, hotend, and printer is a little
+            different, so dial in with a temperature tower if you want the cleanest result.
+        </p>
 
-    <!-- Projects Grid -->
-    <section class="projects-grid">
-        <!-- Projects will be loaded dynamically by JavaScript -->
-    </section>
+        <div class="fg-note">
+            <strong style="color:var(--light-gray);">How to read the ranges.</strong> Nozzle and bed values
+            cover typical spools of each material — start near the middle and adjust. "Enclosure" tells you
+            whether a draft-free, warm build chamber matters: with high-shrink materials, an open printer in a
+            cool room is the usual cause of cracking and warping.
+        </div>
+
+        <!-- QUICK REFERENCE TABLE -->
+        <h2 class="fg-section-title">Quick reference</h2>
+        <div class="fg-table-scroll">
+            <table class="fg-table">
+                <colgroup>
+                    <col class="c-mat"><col class="c-noz"><col class="c-bed"><col class="c-enc"><col class="c-dry">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Nozzle</th>
+                        <th>Bed</th>
+                        <th>Enclosure</th>
+                        <th>Drying</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="mat">PLA</td>
+                        <td>190–220 °C</td>
+                        <td>50–60 °C</td>
+                        <td><span class="badge badge-no">Not needed</span></td>
+                        <td>45 °C · 4–6 h</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">PETG</td>
+                        <td>230–250 °C</td>
+                        <td>70–85 °C</td>
+                        <td><span class="badge badge-opt">Optional</span></td>
+                        <td>65 °C · 4–6 h</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">ABS</td>
+                        <td>240–260 °C</td>
+                        <td>90–110 °C</td>
+                        <td><span class="badge badge-yes">Recommended</span></td>
+                        <td>70 °C · 4–6 h</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">ASA</td>
+                        <td>240–260 °C</td>
+                        <td>90–110 °C</td>
+                        <td><span class="badge badge-yes">Recommended</span></td>
+                        <td>70 °C · 4–6 h</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">TPU <span style="color:var(--text-gray);font-weight:400;">(flex)</span></td>
+                        <td>220–240 °C</td>
+                        <td>40–60 °C</td>
+                        <td><span class="badge badge-opt">Optional</span></td>
+                        <td>50 °C · 4–6 h</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">Nylon (PA)</td>
+                        <td>250–280 °C</td>
+                        <td>70–100 °C</td>
+                        <td><span class="badge badge-yes">Recommended</span></td>
+                        <td>70–80 °C · 8–12 h</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">PC <span style="color:var(--text-gray);font-weight:400;">(polycarb.)</span></td>
+                        <td>270–310 °C</td>
+                        <td>100–120 °C</td>
+                        <td><span class="badge badge-yes">Required</span></td>
+                        <td>80 °C · 6–8 h</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="fg-note" style="border-left-color:#f59e0b;background:rgba(245,158,11,0.07);">
+            <strong style="color:var(--light-gray);">Composites (–CF / –GF).</strong> Carbon- or glass-filled
+            versions of these materials print at roughly the same temperatures as their base resin, but the
+            abrasive fibres chew through brass nozzles fast — switch to a hardened steel or ruby nozzle before
+            you run them.
+        </div>
+
+        <!-- MATERIAL DETAIL CARDS -->
+        <h2 class="fg-section-title">The materials in detail</h2>
+        <div class="fg-cards">
+
+            <!-- PLA -->
+            <div class="fg-card">
+                <h3>PLA <span class="fg-difficulty diff-easy">Easy</span></h3>
+                <div class="fg-full">Polylactic acid</div>
+                <p>The default starting point and still the most forgiving filament there is. It prints cool,
+                barely warps, and holds crisp detail — but it softens in a hot car and creeps under sustained
+                load, so it is a display and prototyping material more than a structural one.</p>
+                <ul>
+                    <li class="pro">Easiest to print, no enclosure, sharp detail</li>
+                    <li class="pro">Stiff and rigid, low odour, biodegradable feedstock</li>
+                    <li class="con">Softens around 55–60 °C — no good near heat</li>
+                    <li class="con">Brittle; creeps slowly under constant stress</li>
+                    <li class="use"><b>Best for:</b> models, prototypes, jigs, indoor parts</li>
+                </ul>
+            </div>
+
+            <!-- PETG -->
+            <div class="fg-card">
+                <h3>PETG <span class="fg-difficulty diff-easy">Easy–Mid</span></h3>
+                <div class="fg-full">Glycol-modified PET</div>
+                <p>The practical middle ground: tougher and more temperature-resistant than PLA, far easier than
+                ABS. It is slightly stringy and likes a clean, dry spool, but it gives strong, durable parts with
+                good chemical and moisture resistance — a great everyday workhorse.</p>
+                <ul>
+                    <li class="pro">Tough, impact-resistant, mild flex before breaking</li>
+                    <li class="pro">Good moisture and chemical resistance, food-safe grades exist</li>
+                    <li class="con">Stringing and oozing; can stick too well to the bed</li>
+                    <li class="con">Absorbs moisture — dry spools print much cleaner</li>
+                    <li class="use"><b>Best for:</b> functional parts, outdoor use, brackets, enclosures</li>
+                </ul>
+            </div>
+
+            <!-- ABS -->
+            <div class="fg-card">
+                <h3>ABS <span class="fg-difficulty diff-hard">Advanced</span></h3>
+                <div class="fg-full">Acrylonitrile butadiene styrene</div>
+                <p>A genuine engineering plastic — heat-resistant, tough, and easy to post-process (it can be
+                smoothed with acetone). The catch is shrinkage: without a warm, draft-free enclosure, large parts
+                crack and corners lift. Print in a ventilated space; the fumes are unpleasant.</p>
+                <ul>
+                    <li class="pro">Heat-resistant (~95 °C), tough, machinable, acetone-smoothable</li>
+                    <li class="con">Warps and cracks badly without an enclosure</li>
+                    <li class="con">Strong styrene fumes — ventilate well</li>
+                    <li class="use"><b>Best for:</b> heat-exposed parts, automotive interiors, housings</li>
+                </ul>
+            </div>
+
+            <!-- ASA -->
+            <div class="fg-card">
+                <h3>ASA <span class="fg-difficulty diff-hard">Advanced</span></h3>
+                <div class="fg-full">Acrylonitrile styrene acrylate</div>
+                <p>Think of ASA as ABS built for the outdoors. It prints almost the same way and needs the same
+                enclosure, but it shrugs off UV and weathering instead of yellowing and going brittle. If a part
+                lives in the sun, this is usually the right pick.</p>
+                <ul>
+                    <li class="pro">Excellent UV and weather resistance, holds colour outdoors</li>
+                    <li class="pro">Heat-resistant and tough, like ABS</li>
+                    <li class="con">Same warping and ventilation needs as ABS</li>
+                    <li class="use"><b>Best for:</b> outdoor fixtures, signage, automotive exterior parts</li>
+                </ul>
+            </div>
+
+            <!-- TPU -->
+            <div class="fg-card">
+                <h3>TPU <span class="fg-difficulty diff-med">Intermediate</span></h3>
+                <div class="fg-full">Thermoplastic polyurethane (flexible)</div>
+                <p>Rubber-like and elastic — it bends, compresses and springs back. The trick is to print slow
+                and use a direct-drive extruder; Bowdens fight the soft filament. Softer grades (lower Shore
+                hardness) are more flexible but harder to feed cleanly.</p>
+                <ul>
+                    <li class="pro">Flexible, elastic, excellent abrasion and impact resistance</li>
+                    <li class="pro">Good chemical and oil resistance</li>
+                    <li class="con">Print slowly; tricky on Bowden setups</li>
+                    <li class="con">Absorbs moisture readily — keep it dry</li>
+                    <li class="use"><b>Best for:</b> gaskets, seals, phone cases, vibration dampers, wheels</li>
+                </ul>
+            </div>
+
+            <!-- Nylon -->
+            <div class="fg-card">
+                <h3>Nylon (PA) <span class="fg-difficulty diff-hard">Advanced</span></h3>
+                <div class="fg-full">Polyamide</div>
+                <p>Tough, wear-resistant and slightly flexible — excellent for parts that take repeated stress,
+                like living hinges and gears. Its weakness is water: nylon is the thirstiest common filament and
+                must be printed bone-dry, or it bubbles, strings and prints weak. Long, hot drying is mandatory.</p>
+                <ul>
+                    <li class="pro">High toughness, fatigue and wear resistance, low friction</li>
+                    <li class="pro">Handles repeated flexing — gears, hinges, clips</li>
+                    <li class="con">Extremely hygroscopic — needs long, hot drying</li>
+                    <li class="con">Warps; adhesion can be fussy</li>
+                    <li class="use"><b>Best for:</b> gears, bearings, hinges, high-wear mechanical parts</li>
+                </ul>
+            </div>
+
+            <!-- PC -->
+            <div class="fg-card">
+                <h3>PC <span class="fg-difficulty diff-hard">Expert</span></h3>
+                <div class="fg-full">Polycarbonate</div>
+                <p>About the strongest and most heat-resistant filament in common use — tough, nearly
+                transparent in thin walls, and stable well above 100 °C. It demands high temperatures, a hot
+                enclosure and a dry spool, and it warps hard, so it is firmly an experienced-user material.</p>
+                <ul>
+                    <li class="pro">Very high strength, impact and heat resistance (~110 °C+)</li>
+                    <li class="pro">Can be near-transparent</li>
+                    <li class="con">Needs a very hot nozzle, heated chamber, dry filament</li>
+                    <li class="con">Strong warping; difficult bed adhesion</li>
+                    <li class="use"><b>Best for:</b> high-load, high-heat engineering parts, light covers</li>
+                </ul>
+            </div>
+
+            <!-- Support materials -->
+            <div class="fg-card">
+                <h3>Support materials</h3>
+                <div class="fg-full">PVA &amp; HIPS</div>
+                <p>Dual-extruder helpers that dissolve away, leaving clean overhangs and cavities.
+                <b>PVA</b> washes out in plain water and pairs with PLA/PETG; <b>HIPS</b> dissolves in limonene
+                and is the usual partner for ABS. Both soak up moisture quickly, so store them sealed.</p>
+                <ul>
+                    <li class="pro">PVA: water-soluble, clean removal, pairs with PLA</li>
+                    <li class="pro">HIPS: limonene-soluble, partners with ABS</li>
+                    <li class="con">Both very hygroscopic — keep dry and sealed</li>
+                    <li class="use"><b>Best for:</b> complex overhangs and internal cavities on dual-extruder printers</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- DRYING SECTION -->
+        <h2 class="fg-section-title">Drying filament</h2>
+        <p class="fg-intro" style="font-size:0.96rem;">
+            Filament absorbs water from the air, and wet filament prints badly — popping and steam at the
+            nozzle, stringing, a rough surface, and weaker parts. PLA is fairly tolerant; PETG, TPU, Nylon, PC
+            and the soluble supports are not. If a previously good spool suddenly prints poorly, moisture is the
+            first thing to suspect. Dry <strong>below the material's softening point</strong> so the coils don't
+            fuse, and store dried spools in a sealed box with desiccant.
+        </p>
+        <div class="fg-table-scroll" style="margin-top:1.5rem;">
+            <table class="fg-table">
+                <colgroup>
+                    <col style="width:34%;"><col style="width:22%;"><col style="width:22%;"><col style="width:22%;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Temp</th>
+                        <th>Time</th>
+                        <th>Thirst</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="mat">PLA</td><td>40–45 °C</td><td>4–6 h</td><td><span class="badge badge-no">Low</span></td></tr>
+                    <tr><td class="mat">PETG</td><td>60–65 °C</td><td>4–6 h</td><td><span class="badge badge-opt">Medium</span></td></tr>
+                    <tr><td class="mat">ABS / ASA</td><td>65–70 °C</td><td>4–6 h</td><td><span class="badge badge-opt">Medium</span></td></tr>
+                    <tr><td class="mat">TPU</td><td>50 °C</td><td>4–6 h</td><td><span class="badge badge-yes">High</span></td></tr>
+                    <tr><td class="mat">Nylon (PA)</td><td>70–80 °C</td><td>8–12 h</td><td><span class="badge badge-yes">Very high</span></td></tr>
+                    <tr><td class="mat">PC</td><td>80 °C</td><td>6–8 h</td><td><span class="badge badge-yes">High</span></td></tr>
+                    <tr><td class="mat">PVA / HIPS</td><td>45–65 °C</td><td>4–8 h</td><td><span class="badge badge-yes">Very high</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="fg-note" style="margin-top:2rem;">
+            <strong style="color:var(--light-gray);">Work in progress.</strong> This filament reference is the
+            first piece of a growing 3D-printing knowledge section. Nozzle types, bed adhesion, and
+            troubleshooting guides are on the way.
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
-        <p>Designs from concept to reality | 2026</p>
+        <p>3D printing reference &amp; maker know-how | 2026</p>
         <p style="margin-top: 0.5rem; font-size: 0.8rem;">
             <a href="https://www.printables.com/@TechMaster" target="_blank" style="color: #ff6b35; text-decoration: none;">
                 Printables: @TechMaster
@@ -321,8 +492,6 @@
         </p>
     </footer>
 
-    <!-- Load 3D Printing Projects JavaScript -->
-    <script src="js/3d-printing.js"></script>
     <script src="js/nav.js"></script>
 </body>
 </html>
