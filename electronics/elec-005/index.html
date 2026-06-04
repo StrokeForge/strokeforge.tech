@@ -434,12 +434,13 @@
         const bar = document.getElementById('rating-bar');
         bar.innerHTML = '<div style="font-size:0.78rem;color:var(--text-gray);margin-bottom:0.6rem">Wattage rating comparison (2× safety factor shown)</div>';
 
-        RATINGS.forEach((r, i) => {
-            const pct = Math.min(100, (P / r) * 100);
+        for (let i = 0; i < RATINGS.length; i++) {
+            const r    = RATINGS[i];
+            const pct  = Math.min(100, (P / r) * 100);
             const over = P > r;
             const ok   = P <= r * 0.5;
             const cls  = over ? 'over' : (ok ? 'ok' : 'warn');
-            const row = document.createElement('div');
+            const row  = document.createElement('div');
             row.className = 'rating-row';
             row.innerHTML = `
                 <div class="r-label">${RATING_LABELS[i]}</div>
@@ -447,8 +448,8 @@
                 <div class="r-status" style="color:${over?'#f87171':(ok?'#4ade80':'#fb923c')}">${over ? '✗ overload' : (ok ? '✓ safe' : '⚠ marginal')}</div>
             `;
             bar.appendChild(row);
-            if (i >= 5 && !over) return; // don't show huge ratings if not needed
-        });
+            if (ok) break; // first rating with 2× margin reached — larger ones are redundant
+        }
     }
 
     function clearAll() {
@@ -495,10 +496,10 @@
         svg.appendChild(line(lx, topY, lx, batMid-batH/2, '#6b7280'));
         svg.appendChild(line(lx, batMid+batH/2, lx, botY, '#6b7280'));
         // Battery symbol
-        svg.appendChild(el('line',{x1:lx-12,y1:batMid-batH/2,x2:lx+12,y2:batMid-batH/2,stroke:'#9ca3af','stroke-width':4}));
-        svg.appendChild(el('line',{x1:lx-7,  y1:batMid-batH/2+10, x2:lx+7,  y2:batMid-batH/2+10, stroke:'#9ca3af','stroke-width':2}));
-        svg.appendChild(el('line',{x1:lx-12,y1:batMid+batH/2-10,x2:lx+12,y2:batMid+batH/2-10,stroke:'#9ca3af','stroke-width':4}));
-        svg.appendChild(el('line',{x1:lx-7, y1:batMid+batH/2,x2:lx+7, y2:batMid+batH/2,stroke:'#9ca3af','stroke-width':2}));
+        svg.appendChild(el('line',{x1:lx-12,y1:batMid-batH/2,x2:lx+12,y2:batMid-batH/2,stroke:'#9ca3af','stroke-width':2}));   // long plate (+)
+        svg.appendChild(el('line',{x1:lx-7,  y1:batMid-batH/2+10, x2:lx+7,  y2:batMid-batH/2+10, stroke:'#9ca3af','stroke-width':4})); // short plate (−)
+        svg.appendChild(el('line',{x1:lx-12,y1:batMid+batH/2-10,x2:lx+12,y2:batMid+batH/2-10,stroke:'#9ca3af','stroke-width':2}));   // long plate (+)
+        svg.appendChild(el('line',{x1:lx-7, y1:batMid+batH/2,x2:lx+7, y2:batMid+batH/2,stroke:'#9ca3af','stroke-width':4}));   // short plate (−)
 
         // Battery label
         const Ulabel = U !== null ? fmtV(U) : 'U';
