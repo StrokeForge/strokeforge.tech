@@ -436,6 +436,13 @@
         return parseFloat(s).toString();
     }
 
+    function fmtMult(m) {
+        if (m >= 1e9) return parseFloat((m / 1e9).toPrecision(4)) + 'G';
+        if (m >= 1e6) return parseFloat((m / 1e6).toPrecision(4)) + 'M';
+        if (m >= 1e3) return parseFloat((m / 1e3).toPrecision(4)) + 'k';
+        return parseFloat(m.toPrecision(4)).toString();
+    }
+
     // =====================================================
     //  Reverse lookup
     // =====================================================
@@ -505,11 +512,11 @@
         COLORS.forEach(function(c) {
             if (c[0] === 'None') return;
             var tr = document.createElement('tr');
-            var multStr = c[3] !== null ? '×' + fmtOhm(c[3]).replace(' Ω','').replace(' k','k').replace(' M','M').replace(' G','G') : '—';
+            var multStr = c[3] !== null ? '×' + fmtMult(c[3]) : '—';
             tr.innerHTML =
                 '<td><span class="swatch" style="background:' + c[1] + ';"></span>' + c[0] + '</td>' +
                 '<td>' + (c[2] !== null ? c[2] : '—') + '</td>' +
-                '<td>' + (c[3] !== null ? '×' + c[3] : '—') + '</td>' +
+                '<td>' + multStr + '</td>' +
                 '<td>' + (c[4] !== null ? '±' + c[4] + '%' : '—') + '</td>' +
                 '<td>' + (c[5] !== null ? c[5] : '—') + '</td>';
             tbody.appendChild(tr);
