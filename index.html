@@ -80,18 +80,6 @@
             font-size: 0.85rem;
         }
 
-        /* "Reference / guide" tag used instead of a tool count (e.g. 3D Printing) */
-        .category-card .cat-tag {
-            display: inline-block;
-            margin-top: 0.85rem;
-            padding: 0.25rem 0.75rem;
-            border: 1px solid var(--primary-orange);
-            border-radius: 999px;
-            color: var(--primary-orange);
-            font-size: 0.78rem;
-            font-weight: 600;
-            letter-spacing: 0.03em;
-        }
     </style>
 
     <!-- Schema.org -->
@@ -182,7 +170,10 @@
                 <div class="category-icon">🖨️</div>
                 <h3>3D Printing</h3>
                 <p class="cat-desc">Filament guide and printing know-how — temperatures, drying, materials, and what each one is actually good for.</p>
-                <span class="cat-tag">Reference guide</span>
+                <div class="cat-count-row">
+                    <span class="category-count" id="count-3dprint">0</span>
+                    <span>guides</span>
+                </div>
             </a>
 
         </div>

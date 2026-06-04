@@ -9,14 +9,16 @@ async function loadProjectCounts() {
     const categories = [
         { file: 'data/electronics-projects.json', id: 'count-electronics' },
         { file: 'data/other-projects.json', id: 'count-other' },
-        { file: 'data/engineering-projects.json', id: 'count-engineering' }
+        { file: 'data/engineering-projects.json', id: 'count-engineering' },
+        { file: 'data/3d-printing-guides.json', id: 'count-3dprint' }
     ];
 
     for (const category of categories) {
         try {
             const response = await fetch(category.file);
             const data = await response.json();
-            const count = data.projects ? data.projects.length : 0;
+            const list = data.projects || data.guides;
+            const count = list ? list.length : 0;
 
             const element = document.getElementById(category.id);
             if (element) {
