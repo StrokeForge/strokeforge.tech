@@ -523,12 +523,12 @@
             // wire before resistor
             if (i === 0) svg.appendChild(line(batX+batW/2, topY, cx-rW/2, topY, '#6b7280'));
             svg.appendChild(el('rect',{x:cx-rW/2,y:topY-9,width:rW,height:18,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:3}));
-            svg.appendChild(txt(cx, topY, `R${i+1}`, '#4ade80', 9, 'middle'));
-            svg.appendChild(txt(cx, topY+16, fmtR(v), '#6b7280', 8, 'middle'));
+            svg.appendChild(txt(cx, topY, `R${i+1}`, '#4ade80', 10, 'middle'));
+            svg.appendChild(txt(cx, topY+19, fmtR(v), '#e5e7eb', 10, 'middle'));
         });
 
-        // Current arrow
-        svg.appendChild(el('polygon',{points:`${batX+batW+4},${botY-8} ${batX+batW+4},${botY+8} ${batX+batW+14},${botY}`,fill:'#60a5fa'}));
+        // Current arrow on the bottom return wire — points left, toward the battery − terminal
+        svg.appendChild(el('polygon',{points:`${batX+batW+14},${botY-8} ${batX+batW+14},${botY+8} ${batX+batW+4},${botY}`,fill:'#60a5fa'}));
 
         // Total label
         if (Rtotal) svg.appendChild(txt(W/2, H-8, `R_total = ${fmtR(Rtotal)}`, '#fb923c', 10, 'middle'));
@@ -578,7 +578,7 @@
             svg.appendChild(el('circle',{cx:leftX, cy:cy, r:2.5, fill:'#6b7280'}));
             svg.appendChild(el('circle',{cx:rightX,cy:cy, r:2.5, fill:'#6b7280'}));
             svg.appendChild(el('rect',{x:cx-rW/2,y:cy-rH/2,width:rW,height:rH,fill:'#1f2937',stroke:'#4ade80','stroke-width':1.5,rx:3}));
-            svg.appendChild(txt(cx, cy, `R${i+1}  ${fmtR(v)}`, '#4ade80', 9, 'middle'));
+            svg.appendChild(txt(cx, cy, `R${i+1}  ${fmtR(v)}`, '#86efac', 10, 'middle'));
         });
 
         // Total label
