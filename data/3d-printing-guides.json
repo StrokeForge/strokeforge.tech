@@ -1,5 +1,6 @@
 {
   "guides": [
-    "filament-guide"
+    "filament-guide",
+    "nozzle-guide"
   ]
 }

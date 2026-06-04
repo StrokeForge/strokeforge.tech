@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary Meta Tags -->
+    <title>Nozzle Guide | 3D Printer Nozzle Types, Materials & Sizes | StrokeForge</title>
+    <meta name="description" content="Practical 3D printer nozzle reference: brass, hardened steel, stainless, ruby and tungsten carbide nozzles — which filaments they suit, abrasion resistance, conductivity, and pros and cons. Plus a nozzle diameter guide from 0.2 to 1.0 mm.">
+    <meta name="keywords" content="3D printer nozzle, nozzle types, brass nozzle, hardened steel nozzle, stainless steel nozzle, ruby nozzle, tungsten carbide nozzle, nozzle size, 0.4mm nozzle, abrasive filament nozzle">
+    <meta name="author" content="Stanislav Odolan - StrokeForge">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://strokeforge.tech/3d-printing/nozzle-guide/">
+    <meta property="og:title" content="Nozzle Guide | 3D Printer Nozzle Types, Materials & Sizes">
+    <meta property="og:description" content="Which nozzle for which filament: brass, hardened steel, stainless, ruby and carbide — abrasion resistance, conductivity, pros and cons, plus a diameter guide.">
+    <meta property="og:image" content="https://strokeforge.tech/images/logo.png">
+    <meta property="og:site_name" content="StrokeForge">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://strokeforge.tech/3d-printing/nozzle-guide/">
+    <meta property="twitter:title" content="Nozzle Guide | 3D Printer Nozzle Types, Materials & Sizes">
+    <meta property="twitter:description" content="Which nozzle for which filament: materials, abrasion resistance, conductivity, pros and cons, plus a diameter guide.">
+    <meta property="twitter:image" content="https://strokeforge.tech/images/logo.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://strokeforge.tech/3d-printing/nozzle-guide/">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X67CTG4DFM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-X67CTG4DFM');
+    </script>
+
+    <link rel="stylesheet" href="../../css/colors.css">
+    <link rel="stylesheet" href="../../css/style.css">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "3D Printer Nozzle Guide: Types, Materials & Sizes",
+      "url": "https://strokeforge.tech/3d-printing/nozzle-guide/",
+      "description": "Reference for 3D printer nozzles: materials (brass, hardened steel, stainless, ruby, tungsten carbide), filament compatibility, abrasion resistance, conductivity, and diameter selection.",
+      "author": { "@type": "Person", "name": "Stanislav Odolan", "url": "https://strokeforge.tech" },
+      "publisher": { "@type": "Organization", "name": "StrokeForge" }
+    }
+    </script>
+    <style>
+        .fg-intro {
+            color: var(--text-gray);
+            font-size: 1.02rem;
+            line-height: 1.8;
+        }
+        .fg-intro strong { color: var(--light-gray); }
+
+        .fg-note {
+            background: rgba(255, 107, 53, 0.08);
+            border-left: 3px solid var(--primary-orange);
+            border-radius: 6px;
+            padding: 0.9rem 1.2rem;
+            margin: 1.75rem 0;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .fg-section-title {
+            color: var(--primary-orange);
+            font-size: 1.5rem;
+            margin: 3rem 0 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        /* Reference tables */
+        .fg-table-scroll { margin: 0; }
+        .fg-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 0.92rem;
+        }
+        .fg-table th, .fg-table td {
+            padding: 0.7rem 0.6rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-gray);
+            vertical-align: top;
+            overflow-wrap: anywhere;
+        }
+        .fg-table thead th {
+            background: var(--darker-bg);
+            color: var(--primary-orange);
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-orange);
+        }
+        .fg-table tbody tr:hover { background: rgba(255, 107, 53, 0.05); }
+        .fg-table .mat { color: var(--light-gray); font-weight: 600; }
+        .fg-table .cost { color: var(--light-gray); font-family: monospace; letter-spacing: 0.05em; }
+
+        .badge {
+            display: inline-block;
+            padding: 0.12rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.74rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .badge-good { color: #48bb78; border: 1px solid rgba(72,187,120,0.5); }
+        .badge-mid  { color: #f59e0b; border: 1px solid rgba(245,158,11,0.5); }
+        .badge-low  { color: #ef4444; border: 1px solid rgba(239,68,68,0.5); }
+
+        /* Detail cards */
+        .fg-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .fg-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .fg-card h3 {
+            color: var(--light-gray);
+            font-size: 1.25rem;
+            margin-bottom: 0.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .fg-card .fg-full {
+            color: var(--text-gray);
+            font-size: 0.82rem;
+            font-weight: 400;
+        }
+        .fg-difficulty {
+            font-size: 0.74rem;
+            font-weight: 600;
+            padding: 0.1rem 0.55rem;
+            border-radius: 999px;
+        }
+        .diff-easy { color: #48bb78; border: 1px solid rgba(72,187,120,0.5); }
+        .diff-med  { color: #f59e0b; border: 1px solid rgba(245,158,11,0.5); }
+        .diff-hard { color: #ef4444; border: 1px solid rgba(239,68,68,0.5); }
+        .fg-card p {
+            color: var(--text-gray);
+            font-size: 0.92rem;
+            line-height: 1.65;
+            margin: 0.85rem 0;
+        }
+        .fg-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0.75rem 0 0;
+        }
+        .fg-card li {
+            font-size: 0.86rem;
+            color: var(--text-gray);
+            padding: 0.3rem 0 0.3rem 1.4rem;
+            position: relative;
+            line-height: 1.5;
+        }
+        .fg-card li::before {
+            position: absolute;
+            left: 0;
+            top: 0.3rem;
+        }
+        .fg-card li.pro::before { content: "✓"; color: #48bb78; }
+        .fg-card li.con::before { content: "✕"; color: #ef4444; }
+        .fg-card li.use::before { content: "→"; color: var(--primary-orange); }
+        .fg-card li b { color: var(--light-gray); font-weight: 600; }
+
+        @media (max-width: 600px) {
+            .fg-table { font-size: 0.78rem; }
+            .fg-table th, .fg-table td { padding: 0.5rem 0.35rem; }
+            .badge { font-size: 0.66rem; padding: 0.1rem 0.3rem; }
+            .fg-cards { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="nav-logo">⚡ StrokeForge</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/engineering.html">Engineering</a>
+                <a href="/electronics.html">Electronics</a>
+                <a href="/other.html">Other</a>
+                <a href="/3d-printing.html" class="active">3D Printing</a>
+            </div>
+            <button class="hamburger" onclick="toggleNav()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>🔩 Nozzle Guide</h1>
+        <p>Nozzle materials and sizes — which one for which filament</p>
+    </header>
+
+    <div class="tool-wrap">
+        <a href="/3d-printing.html" class="back-button">← Back to 3D Printing</a>
+        <p class="fg-intro" style="margin-top:1.75rem;">
+            A nozzle choice comes down to two questions: <strong>what is it made of</strong> and
+            <strong>how wide is the hole</strong>. The material decides whether it survives abrasive filament
+            and how well it carries heat; the diameter trades fine detail against speed and strength. This guide
+            covers the commonly available options you can actually buy off the shelf — nothing exotic or locked
+            to a single machine.
+        </p>
+
+        <!-- NOZZLE MATERIALS TABLE -->
+        <h2 class="fg-section-title">Nozzle materials</h2>
+        <div class="fg-table-scroll">
+            <table class="fg-table">
+                <colgroup>
+                    <col style="width:22%;"><col style="width:30%;"><col style="width:17%;"><col style="width:17%;"><col style="width:14%;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Suited materials</th>
+                        <th>Abrasion</th>
+                        <th>Heat flow</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="mat">Brass</td>
+                        <td>Non-abrasive: PLA, PETG, ABS, ASA, TPU</td>
+                        <td><span class="badge badge-low">Low</span></td>
+                        <td><span class="badge badge-good">Excellent</span></td>
+                        <td class="cost">$</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">Stainless steel</td>
+                        <td>Non-abrasive; cleaner / lower-leaching prints</td>
+                        <td><span class="badge badge-mid">Medium</span></td>
+                        <td><span class="badge badge-mid">Moderate</span></td>
+                        <td class="cost">$</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">Hardened steel</td>
+                        <td>Abrasive: CF/GF, wood, glow, metal-fill</td>
+                        <td><span class="badge badge-good">High</span></td>
+                        <td><span class="badge badge-mid">Moderate</span></td>
+                        <td class="cost">$$</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">Plated / coated</td>
+                        <td>Mild abrasives; all-round upgrade</td>
+                        <td><span class="badge badge-mid">Medium-high</span></td>
+                        <td><span class="badge badge-good">Good</span></td>
+                        <td class="cost">$$</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">Ruby / sapphire tip</td>
+                        <td>Abrasive + high quality, high temps</td>
+                        <td><span class="badge badge-good">Extreme</span></td>
+                        <td><span class="badge badge-good">Excellent</span></td>
+                        <td class="cost">$$$$</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">Tungsten carbide</td>
+                        <td>Heavy abrasives, production use</td>
+                        <td><span class="badge badge-good">Extreme</span></td>
+                        <td><span class="badge badge-good">Good</span></td>
+                        <td class="cost">$$$</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">Plated copper</td>
+                        <td>High-temp &amp; high-speed (high-flow)</td>
+                        <td><span class="badge badge-mid">Medium</span></td>
+                        <td><span class="badge badge-good">Best</span></td>
+                        <td class="cost">$$$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="fg-note">
+            <strong style="color:var(--light-gray);">The one rule that matters:</strong> the moment you load a
+            composite filament — anything with carbon fibre, glass fibre, wood, metal or glow powder — a brass
+            nozzle is on borrowed time. The abrasive particles widen the bore within hours, and your dimensions
+            and flow drift with it. Use a hardened, ruby-tipped or carbide nozzle for those.
+        </div>
+
+        <!-- MATERIAL DETAIL CARDS -->
+        <h2 class="fg-section-title">The materials in detail</h2>
+        <div class="fg-cards">
+
+            <!-- Brass -->
+            <div class="fg-card">
+                <h3>Brass <span class="fg-difficulty diff-easy">Default</span></h3>
+                <div class="fg-full">The standard nozzle</div>
+                <p>What almost every printer ships with, and for good reason: brass conducts heat beautifully, so
+                it melts filament evenly and keeps up at speed. It is also cheap enough to keep spares in a
+                drawer. The catch is that it is soft — fine for plain plastics, hopeless against anything filled.</p>
+                <ul>
+                    <li class="pro">Best-in-class heat transfer, smooth flow</li>
+                    <li class="pro">Cheap, available everywhere</li>
+                    <li class="con">Wears out fast with any abrasive filament</li>
+                    <li class="use"><b>Best for:</b> PLA, PETG, ABS, ASA, TPU — everyday printing</li>
+                </ul>
+            </div>
+
+            <!-- Stainless steel -->
+            <div class="fg-card">
+                <h3>Stainless steel <span class="fg-difficulty diff-easy">Easy</span></h3>
+                <div class="fg-full">Cleaner, low-leaching</div>
+                <p>A middle option that resists wear better than brass and does not leach the trace metals brass
+                can, which is why it shows up in food-contact and medical-leaning prints. It does not conduct
+                heat as well as brass, so push the temperature up a touch for the same flow.</p>
+                <ul>
+                    <li class="pro">Tougher than brass, corrosion-resistant</li>
+                    <li class="pro">Low leaching — better for food-adjacent parts</li>
+                    <li class="con">Lower heat transfer than brass; run slightly hotter</li>
+                    <li class="con">Still not hard enough for serious abrasives</li>
+                    <li class="use"><b>Best for:</b> clean prints, light-duty mixed use</li>
+                </ul>
+            </div>
+
+            <!-- Hardened steel -->
+            <div class="fg-card">
+                <h3>Hardened steel <span class="fg-difficulty diff-med">Workhorse</span></h3>
+                <div class="fg-full">The abrasive all-rounder</div>
+                <p>The practical answer for composite filaments. Heat-treated to shrug off abrasive particles, it
+                lasts through spool after spool of carbon-fibre or wood-fill. Heat flow is lower than brass and
+                the bore finish is slightly rougher, so expect to print a little hotter and see marginally more
+                stringing.</p>
+                <ul>
+                    <li class="pro">Handles CF/GF, wood, glow and metal-fill for a long time</li>
+                    <li class="pro">Affordable upgrade, widely stocked</li>
+                    <li class="con">Lower conductivity — raise temperature a few °C</li>
+                    <li class="con">Slightly rougher bore can string more</li>
+                    <li class="use"><b>Best for:</b> abrasive and filled filaments</li>
+                </ul>
+            </div>
+
+            <!-- Plated / coated -->
+            <div class="fg-card">
+                <h3>Plated / coated <span class="fg-difficulty diff-med">Upgrade</span></h3>
+                <div class="fg-full">Nickel-plated brass &amp; wear coatings</div>
+                <p>Brass (or copper) with a hard, often nickel-based coating. The idea is to keep most of the
+                base metal's heat flow while adding wear resistance and a slick surface that resists sticking.
+                A sensible all-round step up — just remember the coating is thin, so heavy abrasives still win
+                eventually.</p>
+                <ul>
+                    <li class="pro">Good conductivity plus better wear than plain brass</li>
+                    <li class="pro">Slick surface — less oozing and buildup</li>
+                    <li class="con">Coating is thin; not a true abrasive nozzle</li>
+                    <li class="use"><b>Best for:</b> mild abrasives, an easy quality bump for mixed use</li>
+                </ul>
+            </div>
+
+            <!-- Ruby / sapphire -->
+            <div class="fg-card">
+                <h3>Ruby / sapphire tip <span class="fg-difficulty diff-hard">Premium</span></h3>
+                <div class="fg-full">Brass body, gem tip</div>
+                <p>A synthetic ruby or sapphire is set into the tip of a brass or copper body — so you get the
+                conductivity of brass and a tip hard enough to print abrasives essentially for life. The downside
+                is purely the price; they are also worth handling carefully, since the gem can crack if you crash
+                the nozzle.</p>
+                <ul>
+                    <li class="pro">Extreme tip hardness with excellent heat flow</li>
+                    <li class="pro">Prints any common abrasive without measurable wear</li>
+                    <li class="con">Expensive; the gem can chip on a hard crash</li>
+                    <li class="use"><b>Best for:</b> frequent abrasive printing where quality matters</li>
+                </ul>
+            </div>
+
+            <!-- Tungsten carbide -->
+            <div class="fg-card">
+                <h3>Tungsten carbide <span class="fg-difficulty diff-hard">Premium</span></h3>
+                <div class="fg-full">Industrial hardness</div>
+                <p>Carbide nozzles are about as wear-proof as it gets while still conducting heat reasonably
+                well, which makes them a favourite for print farms running abrasives day in, day out. They cost
+                less than a gem-tipped nozzle but more than hardened steel, and they are the safe choice when
+                downtime to swap a worn nozzle is the real expense.</p>
+                <ul>
+                    <li class="pro">Near-permanent wear resistance, good conductivity</li>
+                    <li class="pro">Built for continuous abrasive production</li>
+                    <li class="con">Pricey; overkill for occasional hobby use</li>
+                    <li class="use"><b>Best for:</b> heavy, repeated abrasive workloads</li>
+                </ul>
+            </div>
+
+            <!-- Plated copper -->
+            <div class="fg-card">
+                <h3>Plated copper <span class="fg-difficulty diff-hard">High-flow</span></h3>
+                <div class="fg-full">Maximum heat transfer</div>
+                <p>Copper carries heat even better than brass, so a plated copper nozzle keeps the melt zone hot
+                at very high flow rates — the reason it pairs with high-temperature materials and fast,
+                large-diameter printing. The plating adds modest wear resistance, but the real reason to buy one
+                is throughput, not abrasion.</p>
+                <ul>
+                    <li class="pro">Top heat transfer for high-speed / high-temp work</li>
+                    <li class="pro">Plating gives some extra durability</li>
+                    <li class="con">Costs more; abrasion resistance is only moderate</li>
+                    <li class="use"><b>Best for:</b> high-flow printing, PC and other high-temp filaments</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- NOZZLE DIAMETER -->
+        <h2 class="fg-section-title">Nozzle diameter</h2>
+        <p class="fg-intro" style="font-size:0.96rem;">
+            The hole width sets the trade-off between detail and throughput. A narrow nozzle lays finer lines and
+            captures small features but prints slowly and gives weaker walls; a wide nozzle pushes far more
+            plastic for strong, fast parts at the cost of crispness. <strong>0.4&nbsp;mm</strong> is the default
+            for a reason — it balances both — but it pays to keep a couple of sizes on hand.
+        </p>
+        <div class="fg-table-scroll" style="margin-top:1.5rem;">
+            <table class="fg-table">
+                <colgroup>
+                    <col style="width:18%;"><col style="width:19%;"><col style="width:19%;"><col style="width:19%;"><col style="width:25%;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Diameter</th>
+                        <th>Detail</th>
+                        <th>Speed</th>
+                        <th>Strength</th>
+                        <th>Best for</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="mat">0.2 mm</td>
+                        <td><span class="badge badge-good">Very high</span></td>
+                        <td><span class="badge badge-low">Slow</span></td>
+                        <td><span class="badge badge-low">Low</span></td>
+                        <td>Miniatures, fine detail</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">0.4 mm</td>
+                        <td><span class="badge badge-mid">Good</span></td>
+                        <td><span class="badge badge-mid">Balanced</span></td>
+                        <td><span class="badge badge-mid">Good</span></td>
+                        <td>Default all-rounder</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">0.6 mm</td>
+                        <td><span class="badge badge-mid">Moderate</span></td>
+                        <td><span class="badge badge-good">Fast</span></td>
+                        <td><span class="badge badge-good">High</span></td>
+                        <td>Functional parts</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">0.8 mm</td>
+                        <td><span class="badge badge-low">Coarse</span></td>
+                        <td><span class="badge badge-good">Fast</span></td>
+                        <td><span class="badge badge-good">High</span></td>
+                        <td>Vases, large sturdy prints</td>
+                    </tr>
+                    <tr>
+                        <td class="mat">1.0 mm+</td>
+                        <td><span class="badge badge-low">Low</span></td>
+                        <td><span class="badge badge-good">Very fast</span></td>
+                        <td><span class="badge badge-good">Very high</span></td>
+                        <td>Large-format, max throughput</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- QUICK TIPS -->
+        <h2 class="fg-section-title">Quick tips</h2>
+        <div class="fg-cards">
+            <div class="fg-card">
+                <h3>Match the nozzle to the filament</h3>
+                <ul>
+                    <li class="use">Plain plastics (PLA/PETG/ABS) → <b>brass</b> is fine</li>
+                    <li class="use">Anything filled or sparkly → <b>hardened, ruby or carbide</b></li>
+                    <li class="use">High-temp or high-speed → <b>plated copper</b></li>
+                </ul>
+            </div>
+            <div class="fg-card">
+                <h3>Steel runs cooler than it reads</h3>
+                <p>Hardened and stainless nozzles carry less heat than brass. If flow looks under-extruded after
+                a swap, raise the temperature by roughly 5–10&nbsp;°C rather than slowing down.</p>
+            </div>
+            <div class="fg-card">
+                <h3>Treat nozzles as consumables</h3>
+                <p>Even hardened nozzles dull over time. If detail softens, corners round off, or extrusion turns
+                inconsistent for no clear reason, a worn or partially clogged nozzle is a likely cause — swapping
+                one is cheap and quick.</p>
+            </div>
+        </div>
+
+        <div class="fg-note" style="margin-top:2rem;">
+            <strong style="color:var(--light-gray);">Work in progress.</strong> Part of a growing 3D-printing
+            knowledge section. Bed adhesion and troubleshooting guides are on the way — see also the
+            <a href="/3d-printing/filament-guide/" style="color:var(--primary-orange);text-decoration:none;">Filament Guide</a>.
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>3D printing reference &amp; maker know-how | 2026</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+            <a href="https://www.printables.com/@TechMaster" target="_blank" style="color: #ff6b35; text-decoration: none;">
+                Printables: @TechMaster
+            </a>
+        </p>
+    </footer>
+
+    <script src="../../js/nav.js"></script>
+</body>
+</html>
