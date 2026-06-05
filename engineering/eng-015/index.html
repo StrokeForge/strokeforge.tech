@@ -147,7 +147,7 @@
                             <label>Material</label>
                             <select id="mat" class="sel" onchange="onMatChange()">
                                 <option value="81500,680">Spring steel wire EN 10270-1 SH</option>
-                                <option value="81500,780">Cr-V steel 51CrV4 EN 10270-2</option>
+                                <option value="80000,780">Cr-V steel 51CrV4 EN 10270-2</option>
                                 <option value="73000,520">Stainless 1.4310 EN 10270-3</option>
                                 <option value="41000,320">Phosphor bronze CuSn6</option>
                                 <option value="custom">Custom G / τ_allow</option>
@@ -383,8 +383,8 @@
         } else if (ends === 'co') {
             nt = na + 2;
             Ls = (nt + 1) * d;
-        } else { // open
-            nt = na + 2;
+        } else { // open / plain ends — end coils stay active, no dead coils
+            nt = na;
             Ls = (nt + 1) * d;
         }
 
