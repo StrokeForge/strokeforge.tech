@@ -468,9 +468,11 @@
                 dmax = P * bL * (Lmm*Lmm - bL*bL) * Math.pow(Lmm*Lmm - bL*bL, 0.5) / (9 * Math.sqrt(3) * EI * Lmm);
                 dpos = xmax;
             } else {
+                // a < b: max deflection is in the longer (right) segment;
+                // xmax = √((L²−a²)/3) is measured from B, so position from A = L − xmax
                 const xmax = Math.sqrt((Lmm*Lmm - a*a) / 3);
                 dmax = P * a * (Lmm*Lmm - a*a) * Math.pow(Lmm*Lmm - a*a, 0.5) / (9 * Math.sqrt(3) * EI * Lmm);
-                dpos = xmax;
+                dpos = Lmm - xmax;
             }
             Vmax = Math.max(RA, RB);
             loadDesc = `P = ${loadVal} kN, a = ${(a/1000).toFixed(2)} m from A`;
@@ -499,9 +501,8 @@
             const f_udl = 5 * q * Math.pow(Lmm, 4) / (384 * EI);
             let f_pt = 0;
             if (F > 0) {
-                const bb = Math.min(a, b_dist), aa2 = Math.max(a, b_dist);
-                const xm = Math.sqrt((Lmm*Lmm - aa2*aa2) / 3);
-                f_pt = F * aa2 * xm * (Lmm*Lmm - aa2*aa2 - xm*xm) / (6 * EI * Lmm);
+                const bb = Math.min(a, b_dist);   // shorter load-to-support distance governs δmax
+                f_pt = F * bb * Math.pow(Lmm*Lmm - bb*bb, 1.5) / (9 * Math.sqrt(3) * EI * Lmm);
             }
             dmax = f_udl + f_pt;
             dpos = Lmm / 2;
@@ -616,7 +617,7 @@
                 const P = loadVal * 1000;
                 const bm = Lmm - amm;
                 v = (xmm < amm) ? P*bm/Lmm/1000 : -P*amm/Lmm/1000;
-                m = (xmm <= amm) ? P*bm*xmm/(Lmm*1e6)*1e6/1e3 : P*amm*(Lmm-xmm)/(Lmm*1e6)*1e6/1e3;
+                m = (xmm <= amm) ? P*bm*xmm/(Lmm*1e6) : P*amm*(Lmm-xmm)/(Lmm*1e6);
                 if (xmm <= amm) d = P*bm*xmm*(Lmm*Lmm-bm*bm-xmm*xmm)/(6*EI_Nmm2*Lmm);
                 else { const xt = Lmm-xmm; d = P*amm*xt*(Lmm*Lmm-amm*amm-xt*xt)/(6*EI_Nmm2*Lmm); }
             } else {
