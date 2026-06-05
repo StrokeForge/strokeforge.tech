@@ -231,7 +231,7 @@
                         <li><strong>Active HIGH</strong> — LED anode to GPIO, cathode via R to GND (common)</li>
                         <li><strong>Active LOW</strong> — LED cathode to GPIO, anode via R to Vcc (LED ON when GPIO = LOW)</li>
                         <li>Active LOW slightly reduces GPIO source current — sometimes preferred</li>
-                        <li>Built-in LED on most boards is active LOW (connected to GND through LED)</li>
+                        <li>Arduino's built-in LED (pin 13) is active HIGH; many ESP8266/ESP32 boards use active LOW (pin → LED → Vcc)</li>
                     </ul>
                 </div>
             </div>
