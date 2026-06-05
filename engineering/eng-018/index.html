@@ -127,8 +127,25 @@
                     <p>The two numbers of the property class code:</p>
                     <ul>
                         <li>1st number × 100 = f<sub>ub,min</sub> [MPa]</li>
-                        <li>1st × 2nd × 10 = f<sub>yb,min</sub> [MPa]</li>
+                        <li>1st × 2nd × 10 = nominal f<sub>yb</sub> [MPa]</li>
                     </ul>
+                    <p>ISO 898-1 specifies the actual minimum yield — for classes 4.8, 5.8, 10.9 and 12.9 it is slightly above the nominal value from the formula. The table lists the ISO minimums.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Selection &amp; coatings</h3>
+                    <ul>
+                        <li>8.8 is the default structural grade (EC3); 10.9 for preloaded / HR bolts.</li>
+                        <li>Match the nut grade to the bolt (or higher).</li>
+                        <li>Avoid hot-dip galvanizing / electroplating on 12.9 — hydrogen-embrittlement risk.</li>
+                        <li>Proof stress f<sub>pb</sub> is the preload reference: F<sub>p</sub> = f<sub>pb</sub> · A<sub>s</sub>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
     </footer>
 
     <script src="../../js/nav.js"></script>
@@ -142,8 +159,8 @@
         { cls:'6.8',  fyb:480,  fub:600,  fpb:440,  hvMin:178,  hvMax:238, hbMin:169, hbMax:238, hrcMin:'—', hrcMax:'—', nutGrade:'6',  material:'Medium carbon steel',       color:'#60a5fa' },
         { cls:'8.8',  fyb:640,  fub:800,  fpb:580,  hvMin:245,  hvMax:335, hbMin:233, hbMax:318, hrcMin:'22',hrcMax:'34',nutGrade:'8',  material:'Med. carbon alloy / quenched & tempered', color:'#4ade80' },
         { cls:'9.8',  fyb:720,  fub:900,  fpb:650,  hvMin:276,  hvMax:360, hbMin:262, hbMax:342, hrcMin:'28',hrcMax:'37',nutGrade:'9',  material:'Med. carbon alloy, Q&T',    color:'#a3e635' },
-        { cls:'10.9', fyb:900,  fub:1000, fpb:830,  hvMin:304,  hvMax:394, hbMin:290, hbMax:374, hrcMin:'32',hrcMax:'40',nutGrade:'10', material:'Alloy steel, quenched & tempered', color:'#f97316' },
-        { cls:'12.9', fyb:1080, fub:1200, fpb:970,  hvMin:372,  hvMax:454, hbMin:353, hbMax:431, hrcMin:'39',hrcMax:'46',nutGrade:'12', material:'Alloy steel, Q&T (no Zn coating!)', color:'#f87171' },
+        { cls:'10.9', fyb:940,  fub:1000, fpb:830,  hvMin:304,  hvMax:394, hbMin:290, hbMax:374, hrcMin:'32',hrcMax:'40',nutGrade:'10', material:'Alloy steel, quenched & tempered', color:'#f97316' },
+        { cls:'12.9', fyb:1100, fub:1200, fpb:970,  hvMin:372,  hvMax:454, hbMin:353, hbMax:431, hrcMin:'39',hrcMax:'46',nutGrade:'12', material:'Alloy steel, Q&T (no Zn coating!)', color:'#f87171' },
     ];
 
     // Tensile stress area As [mm²] per ISO 898-1 Table 5

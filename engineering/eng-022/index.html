@@ -120,6 +120,34 @@
                     <tbody id="fyBody"></tbody>
                 </table>
             </div>
+        </div>
+
+        <!-- COMPARISON CHART -->
+        <div class="card">
+            <h2>Yield vs ultimate strength — comparison</h2>
+            <div class="chart-wrap">
+                <svg id="compSvg" width="100%" viewBox="0 0 420 180"></svg>
+                <p class="chart-label">f<sub>y</sub> (t ≤ 16 mm) and f<sub>u</sub> per grade [MPa]</p>
+            </div>
+        </div>
+
+        <!-- MATERIAL CONSTANTS -->
+        <div class="card">
+            <h2>Material constants — all structural steels</h2>
+            <div class="const-grid">
+                <div class="const-card"><div class="sym">E</div><div class="val">210 GPa</div><div class="lbl">Young's modulus</div></div>
+                <div class="const-card"><div class="sym">G</div><div class="val">81 GPa</div><div class="lbl">Shear modulus</div></div>
+                <div class="const-card"><div class="sym">ν</div><div class="val">0.30</div><div class="lbl">Poisson's ratio</div></div>
+                <div class="const-card"><div class="sym">ρ</div><div class="val">7850</div><div class="lbl">Density [kg/m³]</div></div>
+                <div class="const-card"><div class="sym">α</div><div class="val">12×10⁻⁶</div><div class="lbl">Thermal exp. [/K]</div></div>
+                <div class="const-card"><div class="sym">γ<sub>M0</sub></div><div class="val">1.00</div><div class="lbl">EC3 cross-section</div></div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
     </footer>
 
     <script src="../../js/nav.js"></script>
@@ -150,7 +178,7 @@
         {
             id: 'S355',
             std: 'EN 10025-2/3/4',
-            fu: 510,
+            fu: 490,
             fy: [355, 345, 335, 325, 315],
             subgrades: ['JR','J0','J2','K2','N','NL','M','ML'],
             color: '#f97316',

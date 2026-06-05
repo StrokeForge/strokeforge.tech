@@ -129,6 +129,13 @@
                 <button class="close-btn" onclick="closeDetail()">✕ Close</button>
                 <h3 id="detailTitle"></h3>
                 <div class="detail-grid" id="detailGrid"></div>
+                <p id="detailNote" style="margin-top:0.9rem;font-size:0.84rem;color:var(--text-gray);line-height:1.6;"></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
     </footer>
 
     <script src="../../js/nav.js"></script>
@@ -156,13 +163,13 @@
         {csn:'12 060', name:'Unalloyed quality steel C55',                  fy:380,  fu:'650–800', en:'C55',     din:'Ck55',         aisi:'1055',       cat:'engineering', note:'Higher strength version of C45. Good wear resistance. Springs, tools, higher-loaded shafts.'},
         {csn:'12 061', name:'Unalloyed quality steel C60',                  fy:400,  fu:'710–850', en:'C60',     din:'Ck60',         aisi:'1060',       cat:'engineering', note:'High carbon, good hardness. Leaf springs, rails, agricultural tools.'},
         {csn:'13 240', name:'Low-alloy Cr steel',                           fy:590,  fu:'780–1030',en:'41Cr4',   din:'41Cr4',        aisi:'5140',       cat:'engineering', note:'Chromium steel for through-hardening. Gears, shafts, axles. Quench & temper to ~900 MPa.'},
-        {csn:'14 109', name:'Mn-Si spring steel',                           fy:1100, fu:'1250–1450',en:'51CrV4', din:'50SiCr',      aisi:'9254',       cat:'engineering', note:'Spring steel. Used for coil springs, leaf springs.'},
-        {csn:'14 220', name:'Case hardening Cr-Mn steel',                   fy:590,  fu:'880–1180',en:'20MnCr5', din:'20MnCr5',      aisi:'5120',       cat:'engineering', note:'Case hardening steel for heavily loaded gears and shafts. Core toughness with hard case.'},
+        {csn:'14 109', name:'Chromium bearing steel',                       fy:'—',  fu:'—',       en:'100Cr6',  din:'100Cr6',       aisi:'52100',      cat:'engineering', note:'Classic through-hardening bearing steel (100Cr6, 1.3505). Balls, rollers, bearing rings, dies and gauges. Hardened to 60–64 HRC.'},
+        {csn:'14 220', name:'Case hardening Cr-Mn steel',                   fy:590,  fu:'880–1180',en:'16MnCr5', din:'16MnCr5',      aisi:'5115',       cat:'engineering', note:'The classic Czech case-hardening steel (16MnCr5, 1.7131). Heavily loaded gears, shafts and pins — tough core with a hard carburised case. (20MnCr5 is ČSN 14 221.)'},
         {csn:'14 240', name:'Low-alloy Cr-Mo steel',                        fy:590,  fu:'780–980', en:'25CrMo4', din:'25CrMo4',      aisi:'4130',       cat:'engineering', note:'Good weldability and toughness. Structural and pressure parts.'},
-        {csn:'14 260', name:'Free-cutting Cr-Mn steel',                     fy:590,  fu:'880–1180',en:'20MnCrS5',din:'20MnCrS5',     aisi:'5120',       cat:'engineering', note:'Free-cutting variant of 14 220. Better machinability for mass production.'},
+        {csn:'14 260', name:'Free-cutting Cr-Mn steel',                     fy:590,  fu:'880–1180',en:'16MnCrS5',din:'16MnCrS5',     aisi:'5115',       cat:'engineering', note:'Free-cutting (sulphur-added) variant of 14 220 / 16MnCr5. Better machinability for mass production.'},
         {csn:'15 130', name:'High-strength Cr-Mo steel',                    fy:650,  fu:'900–1100',en:'42CrMo4', din:'42CrMo4',      aisi:'4140',       cat:'engineering', note:'One of the most widely used alloy steels. High strength and toughness after Q&T. Crankshafts, connecting rods, gears.'},
         {csn:'15 142', name:'High-strength Ni-Cr-Mo steel',                 fy:750,  fu:'1000–1200',en:'34CrNiMo6',din:'34CrNiMo6', aisi:'4340',       cat:'engineering', note:'Very high strength after Q&T. Critical components: aircraft parts, racing connecting rods, high-load shafts.'},
-        {csn:'15 260', name:'Cr-Mn-Mo steel',                               fy:690,  fu:'930–1130',en:'34CrMo4', din:'34CrMo4',      aisi:'4135',       cat:'engineering', note:'Pressure vessel steel. Good weldability at elevated temperatures.'},
+        {csn:'15 260', name:'Chromium-vanadium spring steel',               fy:1100, fu:'1250–1450',en:'51CrV4', din:'51CrV4',       aisi:'6150',       cat:'engineering', note:'Chromium-vanadium spring steel (51CrV4, 1.8159). Coil springs, leaf springs, torsion bars. High fatigue strength after hardening & tempering.'},
 
         // ── STAINLESS 17xxx ───────────────────────────────────────────────────────
         {csn:'17 240', name:'Austenitic stainless, 18/10',                  fy:195,  fu:'500–700', en:'X5CrNi18-10',   din:'1.4301',  aisi:'304',        cat:'stainless',   note:'Most common stainless steel. Good corrosion resistance, non-magnetic. Food, chemical, architectural applications.'},
