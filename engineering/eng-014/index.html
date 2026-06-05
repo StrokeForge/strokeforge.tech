@@ -227,7 +227,25 @@
             <div class="info-grid">
                 <div class="info-block">
                     <h3>Surface pressure (otlačení)</h3>
-                    <p>The key bears against the hub keyway wall. Effective contact area on the hub side:</p>
+                    <p>The key bears against the keyway walls. With effective length l<sub>e</sub> = l − b (Form A) and supporting depth t (t₁ on the shaft, t₂ on the hub):</p>
+                    <p style="font-family:monospace;color:var(--light-gray);">p = M<sub>k</sub> / (d/2 · l<sub>e</sub> · t · n)</p>
+                    <p>The hub side (smaller depth t₂) usually governs — keep p ≤ p<sub>allow</sub> for the hub material.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Shear &amp; design notes</h3>
+                    <ul>
+                        <li>Key shear: τ = M<sub>k</sub> / (d/2 · l<sub>e</sub> · b · n), keep τ ≤ ~70 MPa (steel key).</li>
+                        <li>Rule of thumb: key length l ≈ 1.2–1.5 · d.</li>
+                        <li>Two keys at 180° share the torque; with real tolerances only ~75% of the second key is reliable — this tool assumes ideal sharing.</li>
+                        <li>Form A keys have rounded ends (l<sub>e</sub> = l − b); Form B (square ends) use l<sub>e</sub> = l.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
     </footer>
 
     <script src="../../js/nav.js"></script>
@@ -277,64 +295,51 @@
     }
 
     // ─── DRAW SVG ────────────────────────────────────────────────────────────────
-    function drawSvg(d, b, h, t1) {
+    // Cross-section: shaft + hub, with key(s) seated in shaft & hub keyways.
+    function drawSvg(d, b, h, t1, t2, n) {
         const svg = document.getElementById('keySvg');
         svg.innerHTML = '';
-        const cx = 70, cy = 75, R = 52;
-        const scale = R * 2 / d;  // px per mm
+        const NS = 'http://www.w3.org/2000/svg';
+        const cx = 70, cy = 70, R = 44, hw = 15;   // shaft radius, hub wall (px)
+        const scale = R * 2 / d;                    // px per mm
+        const bPx   = Math.max(b * scale, 4);
+        const t1Px  = t1 * scale;
+        const t2Px  = t2 * scale;
+        const protr = (h - t1) * scale;             // key protrusion above shaft surface
+        const surf  = cy - R;                       // shaft surface (top, before rotation)
 
         function el(tag, attrs, text) {
-            const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+            const e = document.createElementNS(NS, tag);
             for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
             if (text !== undefined) e.textContent = text;
             return e;
         }
 
-        // shaft circle
-        svg.appendChild(el('circle', { cx, cy, r: R, fill: 'none', stroke: '#4ade80', 'stroke-width': 1.5 }));
+        // Hub (outer ring) and shaft
+        svg.appendChild(el('circle', { cx, cy, r: R + hw, fill: 'rgba(100,116,139,0.12)', stroke: '#64748b', 'stroke-width': 1.3 }));
+        svg.appendChild(el('circle', { cx, cy, r: R, fill: 'rgba(74,222,128,0.10)', stroke: '#4ade80', 'stroke-width': 1.6 }));
 
-        // keyway notch (top)
-        const bPx = b * scale;
-        const t1Px = t1 * scale;
-        const notchX1 = cx - bPx / 2;
-        const notchY  = cy - R;              // shaft surface (top of circle)
-        const t2Px    = (h - t1) * scale;   // key protrusion above shaft into hub
+        // Key(s): top, plus bottom (180°) when 2 keys
+        const angles = n >= 2 ? [0, 180] : [0];
+        angles.forEach(ang => {
+            const g  = el('g', { transform: `rotate(${ang} ${cx} ${cy})` });
+            const x0 = cx - bPx / 2;
+            // hub keyway slot (into hub, above surface) — shows top clearance
+            g.appendChild(el('rect', { x: x0, y: surf - t2Px, width: bPx, height: t2Px, fill: '#0e0e0e', stroke: '#475569', 'stroke-width': 0.8 }));
+            // shaft keyway (into shaft, below surface)
+            g.appendChild(el('rect', { x: x0, y: surf, width: bPx, height: t1Px, fill: '#0e0e0e', stroke: '#475569', 'stroke-width': 0.8 }));
+            // the key itself (t1 in shaft, h−t1 protruding into hub)
+            g.appendChild(el('rect', { x: x0, y: surf - protr, width: bPx, height: h * scale, fill: 'rgba(249,115,22,0.9)', stroke: '#fdba74', 'stroke-width': 1.2, rx: 0.6 }));
+            svg.appendChild(g);
+        });
 
-        // Fill shaft
-        svg.appendChild(el('circle', { cx, cy, r: R, fill: 'rgba(74,222,128,0.06)', stroke: '#4ade80', 'stroke-width': 1.5 }));
-
-        // Keyway rectangle: cut INTO shaft (going downward from circle top)
-        svg.appendChild(el('rect', {
-            x: notchX1,
-            y: notchY,
-            width: bPx,
-            height: t1Px,
-            fill: '#1a1a1a',
-            stroke: '#f97316',
-            'stroke-width': 1.2,
-        }));
-
-        // Key: t1 inside shaft + t2 protruding above shaft surface
-        const keyHeight = h * scale;
-        const keyY = notchY - t2Px;
-        svg.appendChild(el('rect', {
-            x: notchX1,
-            y: keyY,
-            width: bPx,
-            height: keyHeight,
-            fill: 'rgba(249,115,22,0.18)',
-            stroke: '#f97316',
-            'stroke-width': 1.5,
-            rx: 1,
-        }));
-
-        // Center cross
-        svg.appendChild(el('line', { x1: cx - 6, y1: cy, x2: cx + 6, y2: cy, stroke: '#60a5fa', 'stroke-width': 0.7 }));
-        svg.appendChild(el('line', { x1: cx, y1: cy - 6, x2: cx, y2: cy + 6, stroke: '#60a5fa', 'stroke-width': 0.7 }));
+        // Centre mark
+        svg.appendChild(el('circle', { cx, cy, r: 1.6, fill: '#60a5fa' }));
 
         // Labels
-        svg.appendChild(el('text', { x: cx, y: 9, fill: '#f97316', 'font-size': 9, 'font-family': 'monospace', 'text-anchor': 'middle', 'dominant-baseline': 'middle' }, `b=${b}`));
-        svg.appendChild(el('text', { x: cx + R + 6, y: cy, fill: '#4ade80', 'font-size': 8, 'font-family': 'monospace', 'text-anchor': 'start', 'dominant-baseline': 'middle' }, `d=${d}`));
+        svg.appendChild(el('text', { x: cx, y: surf - t2Px - 4, fill: '#fb923c', 'font-size': 8.5, 'font-family': 'monospace', 'text-anchor': 'middle' }, `b=${b}`));
+        svg.appendChild(el('text', { x: cx, y: cy + R + hw + 9, fill: '#4ade80', 'font-size': 8.5, 'font-family': 'monospace', 'text-anchor': 'middle' }, `Ød=${d}`));
+        if (n >= 2) svg.appendChild(el('text', { x: cx + R + hw - 1, y: cy, fill: '#94a3b8', 'font-size': 7.5, 'font-family': 'monospace', 'text-anchor': 'end', 'dominant-baseline': 'middle' }, '2×'));
     }
 
     // ─── MAIN CALC ───────────────────────────────────────────────────────────────
@@ -355,7 +360,7 @@
             document.getElementById('t2v').textContent   = '—';
             document.getElementById('dRange').textContent = '—';
             document.getElementById('resBody').innerHTML  = '<tr><td colspan="4" style="color:var(--text-gray);padding:1rem 0;">Shaft diameter out of range (6–500 mm).</td></tr>';
-            drawSvg(40, 12, 8, 5);
+            drawSvg(40, 12, 8, 5, 3.3, 1);
             return;
         }
 
@@ -368,7 +373,7 @@
         document.getElementById('dRange').textContent = `>${dMin} – ${dMax}`;
 
         // Draw SVG
-        drawSvg(d, b, h, t1);
+        drawSvg(d, b, h, t1, t2, n);
 
         // Effective length
         const le = Math.max(l - b, 0);  // Form A: subtract one radius each end = b total
