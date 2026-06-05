@@ -605,15 +605,23 @@
         // ── fastener helpers (head + washers + hex nut, centred on the bolt axis cx) ──
         function washer(yTop){ rect(cx-18, yTop, 36, 5, gray, '#3a3a3a', 1); }   // flat washer
         function boltHead(yBottom){ rect(cx-15, yBottom-18, 30, 18, boltColor, '#2a2a2a', 1); }  // head, bottom at yBottom
-        function hexNut(cyc){       // hexagonal nut centred at (cx, cyc) with a threaded hole
-            const hw=18, hh=9;
-            const pts=[[cx-hw/2,cyc-hh],[cx+hw/2,cyc-hh],[cx+hw,cyc],[cx+hw/2,cyc+hh],[cx-hw/2,cyc+hh],[cx-hw,cyc]]
-                .map(p=>p.join(',')).join(' ');
-            const poly=document.createElementNS(ns,'polygon');
-            poly.setAttribute('points',pts); poly.setAttribute('stroke',boltColor);
-            poly.setAttribute('fill','#2a2a2a'); poly.setAttribute('stroke-width',1.5);
-            svg.appendChild(poly);
-            circ(cx, cyc, 5.5, boltColor, '#1a1a1a');   // threaded hole
+        function hexNut(cyc){       // hex nut in SIDE elevation: 3 chamfer arcs top & bottom + 4 vertical edges
+            const hw=18, hh=11, b=4;
+            const topY=cyc-hh, botY=cyc+hh;
+            const x0=cx-hw, x1=cx-hw/3, x2=cx+hw/3, x3=cx+hw;   // 4 vertical face edges
+            const d=`M ${x0},${topY} Q ${(x0+x1)/2},${topY-b} ${x1},${topY}`+
+                    ` Q ${cx},${topY-b} ${x2},${topY}`+
+                    ` Q ${(x2+x3)/2},${topY-b} ${x3},${topY}`+
+                    ` L ${x3},${botY}`+
+                    ` Q ${(x2+x3)/2},${botY+b} ${x2},${botY}`+
+                    ` Q ${cx},${botY+b} ${x1},${botY}`+
+                    ` Q ${(x0+x1)/2},${botY+b} ${x0},${botY} Z`;
+            const path=document.createElementNS(ns,'path');
+            path.setAttribute('d',d); path.setAttribute('stroke',boltColor);
+            path.setAttribute('fill','#2a2a2a'); path.setAttribute('stroke-width',1.5);
+            svg.appendChild(path);
+            line(x1,topY,x1,botY,boltColor,1.5);   // inner edge between flats
+            line(x2,topY,x2,botY,boltColor,1.5);   // inner edge between flats
         }
 
         if (nPlanes === 2) {
@@ -633,7 +641,7 @@
             line(lapR+6, yb[1], lapR+30, yb[1]-14, sp, 1);
             txt(lapR+34, yb[1]-16, 'shear planes', sp, 9, 'start');
             // bolt: head + washer on top, shank through all plates, washer + hex nut at bottom
-            const topWasherTop = yb[0]-5, nutCy = yb[3]+5+9;
+            const topWasherTop = yb[0]-5, nutCy = yb[3]+5+11;
             boltHead(topWasherTop);                                  // head sits on the washer
             washer(topWasherTop);                                    // washer under the head
             rect(cx-7, yb[0], 14, 3*tp, boltColor, boltColor);       // shank
@@ -663,7 +671,7 @@
             line(lapR+6, iface, lapR+30, iface-16, sp, 1);
             txt(lapR+34, iface-18, 'shear plane', sp, 9, 'start');
             // bolt: head + washer on top, shank through both plates, washer + hex nut at bottom
-            const topWasherTop = p1Top-5, nutCy = p2Bot+5+9;
+            const topWasherTop = p1Top-5, nutCy = p2Bot+5+11;
             boltHead(topWasherTop);                                 // head sits on the washer
             washer(topWasherTop);                                   // washer under the head
             rect(cx-7, p1Top, 14, 2*tp, boltColor, boltColor);      // shank
