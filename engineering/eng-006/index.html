@@ -246,7 +246,26 @@
             <div class="info-grid">
                 <div class="info-block">
                     <h3>Design resistance</h3>
-                    <p>Per ČSN EN 1993-1-8 §4.5.3.3 (simplified method):</p>
+                    <p>Per ČSN EN 1993-1-8 §4.5.3.3 (simplified method), the design shear strength of the weld throat is:</p>
+                    <p><code>f<sub>vw,d</sub> = (f<sub>u</sub> / √3) / (β<sub>w</sub> · γ<sub>M2</sub>)</code></p>
+                    <p>Resistance per unit length: <code>F<sub>w,Rd</sub> = f<sub>vw,d</sub> · a</code>. The weld is adequate when the resultant force per unit length on the throat stays below F<sub>w,Rd</sub> — the simplified method does not resolve the load into separate normal/shear components.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Correlation factor β<sub>w</sub> &amp; notes</h3>
+                    <ul>
+                        <li>S235 — β<sub>w</sub> = 0.80, f<sub>u</sub> = 360 MPa</li>
+                        <li>S275 — β<sub>w</sub> = 0.85, f<sub>u</sub> = 430 MPa</li>
+                        <li>S355 — β<sub>w</sub> = 0.90, f<sub>u</sub> = 490 MPa</li>
+                        <li>S460 — β<sub>w</sub> = 1.00, f<sub>u</sub> = 570 MPa</li>
+                    </ul>
+                    <p>γ<sub>M2</sub> = 1.25 (standard) per EN 1993-1-8 §2.2. Effective length <code>l<sub>eff</sub> = l − 2a</code> removes the start/stop craters (§4.5.1); keep <code>l<sub>eff</sub> ≥ max(6a, 30 mm)</code>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
     </footer>
 
     <script>

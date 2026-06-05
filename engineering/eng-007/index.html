@@ -350,8 +350,8 @@
                     <h3>Shear resistance per bolt</h3>
                     <p style="font-family:monospace;font-size:0.85rem;color:var(--light-gray)">F<sub>v,Rd</sub> = α<sub>v</sub> · f<sub>ub</sub> · A / γ<sub>M2</sub></p>
                     <ul style="margin-top:0.5rem">
-                        <li>α<sub>v</sub> = 0.6 for grades 4.6, 5.6, 6.8, 8.8</li>
-                        <li>α<sub>v</sub> = 0.5 for grades 10.9, 12.9</li>
+                        <li>Shank (unthreaded) shear plane: α<sub>v</sub> = 0.6 — all grades</li>
+                        <li>Thread (A<sub>s</sub>) shear plane: α<sub>v</sub> = 0.6 for 4.6, 5.6, 8.8 — else 0.5 (6.8, 10.9, 12.9)</li>
                         <li>A = A<sub>s</sub> (thread) or A (shank) depending on shear plane location</li>
                         <li>γ<sub>M2</sub> = 1.25</li>
                     </ul>
@@ -376,7 +376,16 @@
                 </div>
                 <div class="info-block">
                     <h3>Connection resistance</h3>
-                    <p>Governing resistance per bolt:</p>
+                    <p>Governing resistance per bolt is the smaller of the two checks: <code>F<sub>Rd</sub> = min(F<sub>v,Rd</sub>, F<sub>b,Rd</sub>)</code>.</p>
+                    <p>For the whole connection (equal load sharing assumed): <code>n · F<sub>Rd</sub> ≥ V<sub>Ed</sub></code>, with utilisation <code>η = V<sub>Ed</sub> / (n · F<sub>Rd</sub>)</code>.</p>
+                    <p>γ<sub>M2</sub> = 1.25 (EN 1993-1-8 §2.2). This is a Category A (bearing-type) check assuming the bolts share the load equally.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Designs from concept to reality | 2026</p>
     </footer>
 
     <script>
@@ -393,14 +402,14 @@
         30: [30, 33, 707,   561],
         36: [36, 39, 1018,  817],
     };
-    // Grades: fub, αv
+    // Grades: fub (MPa). αv depends on grade AND shear-plane location — computed in calculate()
     const GRADES = {
-        '4.6':  [400, 0.6],
-        '5.6':  [500, 0.6],
-        '6.8':  [600, 0.6],
-        '8.8':  [800, 0.6],
-        '10.9': [1000, 0.5],
-        '12.9': [1200, 0.5],
+        '4.6':  400,
+        '5.6':  500,
+        '6.8':  600,
+        '8.8':  800,
+        '10.9': 1000,
+        '12.9': 1200,
     };
     // Plate: fu
     const PLATES = { '235': 360, '275': 430, '355': 490, '460': 570 };
@@ -425,9 +434,13 @@
         const p2    = parseFloat(document.getElementById('p2').value) || 0;
 
         const [d, d0, A_shank, As] = BOLTS[bSize];
-        const [fub, alphav] = GRADES[grade];
+        const fub = GRADES[grade];
         const fu = PLATES[matKey];
         const A = shearThrough === 'thread' ? As : A_shank;
+        // αv per EN 1993-1-8 Table 3.4: unthreaded (shank) shear plane → 0.6 for all grades;
+        // threaded shear plane → 0.6 for 4.6/5.6/8.8, else 0.5 (incl. 6.8, 10.9, 12.9)
+        const alphav = shearThrough === 'shank' ? 0.6
+                     : (grade === '4.6' || grade === '5.6' || grade === '8.8') ? 0.6 : 0.5;
 
         // Shear resistance per bolt (per shear plane × n planes)
         const FvRd_plane = alphav * fub * A / gM2 / 1000; // kN
@@ -589,6 +602,20 @@
             el.setAttribute('stroke-dasharray','5 4'); svg.appendChild(el);
         }
 
+        // ── fastener helpers (head + washers + hex nut, centred on the bolt axis cx) ──
+        function washer(yTop){ rect(cx-18, yTop, 36, 5, gray, '#3a3a3a', 1); }   // flat washer
+        function boltHead(yBottom){ rect(cx-15, yBottom-18, 30, 18, boltColor, '#2a2a2a', 1); }  // head, bottom at yBottom
+        function hexNut(cyc){       // hexagonal nut centred at (cx, cyc) with a threaded hole
+            const hw=18, hh=9;
+            const pts=[[cx-hw/2,cyc-hh],[cx+hw/2,cyc-hh],[cx+hw,cyc],[cx+hw/2,cyc+hh],[cx-hw/2,cyc+hh],[cx-hw,cyc]]
+                .map(p=>p.join(',')).join(' ');
+            const poly=document.createElementNS(ns,'polygon');
+            poly.setAttribute('points',pts); poly.setAttribute('stroke',boltColor);
+            poly.setAttribute('fill','#2a2a2a'); poly.setAttribute('stroke-width',1.5);
+            svg.appendChild(poly);
+            circ(cx, cyc, 5.5, boltColor, '#1a1a1a');   // threaded hole
+        }
+
         if (nPlanes === 2) {
             // ── Double shear: two cover plates + main plate, 2 shear planes ──
             const yb = [60, 60+tp, 60+2*tp, 60+3*tp];   // plate boundaries
@@ -605,14 +632,15 @@
             dashLine(lapL-6, yb[2], lapR+6, yb[2], sp);
             line(lapR+6, yb[1], lapR+30, yb[1]-14, sp, 1);
             txt(lapR+34, yb[1]-16, 'shear planes', sp, 9, 'start');
-            // bolt: head top, shank through all, washer + nut bottom
-            const headTop = yb[0]-18, nutTop = yb[3]+6;
-            rect(cx-14, headTop, 28, 18, boltColor, '#2a2a2a', 1);   // head
+            // bolt: head + washer on top, shank through all plates, washer + hex nut at bottom
+            const topWasherTop = yb[0]-5, nutCy = yb[3]+5+9;
+            boltHead(topWasherTop);                                  // head sits on the washer
+            washer(topWasherTop);                                    // washer under the head
             rect(cx-7, yb[0], 14, 3*tp, boltColor, boltColor);       // shank
-            rect(cx-17, yb[3], 34, 6, gray, '#3a3a3a', 1);           // washer
-            rect(cx-13, nutTop, 26, 18, boltColor, '#2a2a2a', 1);    // nut
-            txt(cx, headTop-9, 'head', gray, 8);
-            txt(cx+26, nutTop+9, 'washer + nut', gray, 8, 'start');
+            washer(yb[3]);                                           // washer under the nut
+            hexNut(nutCy);                                           // hex nut
+            txt(cx, topWasherTop-18-9, 'head + washer', gray, 8);
+            txt(cx+24, nutCy, 'washer + nut', gray, 8, 'start');
             // forces: covers left, main right (opposing)
             arrow(40, yb[0]+tp/2, 12, yb[0]+tp/2, blue);
             arrow(40, yb[2]+tp/2, 12, yb[2]+tp/2, blue);
@@ -634,14 +662,15 @@
             dashLine(lapL-6, iface, lapR+6, iface, sp);
             line(lapR+6, iface, lapR+30, iface-16, sp, 1);
             txt(lapR+34, iface-18, 'shear plane', sp, 9, 'start');
-            // bolt: head top, visible shank through both, washer + nut bottom
-            const headTop = p1Top-18, nutTop = p2Bot+6;
-            rect(cx-14, headTop, 28, 18, boltColor, '#2a2a2a', 1);  // head
+            // bolt: head + washer on top, shank through both plates, washer + hex nut at bottom
+            const topWasherTop = p1Top-5, nutCy = p2Bot+5+9;
+            boltHead(topWasherTop);                                 // head sits on the washer
+            washer(topWasherTop);                                   // washer under the head
             rect(cx-7, p1Top, 14, 2*tp, boltColor, boltColor);      // shank
-            rect(cx-17, p2Bot, 34, 6, gray, '#3a3a3a', 1);          // washer
-            rect(cx-13, nutTop, 26, 18, boltColor, '#2a2a2a', 1);   // nut
-            txt(cx, headTop-9, 'head', gray, 8);
-            txt(cx+26, nutTop+9, 'washer + nut', gray, 8, 'start');
+            washer(p2Bot);                                          // washer under the nut
+            hexNut(nutCy);                                          // hex nut
+            txt(cx, topWasherTop-18-9, 'head + washer', gray, 8);
+            txt(cx+24, nutCy, 'washer + nut', gray, 8, 'start');
             // forces: PLATE 1 left, PLATE 2 right (opposing)
             arrow(40, p1Top+tp/2, 12, p1Top+tp/2, blue);
             txt(24, p1Top-4, 'F', blue, 11);
