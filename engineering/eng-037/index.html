@@ -170,9 +170,9 @@
                     <ul>
                         <li><strong>12 050 (C45):</strong> quenching, induction, 46–54 HRC</li>
                         <li><strong>14 220 (16MnCr5):</strong> carburising, 58–63 HRC surface</li>
-                        <li><strong>19 312 (X38CrMoV5):</strong> tool steel, hot work</li>
-                        <li><strong>14 109 (34CrAlNi7):</strong> nitriding steel, 900–1100 HV surface</li>
-                        <li><strong>11 500 (S355):</strong> stress relief annealing only</li>
+                        <li><strong>19 312 (X40CrMoV5-1):</strong> tool steel, hot work</li>
+                        <li><strong>15 340 (41CrAlMo7):</strong> nitriding steel, 900–1100 HV surface</li>
+                        <li><strong>11 523 (S355):</strong> stress relief annealing only</li>
                     </ul>
                 </div>
                 <div class="info-block">
@@ -200,7 +200,7 @@
             cat: 'hardening',
             icon: '🔥',
             en: 'Quench Hardening',
-            cs: 'Kalení',
+            cs: 'Quench to martensite',
             badge: 'badge-hard',
             badgeLabel: 'Hardening',
             temp: '800 – 900 °C',
@@ -216,7 +216,7 @@
             cat: 'hardening',
             icon: '🌡️',
             en: 'Tempering',
-            cs: 'Popouštění',
+            cs: 'Reduces brittleness',
             badge: 'badge-hard',
             badgeLabel: 'Hardening',
             temp: '150 – 650 °C',
@@ -232,7 +232,7 @@
             cat: 'hardening',
             icon: '🔁',
             en: 'Quench & Temper (QT)',
-            cs: 'Zušlechťování',
+            cs: 'Strength + toughness',
             badge: 'badge-hard',
             badgeLabel: 'Hardening',
             temp: '840 °C + 550–650 °C',
@@ -250,7 +250,7 @@
             cat: 'annealing',
             icon: '❄️',
             en: 'Full Annealing',
-            cs: 'Normalizační žíhání',
+            cs: 'Soften, refine grain',
             badge: 'badge-anneal',
             badgeLabel: 'Annealing',
             temp: '820 – 950 °C',
@@ -266,7 +266,7 @@
             cat: 'annealing',
             icon: '💨',
             en: 'Stress Relief Annealing',
-            cs: 'Žíhání na snížení pnutí',
+            cs: 'Removes residual stress',
             badge: 'badge-anneal',
             badgeLabel: 'Annealing',
             temp: '500 – 650 °C',
@@ -282,7 +282,7 @@
             cat: 'annealing',
             icon: '🔃',
             en: 'Recrystallisation Annealing',
-            cs: 'Rekrystalizační žíhání',
+            cs: 'Restores ductility',
             badge: 'badge-anneal',
             badgeLabel: 'Annealing',
             temp: '550 – 700 °C',
@@ -298,7 +298,7 @@
             cat: 'annealing',
             icon: '🌀',
             en: 'Spheroidise Annealing',
-            cs: 'Žíhání na měkko',
+            cs: 'Globular carbides',
             badge: 'badge-anneal',
             badgeLabel: 'Annealing',
             temp: '680 – 750 °C',
@@ -316,7 +316,7 @@
             cat: 'surface',
             icon: '⚡',
             en: 'Induction Hardening',
-            cs: 'Indukční kalení',
+            cs: 'Localised surface case',
             badge: 'badge-surf',
             badgeLabel: 'Surface',
             temp: '850 – 950 °C (surface)',
@@ -332,7 +332,7 @@
             cat: 'surface',
             icon: '🔥',
             en: 'Flame Hardening',
-            cs: 'Plamenové kalení',
+            cs: 'Flame surface case',
             badge: 'badge-surf',
             badgeLabel: 'Surface',
             temp: '850 – 950 °C (surface)',
@@ -340,7 +340,7 @@
             hardMin: 45, hardMax: 58,
             hardLabel: '45 – 58 HRC',
             steels: 'C45, GGG-70 (nodular cast iron)',
-            czechSteels: '12 050, litina s kuličkovým grafitem',
+            czechSteels: '12 050, nodular cast iron',
             desc: 'Oxyacetylene or propane flame heats the surface, then spray-quenched. Suitable for large components (gears, slideways) where induction is impractical.',
             note: 'Less precise than induction. Requires careful operator control.',
         },
@@ -350,7 +350,7 @@
             cat: 'thermochem',
             icon: '⚗️',
             en: 'Carburising (Case Hardening)',
-            cs: 'Cementování (Cementace)',
+            cs: 'Carbon enrichment',
             badge: 'badge-thermo',
             badgeLabel: 'Thermochem.',
             temp: '880 – 950 °C',
@@ -366,7 +366,7 @@
             cat: 'thermochem',
             icon: '🧪',
             en: 'Nitriding',
-            cs: 'Nitridování',
+            cs: 'Nitrogen, low distortion',
             badge: 'badge-thermo',
             badgeLabel: 'Thermochem.',
             temp: '480 – 580 °C',
@@ -374,7 +374,7 @@
             hardMin: 65, hardMax: 72,
             hardLabel: '900–1100 HV (≈ 65–72 HRC)',
             steels: '34CrAlNi7, 31CrMoV9, 41CrAlMo7',
-            czechSteels: '14 109, 15 230',
+            czechSteels: '15 330, 15 340',
             desc: 'Nitrogen diffuses into surface at sub-critical temperature. No quench required — very low distortion. Produces extreme surface hardness due to iron nitride and alloy nitride precipitation. Good corrosion resistance.',
             note: 'Requires Al, Cr, Mo alloying. Case depth 0.1–0.5 mm only.',
         },
@@ -382,7 +382,7 @@
             cat: 'thermochem',
             icon: '🔬',
             en: 'Carbonitriding',
-            cs: 'Karbonitrování',
+            cs: 'Carbon + nitrogen',
             badge: 'badge-thermo',
             badgeLabel: 'Thermochem.',
             temp: '700 – 900 °C',

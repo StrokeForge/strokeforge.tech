@@ -372,6 +372,10 @@
             const row = document.createElement('div');
             row.className = 'mfg-row';
 
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'mfg-name';
+            nameSpan.textContent = name;
+
             const bwrap = document.createElement('div');
             bwrap.className = 'mfg-bar-wrap';
             bwrap.style.position = 'relative';
@@ -389,11 +393,13 @@
             bwrap.appendChild(bFull);
             bwrap.appendChild(bTyp);
 
-            row.innerHTML = `<span class="mfg-name">${name}</span>`;
-            row.appendChild(bwrap);
-            row.innerHTML += `<span class="mfg-range">Ra ${rmin}–${rmax} μm</span>`;
-            row.insertBefore(bwrap, row.lastChild);
+            const rangeSpan = document.createElement('span');
+            rangeSpan.className = 'mfg-range';
+            rangeSpan.textContent = `Ra ${rmin}–${rmax} μm`;
 
+            row.appendChild(nameSpan);
+            row.appendChild(bwrap);
+            row.appendChild(rangeSpan);
             container.appendChild(row);
         });
 
@@ -401,7 +407,12 @@
         const axis = document.createElement('div');
         axis.className = 'mfg-row';
         axis.style.marginTop = '0.5rem';
-        axis.innerHTML = `<span class="mfg-name" style="font-size:0.7rem;color:#4b5563;">Ra (μm) →</span>`;
+
+        const axName = document.createElement('span');
+        axName.className = 'mfg-name';
+        axName.style.cssText = 'font-size:0.7rem;color:#4b5563;';
+        axName.textContent = 'Ra (μm) →';
+
         const axW = document.createElement('div');
         axW.style.cssText = 'flex:1;position:relative;height:14px;';
         [0.025,0.1,0.4,1.6,6.3,25].forEach(v => {
@@ -410,9 +421,13 @@
             sp.textContent = v;
             axW.appendChild(sp);
         });
+
+        const axRange = document.createElement('span');
+        axRange.className = 'mfg-range';
+
+        axis.appendChild(axName);
         axis.appendChild(axW);
-        axis.innerHTML += `<span class="mfg-range"></span>`;
-        axis.insertBefore(axW, axis.lastChild);
+        axis.appendChild(axRange);
         container.appendChild(axis);
     }
 

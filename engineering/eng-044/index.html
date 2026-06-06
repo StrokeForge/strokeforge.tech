@@ -457,11 +457,11 @@
                 <div class="info-block">
                     <h3>EPL — Equipment Protection Level</h3>
                     <ul>
-                        <li><strong>Ma / Da</strong> — Very high (two independent faults)</li>
-                        <li><strong>Mb / Db</strong> — High (one expected fault)</li>
-                        <li><strong>Gc / Dc</strong> — Enhanced (normal operation)</li>
+                        <li><strong>Ga / Da / Ma</strong> — Very high (safe with two independent faults)</li>
+                        <li><strong>Gb / Db / Mb</strong> — High (safe with one expected fault)</li>
+                        <li><strong>Gc / Dc</strong> — Enhanced (safe in normal operation)</li>
                     </ul>
-                    <p style="margin-top:0.5rem;">EPL suffix: <strong>a</strong> = gas/vapour, <strong>b</strong> = dust, no suffix = mining.</p>
+                    <p style="margin-top:0.5rem;">First letter = environment: <strong>G</strong> = gas/vapour, <strong>D</strong> = dust, <strong>M</strong> = mining. Suffix = level: <strong>a</strong> = very high, <strong>b</strong> = high, <strong>c</strong> = enhanced.</p>
                 </div>
                 <div class="info-block">
                     <h3>Directives &amp; standards</h3>
@@ -496,7 +496,7 @@
     <script>
     // ─── TEMPERATURE CLASSES ──────────────────────────────────────────────────────
     const TEMP_DATA = [
-        { cls:'T1', max:450, ait:'>450', col:'#4ade80', examples:'Hydrogen, acetylene (AIT 305–406 °C) NOT included — use T3+' },
+        { cls:'T1', max:450, ait:'>450', col:'#4ade80', examples:'Methane (537 °C), hydrogen (560 °C), ammonia (630 °C), carbon monoxide (605 °C), propane (470 °C)' },
         { cls:'T2', max:300, ait:'>300', col:'#a3e635', examples:'Acetylene (305 °C), ethylene (425 °C), methanol (385 °C)' },
         { cls:'T3', max:200, ait:'>200', col:'#fbbf24', examples:'Gasoline (280 °C), diesel (~250 °C), hydrogen sulphide (270 °C)' },
         { cls:'T4', max:135, ait:'>135', col:'#f97316', examples:'Diethyl ether (160 °C), acetaldehyde (175 °C)' },

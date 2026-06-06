@@ -281,7 +281,7 @@
         const n = valid.length;
         const rn = valid[n-1], rn1 = valid[n-2];
         const t = (v - rn[fromCol]) / (rn1[fromCol] - rn[fromCol]);
-        return rn[toCol] + t * (rn1[toCol] - rn[fromCol]);
+        return rn[toCol] + t * (rn1[toCol] - rn[toCol]);
     }
 
     // Column indices: HRC=0, HV=1, HB=2, Rm=3
