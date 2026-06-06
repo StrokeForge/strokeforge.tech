@@ -193,7 +193,7 @@
                         <li><strong>Delivery HB:</strong> hardness in normalised/annealed delivery state</li>
                         <li><strong>Quenched max HRC:</strong> maximum achievable after quenching (no tempering)</li>
                         <li><strong>Low temper (150–250 °C):</strong> maintains most hardness, reduces brittleness</li>
-                        <li><strong>QT/High temper (550–650 °C):</strong> quench + high temper (zušlechťování)</li>
+                        <li><strong>QT/High temper (550–650 °C):</strong> quench + high temper (toughening)</li>
                         <li><strong>Surface:</strong> case or nitriding surface hardness; core remains tough</li>
                     </ul>
                 </div>
@@ -239,10 +239,10 @@
         { cs:'11 373', en:'S235JR', cat:'struct', tz:'anneal',
           hb_del:120, hrc_q:null, hrc_lt:null, hrc_qt:null, hrc_surf:null,
           note:'No hardening. Stress relief annealing only.' },
-        { cs:'11 500', en:'S355J2', cat:'struct', tz:'anneal',
+        { cs:'11 500', en:'E295 (St50)', cat:'struct', tz:'anneal',
           hb_del:165, hrc_q:null, hrc_lt:null, hrc_qt:null, hrc_surf:null,
           note:'No significant hardening. Weldable structural steel.' },
-        { cs:'11 600', en:'E295 (St50)', cat:'struct', tz:'anneal',
+        { cs:'11 600', en:'E335 (St60)', cat:'struct', tz:'anneal',
           hb_del:175, hrc_q:null, hrc_lt:null, hrc_qt:null, hrc_surf:null,
           note:'Low-alloy, normalised. Limited hardenability.' },
         // Through-hardening
@@ -292,16 +292,16 @@
           hrc_surf:62,
           note:'Ni improves case toughness. High-performance gears, aerospace transmissions.' },
         // Nitriding
-        { cs:'14 109', en:'34CrAlNi7 / 1.8550', cat:'nitriding', tz:'nitriding',
+        { cs:'15 340', en:'41CrAlMo7 / 1.8509', cat:'nitriding', tz:'nitriding',
           hb_del:248, hrc_q:null, hrc_lt:null, hrc_qt:null,
           hrc_surf:70,
           note:'Classic nitriding steel. 900–1100 HV surface (≈ 70 HRC). Very low distortion.' },
-        { cs:'15 230', en:'31CrMoV9 / 1.8519', cat:'nitriding', tz:'nitriding',
+        { cs:'15 330', en:'31CrMoV9 / 1.8519', cat:'nitriding', tz:'nitriding',
           hb_del:248, hrc_q:null, hrc_lt:null, hrc_qt:null,
           hrc_surf:68,
           note:'Mo+V nitriding steel. High surface hardness, excellent fatigue resistance.' },
         // Tool steels
-        { cs:'19 191', en:'100Cr6 / 1.3505', cat:'tool', tz:'qt',
+        { cs:'14 109', en:'100Cr6 / 1.3505', cat:'tool', tz:'qt',
           hb_del:207, hrc_q:66, hrc_lt:63, hrc_qt:null,
           hrc_surf:null,
           note:'Bearing steel. Very high hardness and wear resistance. Bearings, gauges.' },
