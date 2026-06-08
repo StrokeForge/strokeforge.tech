@@ -214,14 +214,14 @@
                         <label>IPE profile</label>
                         <div class="field-row">
                             <select class="sel" id="ipe-sel">
-                                <option value="170600">IPE 80 — I = 80.1 cm⁴</option>
-                                <option value="1320000">IPE 120 — I = 317.8 cm⁴</option>
-                                <option value="3170000">IPE 160 — I = 869 cm⁴</option>
-                                <option value="8690000">IPE 200 — I = 1943 cm⁴</option>
-                                <option value="19430000" selected>IPE 240 — I = 3892 cm⁴</option>
-                                <option value="38920000">IPE 300 — I = 8356 cm⁴</option>
-                                <option value="83560000">IPE 360 — I = 16270 cm⁴</option>
-                                <option value="162700000">IPE 400 — I = 23130 cm⁴</option>
+                                <option value="801000">IPE 80 — I = 80.1 cm⁴</option>
+                                <option value="3178000">IPE 120 — I = 317.8 cm⁴</option>
+                                <option value="8690000">IPE 160 — I = 869 cm⁴</option>
+                                <option value="19430000">IPE 200 — I = 1943 cm⁴</option>
+                                <option value="38920000" selected>IPE 240 — I = 3892 cm⁴</option>
+                                <option value="83560000">IPE 300 — I = 8356 cm⁴</option>
+                                <option value="162700000">IPE 360 — I = 16270 cm⁴</option>
+                                <option value="231300000">IPE 400 — I = 23130 cm⁴</option>
                             </select>
                         </div>
                     </div>
@@ -402,7 +402,7 @@
 
         if (activeMode === 'udl') {
             const w = (pf('w')||0); // kN/m
-            const wNmm = w / 1000; // N/mm
+            const wNmm = w; // w[kN/m] is numerically equal to w[N/mm]
             RA = wNmm * L / 2;              // N
             RB = RA;
             MA = -wNmm * L * L / 12;        // N·mm (hogging = neg)
@@ -569,7 +569,7 @@
             const xm = frac*L; // mm
             let M = 0;
             if (mode==='udl') {
-                const wNmm = (w/1000);
+                const wNmm = w;
                 M = MA + RA*xm - wNmm*xm*xm/2;
             } else if (mode==='center') {
                 if (xm <= L/2) M = MA + RA*xm;
