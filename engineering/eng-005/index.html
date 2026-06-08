@@ -178,7 +178,7 @@
           pouziti:'Shafts, 10.9 bolts, gears, drill collars',
           pros:['High strength','Good toughness','Available alloy steel'],
           cons:['Pre-heat required for welding','Corrodes','Higher cost than C45'] },
-        { csn:'15 230', en:'34CrNiMo6 / 1.6582', re:800, rm:1000, svar:'o', obrob:'d', kor:'n', hm:'H', cena:2, teplota:450, cats:['konstrukcni'],
+        { csn:'15 142', en:'34CrNiMo6 / 1.6582', re:800, rm:1000, svar:'o', obrob:'d', kor:'n', hm:'H', cena:2, teplota:450, cats:['konstrukcni'],
           pouziti:'Crankshafts, connecting rods, extreme-duty shafts',
           pros:['Very high strength and toughness','Good machinability'],
           cons:['Welding only in exceptional cases','Corrodes','Higher cost'] },
@@ -367,7 +367,7 @@
             if (m.rm && m.rm >= 700) s += 2;
             if (m.cats.includes('litina')) s -= 5;
             if (['19 083','19 550'].includes(m.csn)) s -= 3;
-            if (['13 240','15 230'].includes(m.csn)) s += 3;
+            if (['13 240','15 142'].includes(m.csn)) s += 3;
         }
         if (zat === 'wear') {
             if (m.cats.includes('nastrojova')) s += 5;

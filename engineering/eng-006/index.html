@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fillet Weld Calculator (EC3) | StrokeForge Engineering</title>
+    <title>Fillet Weld Calculator — Simplified Method (EC3) | StrokeForge Engineering</title>
     <meta name="description" content="Fillet weld strength calculator per ČSN EN 1993-1-8 (EC3). Enter throat thickness, weld length, load type and base material to check weld utilisation. Simplified method.">
     <meta name="keywords" content="fillet weld calculator, koutový svar, EC3 weld, EN 1993-1-8, weld throat, weld stress, svar výpočet, weld utilisation">
     <meta name="robots" content="index, follow">
@@ -107,7 +107,7 @@
     </nav>
 
     <div class="page-header">
-        <h1>Fillet Weld Calculator</h1>
+        <h1>Fillet Weld Calculator — Simplified Method</h1>
         <p>Fillet weld assessment per EN 1993-1-8 (EC3), simplified method</p>
     </div>
 
@@ -166,7 +166,7 @@
                             <option value="235">S235 — fu = 360 MPa</option>
                             <option value="275">S275 — fu = 430 MPa</option>
                             <option value="355" selected>S355 — fu = 490 MPa</option>
-                            <option value="460">S460 — fu = 570 MPa</option>
+                            <option value="460">S460 — fu = 540 MPa</option>
                         </select>
                     </div>
                 </div>
@@ -256,7 +256,7 @@
                         <li>S235 — β<sub>w</sub> = 0.80, f<sub>u</sub> = 360 MPa</li>
                         <li>S275 — β<sub>w</sub> = 0.85, f<sub>u</sub> = 430 MPa</li>
                         <li>S355 — β<sub>w</sub> = 0.90, f<sub>u</sub> = 490 MPa</li>
-                        <li>S460 — β<sub>w</sub> = 1.00, f<sub>u</sub> = 570 MPa</li>
+                        <li>S460 — β<sub>w</sub> = 1.00, f<sub>u</sub> = 540 MPa</li>
                     </ul>
                     <p>γ<sub>M2</sub> = 1.25 (standard) per EN 1993-1-8 §2.2. Effective length <code>l<sub>eff</sub> = l − 2a</code> removes the start/stop craters (§4.5.1); keep <code>l<sub>eff</sub> ≥ max(6a, 30 mm)</code>.</p>
                 </div>
@@ -274,7 +274,7 @@
         '235': [360, 0.80],
         '275': [430, 0.85],
         '355': [490, 0.90],
-        '460': [570, 1.00],
+        '460': [540, 1.00],
     };
 
     let activeMode = 'tension';
