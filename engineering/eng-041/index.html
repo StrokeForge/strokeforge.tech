@@ -203,7 +203,7 @@
                 </div>
                 <div class="info-block">
                     <h3>Chain length</h3>
-                    <span class="mono">X = a/p  (a in links)<br>L = 2X + (z₁+z₂)/2 + (z₂−z₁)²/(4π²X)<br>→ round to even integer<br>a_actual = p/4·[Y + √(Y² − 8·Δz²/π²)]<br>where Y = L − (z₁+z₂)/2,  Δz = z₂−z₁</span>
+                    <span class="mono">X = a/p  (a in links)<br>L = 2X + (z₁+z₂)/2 + (z₂−z₁)²/(4π²X)<br>→ round to even integer<br>a_actual = p/4·[Y + √(Y² − 8·(Δz/2π)²)]<br>where Y = L − (z₁+z₂)/2,  Δz = z₂−z₁</span>
                 </div>
                 <div class="info-block">
                     <h3>Wrap angle</h3>
@@ -499,10 +499,10 @@
         const cx2 = Math.min(W - margin - r2, cx1 + a*scale);
         const cy  = Math.round(H * 0.46);
 
-        // External tangent geometry
-        const ddx = cx2 - cx1, ddy = r2 - r1;
-        const dist = Math.sqrt(ddx*ddx + ddy*ddy);
-        const sinT = ddy/dist, cosT = ddx/dist;
+        // External tangent geometry — sin = (r2−r1)/centre-distance
+        const D = cx2 - cx1;
+        const sinT = D > 0 ? (r2 - r1) / D : 0;
+        const cosT = Math.sqrt(Math.max(0, 1 - sinT*sinT));
         const bx1T=cx1-sinT*r1, by1T=cy-cosT*r1;
         const bx2T=cx2-sinT*r2, by2T=cy-cosT*r2;
         const bx1B=cx1+sinT*r1, by1B=cy+cosT*r1;

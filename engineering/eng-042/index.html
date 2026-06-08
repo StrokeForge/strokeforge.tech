@@ -413,7 +413,8 @@
         const rb1 = db1 / 2, rb2 = db2 / 2;
         let eps;
         try {
-            eps = (Math.sqrt(ra1*ra1 - rb1*rb1) + Math.sqrt(ra2*ra2 - rb2*rb2) - 2*a_work*Math.sin(alphaPrime))
+            // diameter form (matches info text): εα = (√(da1²−db1²)+√(da2²−db2²) − 2a'·sinα') / (2π·m·cosα)
+            eps = (Math.sqrt(da1*da1 - db1*db1) + Math.sqrt(da2*da2 - db2*db2) - 2*a_work*Math.sin(alphaPrime))
                    / (2 * Math.PI * m * Math.cos(alpha));
         } catch(e) { eps = NaN; }
 
