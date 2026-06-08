@@ -234,7 +234,7 @@
                 </div>
                 <!-- Bearing -->
                 <div class="check-cell">
-                    <div class="ch-title">② Plate Bearing (otlačení)</div>
+                    <div class="ch-title">② Plate Bearing</div>
                     <div class="ch-row"><span>A<sub>ot</sub> per rivet</span><span class="cv" id="Aot">—</span></div>
                     <div class="ch-row"><span>σ<sub>ot</sub> applied</span><span class="cv" id="sigOt">—</span></div>
                     <div class="ch-row"><span>σ<sub>ot,Rd</sub></span><span class="cv orange" id="sigOtRd">—</span></div>
@@ -282,7 +282,7 @@
                     <p><i>m = shear planes (1 or 2)</i></p>
                 </div>
                 <div class="info-block">
-                    <h3>② Plate bearing (otlačení)</h3>
+                    <h3>② Plate bearing</h3>
                     <p>Bearing area per rivet:</p>
                     <p><code>A<sub>ot</sub> = d × t</code></p>
                     <p>Applied bearing stress:</p>
@@ -488,8 +488,9 @@
         const pLeft  = (W - plateW) / 2;   // 120
         const pRight = pLeft + plateW;      // 420
         const plateH = 26;
-        const headRx = Math.max(Math.round(d / 2) + 3, 8);
-        const headRy = 5;
+        const headRx    = Math.max(Math.round(d / 2) + 4, 9);   // rivet head half-width
+        const shaftHalf = Math.max(headRx * 0.6, 4.5);          // thick shank half-width
+        const domeH     = Math.max(headRx * 0.65, 6);           // dome head height
 
         // Rivet X positions: ≤5 → exact count, >5 → 2 + dashed + 2
         const showAll = n <= 5;
@@ -508,14 +509,29 @@
             ];
         }
 
-        // Draw one rivet (top head, shaft, bottom head)
+        // Draw one rivet — thick shank + half-round (dome) head top & bottom
         function drawRivet(rx, dashed, topEdge, botEdge) {
             const col  = dashed ? gray : weldColor;
             const dash = dashed ? '5,4' : null;
-            const hFill = dashed ? 'rgba(80,80,80,0.25)' : 'rgba(249,115,22,0.2)';
-            elps(rx, topEdge - headRy, headRx, headRy, col, hFill, dash);
-            ln(rx, topEdge, rx, botEdge, col, 1.2, dash);
-            elps(rx, botEdge + headRy, headRx, headRy, col, hFill, dash);
+            const fill = dashed ? 'rgba(120,120,120,0.30)' : 'rgba(249,115,22,0.32)';
+            // shank (thick body through the plates)
+            const sh = document.createElementNS(ns,'rect');
+            sh.setAttribute('x', rx - shaftHalf); sh.setAttribute('y', topEdge);
+            sh.setAttribute('width', shaftHalf * 2); sh.setAttribute('height', Math.max(botEdge - topEdge, 0));
+            sh.setAttribute('fill', fill); sh.setAttribute('stroke', col); sh.setAttribute('stroke-width', 1.4);
+            if (dash) sh.setAttribute('stroke-dasharray', dash);
+            svg.appendChild(sh);
+            // dome head — dir = -1 (top, bulge up), +1 (bottom, bulge down)
+            function dome(baseY, dir) {
+                const p = document.createElementNS(ns,'path');
+                p.setAttribute('d', `M ${rx - headRx},${baseY} Q ${rx},${baseY + dir * 2 * domeH} ${rx + headRx},${baseY} Z`);
+                p.setAttribute('fill', fill); p.setAttribute('stroke', col); p.setAttribute('stroke-width', 1.6);
+                p.setAttribute('stroke-linejoin','round');
+                if (dash) p.setAttribute('stroke-dasharray', dash);
+                svg.appendChild(p);
+            }
+            dome(topEdge, -1);
+            dome(botEdge, +1);
         }
 
         if (mode === 'single') {
@@ -534,7 +550,7 @@
             txt(pRight + 20, midF, 'shear', red, 8, 'start');
 
             rivets.forEach(rv => drawRivet(rv.x, rv.dashed, p1Y, p2Y + plateH));
-            if (!showAll) txt(W / 2, p1Y - headRy - 9, '· · ·', gray, 12);
+            if (!showAll) txt(W / 2, p1Y - domeH - 9, '· · ·', gray, 12);
 
             // Plate A ← left,  Plate B → right
             arrow(pLeft - 6,  p1Y + plateH / 2, pLeft - 44, p1Y + plateH / 2, blue);
@@ -542,7 +558,7 @@
             txt(pLeft - 56, p1Y + plateH / 2, 'F', blue, 12, 'middle', '700');
             txt(pRight + 56, p2Y + plateH / 2, 'F', blue, 12, 'middle', '700');
 
-            txt(W / 2, p1Y - headRy * 2 - 20, `Single shear (m = 1)  ·  d = ${d} mm  ·  n = ${n}`, gray, 10);
+            txt(W / 2, p1Y - domeH - 22, `Single shear (m = 1)  ·  d = ${d} mm  ·  n = ${n}`, gray, 10);
 
         } else {
             const coverH = 14, gap = 12;
@@ -567,7 +583,7 @@
             txt(pRight + 20, midF, 'shear ×2', red, 8, 'start');
 
             rivets.forEach(rv => drawRivet(rv.x, rv.dashed, covTop, covBot + coverH));
-            if (!showAll) txt(W / 2, covTop - headRy - 9, '· · ·', gray, 12);
+            if (!showAll) txt(W / 2, covTop - domeH - 9, '· · ·', gray, 12);
 
             // Cover top ← left, cover bottom → right — arrows at cover plate centers
             const covMidT = covTop + coverH / 2;
@@ -577,7 +593,7 @@
             txt(pLeft - 56, covMidT, 'F', blue, 12, 'middle', '700');
             txt(pRight + 56, covMidB, 'F', blue, 12, 'middle', '700');
 
-            txt(W / 2, covTop - headRy * 2 - 20, `Double shear (m = 2)  ·  d = ${d} mm  ·  n = ${n}`, gray, 10);
+            txt(W / 2, covTop - domeH - 22, `Double shear (m = 2)  ·  d = ${d} mm  ·  n = ${n}`, gray, 10);
         }
 
         // Legend
