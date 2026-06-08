@@ -510,21 +510,28 @@
             txt(cx - arrowOff - 44, py + plateH/2 - 13, 'F', blue, 11, 'middle', '700');
             txt(cx + arrowOff + 44, py + plateH/2 - 13, 'F', blue, 11, 'middle', '700');
         } else {
-            // Bending — moment arrows
-            txt(cx, py - 52, 'M (bending)', blue, 10);
-            // Arc left side (sagging moment)
-            const arcEl = document.createElementNS(ns, 'path');
-            arcEl.setAttribute('d', `M ${cx - 32},${py - 4} A 32 32 0 0 1 ${cx + 32},${py - 4}`);
-            arcEl.setAttribute('stroke', blue); arcEl.setAttribute('fill','none'); arcEl.setAttribute('stroke-width',2.2);
-            svg.appendChild(arcEl);
-            arrow(cx + 32, py - 4, cx + 38, py + 10, blue);
-            // Stress distribution hint
-            ln(cx + plateW + weldW/2 + 8, py,           cx + plateW + weldW/2 + 38, py,           blue, 1.2);
-            ln(cx + plateW + weldW/2 + 8, py + plateH,  cx + plateW + weldW/2 + 8,  py + plateH,  blue, 1.2);
-            ln(cx + plateW + weldW/2 + 8, py,           cx + plateW + weldW/2 + 8,  py + plateH,  gray, 1);
-            ln(cx + plateW + weldW/2 + 8, py + plateH/2, cx + plateW + weldW/2 + 8, py + plateH,  blue, 1.2);
-            txt(cx + plateW + weldW/2 + 52, py,            '+σ', blue, 9);
-            txt(cx + plateW + weldW/2 + 18, py + plateH/2, '0',  gray, 9);
+            // BENDING — applied moment (left margin) + bending stress distribution (right margin)
+            const midY = py + plateH / 2;
+            const xR   = cx + plateW + weldW / 2;   // right plate edge
+
+            // Applied moment — curved (~270°) arrow in the empty LEFT margin
+            const mcx = 42, R = 17;
+            const mArc = document.createElementNS(ns, 'path');
+            mArc.setAttribute('d', `M ${mcx},${midY - R} A ${R},${R} 0 1 1 ${mcx - R},${midY}`);
+            mArc.setAttribute('stroke', blue); mArc.setAttribute('fill', 'none'); mArc.setAttribute('stroke-width', 2.4);
+            svg.appendChild(mArc);
+            const ah = document.createElementNS(ns, 'polygon');
+            ah.setAttribute('points', `${mcx - R},${midY} ${mcx - R - 5},${midY - 8} ${mcx - R + 5},${midY - 8}`);
+            ah.setAttribute('fill', blue); svg.appendChild(ah);
+            txt(mcx, midY + R + 12, 'M', blue, 12, 'middle', '700');
+
+            // Bending stress distribution — bowtie in the empty RIGHT margin
+            const ax = xR + 30, dep = 22;
+            ln(ax, py, ax, py + plateH, gray, 1);                                            // neutral axis
+            poly(`${ax},${py} ${ax + dep},${py} ${ax},${midY}`, 'rgba(96,165,250,0.25)', blue);       // +σ (tension, top)
+            poly(`${ax},${midY} ${ax - dep},${py + plateH} ${ax},${py + plateH}`, 'rgba(248,113,113,0.22)', red); // −σ (compression, bottom)
+            txt(ax + dep, py - 8, '+σ', blue, 9, 'middle');
+            txt(ax - dep, py + plateH + 10, '−σ', red, 9, 'middle');
         }
 
         // Legend
