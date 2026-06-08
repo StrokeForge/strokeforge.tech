@@ -425,13 +425,17 @@
         ln(tx1T, ty1T, tx2T, ty2T, orange, 2);
         ln(tx1B, ty1B, tx2B, ty2B, orange, 1.5);
 
-        // Chain links on top strand
-        const dx=tx2T-tx1T, dy=ty2T-ty1T, len=Math.sqrt(dx*dx+dy*dy);
-        const np = Math.min(10, Math.floor(len/20));
-        for(let i=1;i<np;i++){
-            const t=i/np;
-            circ(tx1T+t*dx, ty1T+t*dy, 5, 'rgba(249,115,22,0.1)', orange, 1.5);
+        // Chain links on both strands
+        function miniPins(ax, ay, bx, by) {
+            const dx=bx-ax, dy=by-ay, len=Math.sqrt(dx*dx+dy*dy);
+            const np = Math.min(10, Math.floor(len/20));
+            for(let i=1;i<np;i++){
+                const t=i/np;
+                circ(ax+t*dx, ay+t*dy, 5, 'rgba(249,115,22,0.1)', orange, 1.5);
+            }
         }
+        miniPins(tx1T, ty1T, tx2T, ty2T);   // top strand
+        miniPins(tx1B, ty1B, tx2B, ty2B);   // bottom strand
 
         // Small sprocket (draw on top of chain)
         circ(cx1, cy, r1d, dark, orange, 2);
@@ -512,15 +516,17 @@
         ln(bx1T,by1T,bx2T,by2T,chainColor,3.5);
         ln(bx1B,by1B,bx2B,by2B,chainColor,2,'5,3');
 
-        // Chain link pins along tight side
-        const spanLen = Math.sqrt((bx2T-bx1T)**2+(by2T-by1T)**2);
-        const nLinks  = Math.floor(spanLen / (p * scale));
-        const lx_step = (bx2T-bx1T)/(nLinks+1);
-        const ly_step = (by2T-by1T)/(nLinks+1);
-        for(let i=1;i<=nLinks;i++){
-            const lx=bx1T+lx_step*i, ly=by1T+ly_step*i;
-            circ(lx,ly,2.5,'rgba(249,115,22,0.25)',chainColor,1);
+        // Chain link pins along both strands (tight top + slack bottom)
+        function strandPins(ax, ay, bx, by) {
+            const spanLen = Math.sqrt((bx-ax)**2 + (by-ay)**2);
+            const nLinks  = Math.floor(spanLen / (p * scale));
+            for (let i = 1; i <= nLinks; i++) {
+                const t = i / (nLinks + 1);
+                circ(ax + (bx-ax)*t, ay + (by-ay)*t, 2.5, 'rgba(249,115,22,0.25)', chainColor, 1);
+            }
         }
+        strandPins(bx1T, by1T, bx2T, by2T);   // tight side (top)
+        strandPins(bx1B, by1B, bx2B, by2B);   // slack side (bottom)
 
         // Strand labels (above/below midpoints, offset from strand)
         const tmx=(bx1T+bx2T)/2, tmy=(by1T+by2T)/2;
