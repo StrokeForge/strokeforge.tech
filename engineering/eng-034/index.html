@@ -539,12 +539,10 @@
             const frac = i / steps;
             const y = colTop + frac * colH;
             let dx = 0;
-            if (caseNum === 1) dx = amp * Math.sin(Math.PI * frac);
-            else if (caseNum === 2) dx = amp * (1 - Math.cos(Math.PI * (1 - frac) / 2));
-            else if (caseNum === 3) dx = amp * Math.sin(Math.PI * frac * 0.7) * (caseNum === 3 ? 1 : 1);
-            else if (caseNum === 4) dx = amp * Math.sin(Math.PI * 2 * frac) * 0.5;
-            // case 3: half-sine
-            if (caseNum === 3) dx = amp * Math.sin(Math.PI * frac);
+            if (caseNum === 1)      dx = amp * Math.sin(Math.PI * frac);                  // pin–pin: half sine
+            else if (caseNum === 2) dx = amp * (1 - Math.cos(Math.PI * (1 - frac) / 2));  // fixed–free: quarter cosine
+            else if (caseNum === 3) dx = amp * Math.sin(Math.PI * Math.pow(frac, 0.8));   // fixed–pin: skewed (peak toward pinned top)
+            else if (caseNum === 4) dx = amp * Math.sin(Math.PI * 2 * frac) * 0.5;        // fixed–fixed: full sine (S-shape)
             pts.push(`${colX + dx},${y}`);
         }
         const pathEl = document.createElementNS(ns, 'path');
